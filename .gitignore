@@ -4,4 +4,16 @@ _ReSharper.*
 *.csproj.user
 *.suo
 *.sln.cache
+BuildTasks/bin
+BuildTasks/obj
+Installer/Payload/libeay32.dll
+Installer/Payload/minimerl
+Installer/Payload/playdar
+Installer/Payload/vcredist_x86.exe
+Installer/Temp
+Installer/Utils/erlini/bin
+Installer/Utils/erlini/obj
+Installer/windar-*.exe
+bin
+obj
 

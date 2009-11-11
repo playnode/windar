@@ -270,7 +270,7 @@ FunctionEnd
             do not have the Microsoft C runtime version required. It will now be installed."
          SetOutPath "$INSTDIR"
          File "Payload\${VCRUNTIME_SETUP_NAME}"
-         ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"'
+         ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'
    FunctionEnd
 !endif
 
@@ -405,6 +405,11 @@ Section "Playdar Core" SEC_PLAYDAR
       DetailPrint "Killed $0 processes, faild to kill $1 processes."
    error:
    completed:
+   
+   IfFileExists "$WINDIR\system32\libeay32.dll" openssl_lib_installed
+      SetOutPath "$WINDIR\system32"
+      File Payload\libeay32.dll
+   openssl_lib_installed:
    
    ;Erlang and Playdar payload.
    SetOutPath "$INSTDIR"
