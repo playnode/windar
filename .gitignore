@@ -1,0 +1,7 @@
+.DS_Store
+_ReSharper.*
+*.resharper.user
+*.csproj.user
+*.suo
+*.sln.cache
+
