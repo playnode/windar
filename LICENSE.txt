@@ -1,3 +1,11 @@
+This program is released under the GPL with the additional exemption that
+compiling, linking, and/or using the following is allowed:
+OpenSSL (under The OpenSSL License), Erlang (under the Erlang Public License),
+and Playdar (under the MIT license). The source-code for the software covered
+by this exemption does not need to be included in redistribution except if
+those involve any special modification.
+
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

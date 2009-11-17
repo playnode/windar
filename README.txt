@@ -12,3 +12,6 @@ If yes, you get a localhost URL that will play the song, from whichever souce
 playdar resolved it to (plugins do the resolving).
 
 For more information see: http://www.playdar.org/
+
+This product includes software developed by the OpenSSL Project for use in the
+OpenSSL Toolkit (http://www.openssl.org/)
