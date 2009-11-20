@@ -50,7 +50,7 @@ namespace Windar
             // Tray menu items.
             _aboutMenuItem = new MenuItem("About Windar", ShowAbout);
             _updateMenuItem = new MenuItem("Check for Updates", CheckForUpdates) { Enabled = false };
-            _daemonMenuItem = new MenuItem("Playdar Daemon Info", ShowPlaydarBrowser);
+            _daemonMenuItem = new MenuItem("Playdar Daemon Info", ShowDaemonInfo);
             _spiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdarWebsite);
             _searchMenuItem = new MenuItem("Search", OpenSearchWebsite);
             _playlickMenuItem = new MenuItem("Playlick", OpenPlaylickWebsite);
@@ -109,9 +109,7 @@ namespace Windar
 
         internal void Stop(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
-            Cmd<Stop>.Create().Run();
-            Program.Instance.Exit();
+            Program.Instance.Shutdown();
         }
 
         private static void Ping(object sender, EventArgs e)
@@ -145,19 +143,14 @@ namespace Windar
 
         private static void ShowAbout(object sender, EventArgs e)
         {
-            var dialog = new AboutBox();
-            dialog.Show();
+            Program.Instance.MainForm.GoToAbout();
+            Program.Instance.MainForm.EnsureVisible();
         }
 
-        private static void ShowPlaydarBrowser(object sender, EventArgs e)
+        private static void ShowDaemonInfo(object sender, EventArgs e)
         {
-            Program.Instance.PlaydarBrowser.GoHome();
-            if (!Program.Instance.PlaydarBrowser.Visible)
-            {
-                Program.Instance.PlaydarBrowser.Show();
-            }
-            Program.Instance.PlaydarBrowser.Focus();
-            Program.Instance.PlaydarBrowser.BringToFront();
+            Program.Instance.MainForm.GoToPlaydarDaemon();
+            Program.Instance.MainForm.EnsureVisible();
         }
 
         #endregion
@@ -194,7 +187,7 @@ namespace Windar
 
         private static void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            ShowPlaydarBrowser(null, null);
+            Program.Instance.MainForm.EnsureVisible();
         }
     }
 }

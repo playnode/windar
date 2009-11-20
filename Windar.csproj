@@ -39,16 +39,12 @@
       <HintPath>.\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Cmd.cs" />
     <Compile Include="Commands\CopyAppFilesToAppData.cs" />
     <Compile Include="Commands\NumFiles.cs" />
@@ -56,22 +52,19 @@
     <Compile Include="Commands\Start.cs" />
     <Compile Include="Commands\Scan.cs" />
     <Compile Include="Commands\Stop.cs" />
-    <Compile Include="DaemonBrowser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DaemonBrowser.Designer.cs">
-      <DependentUpon>DaemonBrowser.cs</DependentUpon>
-    </Compile>
     <Compile Include="CmdRunner.cs" />
     <Compile Include="DirectoryDialog.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Paths.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DaemonBrowser.resx">
-      <DependentUpon>DaemonBrowser.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1,9 +1,11 @@
-This program is released under the GPL with the additional exemption that
-compiling, linking, and/or using the following is allowed:
-OpenSSL (under The OpenSSL License), Erlang (under the Erlang Public License),
-and Playdar (under the MIT license). The source-code for the software covered
-by this exemption does not need to be included in redistribution except if
-those involve any special modification.
+Windar is Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
+
+Windar is available under the GPL.
+<http://windar.org/license/>
+
+Please see Windar GPL Exception 1.0 for more information about additional
+rights granted to developers using the open Windar source-code.
+<http://windar.org/license/gpl-exceptions.html>
 
 
                     GNU GENERAL PUBLIC LICENSE
@@ -627,3 +629,20 @@ Program, unless a warranty or assumption of liability accompanies a
 copy of the Program in return for a fee.
 
                      END OF TERMS AND CONDITIONS
+
+Additional Exception for OpenSSL
+
+The following exception is included with files that make use of the OpenSSL
+library:
+
+In addition, as a special exception, Steven Robertson (developer of Windar)
+gives permission to link the code Playdar-core (MIT license) with the OpenSSL
+project's "OpenSSL" library (or modified versions of the "OpenSSL" library
+that use the same license as the original version), and distribute
+the linked executables.
+
+You must comply with the GNU General Public License version 3 in all respects
+for all of the code used other than the "OpenSSL" code. If you modify any of
+the files containing the above exception, you may extend the exception to your
+version of those files, but you are not obligated to do so. If you do not wish
+to do so, delete this exception statement from your version of those files.

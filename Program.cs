@@ -34,9 +34,29 @@ namespace Windar
 
         internal static Program Instance { get; private set; }
 
-        internal DaemonBrowser PlaydarBrowser { get; private set; }
+        internal MainForm MainForm { get; private set; }
 
         private TrayApp _trayApp;
+
+        #region Shutdown handler (not currently working)
+
+        private enum ControlEventType
+        {
+            CtrlCEvent = 0,
+            CtrlBreakEvent = 1,
+            CtrlCloseEvent = 2,
+            CtrlLogoffEvent = 5,
+            CtrlShutdownEvent = 6,
+        }
+
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern bool SetConsoleCtrlHandler(HandlerDelegate handlerRoutine, bool add);
+
+        private delegate bool HandlerDelegate(ControlEventType dwControlType);
+
+        private static HandlerDelegate _controlHandler;
+
+        #endregion
 
         #region Main
 
@@ -50,21 +70,22 @@ namespace Windar
         [STAThread]
         static void Main()
         {
-            bool createdNew;
-            using (new Mutex(true, "Windar", out createdNew))
+            bool createNew;
+            using (new Mutex(true, "Windar", out createNew))
             {
-                if (createdNew)
+                if (createNew)
                 {
-                    if (Log.IsInfoEnabled) Log.Info("Started.");
+                    if (Log.IsInfoEnabled) Log.Info("Starting.");
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-#if DEBUG
                     Instance = new Program();
+                    _controlHandler += ControlHandler;
+                    SetConsoleCtrlHandler(_controlHandler, true);
+#if DEBUG
                     Instance.Run();
 #else
                     try
                     {
-                        Instance = new Program();
                         Instance.Run();
                     }
                     catch (Exception ex)
@@ -72,6 +93,7 @@ namespace Windar
                         if (Log.IsErrorEnabled) Log.Error("Exception in Main", ex);
                     }
 #endif
+                    SetConsoleCtrlHandler(_controlHandler, false);
                     if (Log.IsInfoEnabled) Log.Info("Finished.");
                 }
                 else
@@ -87,40 +109,12 @@ namespace Windar
             }
         }
 
-        /*
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            if (Log.IsInfoEnabled) Log.Info("Started.");
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-#if DEBUG
-            Instance = new Program();
-            Instance.Run();
-#else
-            try
-            {
-                Instance = new Program();
-                Instance.Run();
-            }
-            catch (Exception ex)
-            {
-                if (Log.IsErrorEnabled) Log.Error("Exception in Main", ex);
-            }
-#endif
-            if (Log.IsInfoEnabled) Log.Info("Finished.");
-        }
-        */
-
         #endregion
 
         internal Program()
         {
             SetupShutdownFileWatcher();
-            PlaydarBrowser = new DaemonBrowser();
+            MainForm = new MainForm();
         }
 
         internal void Run()
@@ -130,11 +124,37 @@ namespace Windar
             Application.Run(_trayApp);
         }
 
-        internal void Exit()
+        #region Shutdown
+
+        internal void Shutdown()
         {
-            PlaydarBrowser.CloseOnExit();
+            if (Log.IsInfoEnabled) Log.Info("Shutting down.");
+            Properties.Settings.Default.Save();
+            Cmd<Stop>.Create().Run();
+            MainForm.CloseOnExit();
             Application.Exit();
         }
+
+        private static bool ControlHandler(ControlEventType controlEvent)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("Control event (" + controlEvent + ')');
+            var result = false;
+            switch (controlEvent)
+            {
+                case ControlEventType.CtrlCEvent:
+                case ControlEventType.CtrlBreakEvent:
+                case ControlEventType.CtrlCloseEvent:
+                case ControlEventType.CtrlLogoffEvent:
+                case ControlEventType.CtrlShutdownEvent:
+                    // Return true to show that the event was handled.
+                    result = true;
+                    Instance.Shutdown();
+                    break;
+            }
+            return result;
+        }
+
+        #endregion
 
         internal void ShowInfoDialog(string msg)
         {
