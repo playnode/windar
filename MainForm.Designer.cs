@@ -1,4 +1,22 @@
-﻿namespace Windar
+﻿/*
+ * Windar: Playdar for Windows
+ * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace Windar
 {
     partial class MainForm
     {
@@ -29,22 +47,22 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.mainformBorderPanel = new System.Windows.Forms.Panel();
             this.mainformTabControl = new System.Windows.Forms.TabControl();
             this.aboutTabPage = new System.Windows.Forms.TabPage();
-            this.aboutCenterPanel = new System.Windows.Forms.Panel();
             this.versionLabel = new System.Windows.Forms.Label();
+            this.aboutCenterPanel = new System.Windows.Forms.Panel();
             this.playdarLink = new System.Windows.Forms.LinkLabel();
             this.playdarInfoBox = new System.Windows.Forms.GroupBox();
             this.playdarInfo = new System.Windows.Forms.RichTextBox();
             this.playdarLogo = new System.Windows.Forms.PictureBox();
+            this.playTabPage = new System.Windows.Forms.TabPage();
+            this.libraryTabPage = new System.Windows.Forms.TabPage();
+            this.networkTabPage = new System.Windows.Forms.TabPage();
             this.playdarTabPage = new System.Windows.Forms.TabPage();
             this.playdarBorderPanel = new System.Windows.Forms.Panel();
             this.playdarBrowser = new System.Windows.Forms.WebBrowser();
-            this.libraryTabPage = new System.Windows.Forms.TabPage();
-            this.sharingTabPage = new System.Windows.Forms.TabPage();
-            this.modulesTabPage = new System.Windows.Forms.TabPage();
-            this.mainformBorderPanel = new System.Windows.Forms.Panel();
-            this.searchTabPage = new System.Windows.Forms.TabPage();
+            this.mainformBorderPanel.SuspendLayout();
             this.mainformTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
             this.aboutCenterPanel.SuspendLayout();
@@ -52,18 +70,26 @@
             ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).BeginInit();
             this.playdarTabPage.SuspendLayout();
             this.playdarBorderPanel.SuspendLayout();
-            this.mainformBorderPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // mainformBorderPanel
+            // 
+            this.mainformBorderPanel.Controls.Add(this.mainformTabControl);
+            this.mainformBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainformBorderPanel.Location = new System.Drawing.Point(0, 0);
+            this.mainformBorderPanel.Name = "mainformBorderPanel";
+            this.mainformBorderPanel.Padding = new System.Windows.Forms.Padding(4, 6, 4, 4);
+            this.mainformBorderPanel.Size = new System.Drawing.Size(624, 442);
+            this.mainformBorderPanel.TabIndex = 6;
             // 
             // mainformTabControl
             // 
             this.mainformTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.mainformTabControl.Controls.Add(this.aboutTabPage);
-            this.mainformTabControl.Controls.Add(this.searchTabPage);
+            this.mainformTabControl.Controls.Add(this.playTabPage);
             this.mainformTabControl.Controls.Add(this.libraryTabPage);
-            this.mainformTabControl.Controls.Add(this.sharingTabPage);
+            this.mainformTabControl.Controls.Add(this.networkTabPage);
             this.mainformTabControl.Controls.Add(this.playdarTabPage);
-            this.mainformTabControl.Controls.Add(this.modulesTabPage);
             this.mainformTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainformTabControl.HotTrack = true;
             this.mainformTabControl.Location = new System.Drawing.Point(4, 6);
@@ -85,17 +111,6 @@
             this.aboutTabPage.Text = "About";
             this.aboutTabPage.UseVisualStyleBackColor = true;
             // 
-            // aboutCenterPanel
-            // 
-            this.aboutCenterPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.aboutCenterPanel.Controls.Add(this.playdarLink);
-            this.aboutCenterPanel.Controls.Add(this.playdarInfoBox);
-            this.aboutCenterPanel.Controls.Add(this.playdarLogo);
-            this.aboutCenterPanel.Location = new System.Drawing.Point(16, 16);
-            this.aboutCenterPanel.Name = "aboutCenterPanel";
-            this.aboutCenterPanel.Size = new System.Drawing.Size(577, 274);
-            this.aboutCenterPanel.TabIndex = 4;
-            // 
             // versionLabel
             // 
             this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -106,6 +121,17 @@
             this.versionLabel.Size = new System.Drawing.Size(82, 13);
             this.versionLabel.TabIndex = 4;
             this.versionLabel.Text = "Windar: Version";
+            // 
+            // aboutCenterPanel
+            // 
+            this.aboutCenterPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.aboutCenterPanel.Controls.Add(this.playdarLink);
+            this.aboutCenterPanel.Controls.Add(this.playdarInfoBox);
+            this.aboutCenterPanel.Controls.Add(this.playdarLogo);
+            this.aboutCenterPanel.Location = new System.Drawing.Point(16, 16);
+            this.aboutCenterPanel.Name = "aboutCenterPanel";
+            this.aboutCenterPanel.Size = new System.Drawing.Size(577, 274);
+            this.aboutCenterPanel.TabIndex = 4;
             // 
             // playdarLink
             // 
@@ -160,6 +186,36 @@
             this.playdarLogo.TabIndex = 0;
             this.playdarLogo.TabStop = false;
             // 
+            // playTabPage
+            // 
+            this.playTabPage.Location = new System.Drawing.Point(4, 25);
+            this.playTabPage.Name = "playTabPage";
+            this.playTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.playTabPage.Size = new System.Drawing.Size(608, 403);
+            this.playTabPage.TabIndex = 5;
+            this.playTabPage.Text = "Play";
+            this.playTabPage.UseVisualStyleBackColor = true;
+            // 
+            // libraryTabPage
+            // 
+            this.libraryTabPage.Location = new System.Drawing.Point(4, 25);
+            this.libraryTabPage.Name = "libraryTabPage";
+            this.libraryTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.libraryTabPage.Size = new System.Drawing.Size(608, 403);
+            this.libraryTabPage.TabIndex = 2;
+            this.libraryTabPage.Text = "Library";
+            this.libraryTabPage.UseVisualStyleBackColor = true;
+            // 
+            // networkTabPage
+            // 
+            this.networkTabPage.Location = new System.Drawing.Point(4, 25);
+            this.networkTabPage.Name = "networkTabPage";
+            this.networkTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.networkTabPage.Size = new System.Drawing.Size(608, 403);
+            this.networkTabPage.TabIndex = 3;
+            this.networkTabPage.Text = "Network";
+            this.networkTabPage.UseVisualStyleBackColor = true;
+            // 
             // playdarTabPage
             // 
             this.playdarTabPage.Controls.Add(this.playdarBorderPanel);
@@ -168,7 +224,7 @@
             this.playdarTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.playdarTabPage.Size = new System.Drawing.Size(608, 403);
             this.playdarTabPage.TabIndex = 1;
-            this.playdarTabPage.Text = "Playdar Daemon";
+            this.playdarTabPage.Text = "Daemon";
             this.playdarTabPage.UseVisualStyleBackColor = true;
             // 
             // playdarBorderPanel
@@ -197,56 +253,6 @@
             this.playdarBrowser.NewWindow += new System.ComponentModel.CancelEventHandler(this.playdarBrowser_NewWindow);
             this.playdarBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.playdarBrowser_DocumentCompleted);
             // 
-            // libraryTabPage
-            // 
-            this.libraryTabPage.Location = new System.Drawing.Point(4, 25);
-            this.libraryTabPage.Name = "libraryTabPage";
-            this.libraryTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.libraryTabPage.Size = new System.Drawing.Size(608, 403);
-            this.libraryTabPage.TabIndex = 2;
-            this.libraryTabPage.Text = "Library";
-            this.libraryTabPage.UseVisualStyleBackColor = true;
-            // 
-            // sharingTabPage
-            // 
-            this.sharingTabPage.Location = new System.Drawing.Point(4, 25);
-            this.sharingTabPage.Name = "sharingTabPage";
-            this.sharingTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.sharingTabPage.Size = new System.Drawing.Size(608, 403);
-            this.sharingTabPage.TabIndex = 3;
-            this.sharingTabPage.Text = "Sharing";
-            this.sharingTabPage.UseVisualStyleBackColor = true;
-            // 
-            // modulesTabPage
-            // 
-            this.modulesTabPage.Location = new System.Drawing.Point(4, 25);
-            this.modulesTabPage.Name = "modulesTabPage";
-            this.modulesTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.modulesTabPage.Size = new System.Drawing.Size(608, 403);
-            this.modulesTabPage.TabIndex = 4;
-            this.modulesTabPage.Text = "Modules";
-            this.modulesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // mainformBorderPanel
-            // 
-            this.mainformBorderPanel.Controls.Add(this.mainformTabControl);
-            this.mainformBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainformBorderPanel.Location = new System.Drawing.Point(0, 0);
-            this.mainformBorderPanel.Name = "mainformBorderPanel";
-            this.mainformBorderPanel.Padding = new System.Windows.Forms.Padding(4, 6, 4, 4);
-            this.mainformBorderPanel.Size = new System.Drawing.Size(624, 442);
-            this.mainformBorderPanel.TabIndex = 6;
-            // 
-            // searchTabPage
-            // 
-            this.searchTabPage.Location = new System.Drawing.Point(4, 25);
-            this.searchTabPage.Name = "searchTabPage";
-            this.searchTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.searchTabPage.Size = new System.Drawing.Size(608, 403);
-            this.searchTabPage.TabIndex = 5;
-            this.searchTabPage.Text = "Search";
-            this.searchTabPage.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -260,6 +266,8 @@
             this.Text = "Windar - Playdar for Windows";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
+            this.mainformBorderPanel.ResumeLayout(false);
             this.mainformTabControl.ResumeLayout(false);
             this.aboutTabPage.ResumeLayout(false);
             this.aboutTabPage.PerformLayout();
@@ -269,28 +277,26 @@
             ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).EndInit();
             this.playdarTabPage.ResumeLayout(false);
             this.playdarBorderPanel.ResumeLayout(false);
-            this.mainformBorderPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
+        private System.Windows.Forms.Panel mainformBorderPanel;
         private System.Windows.Forms.TabControl mainformTabControl;
         private System.Windows.Forms.TabPage aboutTabPage;
-        private System.Windows.Forms.TabPage playdarTabPage;
-        private System.Windows.Forms.TabPage libraryTabPage;
-        private System.Windows.Forms.Panel mainformBorderPanel;
-        private System.Windows.Forms.WebBrowser playdarBrowser;
-        private System.Windows.Forms.Panel playdarBorderPanel;
+        private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.Panel aboutCenterPanel;
-        private System.Windows.Forms.PictureBox playdarLogo;
+        private System.Windows.Forms.LinkLabel playdarLink;
         private System.Windows.Forms.GroupBox playdarInfoBox;
         private System.Windows.Forms.RichTextBox playdarInfo;
-        private System.Windows.Forms.LinkLabel playdarLink;
-        private System.Windows.Forms.Label versionLabel;
-        private System.Windows.Forms.TabPage sharingTabPage;
-        private System.Windows.Forms.TabPage modulesTabPage;
-        private System.Windows.Forms.TabPage searchTabPage;
+        private System.Windows.Forms.PictureBox playdarLogo;
+        private System.Windows.Forms.TabPage playTabPage;
+        private System.Windows.Forms.TabPage libraryTabPage;
+        private System.Windows.Forms.TabPage networkTabPage;
+        private System.Windows.Forms.TabPage playdarTabPage;
+        private System.Windows.Forms.Panel playdarBorderPanel;
+        private System.Windows.Forms.WebBrowser playdarBrowser;
     }
 }

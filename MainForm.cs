@@ -1,6 +1,6 @@
 ﻿/*
  * Windar: Playdar for Windows
- * Copyright (C) 2009 Steven Robertson <steve.r@k-os.net>
+ * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,17 @@
  */
 
 using System;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using log4net;
 
 namespace Windar
 {
     public partial class MainForm : Form
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         private const string Homepage = "http://localhost:60210/";
 
         private string _lastLink;
@@ -62,20 +64,14 @@ namespace Windar
 
             // Version info.
             var info = new StringBuilder();
-            info.Append(AssemblyProduct).Append(' ').Append(AssemblyVersion);
+            info.Append(Program.AssemblyProduct).Append(' ').Append(Program.AssemblyVersion);
             versionLabel.Text = info.ToString();
         }
 
         public void EnsureVisible()
         {
             if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
-            else
-            {
-                Program.Instance.MainForm.TopMost = !Program.Instance.MainForm.TopMost;
-                Program.Instance.MainForm.TopMost = !Program.Instance.MainForm.TopMost;
-                Program.Instance.MainForm.BringToFront();
-                Program.Instance.MainForm.Focus();
-            }
+            Program.Instance.MainForm.Activate();
         }
 
         public void GoToAbout()
@@ -111,102 +107,6 @@ namespace Windar
         {
             System.Diagnostics.Process.Start("http://www.playdar.org/");
         }
-
-        #region Assembly Attribute Accessors
-
-        private static string AssemblyTitle
-        {
-            get
-            {
-                // Get all Title attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-
-                // If there is at least one Title attribute
-                if (attributes.Length > 0)
-                {
-                    // Select the first one
-                    var titleAttribute = (AssemblyTitleAttribute)attributes[0];
-
-                    // If it is not an empty string, return it
-                    if (titleAttribute.Title != "") return titleAttribute.Title;
-                }
-
-                // If there was no Title attribute, or if the Title attribute was the empty string, return the .exe name
-                return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
-            }
-        }
-
-        private static string AssemblyVersion
-        {
-            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
-        }
-
-        private static string AssemblyDescription
-        {
-            get
-            {
-                // Get all Description attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-
-                // If there aren't any Description attributes, return an empty string
-                // If there is a Description attribute, return its value
-                return attributes.Length == 0 ? "" : ((AssemblyDescriptionAttribute)attributes[0]).Description;
-            }
-        }
-
-        private static string AssemblyProduct
-        {
-            get
-            {
-                // Get all Product attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-
-                // If there aren't any Product attributes, return an empty string
-                // If there is a Product attribute, return its value
-                return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
-            }
-        }
-
-        private static string AssemblyCopyright
-        {
-            get
-            {
-                // Get all Copyright attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-
-                // If there aren't any Copyright attributes, return an empty string
-                // If there is a Copyright attribute, return its value
-                return attributes.Length == 0 ? "" : ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
-            }
-        }
-
-        private static string AssemblyCompany
-        {
-            get
-            {
-                // Get all Company attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-
-                // If there aren't any Company attributes, return an empty string
-                // If there is a Company attribute, return its value
-                return attributes.Length == 0 ? "" : ((AssemblyCompanyAttribute)attributes[0]).Company;
-            }
-        }
-
-        private static string AssemblyTrademark
-        {
-            get
-            {
-                // Get all Trademark attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false);
-
-                // If there aren't any Trademark attributes, return an empty string
-                // If there is a Trademark attribute, return its value
-                return attributes.Length == 0 ? "" : ((AssemblyTrademarkAttribute)attributes[0]).Trademark;
-            }
-        }
-
-        #endregion
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -258,6 +158,13 @@ namespace Windar
             {
                 var.AttachEventHandler("onclick", LinkClicked);
             }
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("MainForm_ResizeEnd");
+            //TODO: Persist location.
+            //TODO: Persist size.
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿/*
  * Windar: Playdar for Windows
- * Copyright (C) 2009 Steven Robertson <steve.r@k-os.net>
+ * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ namespace Windar
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TrayApp";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TrayApp2";
+            this.Text = "TrayApp";
             this.ResumeLayout(false);
 
         }

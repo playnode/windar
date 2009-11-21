@@ -1,6 +1,6 @@
 ﻿/*
  * Windar: Playdar for Windows
- * Copyright (C) 2009 Steven Robertson <steve.r@k-os.net>
+ * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,12 +124,20 @@ namespace Windar
             Application.Run(_trayApp);
         }
 
-        #region Shutdown
+        internal void RestartDaemon()
+        {
+            Cmd<Stop>.Create().Run();
+            Cmd<Start>.Create().RunAsync();
+        }
 
         internal void Shutdown()
         {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
+
+            // NOTE: Not currently relying on graceful shutdown,
+            // so settings should always be saved when changed instead.
             Properties.Settings.Default.Save();
+
             Cmd<Stop>.Create().Run();
             MainForm.CloseOnExit();
             Application.Exit();
@@ -137,6 +145,7 @@ namespace Windar
 
         private static bool ControlHandler(ControlEventType controlEvent)
         {
+            // TODO: Either get this method to work, replace or delete it.
             if (Log.IsDebugEnabled) Log.Debug("Control event (" + controlEvent + ')');
             var result = false;
             switch (controlEvent)
@@ -153,8 +162,6 @@ namespace Windar
             }
             return result;
         }
-
-        #endregion
 
         internal void ShowInfoDialog(string msg)
         {
@@ -177,7 +184,7 @@ namespace Windar
 
         #endregion
 
-        #region Uninstaller Shutdown File Watcher
+        #region Uninstaller shutdown file-watcher
 
         private void SetupShutdownFileWatcher()
         {
@@ -203,7 +210,103 @@ namespace Windar
         private void ShutdownFile_OnChanged(object source, FileSystemEventArgs e)
         {
             if (Log.IsInfoEnabled) Log.Info("Shutdown initiated by the file-system event.");
-            _trayApp.Stop(null, null);
+            Shutdown();
+        }
+
+        #endregion
+
+        #region Assembly attributes
+
+        internal static string AssemblyTitle
+        {
+            get
+            {
+                // Get all Title attributes on this assembly
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+
+                // If there is at least one Title attribute
+                if (attributes.Length > 0)
+                {
+                    // Select the first one
+                    var titleAttribute = (AssemblyTitleAttribute)attributes[0];
+
+                    // If it is not an empty string, return it
+                    if (titleAttribute.Title != "") return titleAttribute.Title;
+                }
+
+                // If there was no Title attribute, or if the Title attribute was the empty string, return the .exe name
+                return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+            }
+        }
+
+        internal static string AssemblyVersion
+        {
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+        }
+
+        internal static string AssemblyDescription
+        {
+            get
+            {
+                // Get all Description attributes on this assembly
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+
+                // If there aren't any Description attributes, return an empty string
+                // If there is a Description attribute, return its value
+                return attributes.Length == 0 ? "" : ((AssemblyDescriptionAttribute)attributes[0]).Description;
+            }
+        }
+
+        internal static string AssemblyProduct
+        {
+            get
+            {
+                // Get all Product attributes on this assembly
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+
+                // If there aren't any Product attributes, return an empty string
+                // If there is a Product attribute, return its value
+                return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
+            }
+        }
+
+        internal static string AssemblyCopyright
+        {
+            get
+            {
+                // Get all Copyright attributes on this assembly
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+
+                // If there aren't any Copyright attributes, return an empty string
+                // If there is a Copyright attribute, return its value
+                return attributes.Length == 0 ? "" : ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+            }
+        }
+
+        internal static string AssemblyCompany
+        {
+            get
+            {
+                // Get all Company attributes on this assembly
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+
+                // If there aren't any Company attributes, return an empty string
+                // If there is a Company attribute, return its value
+                return attributes.Length == 0 ? "" : ((AssemblyCompanyAttribute)attributes[0]).Company;
+            }
+        }
+
+        internal static string AssemblyTrademark
+        {
+            get
+            {
+                // Get all Trademark attributes on this assembly
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false);
+
+                // If there aren't any Trademark attributes, return an empty string
+                // If there is a Trademark attribute, return its value
+                return attributes.Length == 0 ? "" : ((AssemblyTrademarkAttribute)attributes[0]).Trademark;
+            }
         }
 
         #endregion
