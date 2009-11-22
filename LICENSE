@@ -1,10 +1,9 @@
 The software in this package is distributed under the GNU General Public 
-License (with a special exceptions described below).
+License (with special exceptions described below).
 
 A copy of GNU General Public License (GPL) is included in this distribution, 
 in the file COPYING.  If you do not have the source code, it is available at:
 <http://github.com/stever/windar>
-
 
 WINDAR GPL EXCEPTION 1.0
 
@@ -52,7 +51,6 @@ in any form and in any forum are not prohibited by any legal instrument,
 including but not limited to contracts, non-disclosure agreements, and
 employee contracts.
 
-
 ADDITIONAL EXCEPTION FOR OPENJDK
 
 The following exception is included with files that make use of the OpenJDK
@@ -62,7 +60,6 @@ In addition, as a special exception, Steven Robertson (developer of Windar)
 gives permission to link the code with the OpenJDK library (or modified
 versions of the OpenJDK library that use the same license as the original
 version), and distribute the linked executables.
-
 
 ADDITIONAL EXCEPTION FOR OPENSSL
 
@@ -74,13 +71,11 @@ gives permission to link the code with the OpenSSL project's "OpenSSL"
 library (or modified versions of the "OpenSSL" library that use the same
 license as the original version), and distribute the linked executables.
 
-
 ADDENDUM
 
 This addendum contains the full license text of those of the licenses referred
 to in the Windar GPL Exception in which the reference does not include a
 version number or a version date.
-
 
 MIT License
 

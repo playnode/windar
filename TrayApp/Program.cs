@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using log4net;
-using Windar.PlaydarDaemon;
+using Windar.PlaydarController;
 
 namespace Windar.TrayApp
 {

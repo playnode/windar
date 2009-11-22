@@ -360,6 +360,9 @@ Section "Windar Tray Application" SEC_WINDAR
 
    ;Windar application components:
    File Temp\Windar.exe
+   File Temp\Windar.Common.dll
+   File Temp\Windar.PlaydarController.dll
+   File Temp\Windar.PluginAPI.dll
 
    ;Configuration
    File Temp\Windar.exe.config
@@ -368,8 +371,11 @@ Section "Windar Tray Application" SEC_WINDAR
    File Temp\log4net.dll
 
    ;License & copyright files.
-   File ..\LICENSE.txt
-   File ..\COPYRIGHT.txt
+   File /oname=COPYING.txt ..\COPYING
+   File /oname=LICENSE.txt ..\LICENSE
+   
+   ;Extra
+   File Payload\playdar-core.bat
    
    ;Shortcut in Startup folder.
    DetailPrint "Adding shortcut in Startup folder to restart Windar on Windows login."
@@ -431,7 +437,7 @@ SectionGroup "Shortcuts"
       RMDir /r "$SMPROGRAMS\Windar"
       CreateDirectory "$SMPROGRAMS\Windar"
       CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
-      CreateShortCut "$SMPROGRAMS\Windar\COPYRIGHT.lnk" "$INSTDIR\COPYRIGHT.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
    SectionEnd
@@ -488,7 +494,7 @@ Section -post
    !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
       DetailPrint "Writing Release Notes"
       SetOutPath "$INSTDIR"
-      File "..\README.txt"
+      File /oname=README.txt ..\README
       IfFileExists "$SMPROGRAMS\Windar" 0 +2
          CreateShortCut "$SMPROGRAMS\Windar\README.lnk" "$INSTDIR\README.txt"
    !endif

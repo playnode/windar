@@ -43,7 +43,7 @@ ECHO *   Copy build product to temp folder.      *
 ECHO *                                           *
 ECHO *********************************************
 ECHO.
-CD %INSTALL_BUILD_DIR%..\bin\Release
+CD %INSTALL_BUILD_DIR%..\TrayApp\bin\Release
 SET BUILD_TEMP="%INSTALL_BUILD_DIR%Temp\"
 IF NOT EXIST %BUILD_TEMP% MKDIR %BUILD_TEMP%
 
@@ -51,6 +51,9 @@ ECHO ______________________________
 ECHO Windar application components:
 @ECHO ON
 COPY Windar.exe %BUILD_TEMP%
+COPY Windar.Common.dll %BUILD_TEMP%
+COPY Windar.PlaydarController.dll %BUILD_TEMP%
+COPY Windar.PluginAPI.dll %BUILD_TEMP%
 @ECHO OFF
 
 ECHO.

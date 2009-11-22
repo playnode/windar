@@ -8,8 +8,8 @@
     <ProjectGuid>{E5218BD7-EF33-49A9-BC01-B6AE21956E43}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Windar.PlaydarDaemon</RootNamespace>
-    <AssemblyName>PlaydarDaemon</AssemblyName>
+    <RootNamespace>Windar.PlaydarController</RootNamespace>
+    <AssemblyName>Windar.PlaydarController</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

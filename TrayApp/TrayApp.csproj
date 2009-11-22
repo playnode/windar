@@ -120,6 +120,6 @@ XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar" "$(TargetDir)playdar\"
 COPY /Y "$(ProjectDir)..\Installer\Utils\erlini\bin\Release\erlini.exe" "$(TargetDir)minimerl\bin"
 "$(TargetDir)minimerl\bin\erlini.exe"
 </PostBuildEvent>
-    <PreBuildEvent>TASKKILL /F /IM epmd.exe</PreBuildEvent>
+    <!--<PreBuildEvent>TASKKILL /F /IM epmd.exe</PreBuildEvent>-->
   </PropertyGroup>
 </Project>

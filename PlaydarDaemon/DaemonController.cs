@@ -18,9 +18,9 @@
 
 using System;
 using Windar.Common;
-using Windar.PlaydarDaemon.Commands;
+using Windar.PlaydarController.Commands;
 
-namespace Windar.PlaydarDaemon
+namespace Windar.PlaydarController
 {
     public class DaemonController
     {

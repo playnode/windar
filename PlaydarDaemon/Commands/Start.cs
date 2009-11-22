@@ -19,7 +19,7 @@
 using System.Text;
 using Windar.Common;
 
-namespace Windar.PlaydarDaemon.Commands
+namespace Windar.PlaydarController.Commands
 {
     class Start : Cmd<Start>
     {
