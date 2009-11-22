@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading;
 using log4net;
 
-namespace Windar
+namespace Windar.Common
 {
     public class CmdRunner
     {

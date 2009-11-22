@@ -21,9 +21,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace Windar
+namespace Windar.TrayApp
 {
-    public class DirectoryDialog
+    class DirectoryDialog
     {
         [DllImport("ole32", EntryPoint = "CoTaskMemFree", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
         public static extern int CoTaskMemFree(IntPtr hMem);

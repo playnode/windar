@@ -19,9 +19,9 @@
 using System.Text;
 using System.Threading;
 
-namespace Windar
+namespace Windar.Common
 {
-    abstract class Cmd<T> where T : new()
+    public abstract class Cmd<T> where T : new()
     {
         protected CmdRunner Runner { get; private set; }
 

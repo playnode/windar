@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Windar.Properties {
+namespace Windar.TrayApp.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -32,18 +32,6 @@ namespace Windar.Properties {
             }
             set {
                 this["ShowBalloons"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string EchoNestAPIKey {
-            get {
-                return ((string)(this["EchoNestAPIKey"]));
-            }
-            set {
-                this["EchoNestAPIKey"] = value;
             }
         }
         

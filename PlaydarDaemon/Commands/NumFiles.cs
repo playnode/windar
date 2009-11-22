@@ -17,21 +17,22 @@
  */
 
 using System.Text;
+using Windar.Common;
 
-namespace Windar.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
-    class Stop : Cmd<Stop>
+    class NumFiles : Cmd<NumFiles>
     {
         public string Run()
         {
-            Runner.RunCommand(@"cd " + Paths.PlaydarDataPath);
+            Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname win-playdar-wrapper@localhost");
+            cmd.Append('"').Append(DaemonController.Instance.ErlCmd).Append('"');
+            cmd.Append(" -sname windar-scan@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(Paths.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"stop\"");
+            cmd.Append(" -extra playdar@localhost \"numfiles\"");
             Runner.RunCommand(cmd.ToString());
             return WhenDone();
         }

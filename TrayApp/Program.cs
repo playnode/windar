@@ -24,49 +24,30 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using log4net;
-using Windar.Commands;
+using Windar.PlaydarDaemon;
 
-namespace Windar
+namespace Windar.TrayApp
 {
     class Program
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         internal static Program Instance { get; private set; }
-
         internal MainForm MainForm { get; private set; }
+        internal DaemonController Daemon { get; private set; }
+        internal TrayIconApp Tray { get; private set; }
+        internal PluginHost Plugins { get; private set; }
 
-        private TrayApp _trayApp;
-
-        #region Shutdown handler (not currently working)
-
-        private enum ControlEventType
-        {
-            CtrlCEvent = 0,
-            CtrlBreakEvent = 1,
-            CtrlCloseEvent = 2,
-            CtrlLogoffEvent = 5,
-            CtrlShutdownEvent = 6,
-        }
-
-        [DllImport("kernel32", SetLastError = true)]
-        private static extern bool SetConsoleCtrlHandler(HandlerDelegate handlerRoutine, bool add);
-
-        private delegate bool HandlerDelegate(ControlEventType dwControlType);
-
-        private static HandlerDelegate _controlHandler;
-
-        #endregion
-
-        #region Main
+        #region Win32 API
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        #endregion
+
+        #region Init
+
         [STAThread]
         static void Main()
         {
@@ -109,39 +90,53 @@ namespace Windar
             }
         }
 
-        #endregion
-
-        internal Program()
+        private Program()
         {
             SetupShutdownFileWatcher();
             MainForm = new MainForm();
+            Daemon = new DaemonController(Application.StartupPath);
+            Tray = new TrayIconApp();
+            Plugins = new PluginHost();
         }
 
-        internal void Run()
+        private void Run()
         {
-            _trayApp = new TrayApp();
-            Cmd<Start>.Create().RunAsync();
-            Application.Run(_trayApp);
+            Plugins.Load();
+            Daemon.Start();
+            ShowTrayInfo("Playdar started.");
+            Application.Run(Tray);
         }
 
-        internal void RestartDaemon()
-        {
-            Cmd<Stop>.Create().Run();
-            Cmd<Start>.Create().RunAsync();
-        }
+        #endregion
+
+        #region Program exit.
 
         internal void Shutdown()
         {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
-
-            // NOTE: Not currently relying on graceful shutdown,
-            // so settings should always be saved when changed instead.
-            Properties.Settings.Default.Save();
-
-            Cmd<Stop>.Create().Run();
-            MainForm.CloseOnExit();
+            Daemon.Stop();
+            MainForm.Exit();
             Application.Exit();
         }
+
+        #region So far unsuccessful attempt to get file-system shutdown/log-off events.
+
+        private enum ControlEventType
+        {
+            CtrlCEvent = 0,
+            CtrlBreakEvent = 1,
+            CtrlCloseEvent = 2,
+            CtrlLogoffEvent = 5,
+            CtrlShutdownEvent = 6,
+        }
+
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern bool SetConsoleCtrlHandler(HandlerDelegate handlerRoutine, bool add);
+
+        private delegate bool HandlerDelegate(ControlEventType dwControlType);
+
+        private static HandlerDelegate _controlHandler;
+
 
         private static bool ControlHandler(ControlEventType controlEvent)
         {
@@ -163,39 +158,20 @@ namespace Windar
             return result;
         }
 
-        internal void ShowInfoDialog(string msg)
-        {
-            MessageBox.Show(msg, "Windar Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        #region Tray methods
-
-        internal void ShowTrayInfo(string msg)
-        {
-            ShowTrayInfo(msg, ToolTipIcon.Info);
-        }
-
-        internal void ShowTrayInfo(string msg, ToolTipIcon icon)
-        {
-            if (!Properties.Settings.Default.ShowBalloons) return;
-            _trayApp.TrayIcon.Visible = true;
-            _trayApp.TrayIcon.ShowBalloonTip(3, "Windar", msg, icon);
-        }
-
         #endregion
 
-        #region Uninstaller shutdown file-watcher
+        #region Uninstaller shutdown file-watcher.
 
         private void SetupShutdownFileWatcher()
         {
             // Create a new FileSystemWatcher and set its properties.
             var watcher = new FileSystemWatcher
-                              {
-                                  Path = Application.StartupPath,
-                                  NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-                                                 | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                                  Filter = "SHUTDOWN"
-                              };
+            {
+                Path = Application.StartupPath,
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+                               | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                Filter = "SHUTDOWN"
+            };
 
             // Add event handlers.
             watcher.Changed += ShutdownFile_OnChanged;
@@ -215,7 +191,34 @@ namespace Windar
 
         #endregion
 
-        #region Assembly attributes
+        #endregion
+
+        #region Common dialogs.
+
+        internal void ShowInfoDialog(string msg)
+        {
+            MessageBox.Show(msg, "Windar Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #endregion
+
+        #region Tray notifications.
+
+        internal void ShowTrayInfo(string msg)
+        {
+            ShowTrayInfo(msg, ToolTipIcon.Info);
+        }
+
+        internal void ShowTrayInfo(string msg, ToolTipIcon icon)
+        {
+            if (!Properties.Settings.Default.ShowBalloons) return;
+            Tray.TrayIcon.Visible = true;
+            Tray.TrayIcon.ShowBalloonTip(3, "Windar", msg, icon);
+        }
+
+        #endregion
+
+        #region Assembly attributes.
 
         internal static string AssemblyTitle
         {

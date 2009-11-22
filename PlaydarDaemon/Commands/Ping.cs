@@ -16,36 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Text;
+using Windar.Common;
 
-namespace Windar.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
-    class Scan : Cmd<Scan>
+    class Ping : Cmd<Ping>
     {
-        private bool _firstRun;
-
-        public void RunAsync(string path)
+        public string Run()
         {
-            if (path == null) throw new ApplicationException("Path must be defined");
-
-            Runner.CommandCompleted += Completed;
-            Runner.RunCommand(@"cd " + Paths.PlaydarDataPath);
+            Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(Paths.ErlCmd).Append('"');
+            cmd.Append('"').Append(DaemonController.Instance.ErlCmd).Append('"');
             cmd.Append(" -sname windar-scan@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(Paths.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"scan\" \"").Append(path).Append("\"");
+            cmd.Append(" -extra playdar@localhost \"ping\"");
             Runner.RunCommand(cmd.ToString());
-        }
-
-        protected void Completed(object sender, CmdRunner.CommandEventArgs e)
-        {
-            //NOTE: This event first at start for some as yet unknown reason. Ignore that for now.
-            if (!_firstRun) _firstRun = true;
-            else Program.Instance.ShowTrayInfo("Scan completed.");
+            return WhenDone();
         }
     }
 }

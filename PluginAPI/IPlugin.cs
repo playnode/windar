@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Windar: Playdar for Windows
  * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
  *
@@ -16,26 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Text;
-
-namespace Windar.Commands
+namespace Windar.PluginAPI
 {
-    class Start : Cmd<Start>
+    public interface IPlugin
     {
-        public void RunAsync()
-        {
-            Cmd<CopyAppFilesToAppData>.Create().Run();
-            Runner.RunCommand(@"cd " + Paths.PlaydarDataPath);
-            var cmd = new StringBuilder();
-            cmd.Append('"').Append(Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname playdar@localhost");
-            cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(Paths.PlaydarPath).Append("\\ebin\"");
-            cmd.Append(" -boot start_sasl");
-            cmd.Append(" -s reloader");
-            cmd.Append(" -s playdar");
-            Runner.RunCommand(cmd.ToString());
-            Program.Instance.ShowTrayInfo("Playdar started.");
-        }
+        
     }
 }

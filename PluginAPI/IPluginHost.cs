@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Windar: Playdar for Windows
  * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
  *
@@ -16,24 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Text;
-
-namespace Windar.Commands
+namespace Windar.PluginAPI
 {
-    class Ping : Cmd<Ping>
+    public interface IPluginHost
     {
-        public string Run()
-        {
-            Runner.RunCommand(@"cd " + Paths.PlaydarDataPath);
-            var cmd = new StringBuilder();
-            cmd.Append('"').Append(Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname windar-scan@localhost");
-            cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(Paths.PlaydarPath).Append("\\ebin\"");
-            cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"ping\"");
-            Runner.RunCommand(cmd.ToString());
-            return WhenDone();
-        }
+        
     }
 }

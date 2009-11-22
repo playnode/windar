@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar
+namespace Windar.TrayApp
 {
     partial class MainForm
     {
@@ -56,7 +56,6 @@ namespace Windar
             this.playdarInfoBox = new System.Windows.Forms.GroupBox();
             this.playdarInfo = new System.Windows.Forms.RichTextBox();
             this.playdarLogo = new System.Windows.Forms.PictureBox();
-            this.playTabPage = new System.Windows.Forms.TabPage();
             this.libraryTabPage = new System.Windows.Forms.TabPage();
             this.networkTabPage = new System.Windows.Forms.TabPage();
             this.playdarTabPage = new System.Windows.Forms.TabPage();
@@ -86,7 +85,6 @@ namespace Windar
             // 
             this.mainformTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.mainformTabControl.Controls.Add(this.aboutTabPage);
-            this.mainformTabControl.Controls.Add(this.playTabPage);
             this.mainformTabControl.Controls.Add(this.libraryTabPage);
             this.mainformTabControl.Controls.Add(this.networkTabPage);
             this.mainformTabControl.Controls.Add(this.playdarTabPage);
@@ -186,16 +184,6 @@ namespace Windar
             this.playdarLogo.TabIndex = 0;
             this.playdarLogo.TabStop = false;
             // 
-            // playTabPage
-            // 
-            this.playTabPage.Location = new System.Drawing.Point(4, 25);
-            this.playTabPage.Name = "playTabPage";
-            this.playTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.playTabPage.Size = new System.Drawing.Size(608, 403);
-            this.playTabPage.TabIndex = 5;
-            this.playTabPage.Text = "Play";
-            this.playTabPage.UseVisualStyleBackColor = true;
-            // 
             // libraryTabPage
             // 
             this.libraryTabPage.Location = new System.Drawing.Point(4, 25);
@@ -292,7 +280,6 @@ namespace Windar
         private System.Windows.Forms.GroupBox playdarInfoBox;
         private System.Windows.Forms.RichTextBox playdarInfo;
         private System.Windows.Forms.PictureBox playdarLogo;
-        private System.Windows.Forms.TabPage playTabPage;
         private System.Windows.Forms.TabPage libraryTabPage;
         private System.Windows.Forms.TabPage networkTabPage;
         private System.Windows.Forms.TabPage playdarTabPage;

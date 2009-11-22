@@ -22,9 +22,9 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 
-namespace Windar
+namespace Windar.TrayApp
 {
-    public partial class MainForm : Form
+    partial class MainForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -52,6 +52,8 @@ namespace Windar
 
         #endregion
 
+        #region Init
+
         public MainForm()
         {
             InitializeComponent();
@@ -59,6 +61,8 @@ namespace Windar
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            //TODO: Restore size and position.
+
             GoToAbout();
             LoadPlaydarHomepage();
 
@@ -68,17 +72,26 @@ namespace Windar
             versionLabel.Text = info.ToString();
         }
 
-        public void EnsureVisible()
-        {
-            if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
-            Program.Instance.MainForm.Activate();
-        }
+        #endregion
+
+        #region Page navigation.
 
         public void GoToAbout()
         {
             var page = mainformTabControl.TabPages["aboutTabPage"];
             mainformTabControl.SelectTab(page);
         }
+
+        public void GoToPlaydarDaemon()
+        {
+            LoadPlaydarHomepage();
+            var page = mainformTabControl.TabPages["playdarTabPage"];
+            mainformTabControl.SelectTab(page);
+        }
+
+        #endregion
+
+        #region Playdar daemon browser.
 
         private void LoadPlaydarHomepage()
         {
@@ -90,29 +103,9 @@ namespace Windar
             }
         }
 
-        public void GoToPlaydarDaemon()
-        {
-            LoadPlaydarHomepage();
-            var page = mainformTabControl.TabPages["playdarTabPage"];
-            mainformTabControl.SelectTab(page);
-        }
-
-        internal void CloseOnExit()
-        {
-            _reallyClose = true;
-            Close();
-        }
-
         private void playdarLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.playdar.org/");
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (_reallyClose) return;
-            e.Cancel = true;
-            Hide();
         }
 
         private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -158,6 +151,31 @@ namespace Windar
             {
                 var.AttachEventHandler("onclick", LinkClicked);
             }
+        }
+
+        #endregion
+
+        #region Closing
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_reallyClose) return;
+            e.Cancel = true;
+            Hide();
+        }
+
+        internal void Exit()
+        {
+            _reallyClose = true;
+            Close();
+        }
+
+        #endregion
+
+        public void EnsureVisible()
+        {
+            if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
+            Program.Instance.MainForm.Activate();
         }
 
         private void MainForm_ResizeEnd(object sender, EventArgs e)

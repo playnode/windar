@@ -16,36 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Text;
+using Windar.Common;
 
-namespace Windar.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
-    class NumFiles : Cmd<NumFiles>
+    class Start : Cmd<Start>
     {
-        public string Run()
+        public void RunAsync()
         {
-            Runner.RunCommand(@"cd " + Paths.PlaydarDataPath);
+            Cmd<CopyAppFilesToAppData>.Create().Run();
+            Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname windar-scan@localhost");
+            cmd.Append('"').Append(DaemonController.Instance.ErlCmd).Append('"');
+            cmd.Append(" -sname playdar@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(Paths.PlaydarPath).Append("\\ebin\"");
-            cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"numfiles\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -boot start_sasl");
+            cmd.Append(" -s reloader");
+            cmd.Append(" -s playdar");
             Runner.RunCommand(cmd.ToString());
-            var result = WhenDone();
-            try
-            {
-                var n = Int32.Parse(result);
-                if (n == 1) result = "There is one file in your Playdar library.";
-                else result = "There are " + n + " files in your Playdar library.";
-            }
-            catch (FormatException)
-            {
-                // Ignore. Returning the string result.
-            }
-            return result;
         }
     }
 }

@@ -17,14 +17,11 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
-using Windar.Commands;
 
-namespace Windar
+namespace Windar.TrayApp
 {
-    public partial class TrayApp : Form
+    partial class TrayIconApp : Form
     {
         // Notification tray icon.
         internal NotifyIcon TrayIcon { get; private set; }
@@ -44,11 +41,10 @@ namespace Windar
         private readonly MenuItem _pingMenuItem;
         private readonly MenuItem _shutdownMenuItem;
         private readonly MenuItem _restartMenuItem;
-        private readonly MenuItem _testOptionMenuItem;
 
         #region Init
 
-        public TrayApp()
+        public TrayIconApp()
         {
             InitializeComponent();
 
@@ -66,7 +62,6 @@ namespace Windar
             _pingMenuItem = new MenuItem("Ping", Ping);
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
             _restartMenuItem = new MenuItem("Restart", Restart);
-            _testOptionMenuItem = new MenuItem("Test", Test);
 
             // Demos menu.
             var demos = new MenuItem("Playdar Demos");
@@ -91,19 +86,15 @@ namespace Windar
             _trayMenu.MenuItems.Add("-");
             _trayMenu.MenuItems.Add(_restartMenuItem);
             _trayMenu.MenuItems.Add(_shutdownMenuItem);
-#if DEBUG
-            _trayMenu.MenuItems.Add("-");
-            _trayMenu.MenuItems.Add(_testOptionMenuItem);
-#endif
 
             // Tray icon.
             TrayIcon = new NotifyIcon
-            {
-                Text = "Playdar",
-                Icon = Properties.Resources.Playdar,
-                ContextMenu = _trayMenu,
-                Visible = true
-            };
+                           {
+                               Text = "Playdar",
+                               Icon = Properties.Resources.Playdar,
+                               ContextMenu = _trayMenu,
+                               Visible = true
+                           };
 
             // Double-click handler for tray icon.
             TrayIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
@@ -123,6 +114,8 @@ namespace Windar
 
         #endregion
 
+        #region Menu option click handlers.
+
         #region Playdar controller commands
 
         private static void Shutdown(object sender, EventArgs e)
@@ -132,17 +125,28 @@ namespace Windar
 
         private static void Restart(object sender, EventArgs e)
         {
-            Program.Instance.RestartDaemon();
+            Program.Instance.Daemon.Restart();
         }
 
         private static void Ping(object sender, EventArgs e)
         {
-            Program.Instance.ShowInfoDialog(Cmd<Ping>.Create().Run());
+            Program.Instance.ShowInfoDialog(Program.Instance.Daemon.Ping());
         }
 
         private static void NumFiles(object sender, EventArgs e)
         {
-            Program.Instance.ShowInfoDialog(Cmd<NumFiles>.Create().Run());
+            string result;
+            try
+            {
+                var n = Program.Instance.Daemon.NumFiles;
+                if (n == 1) result = "There is one file in your Playdar library.";
+                else result = "There are " + n + " files in your Playdar library.";
+            }
+            catch (Exception ex)
+            {
+                result = "Error: " + ex.Message;
+            }
+            Program.Instance.ShowInfoDialog(result);
         }
 
         private void Scan(object sender, EventArgs e)
@@ -154,10 +158,14 @@ namespace Windar
                              };
 
             if (dialog.ShowDialog(this) != DialogResult.OK) return;
-            var filename = dialog.Selected;
-            var cmd = Cmd<Scan>.Create();            
+            Program.Instance.Daemon.ScanCompleted += ScanCompleted;
+            Program.Instance.Daemon.AddScanFileOrFolder(dialog.Selected);
             Program.Instance.ShowTrayInfo("Scanning in progress.");
-            cmd.RunAsync(filename);
+        }
+
+        private static void ScanCompleted(object sender, EventArgs e)
+        {
+            Program.Instance.ShowTrayInfo("Scan completed.");            
         }
 
         #endregion
@@ -216,6 +224,10 @@ namespace Windar
 
         #endregion
 
+        #endregion
+
+        #region Tray icon mouse clicks.
+
         private static void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Program.Instance.MainForm.EnsureVisible();
@@ -229,19 +241,6 @@ namespace Windar
             }
         }
 
-        private static void Test(object sender, EventArgs e)
-        {
-            var track = new Track("Artemis", "Hypno");
-            var similar = track.GetRecommendations();
-            var strBuild = new StringBuilder();
-            foreach (var similarTrack in similar)
-            {
-                strBuild.Append(similarTrack.Artist);
-                strBuild.Append(" - ");
-                strBuild.Append(similarTrack.Title);
-                strBuild.Append('\n');
-            }
-            MessageBox.Show(strBuild.ToString(), "Recommendations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+        #endregion
     }
 }

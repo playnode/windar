@@ -17,8 +17,9 @@
  */
 
 using System.Text;
+using Windar.Common;
 
-namespace Windar.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
     class CopyAppFilesToAppData : Cmd<CopyAppFilesToAppData>
     {
@@ -26,23 +27,23 @@ namespace Windar.Commands
         {
             // 'etc' folder, containing config file.
             var cmd = new StringBuilder();
-            cmd.Append("if not exist \"").Append(Paths.PlaydarDataPath).Append("\\etc\" ");
-            cmd.Append("xcopy /e \"").Append(Paths.PlaydarPath).Append("\\etc\"");
-            cmd.Append(" \"").Append(Paths.PlaydarDataPath).Append("\\etc\\\"");
+            cmd.Append("if not exist \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\etc\" ");
+            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.PlaydarPath).Append("\\etc\"");
+            cmd.Append(" \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\etc\\\"");
             Runner.RunCommand(cmd.ToString());
 
             // 'priv' folder, containing web files.
             cmd = new StringBuilder();
-            cmd.Append("if not exist \"").Append(Paths.PlaydarDataPath).Append("\\priv\" ");
-            cmd.Append("xcopy /e \"").Append(Paths.PlaydarPath).Append("\\priv\"");
-            cmd.Append(" \"").Append(Paths.PlaydarDataPath).Append("\\priv\\\"");
+            cmd.Append("if not exist \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\priv\" ");
+            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.PlaydarPath).Append("\\priv\"");
+            cmd.Append(" \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\priv\\\"");
             Runner.RunCommand(cmd.ToString());
 
             // 'playdar_modules' folder, containing web files.
             cmd = new StringBuilder();
-            cmd.Append("if not exist \"").Append(Paths.PlaydarDataPath).Append("\\playdar_modules\" ");
-            cmd.Append("xcopy /e \"").Append(Paths.PlaydarPath).Append("\\playdar_modules\"");
-            cmd.Append(" \"").Append(Paths.PlaydarDataPath).Append("\\playdar_modules\\\"");
+            cmd.Append("if not exist \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\playdar_modules\" ");
+            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.PlaydarPath).Append("\\playdar_modules\"");
+            cmd.Append(" \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\playdar_modules\\\"");
             Runner.RunCommand(cmd.ToString());
 
             return WhenDone();
