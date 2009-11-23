@@ -103,7 +103,8 @@ namespace Windar.TrayApp
         private void Run()
         {
             Plugins.Load();
-            Daemon.Start();            
+            Daemon.Start();
+            if (Properties.Settings.Default.MainFormVisible) MainForm.EnsureVisible();
             Application.Run(Tray);
         }
 

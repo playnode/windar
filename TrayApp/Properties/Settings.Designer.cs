@@ -38,36 +38,48 @@ namespace Windar.TrayApp.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Point WindowLocation {
+        public global::System.Drawing.Point MainFormWindowLocation {
             get {
-                return ((global::System.Drawing.Point)(this["WindowLocation"]));
+                return ((global::System.Drawing.Point)(this["MainFormWindowLocation"]));
             }
             set {
-                this["WindowLocation"] = value;
+                this["MainFormWindowLocation"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool WindowMaximised {
+        public bool MainFormWindowMaximised {
             get {
-                return ((bool)(this["WindowMaximised"]));
+                return ((bool)(this["MainFormWindowMaximised"]));
             }
             set {
-                this["WindowMaximised"] = value;
+                this["MainFormWindowMaximised"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Size WindowSize {
+        public global::System.Drawing.Size MainFormWindowSize {
             get {
-                return ((global::System.Drawing.Size)(this["WindowSize"]));
+                return ((global::System.Drawing.Size)(this["MainFormWindowSize"]));
             }
             set {
-                this["WindowSize"] = value;
+                this["MainFormWindowSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MainFormVisible {
+            get {
+                return ((bool)(this["MainFormVisible"]));
+            }
+            set {
+                this["MainFormVisible"] = value;
             }
         }
     }

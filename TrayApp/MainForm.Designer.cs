@@ -61,6 +61,8 @@ namespace Windar.TrayApp
             this.playdarTabPage = new System.Windows.Forms.TabPage();
             this.playdarBorderPanel = new System.Windows.Forms.Panel();
             this.playdarBrowser = new System.Windows.Forms.WebBrowser();
+            this.logTabPage = new System.Windows.Forms.TabPage();
+            this.logBox = new System.Windows.Forms.RichTextBox();
             this.mainformBorderPanel.SuspendLayout();
             this.mainformTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -69,6 +71,7 @@ namespace Windar.TrayApp
             ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).BeginInit();
             this.playdarTabPage.SuspendLayout();
             this.playdarBorderPanel.SuspendLayout();
+            this.logTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainformBorderPanel
@@ -88,6 +91,7 @@ namespace Windar.TrayApp
             this.mainformTabControl.Controls.Add(this.libraryTabPage);
             this.mainformTabControl.Controls.Add(this.networkTabPage);
             this.mainformTabControl.Controls.Add(this.playdarTabPage);
+            this.mainformTabControl.Controls.Add(this.logTabPage);
             this.mainformTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainformTabControl.HotTrack = true;
             this.mainformTabControl.Location = new System.Drawing.Point(4, 6);
@@ -96,6 +100,7 @@ namespace Windar.TrayApp
             this.mainformTabControl.SelectedIndex = 0;
             this.mainformTabControl.Size = new System.Drawing.Size(616, 432);
             this.mainformTabControl.TabIndex = 1;
+            this.mainformTabControl.SelectedIndexChanged += new System.EventHandler(this.mainformTabControl_SelectedIndexChanged);
             // 
             // aboutTabPage
             // 
@@ -209,7 +214,6 @@ namespace Windar.TrayApp
             this.playdarTabPage.Controls.Add(this.playdarBorderPanel);
             this.playdarTabPage.Location = new System.Drawing.Point(4, 25);
             this.playdarTabPage.Name = "playdarTabPage";
-            this.playdarTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.playdarTabPage.Size = new System.Drawing.Size(608, 403);
             this.playdarTabPage.TabIndex = 1;
             this.playdarTabPage.Text = "Daemon";
@@ -220,9 +224,9 @@ namespace Windar.TrayApp
             this.playdarBorderPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.playdarBorderPanel.Controls.Add(this.playdarBrowser);
             this.playdarBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.playdarBorderPanel.Location = new System.Drawing.Point(3, 3);
+            this.playdarBorderPanel.Location = new System.Drawing.Point(0, 0);
             this.playdarBorderPanel.Name = "playdarBorderPanel";
-            this.playdarBorderPanel.Size = new System.Drawing.Size(602, 397);
+            this.playdarBorderPanel.Size = new System.Drawing.Size(608, 403);
             this.playdarBorderPanel.TabIndex = 1;
             // 
             // playdarBrowser
@@ -234,12 +238,35 @@ namespace Windar.TrayApp
             this.playdarBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.playdarBrowser.Name = "playdarBrowser";
             this.playdarBrowser.ScriptErrorsSuppressed = true;
-            this.playdarBrowser.Size = new System.Drawing.Size(600, 395);
+            this.playdarBrowser.Size = new System.Drawing.Size(606, 401);
             this.playdarBrowser.TabIndex = 0;
             this.playdarBrowser.WebBrowserShortcutsEnabled = false;
             this.playdarBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.playdarBrowser_Navigating);
             this.playdarBrowser.NewWindow += new System.ComponentModel.CancelEventHandler(this.playdarBrowser_NewWindow);
             this.playdarBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.playdarBrowser_DocumentCompleted);
+            // 
+            // logTabPage
+            // 
+            this.logTabPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logTabPage.Controls.Add(this.logBox);
+            this.logTabPage.Location = new System.Drawing.Point(4, 25);
+            this.logTabPage.Name = "logTabPage";
+            this.logTabPage.Size = new System.Drawing.Size(608, 403);
+            this.logTabPage.TabIndex = 4;
+            this.logTabPage.Text = "Log";
+            this.logTabPage.UseVisualStyleBackColor = true;
+            // 
+            // logBox
+            // 
+            this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.logBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logBox.Location = new System.Drawing.Point(0, 0);
+            this.logBox.Name = "logBox";
+            this.logBox.ReadOnly = true;
+            this.logBox.Size = new System.Drawing.Size(606, 401);
+            this.logBox.TabIndex = 0;
+            this.logBox.Text = "";
+            this.logBox.WordWrap = false;
             // 
             // MainForm
             // 
@@ -267,6 +294,7 @@ namespace Windar.TrayApp
             ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).EndInit();
             this.playdarTabPage.ResumeLayout(false);
             this.playdarBorderPanel.ResumeLayout(false);
+            this.logTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -287,5 +315,7 @@ namespace Windar.TrayApp
         private System.Windows.Forms.TabPage playdarTabPage;
         private System.Windows.Forms.Panel playdarBorderPanel;
         private System.Windows.Forms.WebBrowser playdarBrowser;
+        private System.Windows.Forms.TabPage logTabPage;
+        private System.Windows.Forms.RichTextBox logBox;
     }
 }

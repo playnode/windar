@@ -28,6 +28,26 @@ CALL clean.bat
 ECHO.
 ECHO *********************************************
 ECHO *                                           *
+ECHO *   Build and Copy Erlini utility.          *
+ECHO *                                           *
+ECHO *********************************************
+ECHO.
+
+SET BUILD_TEMP="%INSTALL_BUILD_DIR%Temp\"
+IF NOT EXIST %BUILD_TEMP% MKDIR %BUILD_TEMP%
+
+CD %INSTALL_BUILD_DIR%Utils\erlini
+%FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Release
+IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
+
+CD %INSTALL_BUILD_DIR%Utils\erlini\bin\Debug
+@ECHO ON
+COPY erlini.exe %BUILD_TEMP%
+@ECHO OFF
+
+ECHO.
+ECHO *********************************************
+ECHO *                                           *
 ECHO *   Building solution.                      *
 ECHO *                                           *
 ECHO *********************************************
@@ -44,8 +64,6 @@ ECHO *                                           *
 ECHO *********************************************
 ECHO.
 CD %INSTALL_BUILD_DIR%..\TrayApp\bin\Debug
-SET BUILD_TEMP="%INSTALL_BUILD_DIR%Temp\"
-IF NOT EXIST %BUILD_TEMP% MKDIR %BUILD_TEMP%
 
 ECHO ______________________________
 ECHO Windar application components:
@@ -79,22 +97,6 @@ ECHO Configuration file:
 CD %INSTALL_BUILD_DIR%..\bin\Debug
 @ECHO ON
 COPY Windar.exe.config %BUILD_TEMP%
-@ECHO OFF
-
-ECHO.
-ECHO *********************************************
-ECHO *                                           *
-ECHO *   Build and Copy Erlini utility.          *
-ECHO *                                           *
-ECHO *********************************************
-ECHO.
-CD %INSTALL_BUILD_DIR%Utils\erlini
-%FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Debug
-IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
-
-CD %INSTALL_BUILD_DIR%Utils\erlini\bin\Debug
-@ECHO ON
-COPY erlini.exe %BUILD_TEMP%
 @ECHO OFF
 
 ECHO.

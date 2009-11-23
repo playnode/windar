@@ -161,7 +161,7 @@ namespace Windar.Common
                     {
                         if (currentLine.Length > 0)
                         {
-                            if (Log.IsDebugEnabled) Log.Debug(currentLine);
+                            if (Log.IsDebugEnabled) Log.Debug("CMD.INF: " + currentLine);
                             if (CommandOutput != null) CommandOutput(this, new CommandEventArgs(currentLine));
                         }
                     }
@@ -193,7 +193,7 @@ namespace Windar.Common
                     if (c != 10) line.Append((char) c);
                     else
                     {
-                        if (Log.IsDebugEnabled) Log.Debug("[stderr] " + line);
+                        if (Log.IsDebugEnabled) Log.Debug("CMD.ERR: " + line);
                         if (CommandError != null) CommandError(this, new CommandEventArgs(line.ToString()));
                         line = new StringBuilder();
                     }

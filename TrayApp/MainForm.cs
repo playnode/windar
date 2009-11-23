@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
+using log4net.Appender;
 
 namespace Windar.TrayApp
 {
@@ -34,10 +35,16 @@ namespace Windar.TrayApp
         private string _lastLink;
         private bool _reallyClose;
         private bool _resizing;
+        private Size _oldSize;
+        private Timer _logBoxTimer;
 
-        #region PlaydarBrowser property
+        #region Properties
 
         private WebBrowser _playdarBrowser;
+        private RichTextBox _logBox;
+        private TabPage _logBoxTab;
+        private MemoryAppender _memoryAppender;
+
         private WebBrowser PlaydarBrowser
         {
             get
@@ -52,6 +59,52 @@ namespace Windar.TrayApp
             }
         }
 
+        private RichTextBox LogBox
+        {
+            get
+            {
+                if (_logBox == null)
+                {
+                    var ctrl = mainformTabControl.Controls.Find("logBox", true);
+                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logBox!");
+                    _logBox = (RichTextBox) ctrl[0];
+                }
+                return _logBox;
+            }
+        }
+
+        private TabPage LogBoxTab
+        {
+            get
+            {
+                if (_logBoxTab == null)
+                {
+                    var ctrl = mainformTabControl.Controls.Find("logTabPage", true);
+                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logTabPage!");
+                    _logBoxTab = (TabPage) ctrl[0];
+                }
+                return _logBoxTab;
+            }
+        }
+
+        private MemoryAppender MemoryAppender
+        {
+            get
+            {
+                if (_memoryAppender == null)
+                {
+                    var appenders = LogManager.GetRepository().GetAppenders();
+                    foreach (var appender in appenders)
+                    {
+                        if (appender.Name != "MemoryAppender") continue;
+                        _memoryAppender = (MemoryAppender) appender;
+                        break;
+                    }
+                }
+                return _memoryAppender;
+            }
+        }
+
         #endregion
 
         #region Init
@@ -63,50 +116,16 @@ namespace Windar.TrayApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            RestoreWindowLayout();
-            GoToAbout();
-            LoadPlaydarHomepage();
-
-            // Version info.
+            // Version info for the About page.
             var info = new StringBuilder();
             info.Append(Program.AssemblyProduct).Append(' ').Append(Program.AssemblyVersion);
             versionLabel.Text = info.ToString();
-        }
 
-        private void RestoreWindowLayout()
-        {
-            // Window location.
-            if (Properties.Settings.Default.WindowLocation == new Point(0, 0))
-            {
-                StartPosition = FormStartPosition.CenterScreen;
-                Size = new Size(640, 480);
-            }
-            else
-            {
-                Location = Properties.Settings.Default.WindowLocation;
-                Size = Properties.Settings.Default.WindowSize;
-            }
+            RestoreWindowLayout();
+            GoToAbout();
+            InitLogBox();
 
-            // Maximised state.
-            if (Properties.Settings.Default.WindowMaximised)
-            {
-                WindowState = FormWindowState.Maximized;
-            }
-
-            // Fit to screen if necessary.
-            if (Size.Width > Screen.PrimaryScreen.WorkingArea.Width
-                || Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-            {
-                if (Log.IsWarnEnabled) Log.Warn("Window size exceeds screen area.");
-                if (Log.IsInfoEnabled)
-                {
-                    Log.Info("Width = " + Size.Width + ", Height = " + Size.Height);
-                    Log.Info("WorkingArea.Width = " + Screen.PrimaryScreen.WorkingArea.Width +
-                             ", WorkingArea.Height = " + Screen.PrimaryScreen.WorkingArea.Height);
-                }
-                StartPosition = FormStartPosition.CenterScreen;
-                Size = new Size(640, 480);
-            }
+            LoadPlaydarHomepage();
         }
 
         #endregion
@@ -199,6 +218,8 @@ namespace Windar.TrayApp
             if (_reallyClose) return;
             e.Cancel = true;
             Hide();
+            Properties.Settings.Default.MainFormVisible = false;
+            Properties.Settings.Default.Save();
         }
 
         internal void Exit()
@@ -209,24 +230,26 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Window layout persistence.
+
         private void PersistWindowLayout()
         {
             switch (WindowState)
             {
                 case FormWindowState.Normal:
-                    Properties.Settings.Default.WindowMaximised = false;
-                    Properties.Settings.Default.WindowSize = Size;
-                    Properties.Settings.Default.WindowLocation = Location;
+                    Properties.Settings.Default.MainFormWindowMaximised = false;
+                    Properties.Settings.Default.MainFormWindowSize = Size;
+                    Properties.Settings.Default.MainFormWindowLocation = Location;
                     break;
                 case FormWindowState.Maximized:
-                    Properties.Settings.Default.WindowMaximised = true;
-                    Properties.Settings.Default.WindowSize = RestoreBounds.Size;
-                    Properties.Settings.Default.WindowLocation = RestoreBounds.Location;
+                    Properties.Settings.Default.MainFormWindowMaximised = true;
+                    Properties.Settings.Default.MainFormWindowSize = RestoreBounds.Size;
+                    Properties.Settings.Default.MainFormWindowLocation = RestoreBounds.Location;
                     break;
                 default:
-                    Properties.Settings.Default.WindowMaximised = false;
-                    Properties.Settings.Default.WindowSize = RestoreBounds.Size;
-                    Properties.Settings.Default.WindowLocation = RestoreBounds.Location;
+                    Properties.Settings.Default.MainFormWindowMaximised = false;
+                    Properties.Settings.Default.MainFormWindowSize = RestoreBounds.Size;
+                    Properties.Settings.Default.MainFormWindowLocation = RestoreBounds.Location;
                     break;
             }
             if (Log.IsDebugEnabled) Log.Debug("Persisting window layout.");
@@ -234,28 +257,151 @@ namespace Windar.TrayApp
             EnsureVisible();
         }
 
-        public void EnsureVisible()
+        private void RestoreWindowLayout()
         {
-            if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
-            Program.Instance.MainForm.Activate();
+            // Window location.
+            if (Properties.Settings.Default.MainFormWindowLocation == new Point(0, 0))
+            {
+                StartPosition = FormStartPosition.CenterScreen;
+                Size = new Size(640, 480);
+            }
+            else
+            {
+                Location = Properties.Settings.Default.MainFormWindowLocation;
+                Size = Properties.Settings.Default.MainFormWindowSize;
+            }
+
+            // Maximised state.
+            if (Properties.Settings.Default.MainFormWindowMaximised)
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+
+            // Fit to screen if necessary.
+            if (Size.Width > Screen.PrimaryScreen.WorkingArea.Width
+                || Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                if (Log.IsWarnEnabled) Log.Warn("Window size exceeds screen area.");
+                if (Log.IsInfoEnabled)
+                {
+                    Log.Info("Width = " + Size.Width + ", Height = " + Size.Height);
+                    Log.Info("WorkingArea.Width = " + Screen.PrimaryScreen.WorkingArea.Width +
+                             ", WorkingArea.Height = " + Screen.PrimaryScreen.WorkingArea.Height);
+                }
+                StartPosition = FormStartPosition.CenterScreen;
+                Size = new Size(640, 480);
+            }
         }
+
+        #endregion
+
+        #region Window movement.
 
         private void MainForm_ResizeBegin(object sender, EventArgs e)
         {
-            if (Log.IsDebugEnabled) Log.Debug("MainForm_ResizeBegin");
+            _oldSize = Size;
             _resizing = true;
         }
 
         private void MainForm_ResizeEnd(object sender, EventArgs e)
         {
-            if (Log.IsDebugEnabled) Log.Debug("MainForm_ResizeEnd");
+            if (mainformTabControl.SelectedTab == LogBoxTab
+                && Size != _oldSize)
+            {
+                LogBoxScrollToEnd();
+            }
+            _resizing = false;
             PersistWindowLayout();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            if (Log.IsDebugEnabled) Log.Debug("MainForm_Resize");
-            if (!_resizing) PersistWindowLayout();
+            if (_resizing) return;
+            if (mainformTabControl.SelectedTab == LogBoxTab)
+            {
+                LogBoxScrollToEnd();
+            }
+            PersistWindowLayout();
+        }
+
+        #endregion
+
+        public void EnsureVisible()
+        {
+            if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
+            Program.Instance.MainForm.Activate();
+            if (Properties.Settings.Default.MainFormVisible) return;
+            Properties.Settings.Default.MainFormVisible = true;
+            Properties.Settings.Default.Save();
+        }
+
+        #region Memory logger.
+
+        //TODO: Update the log box periodically, limiting the contents too.
+        //TODO: Provide option to follow tail (or follow tail when scrollbar near end?)
+
+        private void InitLogBox()
+        {
+            // Set the log box font.
+            const string preferredFontName = "ProFontWindows";
+            var testFont = new Font(preferredFontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            LogBox.Font = testFont.Name == preferredFontName ? testFont : new Font("Courier New", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+
+            // Create timer for updating.
+            _logBoxTimer = new Timer {Interval = 10};
+            _logBoxTimer.Tick += LogBoxTimer_Tick;
+        }
+
+        private void LogBoxTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateLogBox();
+        }
+
+        private void UpdateLogBox()
+        {
+            var events = MemoryAppender.GetEvents();
+            if (events.Length <= 0) return;
+            var sb = new StringBuilder();
+            sb.Append(LogBox.Text);
+            foreach (var logEvent in events)
+            {
+                var msg = logEvent.RenderedMessage;
+                if (msg.StartsWith("CMD.INF: "))
+                {
+                    sb.Append(msg.Substring(9, msg.Length - 9));
+                    sb.Append('\n');
+                }
+                else if (msg.StartsWith("CMD.ERR: "))
+                {
+                    sb.Append("ERROR! ").Append(msg.Substring(9, msg.Length - 9));
+                    sb.Append('\n');
+                }
+            }
+            MemoryAppender.Clear();
+            LogBox.Text = sb.ToString();
+            LogBoxScrollToEnd();
+        }
+
+        private void LogBoxScrollToEnd()
+        {
+            LogBox.SelectionStart = LogBox.TextLength;
+            LogBox.ScrollToCaret();
+        }
+
+        #endregion
+
+        private void mainformTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Only run the log box updating timer when log is selected.
+            if (mainformTabControl.SelectedTab == LogBoxTab)
+            {
+                _logBoxTimer.Start();
+                LogBoxScrollToEnd();
+            }
+            else
+            {
+                _logBoxTimer.Stop();
+            }
         }
     }
 }
