@@ -63,8 +63,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TrayIconApp.resx">
-      <DependentUpon>TrayIconApp.cs</DependentUpon>
+    <EmbeddedResource Include="Tray.resx">
+      <DependentUpon>Tray.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -81,11 +81,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="TrayIconApp.cs">
+    <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TrayIconApp.Designer.cs">
-      <DependentUpon>TrayIconApp.cs</DependentUpon>
+    <Compile Include="Tray.Designer.cs">
+      <DependentUpon>Tray.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +120,6 @@ XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar" "$(TargetDir)playdar\"
 COPY /Y "$(ProjectDir)..\Installer\Utils\erlini\bin\Release\erlini.exe" "$(TargetDir)minimerl\bin"
 "$(TargetDir)minimerl\bin\erlini.exe"
 </PostBuildEvent>
-    <!--<PreBuildEvent>TASKKILL /F /IM epmd.exe</PreBuildEvent>-->
+    <PreBuildEvent>TASKKILL /F /IM epmd.exe</PreBuildEvent>
   </PropertyGroup>
 </Project>

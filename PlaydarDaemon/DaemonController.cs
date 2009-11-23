@@ -26,8 +26,14 @@ namespace Windar.PlaydarController
     {
         #region Delegates and events.
 
+        public delegate void PlaydarStartedHandler(object sender, EventArgs e);
+        public delegate void PlaydarStartFailedHandler(object sender, EventArgs e);
+        public delegate void PlaydarStoppedHandler(object sender, EventArgs e);
         public delegate void ScanCompletedHandler(object sender, EventArgs e);
 
+        public event PlaydarStartedHandler PlaydarStarted;
+        public event PlaydarStartFailedHandler PlaydarStartFailed;
+        public event PlaydarStoppedHandler PlaydarStopped;
         public event ScanCompletedHandler ScanCompleted;
 
         #endregion
@@ -88,14 +94,20 @@ namespace Windar.PlaydarController
             Instance = this;
         }
 
+        #region Commands
+
         public void Start()
         {
-            Cmd<Start>.Create().RunAsync();
+            var cmd = Cmd<Start>.Create();
+            cmd.PlaydarStarted += StartCmd_PlaydarStarted;
+            cmd.PlaydarStartFailed += StartCmd_PlaydarStartFailed;
+            cmd.RunAsync();
         }
 
         public void Stop()
         {
             Cmd<Stop>.Create().Run();
+            PlaydarStopped(this, new EventArgs());
         }
 
         public void Restart()
@@ -115,9 +127,25 @@ namespace Windar.PlaydarController
             cmd.RunAsync(path);
         }
 
+        #endregion
+
+        #region Command event handlers.
+
+        private void StartCmd_PlaydarStarted(object sender, EventArgs e)
+        {
+            PlaydarStarted(this, e);
+        }
+
+        private void StartCmd_PlaydarStartFailed(object sender, EventArgs e)
+        {
+            PlaydarStartFailed(this, e);
+        }
+
         private void ScanCmd_ScanCompleted(object sender, EventArgs e)
         {
             ScanCompleted(this, e);
         }
+
+        #endregion
     }
 }

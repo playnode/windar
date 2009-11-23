@@ -40,9 +40,6 @@ namespace Windar.Common
             Runner.CommandOutput += Cmd_CommandOutput;
             Runner.CommandError += Cmd_CommandError;
             Runner.CommandCompleted += Cmd_CommandCompleted;
-
-            //NOTE: Following is not currently required as etc is found in current dir.
-            //Runner.RunCommand("set PLAYDAR_ETC=" + Paths.PlaydarDataPath + @"\etc");
         }
 
         public static T Create()

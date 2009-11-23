@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PlaydarDaemon")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Playdar daemon controller.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("PlaydarDaemon")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2009")]
+[assembly: AssemblyCompany("www.windar.org")]
+[assembly: AssemblyProduct("Windar Playdar controller")]
+[assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

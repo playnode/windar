@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("www.windar.org")]
 [assembly: AssemblyProduct("Windar")]
-[assembly: AssemblyCopyright("Copyright � 2009 Steven Robertson")]
+[assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.2.196")]
-[assembly: AssemblyFileVersion("0.1.2.196")]
+[assembly: AssemblyVersion("0.1.2.199")]
+[assembly: AssemblyFileVersion("0.1.2.199")]

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Text;
 using Windar.Common;
 
@@ -23,10 +24,26 @@ namespace Windar.PlaydarController.Commands
 {
     class Start : Cmd<Start>
     {
+        public delegate void PlaydarStartedHandler(object sender, EventArgs e);
+        public delegate void PlaydarStartFailedHandler(object sender, EventArgs e);
+
+        public event PlaydarStartedHandler PlaydarStarted;
+        public event PlaydarStartFailedHandler PlaydarStartFailed;
+
+        public Start()
+        {
+            
+        }
+
         public void RunAsync()
         {
             Cmd<CopyAppFilesToAppData>.Create().Run();
+
             Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
+
+            //NOTE: Following is not currently required as etc is found in current dir.
+            //Runner.RunCommand("set PLAYDAR_ETC=" + Paths.PlaydarDataPath + @"\etc");
+
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.ErlCmd).Append('"');
             cmd.Append(" -sname playdar@localhost");

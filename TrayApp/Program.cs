@@ -35,7 +35,7 @@ namespace Windar.TrayApp
         internal static Program Instance { get; private set; }
         internal MainForm MainForm { get; private set; }
         internal DaemonController Daemon { get; private set; }
-        internal TrayIconApp Tray { get; private set; }
+        internal Tray Tray { get; private set; }
         internal PluginHost Plugins { get; private set; }
 
         #region Win32 API
@@ -95,15 +95,14 @@ namespace Windar.TrayApp
             SetupShutdownFileWatcher();
             MainForm = new MainForm();
             Daemon = new DaemonController(Application.StartupPath);
-            Tray = new TrayIconApp();
+            Tray = new Tray();
             Plugins = new PluginHost();
         }
 
         private void Run()
         {
             Plugins.Load();
-            Daemon.Start();
-            ShowTrayInfo("Playdar started.");
+            Daemon.Start();            
             Application.Run(Tray);
         }
 
@@ -212,8 +211,8 @@ namespace Windar.TrayApp
         internal void ShowTrayInfo(string msg, ToolTipIcon icon)
         {
             if (!Properties.Settings.Default.ShowBalloons) return;
-            Tray.TrayIcon.Visible = true;
-            Tray.TrayIcon.ShowBalloonTip(3, "Windar", msg, icon);
+            Tray.NotifyIcon.Visible = true;
+            Tray.NotifyIcon.ShowBalloonTip(3, "Windar", msg, icon);
         }
 
         #endregion

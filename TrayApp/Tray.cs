@@ -21,10 +21,10 @@ using System.Windows.Forms;
 
 namespace Windar.TrayApp
 {
-    partial class TrayIconApp : Form
+    partial class Tray : Form
     {
         // Notification tray icon.
-        internal NotifyIcon TrayIcon { get; private set; }
+        internal NotifyIcon NotifyIcon { get; private set; }
 
         // Tray menu.
         private readonly ContextMenu _trayMenu;
@@ -44,7 +44,7 @@ namespace Windar.TrayApp
 
         #region Init
 
-        public TrayIconApp()
+        public Tray()
         {
             InitializeComponent();
 
@@ -88,7 +88,7 @@ namespace Windar.TrayApp
             _trayMenu.MenuItems.Add(_shutdownMenuItem);
 
             // Tray icon.
-            TrayIcon = new NotifyIcon
+            NotifyIcon = new NotifyIcon
                            {
                                Text = "Playdar",
                                Icon = Properties.Resources.Playdar,
@@ -97,8 +97,14 @@ namespace Windar.TrayApp
                            };
 
             // Double-click handler for tray icon.
-            TrayIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
-            TrayIcon.MouseClick += TrayIcon_MouseClick;
+            NotifyIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
+            NotifyIcon.MouseClick += TrayIcon_MouseClick;
+
+            // Register command event handlers.
+            Program.Instance.Daemon.ScanCompleted += ScanCompleted;
+            Program.Instance.Daemon.PlaydarStopped += PlaydarStopped;
+            Program.Instance.Daemon.PlaydarStarted += PlaydarStarted;
+            Program.Instance.Daemon.PlaydarStartFailed += PlaydarStartFailed;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -116,7 +122,7 @@ namespace Windar.TrayApp
 
         #region Menu option click handlers.
 
-        #region Playdar controller commands
+        #region Playdar controller commands.
 
         private static void Shutdown(object sender, EventArgs e)
         {
@@ -158,14 +164,8 @@ namespace Windar.TrayApp
                              };
 
             if (dialog.ShowDialog(this) != DialogResult.OK) return;
-            Program.Instance.Daemon.ScanCompleted += ScanCompleted;
             Program.Instance.Daemon.AddScanFileOrFolder(dialog.Selected);
             Program.Instance.ShowTrayInfo("Scanning in progress.");
-        }
-
-        private static void ScanCompleted(object sender, EventArgs e)
-        {
-            Program.Instance.ShowTrayInfo("Scan completed.");            
         }
 
         #endregion
@@ -223,6 +223,30 @@ namespace Windar.TrayApp
         }
 
         #endregion
+
+        #endregion
+
+        #region Playdar controller event handlers.
+
+        private static void PlaydarStopped(object sender, EventArgs e)
+        {
+            Program.Instance.ShowTrayInfo("Playdar stopped.");
+        }
+
+        private static void PlaydarStarted(object sender, EventArgs e)
+        {
+            Program.Instance.ShowTrayInfo("Playdar started.");
+        }
+
+        private static void PlaydarStartFailed(object sender, EventArgs e)
+        {
+            Program.Instance.ShowTrayInfo("Playdar failed to start!");
+        }
+
+        private static void ScanCompleted(object sender, EventArgs e)
+        {
+            Program.Instance.ShowTrayInfo("Scan completed.");
+        }
 
         #endregion
 

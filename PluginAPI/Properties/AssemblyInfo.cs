@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PluginAPI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("API for Windar plugins.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("PluginAPI")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2009")]
+[assembly: AssemblyCompany("www.windar.org")]
+[assembly: AssemblyProduct("Windar Plugin API")]
+[assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
