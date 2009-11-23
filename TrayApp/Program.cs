@@ -200,6 +200,23 @@ namespace Windar.TrayApp
             MessageBox.Show(msg, "Windar Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        internal bool ShowYesNoDialog(string msg)
+        {
+            var result = MessageBox.Show(msg, "Windar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result == DialogResult.Yes;
+        }
+
+        internal void ShowErrorDialog(Exception ex)
+        {
+            if (string.IsNullOrEmpty(ex.Message)) ShowErrorDialog("Exception: " + ex.GetType().Name);
+            else ShowErrorDialog("Exception: " + ex.Message);
+        }
+
+        internal void ShowErrorDialog(string msg)
+        {
+            MessageBox.Show(msg, "Windar Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         #endregion
 
         #region Tray notifications.

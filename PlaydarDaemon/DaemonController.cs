@@ -117,7 +117,9 @@ namespace Windar.PlaydarController
 
         public void Restart()
         {
-            Stop(); Start();
+            Stop();
+            System.Threading.Thread.Sleep(2000);
+            Start();
         }
 
         public string Ping()

@@ -17,12 +17,18 @@
  */
 
 using System;
+using System.Reflection;
 using System.Windows.Forms;
+using System.Net;
+using System.Text;
+using log4net;
 
 namespace Windar.TrayApp
 {
     partial class Tray : Form
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         // Notification tray icon.
         internal NotifyIcon NotifyIcon { get; private set; }
 
@@ -50,7 +56,7 @@ namespace Windar.TrayApp
 
             // Tray menu items.
             _aboutMenuItem = new MenuItem("About Windar", ShowAbout);
-            _updateMenuItem = new MenuItem("Check for Updates", CheckForUpdates) { Enabled = false };
+            _updateMenuItem = new MenuItem("Check for Updates", CheckForUpdates);
             _daemonMenuItem = new MenuItem("Playdar Daemon Info", ShowDaemonInfo);
             _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
             _spiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdarWebsite);
@@ -186,9 +192,62 @@ namespace Windar.TrayApp
 
         #endregion
 
+        private static int ConvertVersionString(string[] version)
+        {
+            var strBuild = new StringBuilder();
+            strBuild.Append(version[0].PadLeft(2, '0')); // Major
+            strBuild.Append(version[1].PadLeft(2, '0')); // Minor
+            strBuild.Append(version[2].PadLeft(2, '0')); // Build
+            strBuild.Append(version[3].PadLeft(4, '0')); // Revision
+            return Int32.Parse(strBuild.ToString());
+        }
+
         private static void CheckForUpdates(object sender, EventArgs e)
         {
-            //TODO: CheckForUpdates
+            try
+            {
+
+                // Get the version file from the windar.org website.
+                var request = (HttpWebRequest)WebRequest.Create("http://windar.org/latest/version");
+                var response = (HttpWebResponse)request.GetResponse();
+                var stream = response.GetResponseStream();
+                var buf = new byte[8192];
+                var sb = new StringBuilder();
+                int count;
+                do
+                {
+                    count = stream.Read(buf, 0, buf.Length);
+                    if (count == 0) continue;
+                    var str = Encoding.ASCII.GetString(buf, 0, count);
+                    sb.Append(str);
+                }
+                while (count > 0);
+
+                // Check if latest version is newer, older or same.
+                var latest = ConvertVersionString(sb.ToString().Split('.'));
+                var installed = ConvertVersionString(Program.AssemblyVersion.Split('.'));
+                if (latest > installed)
+                {
+                    var msg = new StringBuilder();
+                    msg.Append("There is a new version available!\n");
+                    msg.Append("Go to download website now?");
+                    if (Program.Instance.ShowYesNoDialog(msg.ToString()))
+                    {
+                        System.Diagnostics.Process.Start("http://windar.org/download/");
+                    }
+
+                    //TODO: Download and install automatically?
+                }
+                else
+                {
+                    Program.Instance.ShowInfoDialog("You have the latest version.");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("Exception when checking for latest version.", ex);
+                Program.Instance.ShowErrorDialog(ex);
+            }
         }
 
         private void ToggleShowBalloons(object sender, EventArgs e)
