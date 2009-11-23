@@ -35,7 +35,7 @@ namespace Windar.PlaydarController.Commands
         private enum State
         {
             Initial,
-            Started
+            ApplicationInfo
         }
 
         private State _state;
@@ -71,13 +71,27 @@ namespace Windar.PlaydarController.Commands
 
         protected void StartCmd_CommandOutput(object sender, CmdRunner.CommandEventArgs e)
         {
-            if (e.Text.Trim().Equals("started_at: playdar@localhost"))
+            switch (_state)
             {
-                _state = State.Started;
-                PlaydarStarted(this, new EventArgs());
+                case State.Initial:
+                    if (e.Text.Trim().Equals("application: playdar"))
+                    {
+                        _state = State.ApplicationInfo;
+                    }
+                    break;
+
+                case State.ApplicationInfo:
+                    _state = State.Initial;
+                    if (e.Text.Trim().Equals("started_at: playdar@localhost"))
+                    {
+                        PlaydarStarted(this, new EventArgs());
+                    }
+                    else if (e.Text.Trim().Equals("exited: {shutdown,{playdar_app,start,[normal,[]]}}"))
+                    {
+                        PlaydarStartFailed(this, new EventArgs());
+                    }
+                    break;
             }
-            
-            //TODO: Also check for errors.
         }
 
         protected void StartCmd_CommandError(object sender, CmdRunner.CommandEventArgs e)
