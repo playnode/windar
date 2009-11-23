@@ -192,16 +192,6 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private static int ConvertVersionString(string[] version)
-        {
-            var strBuild = new StringBuilder();
-            strBuild.Append(version[0].PadLeft(2, '0')); // Major
-            strBuild.Append(version[1].PadLeft(2, '0')); // Minor
-            strBuild.Append(version[2].PadLeft(2, '0')); // Build
-            strBuild.Append(version[3].PadLeft(4, '0')); // Revision
-            return Int32.Parse(strBuild.ToString());
-        }
-
         private static void CheckForUpdates(object sender, EventArgs e)
         {
             try
@@ -253,10 +243,8 @@ namespace Windar.TrayApp
         private void ToggleShowBalloons(object sender, EventArgs e)
         {
             Properties.Settings.Default.ShowBalloons = !Properties.Settings.Default.ShowBalloons;
-            _balloonsMenuItem.Checked = Properties.Settings.Default.ShowBalloons;
-
-            // NOTE: Save after changing settings as potentially no graceful shutdown occurs.
             Properties.Settings.Default.Save();
+            _balloonsMenuItem.Checked = Properties.Settings.Default.ShowBalloons;
         }
 
         #region Web links
@@ -325,5 +313,22 @@ namespace Windar.TrayApp
         }
 
         #endregion
+
+        /// <summary>
+        /// This method is used to compare version strings.
+        /// The version string is converted to an integer, allowing 2 digits for each of the
+        /// major, minor and build components. 4 digits are allowed for the revision.
+        /// </summary>
+        /// <param name="version">Version as split string.</param>
+        /// <returns>Version as integer value.</returns>
+        private static int ConvertVersionString(string[] version)
+        {
+            var strBuild = new StringBuilder();
+            strBuild.Append(version[0].PadLeft(2, '0')); // Major
+            strBuild.Append(version[1].PadLeft(2, '0')); // Minor
+            strBuild.Append(version[2].PadLeft(2, '0')); // Build
+            strBuild.Append(version[3].PadLeft(4, '0')); // Revision
+            return Int32.Parse(strBuild.ToString());
+        }
     }
 }

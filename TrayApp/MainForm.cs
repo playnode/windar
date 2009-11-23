@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -32,6 +33,7 @@ namespace Windar.TrayApp
 
         private string _lastLink;
         private bool _reallyClose;
+        private bool _resizing;
 
         #region PlaydarBrowser property
 
@@ -61,8 +63,7 @@ namespace Windar.TrayApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //TODO: Restore size and position.
-
+            RestoreWindowLayout();
             GoToAbout();
             LoadPlaydarHomepage();
 
@@ -70,6 +71,42 @@ namespace Windar.TrayApp
             var info = new StringBuilder();
             info.Append(Program.AssemblyProduct).Append(' ').Append(Program.AssemblyVersion);
             versionLabel.Text = info.ToString();
+        }
+
+        private void RestoreWindowLayout()
+        {
+            // Window location.
+            if (Properties.Settings.Default.WindowLocation == new Point(0, 0))
+            {
+                StartPosition = FormStartPosition.CenterScreen;
+                Size = new Size(640, 480);
+            }
+            else
+            {
+                Location = Properties.Settings.Default.WindowLocation;
+                Size = Properties.Settings.Default.WindowSize;
+            }
+
+            // Maximised state.
+            if (Properties.Settings.Default.WindowMaximised)
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+
+            // Fit to screen if necessary.
+            if (Size.Width > Screen.PrimaryScreen.WorkingArea.Width
+                || Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                if (Log.IsWarnEnabled) Log.Warn("Window size exceeds screen area.");
+                if (Log.IsInfoEnabled)
+                {
+                    Log.Info("Width = " + Size.Width + ", Height = " + Size.Height);
+                    Log.Info("WorkingArea.Width = " + Screen.PrimaryScreen.WorkingArea.Width +
+                             ", WorkingArea.Height = " + Screen.PrimaryScreen.WorkingArea.Height);
+                }
+                StartPosition = FormStartPosition.CenterScreen;
+                Size = new Size(640, 480);
+            }
         }
 
         #endregion
@@ -172,17 +209,53 @@ namespace Windar.TrayApp
 
         #endregion
 
+        private void PersistWindowLayout()
+        {
+            switch (WindowState)
+            {
+                case FormWindowState.Normal:
+                    Properties.Settings.Default.WindowMaximised = false;
+                    Properties.Settings.Default.WindowSize = Size;
+                    Properties.Settings.Default.WindowLocation = Location;
+                    break;
+                case FormWindowState.Maximized:
+                    Properties.Settings.Default.WindowMaximised = true;
+                    Properties.Settings.Default.WindowSize = RestoreBounds.Size;
+                    Properties.Settings.Default.WindowLocation = RestoreBounds.Location;
+                    break;
+                default:
+                    Properties.Settings.Default.WindowMaximised = false;
+                    Properties.Settings.Default.WindowSize = RestoreBounds.Size;
+                    Properties.Settings.Default.WindowLocation = RestoreBounds.Location;
+                    break;
+            }
+            if (Log.IsDebugEnabled) Log.Debug("Persisting window layout.");
+            Properties.Settings.Default.Save();
+            EnsureVisible();
+        }
+
         public void EnsureVisible()
         {
             if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
             Program.Instance.MainForm.Activate();
         }
 
+        private void MainForm_ResizeBegin(object sender, EventArgs e)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("MainForm_ResizeBegin");
+            _resizing = true;
+        }
+
         private void MainForm_ResizeEnd(object sender, EventArgs e)
         {
             if (Log.IsDebugEnabled) Log.Debug("MainForm_ResizeEnd");
-            //TODO: Persist location.
-            //TODO: Persist size.
+            PersistWindowLayout();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("MainForm_Resize");
+            if (!_resizing) PersistWindowLayout();
         }
     }
 }

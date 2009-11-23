@@ -136,7 +136,7 @@ namespace Windar.TrayApp
             this.playdarLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.playdarLink.AutoSize = true;
             this.playdarLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.playdarLink.Location = new System.Drawing.Point(270, 115);
+            this.playdarLink.Location = new System.Drawing.Point(266, 181);
             this.playdarLink.Name = "playdarLink";
             this.playdarLink.Size = new System.Drawing.Size(117, 16);
             this.playdarLink.TabIndex = 3;
@@ -147,7 +147,7 @@ namespace Windar.TrayApp
             // playdarInfoBox
             // 
             this.playdarInfoBox.Controls.Add(this.playdarInfo);
-            this.playdarInfoBox.Location = new System.Drawing.Point(266, 3);
+            this.playdarInfoBox.Location = new System.Drawing.Point(262, 69);
             this.playdarInfoBox.Name = "playdarInfoBox";
             this.playdarInfoBox.Padding = new System.Windows.Forms.Padding(7, 0, 7, 7);
             this.playdarInfoBox.Size = new System.Drawing.Size(307, 109);
@@ -253,7 +253,9 @@ namespace Windar.TrayApp
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Windar - Playdar for Windows";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.ResizeBegin += new System.EventHandler(this.MainForm_ResizeBegin);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.mainformBorderPanel.ResumeLayout(false);
             this.mainformTabControl.ResumeLayout(false);
