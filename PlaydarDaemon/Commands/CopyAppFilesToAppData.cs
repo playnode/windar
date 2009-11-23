@@ -21,9 +21,9 @@ using Windar.Common;
 
 namespace Windar.PlaydarController.Commands
 {
-    class CopyAppFilesToAppData : Cmd<CopyAppFilesToAppData>
+    class CopyAppFilesToAppData : ShortCmd<CopyAppFilesToAppData>
     {
-        public string Run()
+        public override string Run()
         {
             // 'etc' folder, containing config file.
             var cmd = new StringBuilder();
@@ -46,7 +46,8 @@ namespace Windar.PlaydarController.Commands
             cmd.Append(" \"").Append(DaemonController.Instance.PlaydarDataPath).Append("\\playdar_modules\\\"");
             Runner.RunCommand(cmd.ToString());
 
-            return WhenDone();
+            ContinueWhenDone();
+            return Output;
         }
     }
 }

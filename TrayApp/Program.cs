@@ -92,6 +92,7 @@ namespace Windar.TrayApp
 
         private Program()
         {
+            Instance = this;
             SetupShutdownFileWatcher();
             MainForm = new MainForm();
             Daemon = new DaemonController(Application.StartupPath);

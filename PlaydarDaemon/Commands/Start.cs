@@ -22,7 +22,7 @@ using Windar.Common;
 
 namespace Windar.PlaydarController.Commands
 {
-    class Start : Cmd<Start>
+    class Start : AsyncCmd<Start>
     {
         public delegate void PlaydarStartedHandler(object sender, EventArgs e);
         public delegate void PlaydarStartFailedHandler(object sender, EventArgs e);
@@ -30,12 +30,26 @@ namespace Windar.PlaydarController.Commands
         public event PlaydarStartedHandler PlaydarStarted;
         public event PlaydarStartFailedHandler PlaydarStartFailed;
 
-        public Start()
+        #region State
+
+        private enum State
         {
-            
+            Initial,
+            Started
         }
 
-        public void RunAsync()
+        private State _state;
+
+        #endregion
+
+        public Start()
+        {
+            _state = State.Initial;
+            Runner.CommandOutput += StartCmd_CommandOutput;
+            Runner.CommandError += StartCmd_CommandError;
+        }
+
+        public override void RunAsync()
         {
             Cmd<CopyAppFilesToAppData>.Create().Run();
 
@@ -53,6 +67,22 @@ namespace Windar.PlaydarController.Commands
             cmd.Append(" -s reloader");
             cmd.Append(" -s playdar");
             Runner.RunCommand(cmd.ToString());
+        }
+
+        protected void StartCmd_CommandOutput(object sender, CmdRunner.CommandEventArgs e)
+        {
+            if (e.Text.Trim().Equals("started_at: playdar@localhost"))
+            {
+                _state = State.Started;
+                PlaydarStarted(this, new EventArgs());
+            }
+            
+            //TODO: Also check for errors.
+        }
+
+        protected void StartCmd_CommandError(object sender, CmdRunner.CommandEventArgs e)
+        {
+            //TODO: Check string for error.
         }
     }
 }

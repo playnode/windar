@@ -16,29 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Text;
+using System;
+using System.Reflection;
 using System.Threading;
+using log4net;
 
 namespace Windar.Common
 {
     public abstract class Cmd<T> where T : new()
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         protected CmdRunner Runner { get; private set; }
 
         protected bool Done { get; private set; }
 
-        private readonly StringBuilder _stdOutput;
-        private readonly StringBuilder _stdErr;
-
         protected Cmd()
         {
             Runner = new CmdRunner();
-
-            _stdOutput = new StringBuilder();
-            _stdErr = new StringBuilder();
-
-            Runner.CommandOutput += Cmd_CommandOutput;
-            Runner.CommandError += Cmd_CommandError;
             Runner.CommandCompleted += Cmd_CommandCompleted;
         }
 
@@ -47,24 +42,16 @@ namespace Windar.Common
             return new T();
         }
 
-        protected string WhenDone()
+        protected void ContinueWhenDone()
         {
+            if (Log.IsDebugEnabled) Log.Debug("Continue when done...");
             while (!Done) Thread.Sleep(100);
+            if (Log.IsDebugEnabled) Log.Debug("Done.");
             Runner.Close();
-            return _stdOutput.ToString();
+            if (Log.IsDebugEnabled) Log.Debug("Runner closed.");
         }
 
-        protected void Cmd_CommandOutput(object sender, CmdRunner.CommandEventArgs e)
-        {
-            _stdOutput.Append(e.Text);
-        }
-
-        protected void Cmd_CommandError(object sender, CmdRunner.CommandEventArgs e)
-        {
-            _stdErr.Append(e.Text);
-        }
-
-        protected void Cmd_CommandCompleted(object sender, CmdRunner.CommandEventArgs e)
+        protected void Cmd_CommandCompleted(object sender, EventArgs e)
         {
             Done = true;
         }

@@ -22,7 +22,7 @@ using Windar.Common;
 
 namespace Windar.PlaydarController.Commands
 {
-    class Scan : Cmd<Scan>
+    class Scan : AsyncCmd<Scan>
     {
         public delegate void ScanCompletedHandler(object sender, EventArgs e);
 
@@ -30,9 +30,11 @@ namespace Windar.PlaydarController.Commands
 
         private bool _firstRun;
 
-        public void RunAsync(string path)
+        public string ApplicationPath { get; set; }
+
+        public override void RunAsync()
         {
-            if (path == null) throw new ApplicationException("Path must be defined");
+            if (ApplicationPath == null) throw new ApplicationException("Path must be defined");
             Runner.CommandCompleted += Completed;
             Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
             var cmd = new StringBuilder();
@@ -41,11 +43,11 @@ namespace Windar.PlaydarController.Commands
             cmd.Append(" -noinput");
             cmd.Append(" -pa \"").Append(DaemonController.Instance.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"scan\" \"").Append(path).Append("\"");
+            cmd.Append(" -extra playdar@localhost \"scan\" \"").Append(ApplicationPath).Append("\"");
             Runner.RunCommand(cmd.ToString());
         }
 
-        protected void Completed(object sender, CmdRunner.CommandEventArgs e)
+        protected void Completed(object sender, EventArgs e)
         {
             //NOTE: This event first at start for some reason. Ignore first.
             if (!_firstRun) _firstRun = true;

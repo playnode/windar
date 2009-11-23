@@ -21,9 +21,9 @@ using Windar.Common;
 
 namespace Windar.PlaydarController.Commands
 {
-    class NumFiles : Cmd<NumFiles>
+    class NumFiles : ShortCmd<NumFiles>
     {
-        public string Run()
+        public override string Run()
         {
             Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
             var cmd = new StringBuilder();
@@ -34,7 +34,8 @@ namespace Windar.PlaydarController.Commands
             cmd.Append(" -s playdar_ctl");
             cmd.Append(" -extra playdar@localhost \"numfiles\"");
             Runner.RunCommand(cmd.ToString());
-            return WhenDone();
+            ContinueWhenDone();
+            return Output;
         }
     }
 }

@@ -29,11 +29,7 @@ namespace Windar.Common
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        #region Delegates and Events
-
-        public delegate void CommandOutputHandler(object sender, CommandEventArgs e);
-        public delegate void CommandErrorHandler(object sender, CommandEventArgs e);
-        public delegate void CommandCompletedHandler(object sender, CommandCompletedEventArgs e);
+        #region Delegates and events.
 
         public class CommandEventArgs : EventArgs
         {
@@ -41,15 +37,9 @@ namespace Windar.Common
             public CommandEventArgs(string text) { Text = text; }
         }
 
-        public class CommandCompletedEventArgs : CommandEventArgs
-        {
-            public readonly string ErrorText;
-            public CommandCompletedEventArgs(string text, string errorText)
-                : base(text)
-            {
-                ErrorText = errorText;
-            }
-        }
+        public delegate void CommandOutputHandler(object sender, CommandEventArgs e);
+        public delegate void CommandErrorHandler(object sender, CommandEventArgs e);
+        public delegate void CommandCompletedHandler(object sender, EventArgs e);
 
         public event CommandOutputHandler CommandOutput;
         public event CommandErrorHandler CommandError;
@@ -59,7 +49,6 @@ namespace Windar.Common
 
         private Thread _stdOutThread;
         private Thread _stdErrThread;
-        private StringBuilder _stdErr;
 
         public Process Process { get; private set; }
 
@@ -96,15 +85,13 @@ namespace Windar.Common
                 StopStandardOutputThread();
             }
 
-            // Initialise standard error string builder.
-            _stdErr = new StringBuilder();
-
             if (Log.IsInfoEnabled) Log.Info("Running command.");
 
             // Write commands to StandardInput.
-            Process.StandardInput.WriteLine("prompt PROMPT:");
+            Process.StandardInput.WriteLine("prompt IGNORE: ");
             Process.StandardInput.WriteLine(cmd);
             Process.StandardInput.WriteLine("echo ---end of command---");
+            Process.StandardInput.WriteLine();
 
             // Start reading from standard output.
             if (Process.StartInfo.RedirectStandardOutput)
@@ -150,29 +137,11 @@ namespace Windar.Common
             Process = null;
         }
 
-        #region Private methods
-
-        private void OnCommandOutput(CommandEventArgs e)
-        {
-            if (CommandOutput != null) CommandOutput(this, e);
-        }
-
-        private void OnCommandError(CommandEventArgs e)
-        {
-            if (CommandError != null) CommandError(this, e);
-        }
-
-        private void OnCommandCompleted(CommandCompletedEventArgs e)
-        {
-            if (CommandCompleted != null) CommandCompleted(this, e);
-        }
-
         private void ReadStandardOutput()
         {
-            var output = new StringBuilder();
             try
             {
-                // Ignore line: "prompt PROMPT:"
+                // Ignore line: "prompt IGNORE: "
                 var currentLine = Process.StandardOutput.ReadLine();
                 if (Log.IsDebugEnabled) Log.Debug("Ignoring line \"" + currentLine + '"');
 
@@ -188,14 +157,13 @@ namespace Windar.Common
                 currentLine = Process.StandardOutput.ReadLine();
                 while (currentLine != null && currentLine != "---end of command---")
                 {
-                    if (!currentLine.StartsWith("PROMPT:"))
+                    if (!currentLine.StartsWith("IGNORE: "))
                     {
                         if (currentLine.Length > 0)
                         {
                             if (Log.IsDebugEnabled) Log.Debug(currentLine);
-                            OnCommandOutput(new CommandEventArgs(currentLine));
+                            if (CommandOutput != null) CommandOutput(this, new CommandEventArgs(currentLine));
                         }
-                        output.Append('\n').Append(currentLine);
                     }
                     else if (Log.IsDebugEnabled) Log.Debug("Ignoring line \"" + currentLine + '"');
                     currentLine = Process.StandardOutput.ReadLine();
@@ -206,9 +174,11 @@ namespace Windar.Common
                 if (Log.IsWarnEnabled) Log.Warn("StandardOutput: Thread aborted.");
             }
 
-            // Call method to signal that command has completed.
-            OnCommandCompleted(new CommandCompletedEventArgs(output.ToString(), _stdErr.ToString()));
             //TODO: _stdErr = null; // ?
+
+            // Call method to signal that command has completed.
+            if (CommandCompleted != null) CommandCompleted(this, new EventArgs());
+            if (Log.IsDebugEnabled) Log.Debug("Command completed.");            
         }
 
         private void ReadStandardError()
@@ -220,12 +190,11 @@ namespace Windar.Common
                 {
                     var c = Process.StandardError.Read();
                     if (c == 13) continue;
-                    _stdErr.Append((char) c);
                     if (c != 10) line.Append((char) c);
                     else
                     {
-                        if (Log.IsDebugEnabled) Log.Debug(line.ToString());
-                        OnCommandError(new CommandEventArgs(line.ToString()));
+                        if (Log.IsDebugEnabled) Log.Debug("[stderr] " + line);
+                        if (CommandError != null) CommandError(this, new CommandEventArgs(line.ToString()));
                         line = new StringBuilder();
                     }
 
@@ -241,10 +210,10 @@ namespace Windar.Common
         {
             // Try to abort the standard output reader.
             if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 50; i++)
             {
-                Thread.Sleep(1000);
                 if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
+                Thread.Sleep(100);
             }
             if (Log.IsWarnEnabled) Log.Warn("Aborting reader thread for standard output.");
             try
@@ -263,10 +232,10 @@ namespace Windar.Common
         {
             // Try to abort the standard error reader.
             if (_stdErrThread == null || !_stdErrThread.IsAlive) return;
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 50; i++)
             {
-                Thread.Sleep(1000);
                 if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
+                Thread.Sleep(100);
             }
             if (Log.IsWarnEnabled) Log.Warn("Aborting reader thread for error output.");
             try
@@ -280,7 +249,5 @@ namespace Windar.Common
             }
             _stdErrThread = null;
         }
-
-        #endregion
     }
 }

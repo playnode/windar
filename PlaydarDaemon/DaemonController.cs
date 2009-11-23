@@ -17,6 +17,8 @@
  */
 
 using System;
+using System.Reflection;
+using log4net;
 using Windar.Common;
 using Windar.PlaydarController.Commands;
 
@@ -24,6 +26,8 @@ namespace Windar.PlaydarController
 {
     public class DaemonController
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         #region Delegates and events.
 
         public delegate void PlaydarStartedHandler(object sender, EventArgs e);
@@ -74,6 +78,7 @@ namespace Windar.PlaydarController
             get
             {
                 var result = Cmd<NumFiles>.Create().Run();
+                if (Log.IsDebugEnabled) Log.Debug("NumFiles result = " + result);
                 try
                 {
                     return Int32.Parse(result);
@@ -124,7 +129,8 @@ namespace Windar.PlaydarController
         {
             var cmd = Cmd<Scan>.Create();
             cmd.ScanCompleted += ScanCmd_ScanCompleted;
-            cmd.RunAsync(path);
+            cmd.ApplicationPath = path;
+            cmd.RunAsync();
         }
 
         #endregion
