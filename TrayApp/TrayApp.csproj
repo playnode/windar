@@ -46,11 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DirectoryDialog.cs" />
-    <Compile Include="Log.cs">
+    <Compile Include="LogControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Log.Designer.cs">
-      <DependentUpon>Log.cs</DependentUpon>
+    <Compile Include="LogControl.Designer.cs">
+      <DependentUpon>LogControl.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -61,8 +61,8 @@
     <Compile Include="PluginHost.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Log.resx">
-      <DependentUpon>Log.cs</DependentUpon>
+    <EmbeddedResource Include="LogControl.resx">
+      <DependentUpon>LogControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

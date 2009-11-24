@@ -22,7 +22,6 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
-using log4net.Appender;
 
 namespace Windar.TrayApp
 {
@@ -36,14 +35,12 @@ namespace Windar.TrayApp
         private bool _reallyClose;
         private bool _resizing;
         private Size _oldSize;
-        private Timer _logBoxTimer;
 
         #region Properties
 
         private WebBrowser _playdarBrowser;
-        private RichTextBox _logBox;
         private TabPage _logBoxTab;
-        private MemoryAppender _memoryAppender;
+        private LogControl _logControl;
 
         private WebBrowser PlaydarBrowser
         {
@@ -56,20 +53,6 @@ namespace Windar.TrayApp
                     _playdarBrowser = (WebBrowser) ctrl[0];
                 }
                 return _playdarBrowser;
-            }
-        }
-
-        private RichTextBox LogBox
-        {
-            get
-            {
-                if (_logBox == null)
-                {
-                    var ctrl = mainformTabControl.Controls.Find("logBox", true);
-                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logBox!");
-                    _logBox = (RichTextBox) ctrl[0];
-                }
-                return _logBox;
             }
         }
 
@@ -87,21 +70,17 @@ namespace Windar.TrayApp
             }
         }
 
-        private MemoryAppender MemoryAppender
+        private LogControl LogControl
         {
             get
             {
-                if (_memoryAppender == null)
+                if (_logControl == null)
                 {
-                    var appenders = LogManager.GetRepository().GetAppenders();
-                    foreach (var appender in appenders)
-                    {
-                        if (appender.Name != "MemoryAppender") continue;
-                        _memoryAppender = (MemoryAppender) appender;
-                        break;
-                    }
+                    var ctrl = mainformTabControl.Controls.Find("logControl", true);
+                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logControl!");
+                    _logControl = (LogControl) ctrl[0];
                 }
-                return _memoryAppender;
+                return _logControl;
             }
         }
 
@@ -123,8 +102,6 @@ namespace Windar.TrayApp
 
             RestoreWindowLayout();
             GoToAbout();
-            InitLogBox();
-
             LoadPlaydarHomepage();
         }
 
@@ -191,7 +168,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private void LinkClicked(object sender, EventArgs e)
+        private void PlaydarBrowserLinkClicked(object sender, EventArgs e)
         {
             if (PlaydarBrowser.Document == null) return;
             var link = PlaydarBrowser.Document.ActiveElement;
@@ -205,7 +182,7 @@ namespace Windar.TrayApp
             var links = PlaydarBrowser.Document.Links;
             foreach (HtmlElement var in links)
             {
-                var.AttachEventHandler("onclick", LinkClicked);
+                var.AttachEventHandler("onclick", PlaydarBrowserLinkClicked);
             }
         }
 
@@ -308,7 +285,7 @@ namespace Windar.TrayApp
             if (mainformTabControl.SelectedTab == LogBoxTab
                 && Size != _oldSize)
             {
-                LogBoxScrollToEnd();
+                LogControl.ScrollToEnd();
             }
             _resizing = false;
             PersistWindowLayout();
@@ -319,7 +296,7 @@ namespace Windar.TrayApp
             if (_resizing) return;
             if (mainformTabControl.SelectedTab == LogBoxTab)
             {
-                LogBoxScrollToEnd();
+                LogControl.ScrollToEnd();
             }
             PersistWindowLayout();
         }
@@ -335,72 +312,17 @@ namespace Windar.TrayApp
             Properties.Settings.Default.Save();
         }
 
-        #region Memory logger.
-
-        //TODO: Update the log box periodically, limiting the contents too.
-        //TODO: Provide option to follow tail (or follow tail when scrollbar near end?)
-
-        private void InitLogBox()
-        {
-            // Set the log box font.
-            const string preferredFontName = "ProFontWindows";
-            var testFont = new Font(preferredFontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
-            LogBox.Font = testFont.Name == preferredFontName ? testFont : new Font("Courier New", 13, FontStyle.Regular, GraphicsUnit.Pixel);
-
-            // Create timer for updating.
-            _logBoxTimer = new Timer {Interval = 10};
-            _logBoxTimer.Tick += LogBoxTimer_Tick;
-        }
-
-        private void LogBoxTimer_Tick(object sender, EventArgs e)
-        {
-            UpdateLogBox();
-        }
-
-        private void UpdateLogBox()
-        {
-            var events = MemoryAppender.GetEvents();
-            if (events.Length <= 0) return;
-            var sb = new StringBuilder();
-            sb.Append(LogBox.Text);
-            foreach (var logEvent in events)
-            {
-                var msg = logEvent.RenderedMessage;
-                if (msg.StartsWith("CMD.INF: "))
-                {
-                    sb.Append(msg.Substring(9, msg.Length - 9));
-                    sb.Append('\n');
-                }
-                else if (msg.StartsWith("CMD.ERR: "))
-                {
-                    sb.Append("ERROR! ").Append(msg.Substring(9, msg.Length - 9));
-                    sb.Append('\n');
-                }
-            }
-            MemoryAppender.Clear();
-            LogBox.Text = sb.ToString();
-            LogBoxScrollToEnd();
-        }
-
-        private void LogBoxScrollToEnd()
-        {
-            LogBox.SelectionStart = LogBox.TextLength;
-            LogBox.ScrollToCaret();
-        }
-
-        #endregion
-
         private void mainformTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Only run the log box updating timer when log is selected.
             if (mainformTabControl.SelectedTab == LogBoxTab)
             {
-                _logBoxTimer.Start();
-                LogBoxScrollToEnd();
+                LogControl.Timer.Start();
+                LogControl.ScrollToEnd();
             }
             else
             {
-                _logBoxTimer.Stop();
+                LogControl.Timer.Stop();
             }
         }
     }

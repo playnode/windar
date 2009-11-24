@@ -62,7 +62,7 @@ namespace Windar.TrayApp
             this.playdarBorderPanel = new System.Windows.Forms.Panel();
             this.playdarBrowser = new System.Windows.Forms.WebBrowser();
             this.logTabPage = new System.Windows.Forms.TabPage();
-            this.logBox = new System.Windows.Forms.RichTextBox();
+            this.logControl = new Windar.TrayApp.LogControl();
             this.mainformBorderPanel.SuspendLayout();
             this.mainformTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -248,7 +248,7 @@ namespace Windar.TrayApp
             // logTabPage
             // 
             this.logTabPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTabPage.Controls.Add(this.logBox);
+            this.logTabPage.Controls.Add(this.logControl);
             this.logTabPage.Location = new System.Drawing.Point(4, 25);
             this.logTabPage.Name = "logTabPage";
             this.logTabPage.Size = new System.Drawing.Size(608, 403);
@@ -256,17 +256,13 @@ namespace Windar.TrayApp
             this.logTabPage.Text = "Log";
             this.logTabPage.UseVisualStyleBackColor = true;
             // 
-            // logBox
+            // logControl
             // 
-            this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.logBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logBox.Location = new System.Drawing.Point(0, 0);
-            this.logBox.Name = "logBox";
-            this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(606, 401);
-            this.logBox.TabIndex = 0;
-            this.logBox.Text = "";
-            this.logBox.WordWrap = false;
+            this.logControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logControl.Location = new System.Drawing.Point(0, 0);
+            this.logControl.Name = "logControl";
+            this.logControl.Size = new System.Drawing.Size(606, 401);
+            this.logControl.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -316,6 +312,6 @@ namespace Windar.TrayApp
         private System.Windows.Forms.Panel playdarBorderPanel;
         private System.Windows.Forms.WebBrowser playdarBrowser;
         private System.Windows.Forms.TabPage logTabPage;
-        private System.Windows.Forms.RichTextBox logBox;
+        private LogControl logControl;
     }
 }
