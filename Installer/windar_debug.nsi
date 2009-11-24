@@ -379,6 +379,7 @@ Section "Windar Tray Application" SEC_WINDAR
    ;License & copyright files.
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
+   File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
    
    ;Extra
    File Payload\playdar-core.bat
@@ -445,6 +446,7 @@ SectionGroup "Shortcuts"
       CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
       CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
    SectionEnd
 !endif

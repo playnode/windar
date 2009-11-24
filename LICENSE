@@ -1,97 +1,51 @@
-The software in this package is distributed under the GNU General Public 
-License (with special exceptions described below).
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License (GPL) as published by
+the Free Software Foundation; either version 3 of the License, or (at
+your option) any later version.
 
 A copy of GNU General Public License (GPL) is included in this distribution, 
 in the file COPYING.  If you do not have the source code, it is available at:
 <http://github.com/stever/windar>
 
-WINDAR GPL EXCEPTION 1.0
+EXCEPTION: This distribution of Windar may be linked against OpenSSL
+according to the terms of the section below entitled "OpenSSL Exception."
 
-Additional rights granted beyond the GPL (the "Exception").
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
 
-As a special exception to the terms and conditions of GPL version 3.0, Steven
-Robertson (developer of Windar) hereby grants you the rights described below,
-provided you agree to the terms and conditions in this Exception, including
-its obligations and restrictions on use.
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-Nothing in this Exception gives you or anyone else the right to change the
-licensing terms of Windar.
+                       _OpenSSL Exception_
 
-Below, "Licensed Software" shall refer to the software licensed under the GPL
-version 3.0 and this exception.
+0. Definitions
 
-1) The right to use open source licenses not compatible with the GNU General
-Public License version 3.0: You may link software (hereafter referred to as
-"Your Software") against the Licensed Software and/or distribute binaries of
-Your Software linked against the Licensed Software, provided that:
+"Windar" means Windar software licensed under version 3 or any later
+version of the GNU General Public License (collectively, "GPL"), or a
+work based on such software and licensed under the GPL.
 
-A) Your Software is licensed under one of the following licenses:
+"OpenSSL" means OpenSSL toolkit software distributed by the OpenSSL
+Project and licensed under the OpenSSL Licenses, or a work based on such
+software and licensed under the OpenSSL Licenses.
 
-      Erlang Public License 1.1
-      MIT License (as set forth below)
-      Apache License 2.0
+"OpenSSL Licenses" means the OpenSSL License and Original SSLeay License
+under which the OpenSSL Project distributes the OpenSSL toolkit software,
+as those licenses appear in the file LICENSE-OPENSSL.
 
-and
+1. Exception
 
-B) You must, on request, make a complete package including the complete source
-code of Your Software available to Steven Robertson (developer of Windar) under
-the same license as that granted to other recipients of the source code Your
-Software.
+You have permission to copy, modify, propagate, and distribute a work
+formed by combining OpenSSL with Windar, or a work derivative of such a
+combination, even if such copying, modification, propagation, or
+distribution would otherwise violate the terms of the GPL. You must
+comply with the GPL in all respects for all of the code used other than
+OpenSSL.
 
-and
-
-C) Your or any other contributor's rights to:
-
-i) distribute the source code of Your Software to anyone for any purpose;
-
-and
-
-ii) publicly discuss the development project for Your Software and its goals
-in any form and in any forum are not prohibited by any legal instrument,
-including but not limited to contracts, non-disclosure agreements, and
-employee contracts.
-
-ADDITIONAL EXCEPTION FOR OPENJDK
-
-The following exception is included with files that make use of the OpenJDK
-library:
-
-In addition, as a special exception, Steven Robertson (developer of Windar)
-gives permission to link the code with the OpenJDK library (or modified
-versions of the OpenJDK library that use the same license as the original
-version), and distribute the linked executables.
-
-ADDITIONAL EXCEPTION FOR OPENSSL
-
-The following exception is included with files that make use of the OpenSSL
-library:
-
-In addition, as a special exception, Steven Robertson (developer of Windar)
-gives permission to link the code with the OpenSSL project's "OpenSSL"
-library (or modified versions of the "OpenSSL" library that use the same
-license as the original version), and distribute the linked executables.
-
-ADDENDUM
-
-This addendum contains the full license text of those of the licenses referred
-to in the Windar GPL Exception in which the reference does not include a
-version number or a version date.
-
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+You may include this OpenSSL Exception and its grant of permissions when
+you distribute Windar.  Inclusion of this notice with such a
+distribution constitutes a grant of such permission.  If you do not wish
+to grant these permissions, remove this section entitled "OpenSSL
+Exception" from your distribution.

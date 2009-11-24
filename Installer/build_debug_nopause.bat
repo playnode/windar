@@ -40,7 +40,7 @@ CD %INSTALL_BUILD_DIR%Utils\erlini
 %FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Release
 IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
 
-CD %INSTALL_BUILD_DIR%Utils\erlini\bin\Debug
+CD %INSTALL_BUILD_DIR%Utils\erlini\bin\Release
 @ECHO ON
 COPY erlini.exe %BUILD_TEMP%
 @ECHO OFF
