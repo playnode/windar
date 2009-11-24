@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Common")]
+[assembly: AssemblyTitle("Windar Common")]
 [assembly: AssemblyDescription("Code shared between Windar modules.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("www.windar.org")]
-[assembly: AssemblyProduct("Windar Common")]
+[assembly: AssemblyProduct("Windar")]
 [assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

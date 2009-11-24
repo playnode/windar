@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaydarDaemon", "PlaydarDae
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerPlugin", "Plugins\PlayerPlugin\PlayerPlugin.csproj", "{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

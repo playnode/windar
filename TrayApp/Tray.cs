@@ -1,6 +1,6 @@
 ﻿/*
  * Windar: Playdar for Windows
- * Copyright (C) 2009 Steven Robertson <http://stever.org.uk/>
+ * Copyright (C) 2009 Steven Robertson <steve@playnode.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ namespace Windar.TrayApp
             var dialog = new DirectoryDialog
                              {
                                  BrowseFor = DirectoryDialog.BrowseForTypes.FilesAndDirectories,
-                                 Title = "Select a file or a folder"
+                                 Title = "Select a file or a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
                              };
 
             if (dialog.ShowDialog(this) != DialogResult.OK) return;
