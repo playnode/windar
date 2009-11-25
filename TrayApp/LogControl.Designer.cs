@@ -47,11 +47,9 @@ namespace Windar.TrayApp
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.logBox = new System.Windows.Forms.RichTextBox();
+            this.logBox = new Windar.TrayApp.RichTextBoxPlus();
             this.LogContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.selectAllContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.clearContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LogContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -60,10 +58,14 @@ namespace Windar.TrayApp
             // 
             this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.logBox.ContextMenuStrip = this.LogContextMenu;
+            this.logBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.logBox.DetectUrls = false;
             this.logBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logBox.Location = new System.Drawing.Point(0, 0);
             this.logBox.Name = "logBox";
+            this.logBox.Position = 0;
             this.logBox.ReadOnly = true;
+            this.logBox.ShortcutsEnabled = false;
             this.logBox.Size = new System.Drawing.Size(400, 300);
             this.logBox.TabIndex = 1;
             this.logBox.Text = "";
@@ -72,36 +74,22 @@ namespace Windar.TrayApp
             // LogContextMenu
             // 
             this.LogContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectAllContextMenuItem,
             this.copyContextMenuItem,
-            this.toolStripSeparator1,
             this.clearContextMenuItem});
             this.LogContextMenu.Name = "LogContextMenu";
-            this.LogContextMenu.Size = new System.Drawing.Size(123, 76);
-            // 
-            // selectAllContextMenuItem
-            // 
-            this.selectAllContextMenuItem.Name = "selectAllContextMenuItem";
-            this.selectAllContextMenuItem.Size = new System.Drawing.Size(122, 22);
-            this.selectAllContextMenuItem.Text = "Select All";
-            this.selectAllContextMenuItem.Click += new System.EventHandler(this.selectAllContextMenuItem_Click);
+            this.LogContextMenu.Size = new System.Drawing.Size(153, 70);
             // 
             // copyContextMenuItem
             // 
             this.copyContextMenuItem.Name = "copyContextMenuItem";
-            this.copyContextMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.copyContextMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyContextMenuItem.Text = "Copy";
             this.copyContextMenuItem.Click += new System.EventHandler(this.copyContextMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(119, 6);
             // 
             // clearContextMenuItem
             // 
             this.clearContextMenuItem.Name = "clearContextMenuItem";
-            this.clearContextMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.clearContextMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clearContextMenuItem.Text = "Clear";
             this.clearContextMenuItem.Click += new System.EventHandler(this.clearContextMenuItem_Click);
             // 
@@ -120,11 +108,9 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox logBox;
+        private RichTextBoxPlus logBox;
         private System.Windows.Forms.ContextMenuStrip LogContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem selectAllContextMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyContextMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem clearContextMenuItem;
     }
 }

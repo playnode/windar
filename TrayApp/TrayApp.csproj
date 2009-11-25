@@ -72,6 +72,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="RichTextBoxPlus.resx">
+      <DependentUpon>RichTextBoxPlus.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tray.resx">
       <DependentUpon>Tray.cs</DependentUpon>
     </EmbeddedResource>
@@ -89,6 +92,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="RichTextBoxPlus.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RichTextBoxPlus.Designer.cs">
+      <DependentUpon>RichTextBoxPlus.cs</DependentUpon>
     </Compile>
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>

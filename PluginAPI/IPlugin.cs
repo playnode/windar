@@ -24,5 +24,6 @@ namespace Windar.PluginAPI
         string Name { get; }
         string Description { get; }
         void Load();
+        void Shutdown();
     }
 }

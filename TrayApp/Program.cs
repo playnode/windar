@@ -115,6 +115,7 @@ namespace Windar.TrayApp
         internal void Shutdown()
         {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
+            PluginHost.Shutdown();
             Daemon.Stop();
             MainForm.Exit();
             Application.Exit();
@@ -137,7 +138,6 @@ namespace Windar.TrayApp
         private delegate bool HandlerDelegate(ControlEventType dwControlType);
 
         private static HandlerDelegate _controlHandler;
-
 
         private static bool ControlHandler(ControlEventType controlEvent)
         {

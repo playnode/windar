@@ -58,5 +58,10 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug("Loading plugin.");
             Host.AddTabPage(PlayerControl, Name);
         }
+
+        public void Shutdown()
+        {
+            if (Log.IsDebugEnabled) Log.Debug("Shutting down plugin.");
+        }
     }
 }

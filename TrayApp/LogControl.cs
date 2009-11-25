@@ -18,6 +18,7 @@
 
 using System;
 using System.Drawing;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
@@ -27,17 +28,23 @@ namespace Windar.TrayApp
 {
     partial class LogControl : UserControl
     {
-        //TODO: Update the log box periodically, limiting the contents too.
-        //TODO: Provide option to follow tail (or follow tail when scrollbar near end?)
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
+        private const int MaxBufferSize = 1024 * 256; // 256K
+
+        private string _buffer;
+        private bool _bufferChanged;
+        private int _linesRemoved;
+        private int _lineHeight;
+        private bool _updating;
+        private Timer _timer;
 
         #region Properties
 
-        public Timer Timer { get; private set; }
-
-        private RichTextBox _logBox;
         private MemoryAppender _memoryAppender;
+        private RichTextBoxPlus _logBox;
 
-        private RichTextBox LogBox
+        public RichTextBoxPlus LogBox
         {
             get
             {
@@ -45,7 +52,7 @@ namespace Windar.TrayApp
                 {
                     var ctrl = Controls.Find("logBox", true);
                     if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logBox!");
-                    _logBox = (RichTextBox)ctrl[0];
+                    _logBox = (RichTextBoxPlus) ctrl[0];
                 }
                 return _logBox;
             }
@@ -71,6 +78,8 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Init
+
         public LogControl()
         {
             InitializeComponent();
@@ -81,63 +90,135 @@ namespace Windar.TrayApp
             // Set the log box font.
             const string preferredFontName = "ProFontWindows";
             var testFont = new Font(preferredFontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
-            LogBox.Font = testFont.Name == preferredFontName ? testFont : new Font("Courier New", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+            LogBox.Font = testFont.Name == preferredFontName ? testFont : 
+                new Font("Courier New", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+
+            // Store line-height.
+            _lineHeight = testFont.Name == preferredFontName ? 12 : 13;
 
             // Create timer for updating.
-            Timer = new Timer { Interval = 10 };
-            Timer.Tick += LogBoxTimer_Tick;
+            _timer = new Timer { Interval = 10 };
+            _timer.Tick += LogBoxTimer_Tick;
+
+            // First update.
+            _timer.Start();
+            UpdateOutputBuffer();
+            LogBox.SetText(_buffer, _linesRemoved, _lineHeight);
         }
+
+        #endregion
+
+        public void StartUpdating()
+        {
+            _updating = true;
+        }
+
+        public void StopUpdating()
+        {
+            _updating = false;
+        }
+
+        private void UpdateOutputBuffer()
+        {
+            var sb = new StringBuilder();
+            try
+            {
+                var events = MemoryAppender.GetEvents();
+                if (events.Length <= 0) return;
+                foreach (var logEvent in events)
+                {
+                    var msg = logEvent.RenderedMessage;
+                    if (msg.StartsWith("CMD.INF: "))
+                    {
+                        sb.Append(msg.Substring(9, msg.Length - 9));
+                        sb.Append('\n');
+                    }
+                    else if (msg.StartsWith("CMD.ERR: "))
+                    {
+                        sb.Append("ERROR! ").Append(msg.Substring(9, msg.Length - 9));
+                        sb.Append('\n');
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("Exception when reading log memory appender.", ex);
+                _buffer = null;
+            }
+
+            // Clear appender until next update.
+            MemoryAppender.Clear();
+
+            // Update the log buffer.
+            if (sb.Length > 0) sb.Remove(sb.Length - 1, 1); // Remove last newline.
+            if (sb.Length > 0) _bufferChanged = true;
+            var s = sb.ToString();
+            sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(_buffer)) sb.Append(_buffer).Append('\n');
+            sb.Append(s);
+
+            // Remove lines from beginning of buffer if necessary.
+            _linesRemoved = sb.Length <= MaxBufferSize ? _linesRemoved : 
+                _linesRemoved + TrimBuffer(sb, MaxBufferSize);
+
+            _buffer = sb.ToString();
+        }
+
+        private static int TrimBuffer(StringBuilder sb, int size)
+        {
+            // Trim from the beginning of the buffer to match size.
+            var d1 = sb.ToString().Substring(0, sb.Length - size);
+            sb.Remove(0, sb.Length - size);
+
+            // Remove likely partial first line.
+            var s = sb.ToString();
+            var i = s.IndexOf('\n');
+            var d2 = s.Substring(0, i); // Not including last newline.
+            if (i > 0 && i < sb.Length) sb.Remove(0, i + 1);
+
+            // How many lines removed?
+            sb = new StringBuilder();
+            sb.Append(d1);
+            sb.Append(d2);
+            s = sb.ToString();
+            var n = s.Split('\n').Length;
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug("Deleted string is:\n" + s);
+                Log.Debug("Removed " + n + " lines from start of buffer.");
+            }
+            return n;
+        }
+
+        public void Close()
+        {
+            _timer.Stop();
+        }
+
+        #region Event handlers.
 
         private void LogBoxTimer_Tick(object sender, EventArgs e)
         {
-            UpdateLogBox();
-        }
+            UpdateOutputBuffer();
+            if (_updating && _bufferChanged) LogBox.SetText(_buffer, _linesRemoved, _lineHeight);
 
-        public void ScrollToEnd()
-        {
-            LogBox.SelectionStart = LogBox.TextLength;
-            LogBox.ScrollToCaret();
-        }
-
-        private void UpdateLogBox()
-        {
-            var events = MemoryAppender.GetEvents();
-            if (events.Length <= 0) return;
-            var sb = new StringBuilder();
-            sb.Append(LogBox.Text);
-            foreach (var logEvent in events)
-            {
-                var msg = logEvent.RenderedMessage;
-                if (msg.StartsWith("CMD.INF: "))
-                {
-                    sb.Append(msg.Substring(9, msg.Length - 9));
-                    sb.Append('\n');
-                }
-                else if (msg.StartsWith("CMD.ERR: "))
-                {
-                    sb.Append("ERROR! ").Append(msg.Substring(9, msg.Length - 9));
-                    sb.Append('\n');
-                }
-            }
-            MemoryAppender.Clear();
-            LogBox.Text = sb.ToString();
-            ScrollToEnd();
-        }
-
-        private void selectAllContextMenuItem_Click(object sender, EventArgs e)
-        {
-            LogBox.SelectAll();
-            LogBox.Focus();
+            // Reset the following buffer-related vars.
+            _bufferChanged = false;
+            _linesRemoved = 0;
         }
 
         private void copyContextMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(LogBox.SelectedText);
+            if (LogBox.SelectedText.Length > 0) Clipboard.SetText(LogBox.SelectedText);
+            else Clipboard.SetText(LogBox.Text);
         }
 
         private void clearContextMenuItem_Click(object sender, EventArgs e)
         {
+            _buffer = null;
             LogBox.Clear();
         }
+
+        #endregion
     }
 }

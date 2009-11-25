@@ -94,6 +94,14 @@ namespace Windar.TrayApp
 
         #endregion
 
+        public void Shutdown()
+        {
+            foreach (var plugin in Plugins)
+            {
+                plugin.Shutdown();
+            }
+        }
+
         public void AddTabPage(UserControl control, string title)
         {
             var tab = new TabPage {Text = title};
