@@ -126,6 +126,7 @@
 IF EXIST "$(TargetDir)playdar" RMDIR /S /Q "$(TargetDir)playdar"
 XCOPY /E "$(ProjectDir)..\Installer\Payload\minimerl" "$(TargetDir)minimerl\"
 XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar" "$(TargetDir)playdar\"
+XCOPY /E /Y "$(ProjectDir)..\Plugins\PlayerPlugin\$(OutDir)*" "$(TargetDir)"
 COPY /Y "$(ProjectDir)..\Installer\Utils\erlini\bin\Release\erlini.exe" "$(TargetDir)minimerl\bin"
 "$(TargetDir)minimerl\bin\erlini.exe"
 </PostBuildEvent>

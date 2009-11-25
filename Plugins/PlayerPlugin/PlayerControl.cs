@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Windar: Playdar for Windows
  * Copyright (C) 2009 Steven Robertson <steve@playnode.org>
  *
@@ -16,13 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.PluginAPI
+using System.Windows.Forms;
+
+namespace Windar.PlayerPlugin
 {
-    public interface IPlugin
+    public partial class PlayerControl : UserControl
     {
-        IPluginHost Host { set; }
-        string Name { get; }
-        string Description { get; }
-        void Load();
+        public PlayerControl()
+        {
+            InitializeComponent();
+        }
     }
 }

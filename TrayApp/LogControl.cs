@@ -127,6 +127,7 @@ namespace Windar.TrayApp
         private void selectAllContextMenuItem_Click(object sender, EventArgs e)
         {
             LogBox.SelectAll();
+            LogBox.Focus();
         }
 
         private void copyContextMenuItem_Click(object sender, EventArgs e)

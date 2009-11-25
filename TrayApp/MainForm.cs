@@ -41,6 +41,7 @@ namespace Windar.TrayApp
         private WebBrowser _playdarBrowser;
         private TabPage _logBoxTab;
         private LogControl _logControl;
+        private TabControl _tabControl;
 
         private WebBrowser PlaydarBrowser
         {
@@ -81,6 +82,14 @@ namespace Windar.TrayApp
                     _logControl = (LogControl) ctrl[0];
                 }
                 return _logControl;
+            }
+        }
+
+        public TabControl TabControl
+        {
+            get
+            {
+                return mainformTabControl;
             }
         }
 

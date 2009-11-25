@@ -64,7 +64,7 @@ namespace Windar.TrayApp
             this.logBox.Location = new System.Drawing.Point(0, 0);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(606, 401);
+            this.logBox.Size = new System.Drawing.Size(400, 300);
             this.logBox.TabIndex = 1;
             this.logBox.Text = "";
             this.logBox.WordWrap = false;
@@ -77,31 +77,31 @@ namespace Windar.TrayApp
             this.toolStripSeparator1,
             this.clearContextMenuItem});
             this.LogContextMenu.Name = "LogContextMenu";
-            this.LogContextMenu.Size = new System.Drawing.Size(153, 98);
+            this.LogContextMenu.Size = new System.Drawing.Size(123, 76);
             // 
             // selectAllContextMenuItem
             // 
             this.selectAllContextMenuItem.Name = "selectAllContextMenuItem";
-            this.selectAllContextMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectAllContextMenuItem.Size = new System.Drawing.Size(122, 22);
             this.selectAllContextMenuItem.Text = "Select All";
             this.selectAllContextMenuItem.Click += new System.EventHandler(this.selectAllContextMenuItem_Click);
             // 
             // copyContextMenuItem
             // 
             this.copyContextMenuItem.Name = "copyContextMenuItem";
-            this.copyContextMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyContextMenuItem.Size = new System.Drawing.Size(122, 22);
             this.copyContextMenuItem.Text = "Copy";
             this.copyContextMenuItem.Click += new System.EventHandler(this.copyContextMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(119, 6);
             // 
             // clearContextMenuItem
             // 
             this.clearContextMenuItem.Name = "clearContextMenuItem";
-            this.clearContextMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearContextMenuItem.Size = new System.Drawing.Size(122, 22);
             this.clearContextMenuItem.Text = "Clear";
             this.clearContextMenuItem.Click += new System.EventHandler(this.clearContextMenuItem_Click);
             // 
@@ -111,7 +111,7 @@ namespace Windar.TrayApp
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.logBox);
             this.Name = "LogControl";
-            this.Size = new System.Drawing.Size(606, 401);
+            this.Size = new System.Drawing.Size(400, 300);
             this.Load += new System.EventHandler(this.Log_Load);
             this.LogContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);

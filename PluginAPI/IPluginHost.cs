@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Windows.Forms;
+
 namespace Windar.PluginAPI
 {
     public interface IPluginHost
     {
-        
+        void AddTabPage(UserControl control, string title);
     }
 }

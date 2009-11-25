@@ -16,17 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Reflection;
+using log4net;
 using Windar.PluginAPI;
 
 namespace Windar.PlayerPlugin
 {
     public class PlayerPlugin : IPlugin
     {
-        private IPluginHost _host;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public PlayerPlugin(IPluginHost host)
+        #region Properties
+
+        public IPluginHost Host { private get; set; }
+        public PlayerControl PlayerControl { get; private set; }
+
+        public string Name
         {
-            _host = host;
+            get
+            {
+                return "Player";
+            }
+        }
+        public string Description
+        {
+            get
+            {
+                return "Provides an audio player via a plugin.";
+            }
+        }
+
+        #endregion
+
+        public PlayerPlugin()
+        {
+            PlayerControl = new PlayerControl();
+        }
+
+        public void Load()
+        {
+            if (Log.IsDebugEnabled) Log.Debug("Loading plugin.");
+            Host.AddTabPage(PlayerControl, Name);
         }
     }
 }

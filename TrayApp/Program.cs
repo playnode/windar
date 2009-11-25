@@ -36,7 +36,7 @@ namespace Windar.TrayApp
         internal MainForm MainForm { get; private set; }
         internal DaemonController Daemon { get; private set; }
         internal Tray Tray { get; private set; }
-        internal PluginHost Plugins { get; private set; }
+        internal PluginHost PluginHost { get; private set; }
 
         #region Win32 API
 
@@ -97,12 +97,12 @@ namespace Windar.TrayApp
             MainForm = new MainForm();
             Daemon = new DaemonController(Application.StartupPath);
             Tray = new Tray();
-            Plugins = new PluginHost();
+            PluginHost = new PluginHost();
         }
 
         private void Run()
         {
-            Plugins.Load();
+            PluginHost.Load();
             Daemon.Start();
             if (Properties.Settings.Default.MainFormVisible) MainForm.EnsureVisible();
             Application.Run(Tray);
