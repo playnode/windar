@@ -200,7 +200,8 @@ namespace Windar.TrayApp
         private void LogBoxTimer_Tick(object sender, EventArgs e)
         {
             UpdateOutputBuffer();
-            if (_updating && _bufferChanged) LogBox.SetText(_buffer, _linesRemoved, _lineHeight);
+            if (!_updating || !_bufferChanged) return;
+            LogBox.SetText(_buffer, _linesRemoved, _lineHeight);
 
             // Reset the following buffer-related vars.
             _bufferChanged = false;
