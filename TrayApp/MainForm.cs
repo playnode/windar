@@ -40,7 +40,7 @@ namespace Windar.TrayApp
 
         private WebBrowser _playdarBrowser;
         private TabPage _logBoxTab;
-        private LogControl _logControl;
+        private LogTextBox _logBox;
 
         private WebBrowser PlaydarBrowser
         {
@@ -70,17 +70,17 @@ namespace Windar.TrayApp
             }
         }
 
-        private LogControl LogControl
+        private LogTextBox LogBox
         {
             get
             {
-                if (_logControl == null)
+                if (_logBox == null)
                 {
-                    var ctrl = mainformTabControl.Controls.Find("logControl", true);
-                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logControl!");
-                    _logControl = (LogControl) ctrl[0];
+                    var ctrl = mainformTabControl.Controls.Find("logBox", true);
+                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logBox!");
+                    _logBox = (LogTextBox) ctrl[0];
                 }
-                return _logControl;
+                return _logBox;
             }
         }
 
@@ -110,6 +110,7 @@ namespace Windar.TrayApp
 
             RestoreWindowLayout();
             GoToAbout();
+            LogBox.Load();
             LoadPlaydarHomepage();
         }
 
@@ -209,6 +210,7 @@ namespace Windar.TrayApp
 
         internal void Exit()
         {
+            LogBox.Close();
             _reallyClose = true;
             Close();
         }
@@ -294,8 +296,8 @@ namespace Windar.TrayApp
                 && Size != _oldSize)
             {
                 //LogControl.LogBox.ScrollToEnd();
-                LogControl.LogBox.SelectionStart = LogControl.LogBox.TextLength;
-                LogControl.LogBox.ScrollToCaret();
+                LogBox.SelectionStart = LogBox.TextLength;
+                LogBox.ScrollToCaret();
             }
             _resizing = false;
             PersistWindowLayout();
@@ -304,7 +306,7 @@ namespace Windar.TrayApp
         private void MainForm_Resize(object sender, EventArgs e)
         {
             if (_resizing) return;
-            if (mainformTabControl.SelectedTab == LogBoxTab) LogControl.LogBox.ScrollToEnd();
+            if (mainformTabControl.SelectedTab == LogBoxTab) LogBox.ScrollToEnd();
             PersistWindowLayout();
         }
 
@@ -324,12 +326,12 @@ namespace Windar.TrayApp
             // Only run the log box updating timer when log is selected.
             if (mainformTabControl.SelectedTab == LogBoxTab)
             {
-                LogControl.StartUpdating();
-                LogControl.LogBox.ScrollToEnd();
+                LogBox.Updating = true;
+                LogBox.ScrollToEnd();
             }
             else
             {
-                LogControl.StopUpdating();
+                LogBox.Updating = false;
             }
         }
     }

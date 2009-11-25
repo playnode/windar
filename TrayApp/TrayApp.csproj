@@ -46,12 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DirectoryDialog.cs" />
-    <Compile Include="LogControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="LogControl.Designer.cs">
-      <DependentUpon>LogControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,9 +55,6 @@
     <Compile Include="PluginHost.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="LogControl.resx">
-      <DependentUpon>LogControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -72,8 +63,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="RichTextBoxPlus.resx">
-      <DependentUpon>RichTextBoxPlus.cs</DependentUpon>
+    <EmbeddedResource Include="LogTextBox.resx">
+      <DependentUpon>LogTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tray.resx">
       <DependentUpon>Tray.cs</DependentUpon>
@@ -93,11 +84,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RichTextBoxPlus.cs">
+    <Compile Include="LogTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="RichTextBoxPlus.Designer.cs">
-      <DependentUpon>RichTextBoxPlus.cs</DependentUpon>
+    <Compile Include="LogTextBox.Designer.cs">
+      <DependentUpon>LogTextBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>

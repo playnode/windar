@@ -46,6 +46,7 @@ namespace Windar.TrayApp
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.mainformBorderPanel = new System.Windows.Forms.Panel();
             this.mainformTabControl = new System.Windows.Forms.TabControl();
@@ -57,21 +58,23 @@ namespace Windar.TrayApp
             this.playdarInfo = new System.Windows.Forms.RichTextBox();
             this.playdarLogo = new System.Windows.Forms.PictureBox();
             this.libraryTabPage = new System.Windows.Forms.TabPage();
-            this.networkTabPage = new System.Windows.Forms.TabPage();
+            this.optionsTabPage = new System.Windows.Forms.TabPage();
             this.playdarTabPage = new System.Windows.Forms.TabPage();
             this.playdarBorderPanel = new System.Windows.Forms.Panel();
             this.playdarBrowser = new System.Windows.Forms.WebBrowser();
             this.logTabPage = new System.Windows.Forms.TabPage();
-            this.logControl = new Windar.TrayApp.LogControl();
+            this.logBoxPanel = new System.Windows.Forms.Panel();
+            this.logBox = new Windar.TrayApp.LogTextBox();
             this.mainformBorderPanel.SuspendLayout();
             this.mainformTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
             this.aboutCenterPanel.SuspendLayout();
             this.playdarInfoBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.playdarLogo)).BeginInit();
             this.playdarTabPage.SuspendLayout();
             this.playdarBorderPanel.SuspendLayout();
             this.logTabPage.SuspendLayout();
+            this.logBoxPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainformBorderPanel
@@ -89,7 +92,7 @@ namespace Windar.TrayApp
             this.mainformTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.mainformTabControl.Controls.Add(this.aboutTabPage);
             this.mainformTabControl.Controls.Add(this.libraryTabPage);
-            this.mainformTabControl.Controls.Add(this.networkTabPage);
+            this.mainformTabControl.Controls.Add(this.optionsTabPage);
             this.mainformTabControl.Controls.Add(this.playdarTabPage);
             this.mainformTabControl.Controls.Add(this.logTabPage);
             this.mainformTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -116,7 +119,7 @@ namespace Windar.TrayApp
             // 
             // versionLabel
             // 
-            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.versionLabel.AutoSize = true;
             this.versionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.versionLabel.Location = new System.Drawing.Point(-1, 389);
@@ -138,9 +141,9 @@ namespace Windar.TrayApp
             // 
             // playdarLink
             // 
-            this.playdarLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.playdarLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (128)))), ((int) (((byte) (128)))), ((int) (((byte) (255)))));
             this.playdarLink.AutoSize = true;
-            this.playdarLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.playdarLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.playdarLink.Location = new System.Drawing.Point(266, 181);
             this.playdarLink.Name = "playdarLink";
             this.playdarLink.Size = new System.Drawing.Size(117, 16);
@@ -167,7 +170,7 @@ namespace Windar.TrayApp
             this.playdarInfo.DetectUrls = false;
             this.playdarInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.playdarInfo.Enabled = false;
-            this.playdarInfo.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.playdarInfo.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
             this.playdarInfo.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.playdarInfo.Location = new System.Drawing.Point(7, 13);
             this.playdarInfo.Name = "playdarInfo";
@@ -182,7 +185,7 @@ namespace Windar.TrayApp
             // 
             // playdarLogo
             // 
-            this.playdarLogo.Image = ((System.Drawing.Image)(resources.GetObject("playdarLogo.Image")));
+            this.playdarLogo.Image = ((System.Drawing.Image) (resources.GetObject("playdarLogo.Image")));
             this.playdarLogo.Location = new System.Drawing.Point(3, 9);
             this.playdarLogo.Name = "playdarLogo";
             this.playdarLogo.Size = new System.Drawing.Size(257, 256);
@@ -199,15 +202,15 @@ namespace Windar.TrayApp
             this.libraryTabPage.Text = "Library";
             this.libraryTabPage.UseVisualStyleBackColor = true;
             // 
-            // networkTabPage
+            // optionsTabPage
             // 
-            this.networkTabPage.Location = new System.Drawing.Point(4, 25);
-            this.networkTabPage.Name = "networkTabPage";
-            this.networkTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.networkTabPage.Size = new System.Drawing.Size(608, 403);
-            this.networkTabPage.TabIndex = 3;
-            this.networkTabPage.Text = "Network";
-            this.networkTabPage.UseVisualStyleBackColor = true;
+            this.optionsTabPage.Location = new System.Drawing.Point(4, 25);
+            this.optionsTabPage.Name = "optionsTabPage";
+            this.optionsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.optionsTabPage.Size = new System.Drawing.Size(608, 403);
+            this.optionsTabPage.TabIndex = 3;
+            this.optionsTabPage.Text = "Options";
+            this.optionsTabPage.UseVisualStyleBackColor = true;
             // 
             // playdarTabPage
             // 
@@ -247,8 +250,7 @@ namespace Windar.TrayApp
             // 
             // logTabPage
             // 
-            this.logTabPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTabPage.Controls.Add(this.logControl);
+            this.logTabPage.Controls.Add(this.logBoxPanel);
             this.logTabPage.Location = new System.Drawing.Point(4, 25);
             this.logTabPage.Name = "logTabPage";
             this.logTabPage.Size = new System.Drawing.Size(608, 403);
@@ -256,13 +258,29 @@ namespace Windar.TrayApp
             this.logTabPage.Text = "Log";
             this.logTabPage.UseVisualStyleBackColor = true;
             // 
-            // logControl
+            // logBoxPanel
             // 
-            this.logControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logControl.Location = new System.Drawing.Point(0, 0);
-            this.logControl.Name = "logControl";
-            this.logControl.Size = new System.Drawing.Size(606, 401);
-            this.logControl.TabIndex = 0;
+            this.logBoxPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logBoxPanel.Controls.Add(this.logBox);
+            this.logBoxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logBoxPanel.Location = new System.Drawing.Point(0, 0);
+            this.logBoxPanel.Name = "logBoxPanel";
+            this.logBoxPanel.Size = new System.Drawing.Size(608, 403);
+            this.logBoxPanel.TabIndex = 1;
+            // 
+            // logBox
+            // 
+            this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.logBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.logBox.DetectUrls = false;
+            this.logBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logBox.Location = new System.Drawing.Point(0, 0);
+            this.logBox.Name = "logBox";
+            this.logBox.ReadOnly = true;
+            this.logBox.ShortcutsEnabled = false;
+            this.logBox.Size = new System.Drawing.Size(606, 401);
+            this.logBox.TabIndex = 0;
+            this.logBox.Text = "";
             // 
             // MainForm
             // 
@@ -270,7 +288,7 @@ namespace Windar.TrayApp
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 442);
             this.Controls.Add(this.mainformBorderPanel);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -287,10 +305,11 @@ namespace Windar.TrayApp
             this.aboutCenterPanel.ResumeLayout(false);
             this.aboutCenterPanel.PerformLayout();
             this.playdarInfoBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.playdarLogo)).EndInit();
             this.playdarTabPage.ResumeLayout(false);
             this.playdarBorderPanel.ResumeLayout(false);
             this.logTabPage.ResumeLayout(false);
+            this.logBoxPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -307,11 +326,12 @@ namespace Windar.TrayApp
         private System.Windows.Forms.RichTextBox playdarInfo;
         private System.Windows.Forms.PictureBox playdarLogo;
         private System.Windows.Forms.TabPage libraryTabPage;
-        private System.Windows.Forms.TabPage networkTabPage;
+        private System.Windows.Forms.TabPage optionsTabPage;
         private System.Windows.Forms.TabPage playdarTabPage;
         private System.Windows.Forms.Panel playdarBorderPanel;
         private System.Windows.Forms.WebBrowser playdarBrowser;
         private System.Windows.Forms.TabPage logTabPage;
-        private LogControl logControl;
+        private LogTextBox logBox;
+        private System.Windows.Forms.Panel logBoxPanel;
     }
 }
