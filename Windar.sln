@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerPlugin", "Plugins\PlayerPlugin\PlayerPlugin.csproj", "{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrobblerPlugin", "Plugins\ScrobblerPlugin\ScrobblerPlugin.csproj", "{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

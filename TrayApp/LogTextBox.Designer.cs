@@ -80,6 +80,7 @@ namespace Windar.TrayApp
             this.DetectUrls = false;
             this.ReadOnly = true;
             this.ShortcutsEnabled = false;
+            this.WordWrap = false;
             this.VScroll += new System.EventHandler(this.RichTextBoxPlus_VScroll);
             this.logBoxContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);

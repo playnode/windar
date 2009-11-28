@@ -57,7 +57,7 @@ namespace Windar.TrayApp
             // Tray menu items.
             _aboutMenuItem = new MenuItem("About Windar", ShowAbout);
             _updateMenuItem = new MenuItem("Check for Updates", CheckForUpdates);
-            _daemonMenuItem = new MenuItem("Playdar Daemon Info", ShowDaemonInfo);
+            _daemonMenuItem = new MenuItem("Playdar Information", ShowDaemonInfo);
             _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
             _spiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdarWebsite);
             _searchMenuItem = new MenuItem("Search", OpenSearchWebsite);
@@ -66,8 +66,8 @@ namespace Windar.TrayApp
             _scanfilesMenuItem = new MenuItem("Scan Files", Scan);
             _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
+            _restartMenuItem = new MenuItem("Restart Playdar Core", Restart);
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
-            _restartMenuItem = new MenuItem("Restart", Restart);
 
             // Demos menu.
             var demos = new MenuItem("Playdar Demos");
@@ -137,12 +137,12 @@ namespace Windar.TrayApp
 
         private static void Restart(object sender, EventArgs e)
         {
-            Program.Instance.Daemon.Restart();
+            Program.Instance.RestartDaemon();
         }
 
         private static void Ping(object sender, EventArgs e)
         {
-            Program.Instance.ShowInfoDialog(Program.Instance.Daemon.Ping());
+            Program.ShowInfoDialog(Program.Instance.Daemon.Ping());
         }
 
         private static void NumFiles(object sender, EventArgs e)
@@ -158,7 +158,7 @@ namespace Windar.TrayApp
             {
                 result = "Error: " + ex.Message;
             }
-            Program.Instance.ShowInfoDialog(result);
+            Program.ShowInfoDialog(result);
         }
 
         private void Scan(object sender, EventArgs e)
@@ -180,13 +180,13 @@ namespace Windar.TrayApp
 
         private static void ShowAbout(object sender, EventArgs e)
         {
-            Program.Instance.MainForm.GoToAbout();
+            Program.Instance.MainForm.GoToAboutPage();
             Program.Instance.MainForm.EnsureVisible();
         }
 
         private static void ShowDaemonInfo(object sender, EventArgs e)
         {
-            Program.Instance.MainForm.GoToPlaydarDaemon();
+            Program.Instance.MainForm.GoToPlaydarPage();
             Program.Instance.MainForm.EnsureVisible();
         }
 
@@ -196,7 +196,6 @@ namespace Windar.TrayApp
         {
             try
             {
-
                 // Get the version file from the windar.org website.
                 var request = (HttpWebRequest)WebRequest.Create("http://windar.org/latest/version");
                 var response = (HttpWebResponse)request.GetResponse();
@@ -221,7 +220,7 @@ namespace Windar.TrayApp
                     var msg = new StringBuilder();
                     msg.Append("There is a new version available!\n");
                     msg.Append("Go to download website now?");
-                    if (Program.Instance.ShowYesNoDialog(msg.ToString()))
+                    if (Program.ShowYesNoDialog(msg.ToString()))
                     {
                         System.Diagnostics.Process.Start("http://windar.org/download/");
                     }
@@ -230,13 +229,13 @@ namespace Windar.TrayApp
                 }
                 else
                 {
-                    Program.Instance.ShowInfoDialog("You have the latest version.");
+                    Program.ShowInfoDialog("You have the latest version.");
                 }
             }
             catch (Exception ex)
             {
                 if (Log.IsErrorEnabled) Log.Error("Exception when checking for latest version.", ex);
-                Program.Instance.ShowErrorDialog(ex);
+                Program.ShowErrorDialog(ex);
             }
         }
 
@@ -315,7 +314,7 @@ namespace Windar.TrayApp
         #endregion
 
         /// <summary>
-        /// This method is used to compare version strings.
+        /// This method is used to convert version to comparable strings.
         /// The version string is converted to an integer, allowing 2 digits for each of the
         /// major, minor and build components. 4 digits are allowed for the revision.
         /// </summary>

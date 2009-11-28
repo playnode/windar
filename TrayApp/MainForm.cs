@@ -29,11 +29,10 @@ namespace Windar.TrayApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        private const string Homepage = "http://localhost:60210/";
-
         private string _lastLink;
         private bool _reallyClose;
         private bool _resizing;
+        private FormWindowState _lastWindowState;
         private Size _oldSize;
 
         #region Properties
@@ -42,7 +41,7 @@ namespace Windar.TrayApp
         private TabPage _logBoxTab;
         private LogTextBox _logBox;
 
-        private WebBrowser PlaydarBrowser
+        internal WebBrowser PlaydarBrowser
         {
             get
             {
@@ -63,8 +62,7 @@ namespace Windar.TrayApp
                 if (_logBoxTab == null)
                 {
                     var ctrl = mainformTabControl.Controls.Find("logTabPage", true);
-                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logTabPage!");
-                    _logBoxTab = (TabPage) ctrl[0];
+                    if (ctrl.Length > 0) _logBoxTab = (TabPage) ctrl[0];
                 }
                 return _logBoxTab;
             }
@@ -77,8 +75,7 @@ namespace Windar.TrayApp
                 if (_logBox == null)
                 {
                     var ctrl = mainformTabControl.Controls.Find("logBox", true);
-                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find logBox!");
-                    _logBox = (LogTextBox) ctrl[0];
+                    if (ctrl.Length > 0) _logBox = (LogTextBox) ctrl[0];
                 }
                 return _logBox;
             }
@@ -109,39 +106,53 @@ namespace Windar.TrayApp
             versionLabel.Text = info.ToString();
 
             RestoreWindowLayout();
-            GoToAbout();
+            GoToAboutPage();
+
+#if DEBUG
             LogBox.Load();
+            LogBox.VScroll += RichTextBoxPlus_VScroll;
+            LogBox.ScrollToEnd();
+#else
+            mainformTabControl.TabPages.Remove(LogBoxTab);
+            _logBoxTab = null;
+            _logBox = null;
+#endif
+
             LoadPlaydarHomepage();
+        }
+
+        private void RichTextBoxPlus_VScroll(object sender, EventArgs e)
+        {
+            if (LogBox != null)
+            {
+                Program.Instance.MainForm.followTailCheckBox.Checked = LogBox.FollowTail;
+            }
         }
 
         #endregion
 
-        #region Page navigation.
-
-        public void GoToAbout()
+        public void GoToAboutPage()
         {
             var page = mainformTabControl.TabPages["aboutTabPage"];
             mainformTabControl.SelectTab(page);
         }
 
-        public void GoToPlaydarDaemon()
+        public void GoToPlaydarPage()
         {
             LoadPlaydarHomepage();
             var page = mainformTabControl.TabPages["playdarTabPage"];
             mainformTabControl.SelectTab(page);
         }
 
-        #endregion
-
         #region Playdar daemon browser.
 
-        private void LoadPlaydarHomepage()
+        internal void LoadPlaydarHomepage()
         {
             if (PlaydarBrowser.Document == null
                 || PlaydarBrowser.Document.Url == null
-                || !PlaydarBrowser.Document.Url.Equals(Homepage))
+                || !PlaydarBrowser.Document.Url.Equals(Program.PlaydarDaemon))
             {
-                PlaydarBrowser.Navigate(Homepage);
+                PlaydarBrowser.Navigate(Program.PlaydarDaemon);
             }
         }
 
@@ -152,22 +163,38 @@ namespace Windar.TrayApp
 
         private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            if (e.Url.ToString().StartsWith(Homepage)) return;
-            if (e.Url.ToString().StartsWith("res://ieframe.dll/navcancl.htm"))
+            var url = e.Url.ToString();
+            if (url.Equals(Program.PlaydarDaemon))
+            {
+                homeButton.Enabled = false;
+                backButton.Enabled = false;
+                return;
+            }
+            if (url.StartsWith(Program.PlaydarDaemon))
+            {
+                homeButton.Enabled = true;
+                backButton.Enabled = true;
+                return;
+            }
+            if (url.StartsWith("res://ieframe.dll/navcancl.htm"))
             {
                 e.Cancel = true;
+            }
+            else if (url.Equals("about:blank"))
+            {
+                e.Cancel = false;
             }
             else
             {
                 e.Cancel = true;
-                System.Diagnostics.Process.Start(e.Url.ToString());
+                System.Diagnostics.Process.Start(url);
             }
         }
 
         private void playdarBrowser_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
-            if (!_lastLink.StartsWith(Homepage))
+            if (!_lastLink.StartsWith(Program.PlaydarDaemon))
             {
                 PlaydarBrowser.Navigate(_lastLink);
             }
@@ -210,7 +237,7 @@ namespace Windar.TrayApp
 
         internal void Exit()
         {
-            LogBox.Close();
+            if (LogBox != null) LogBox.Close();
             _reallyClose = true;
             Close();
         }
@@ -241,7 +268,6 @@ namespace Windar.TrayApp
             }
             if (Log.IsDebugEnabled) Log.Debug("Persisting window layout.");
             Properties.Settings.Default.Save();
-            EnsureVisible();
         }
 
         private void RestoreWindowLayout()
@@ -286,19 +312,16 @@ namespace Windar.TrayApp
 
         private void MainForm_ResizeBegin(object sender, EventArgs e)
         {
-            _oldSize = Size;
             _resizing = true;
+            _oldSize = Size;
         }
 
         private void MainForm_ResizeEnd(object sender, EventArgs e)
         {
-            if (mainformTabControl.SelectedTab == LogBoxTab
-                && Size != _oldSize)
-            {
-                //LogControl.LogBox.ScrollToEnd();
-                LogBox.SelectionStart = LogBox.TextLength;
-                LogBox.ScrollToCaret();
-            }
+            if (mainformTabControl.SelectedTab == LogBoxTab 
+                && LogBoxTab != null
+                && Size != _oldSize 
+                && LogBox != null) LogBox.ScrollToEnd();
             _resizing = false;
             PersistWindowLayout();
         }
@@ -306,7 +329,22 @@ namespace Windar.TrayApp
         private void MainForm_Resize(object sender, EventArgs e)
         {
             if (_resizing) return;
-            if (mainformTabControl.SelectedTab == LogBoxTab) LogBox.ScrollToEnd();
+            if (mainformTabControl.SelectedTab == LogBoxTab
+                && LogBoxTab != null)
+            {
+                if (LogBox != null)
+                {
+                    if (_lastWindowState == FormWindowState.Maximized)
+                    {
+                        LogBox.ReSetText();
+                    }
+                    LogBox.ScrollToEnd();
+                }
+            }
+            if (WindowState != FormWindowState.Minimized)
+            {
+                _lastWindowState = WindowState;
+            }
             PersistWindowLayout();
         }
 
@@ -314,7 +352,8 @@ namespace Windar.TrayApp
 
         public void EnsureVisible()
         {
-            if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.Show();
+            if (WindowState == FormWindowState.Minimized) WindowState = _lastWindowState;
+            if (!Visible) Show();
             Program.Instance.MainForm.Activate();
             if (Properties.Settings.Default.MainFormVisible) return;
             Properties.Settings.Default.MainFormVisible = true;
@@ -323,15 +362,68 @@ namespace Windar.TrayApp
 
         private void mainformTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Only run the log box updating timer when log is selected.
-            if (mainformTabControl.SelectedTab == LogBoxTab)
+            if (mainformTabControl.SelectedTab == LogBoxTab
+                && LogBoxTab != null)
             {
-                LogBox.Updating = true;
-                LogBox.ScrollToEnd();
+                if (LogBox != null)
+                {
+                    LogBox.Visible = true;
+                    LogBox.Updating = true;
+                }
+                followTailCheckBox.Checked = true;
+                if (LogBox != null)
+                {
+                    LogBox.ReSetText();
+                    LogBox.ScrollToEnd();
+                    LogBox.Visible = true;
+                }
             }
             else
             {
-                LogBox.Updating = false;
+                if (LogBox != null)
+                {
+                    LogBox.Updating = false;
+                }
+            }
+        }
+
+        private void followTailCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (LogBox != null)
+            {
+                LogBox.FollowTail = followTailCheckBox.Checked;
+                if (LogBox.FollowTail) LogBox.ScrollToEnd();
+            }
+        }
+
+        private void startDaemonButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.StartDaemon();
+        }
+
+        private void stopDaemonButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.StopDaemon();
+        }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.RestartDaemon();
+        }
+
+        private void homeButton_Click(object sender, EventArgs e)
+        {
+            if (Program.Instance.Daemon.Started)
+            {
+                LoadPlaydarHomepage();
+            }
+        }
+
+        private void backButton_Click(object sender, EventArgs e)
+        {
+            if (Program.Instance.Daemon.Started)
+            {
+                PlaydarBrowser.GoBack();
             }
         }
     }

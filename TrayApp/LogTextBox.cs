@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 using log4net.Appender;
+using Timer=System.Windows.Forms.Timer;
 
 namespace Windar.TrayApp
 {
@@ -39,15 +40,15 @@ namespace Windar.TrayApp
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetScrollInfo(IntPtr hWnd, int scrollDirection, ref ScrollInfo si);
+        private static extern bool GetScrollInfo(IntPtr hWnd, int scrollDirection, ref ScrollInfo si);
 
         [DllImport("user32.dll")]
-        static extern int SetScrollInfo(IntPtr hWnd, int scrollDirection, [In] ref ScrollInfo si, bool redraw);
+        private static extern int SetScrollInfo(IntPtr hWnd, int scrollDirection, [In] ref ScrollInfo si, bool redraw);
 
-        [DllImport("User32.dll", CharSet = CharSet.Auto, EntryPoint = "SendMessage")]
-        static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-        struct ScrollInfo
+        private struct ScrollInfo
         {
             public uint Size;
             public uint Mask;
@@ -58,7 +59,7 @@ namespace Windar.TrayApp
             public int TrackPos;
         }
 
-        enum ScrollInfoMask
+        private enum ScrollInfoMask
         {
             Range = 0x1,
             Page = 0x2,
@@ -68,7 +69,7 @@ namespace Windar.TrayApp
             All = Range + Page + Pos + TrackPos
         }
 
-        enum ScrollBarDirection
+        private enum ScrollBarDirection
         {
             Horizontal = 0,
             Vertical = 1,
@@ -76,14 +77,19 @@ namespace Windar.TrayApp
             Both = 3
         }
 
-        const int VerticalScroll = 277;
-        const int LineUp = 0;
-        const int LineDown = 1;
-        const int ThumbPosition = 4;
-        const int Thumbtrack = 5;
-        const int ScrollTop = 6;
-        const int ScrolBottom = 7;
-        const int EndScroll = 8;
+        private const int VerticalScroll = 277;
+        private const int LineUp = 0;
+        private const int LineDown = 1;
+        private const int ThumbPosition = 4;
+        private const int Thumbtrack = 5;
+        private const int ScrollTop = 6;
+        private const int ScrolBottom = 7;
+        private const int EndScroll = 8;
+
+        private const int SetRedraw = 0x000B;
+        private const int User = 0x400;
+        private const int GetEventMask = (User + 59);
+        private const int SetEventMask = (User + 69);
 
         // ReSharper restore UnaccessedField.Local
         // ReSharper restore UnusedMember.Local
@@ -91,17 +97,16 @@ namespace Windar.TrayApp
         #pragma warning restore 169
         #endregion
 
-        private const int MaxBufferSize = 1024 * 256; // 256K
+        private const int MaxBufferSize = 1024 * 128; // 128K
 
         private readonly MemoryAppender _memoryAppender;
 
         public bool Updating { get; set; }
+        public bool FollowTail { get; set; }
 
         private Timer _timer;
         private string _buffer;
         private bool _bufferChanged;
-        private bool _ignoreVScroll;
-        private bool _followTail;
         private int _linesRemoved;
         private int _lineHeight;
 
@@ -109,7 +114,7 @@ namespace Windar.TrayApp
         {
             InitializeComponent();
             SelectionProtected = true;
-            _followTail = true;
+            FollowTail = true;
 
             // Set reference to memory appender.
             var appenders = LogManager.GetRepository().GetAppenders();
@@ -159,7 +164,7 @@ namespace Windar.TrayApp
             _lineHeight = testFont.Name == preferredFontName ? 12 : 13;
 
             // Create timer for updating.
-            _timer = new Timer { Interval = 10 };
+            _timer = new Timer { Interval = 250 };
             _timer.Tick += LogBoxTimer_Tick;
 
             // First update.
@@ -245,8 +250,29 @@ namespace Windar.TrayApp
             _timer.Stop();
         }
 
+        public bool ScrollAtEnd
+        {
+            get
+            {
+                // Determine if scroll is at end position.
+                // If so, automatically follow log tail.
+                var si = new ScrollInfo();
+                si.Size = (uint) Marshal.SizeOf(si);
+                si.Mask = (uint) ScrollInfoMask.All;
+                GetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si);
+                var allow = si.Page / 2; // Allowing half-page difference.
+                return si.Pos > si.Max - si.Page - allow;
+            }
+        }
+
         public void ScrollToEnd()
         {
+            if (Log.IsDebugEnabled) Log.Debug("ScrollToEnd");
+
+            //NOTE: Following didn't work well enough.
+            //SelectionStart = TextLength;
+            //ScrollToCaret();
+
             // Get the current scroll info.
             var si = new ScrollInfo();
             si.Size = (uint) Marshal.SizeOf(si);
@@ -257,39 +283,64 @@ namespace Windar.TrayApp
             si.Pos = si.Max - (int) si.Page;
             SetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si, true);
             SendMessage(Handle, VerticalScroll, new IntPtr(Thumbtrack + 0x10000 * si.Pos), new IntPtr(0));
+
+            FollowTail = true;
+        }
+
+        /// <summary>
+        /// This method is just used to get the text to reposition as well as possible
+        /// when the window is resized.
+        /// </summary>
+        public void ReSetText()
+        {
+            SetText(_buffer, _linesRemoved, _lineHeight);
         }
 
         private void SetText(string text, int linesRemoved, int lineHeight)
         {
+            var followTail = FollowTail;
             if (string.IsNullOrEmpty(text)) return;
-            _ignoreVScroll = true;
             var pos = HorizontalScrollPosition;
-            
-            SuspendLayout();
-            
-            Text = text;
-            HorizontalScrollPosition = pos - (linesRemoved * lineHeight);
-            _ignoreVScroll = false;
-            if (_followTail) ScrollToEnd();
+            var eventMask = IntPtr.Zero;
+            try
+            {
+                // Stop redrawing:
+                SendMessage(Handle, SetRedraw, (IntPtr) 0, IntPtr.Zero);
 
-            ResumeLayout();
-            Update();
-            Application.DoEvents();
+                // Stop sending of events:
+                eventMask = SendMessage(Handle, GetEventMask, (IntPtr) 0, IntPtr.Zero);
+
+                // Replace the text.
+                Clear();
+                SelectedText = text;
+                SelectionLength = SelectionStart = 0;
+
+                // Update the scroll position.
+                HorizontalScrollPosition = pos - (linesRemoved * lineHeight);
+            }
+            catch (Exception ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                Text = _buffer = "";
+            }
+            finally
+            {
+                // Turn on events.
+                SendMessage(Handle, SetEventMask, (IntPtr) 0, eventMask);
+
+                // Turn on redrawing.
+                SendMessage(Handle, SetRedraw, (IntPtr) 1, IntPtr.Zero);
+
+                Invalidate();
+                Application.DoEvents();
+                FollowTail = followTail;
+                if (FollowTail) ScrollToEnd();
+            }
         }
 
         private void RichTextBoxPlus_VScroll(object sender, EventArgs e)
         {
-            if (_ignoreVScroll) return;
-            if (Log.IsDebugEnabled) Log.Debug("RichTextBoxPlus_VScroll");
-
-            // Determine if scroll is at end position.
-            // If so, automatically follow log tail.
-            var si = new ScrollInfo();
-            si.Size = (uint) Marshal.SizeOf(si);
-            si.Mask = (uint) ScrollInfoMask.All;
-            GetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si);
-            var allow = si.Page / 2; // Allowing half-page difference.
-            _followTail = si.Pos > si.Max - si.Page - allow;
+            FollowTail = ScrollAtEnd;
         }
 
         private void LogBoxTimer_Tick(object sender, EventArgs e)

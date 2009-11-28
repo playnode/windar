@@ -20,22 +20,19 @@ using System.Reflection;
 using log4net;
 using Windar.PluginAPI;
 
-namespace Windar.PlayerPlugin
+namespace Windar.ScrobblerPlugin
 {
-    public class PlayerPlugin : IPlugin
+    public class ScrobblerPlugin : IPlugin
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
-
         #region Properties
 
         public IPluginHost Host { private get; set; }
-        public PlayerControl PlayerControl { get; private set; }
 
         public string Name
         {
             get
             {
-                return "Player";
+                return "Scrobbler";
             }
         }
 
@@ -43,25 +40,20 @@ namespace Windar.PlayerPlugin
         {
             get
             {
-                return "Provides playdar audio playback via a plugin.";
+                return "Provides audio scrobbler support via a plugin.";
             }
         }
 
         #endregion
 
-        public PlayerPlugin()
-        {
-            PlayerControl = new PlayerControl();
-        }
-
         public void Load()
         {
-            Host.AddTabPage(PlayerControl, Name);
+            //TODO: Add properties (username, password) to options window.
         }
 
         public void Shutdown()
-        {
 
+        {
         }
     }
 }

@@ -32,6 +32,8 @@ namespace Windar.TrayApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
+        internal const string PlaydarDaemon = "http://localhost:60210/";
+
         internal static Program Instance { get; private set; }
         internal MainForm MainForm { get; private set; }
         internal DaemonController Daemon { get; private set; }
@@ -51,6 +53,12 @@ namespace Windar.TrayApp
         [STAThread]
         static void Main()
         {
+            // Application exception handling.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
+            Application.ThreadException += HandleThreadException;
+
+            // Ensure only one instance of application runs.
             bool createNew;
             using (new Mutex(true, "Windar", out createNew))
             {
@@ -194,26 +202,63 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Application Exception Handling
+
+        public static void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            //TODO: Add an option to exit application.
+            if (Log.IsErrorEnabled)
+            {
+                if (e.ExceptionObject == null) Log.Error("Unhandled Exception. No ExceptionObject!");
+                else
+                {
+                    if (e.ExceptionObject is Exception) Log.Error("Unhandled Exception", (Exception) e.ExceptionObject);
+                    else Log.Error("Unhandled Exception. Unexpected ExceptionObject (Type = " + e.ExceptionObject.GetType().Name + ")");
+                }
+                ShowErrorDialog("Application Error. Please see log file for more information.");
+            }
+            else
+            {
+                ShowErrorDialog("Application Error");
+            }
+        }
+
+        public static void HandleThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            //TODO: Add an option to exit application.
+            if (Log.IsErrorEnabled)
+            {
+                Log.Error("Default handler for main thread exception.", e.Exception);
+                ShowErrorDialog("Application Error. Please see log file for more information.");
+            }
+            else
+            {
+                ShowErrorDialog("Application Error");
+            }
+        }
+
+        #endregion
+
         #region Common dialogs.
 
-        internal void ShowInfoDialog(string msg)
+        internal static void ShowInfoDialog(string msg)
         {
             MessageBox.Show(msg, "Windar Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        internal bool ShowYesNoDialog(string msg)
+        internal static bool ShowYesNoDialog(string msg)
         {
             var result = MessageBox.Show(msg, "Windar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             return result == DialogResult.Yes;
         }
 
-        internal void ShowErrorDialog(Exception ex)
+        internal static void ShowErrorDialog(Exception ex)
         {
             if (string.IsNullOrEmpty(ex.Message)) ShowErrorDialog("Exception: " + ex.GetType().Name);
             else ShowErrorDialog("Exception: " + ex.Message);
         }
 
-        internal void ShowErrorDialog(string msg)
+        internal static void ShowErrorDialog(string msg)
         {
             MessageBox.Show(msg, "Windar Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
@@ -331,5 +376,42 @@ namespace Windar.TrayApp
         }
 
         #endregion
+
+        internal void StartDaemon()
+        {
+            Instance.Daemon.Start();
+            Instance.MainForm.startDaemonButton.Enabled = false;
+            Instance.MainForm.stopDaemonButton.Enabled = true;
+            Instance.MainForm.restartDaemonButton.Enabled = true;
+            Instance.MainForm.LoadPlaydarHomepage();
+        }
+
+        internal void StopDaemon()
+        {
+            Instance.Daemon.Stop();
+            Instance.MainForm.startDaemonButton.Enabled = true;
+            Instance.MainForm.stopDaemonButton.Enabled = false;
+            Instance.MainForm.restartDaemonButton.Enabled = false;
+            Instance.MainForm.PlaydarBrowser.Navigate("about:blank");
+            Instance.MainForm.homeButton.Enabled = false;
+            Instance.MainForm.backButton.Enabled = false;
+        }
+
+        internal void RestartDaemon()
+        {
+            if (!Instance.Daemon.Started) return;
+            Instance.MainForm.PlaydarBrowser.Navigate("about:blank");
+            Instance.MainForm.startDaemonButton.Enabled = false;
+            Instance.MainForm.stopDaemonButton.Enabled = false;
+            Instance.MainForm.restartDaemonButton.Enabled = false;
+            Instance.MainForm.homeButton.Enabled = false;
+            Instance.MainForm.backButton.Enabled = false;
+            Instance.Daemon.Restart();
+            if (!Instance.Daemon.Started) return;
+            Instance.MainForm.PlaydarBrowser.Navigate(PlaydarDaemon);
+            Instance.MainForm.startDaemonButton.Enabled = false;
+            Instance.MainForm.stopDaemonButton.Enabled = true;
+            Instance.MainForm.restartDaemonButton.Enabled = true;
+        }
     }
 }

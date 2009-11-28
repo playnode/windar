@@ -46,6 +46,8 @@ namespace Windar.PlaydarController
 
         internal static DaemonController Instance { get; private set; }
 
+        public bool Started { get; private set; }
+
         private string ApplicationPath { get; set; }
 
         private string _erlPath;
@@ -97,6 +99,7 @@ namespace Windar.PlaydarController
         {
             ApplicationPath = appPath;
             Instance = this;
+            Started = false;
         }
 
         #region Commands
@@ -141,11 +144,13 @@ namespace Windar.PlaydarController
 
         private void StartCmd_PlaydarStarted(object sender, EventArgs e)
         {
+            Started = true;
             PlaydarStarted(this, e);
         }
 
         private void StartCmd_PlaydarStartFailed(object sender, EventArgs e)
         {
+            Started = false;
             PlaydarStartFailed(this, e);
         }
 
