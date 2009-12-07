@@ -16,7 +16,7 @@ RMDIR /S /Q "..\TrayApp\bin"
 RMDIR /S /Q "..\TrayApp\obj"
 ECHO Cleaning Temp
 RMDIR /S /Q "Temp"
-ECHO Cleaning Utils\erlini
-RMDIR /S /Q "Utils\erlini\bin"
-RMDIR /S /Q "Utils\erlini\obj"
+REM ECHO Cleaning Utils\erlini
+REM RMDIR /S /Q "Utils\erlini\bin"
+REM RMDIR /S /Q "Utils\erlini\obj"
 ECHO Done.

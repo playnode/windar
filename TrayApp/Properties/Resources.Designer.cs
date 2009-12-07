@@ -66,5 +66,12 @@ namespace Windar.TrayApp.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap playdar_text {
+            get {
+                object obj = ResourceManager.GetObject("playdar-text", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

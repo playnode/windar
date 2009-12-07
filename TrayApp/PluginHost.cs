@@ -106,7 +106,7 @@ namespace Windar.TrayApp
         {
             var tab = new TabPage {Text = title};
             tab.Controls.Add(control);
-            Program.Instance.MainForm.TabControl.Controls.Add(tab);
+            Program.Instance.MainForm.MainTabControl.Controls.Add(tab);
         }
     }
 }

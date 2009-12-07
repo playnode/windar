@@ -45,6 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\GeneralOptionsPage.cs" />
+    <Compile Include="Configuration\IConfigFile.cs" />
+    <Compile Include="Configuration\IOptionsPage.cs" />
+    <Compile Include="Configuration\MainConfigFile.cs" />
+    <Compile Include="Configuration\PeerInfo.cs" />
+    <Compile Include="Configuration\PlaydarModulesPage.cs" />
+    <Compile Include="Configuration\PluginPropertiesPage.cs" />
+    <Compile Include="Configuration\PluginsPage.cs" />
+    <Compile Include="Configuration\ResolverScriptsPage.cs" />
+    <Compile Include="Configuration\TcpConfigFile.cs" />
     <Compile Include="DirectoryDialog.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -99,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Playdar.ico" />
+    <None Include="Resources\playdar-text.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlaydarDaemon\PlaydarDaemon.csproj">

@@ -121,4 +121,7 @@
   <data name="Playdar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Playdar.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="playdar-text" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\playdar-text.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -186,7 +186,7 @@ namespace Windar.TrayApp
 
         private static void ShowDaemonInfo(object sender, EventArgs e)
         {
-            Program.Instance.MainForm.GoToPlaydarPage();
+            Program.Instance.MainForm.GoToPlaydarHomePage();
             Program.Instance.MainForm.EnsureVisible();
         }
 
@@ -300,6 +300,12 @@ namespace Windar.TrayApp
 
         private static void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (!Program.Instance.MainForm.Visible)
+            {
+                Program.Instance.MainForm.Opacity = 0;
+                Program.Instance.MainForm.GoToAboutPage();
+                Program.Instance.MainForm.Opacity = 1;
+            }
             Program.Instance.MainForm.EnsureVisible();
         }
 

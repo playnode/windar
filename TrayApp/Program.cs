@@ -252,6 +252,11 @@ namespace Windar.TrayApp
             return result == DialogResult.Yes;
         }
 
+        internal static DialogResult ShowYesNoCancelDialog(string msg)
+        {
+            return MessageBox.Show(msg, "Windar", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+        }
+
         internal static void ShowErrorDialog(Exception ex)
         {
             if (string.IsNullOrEmpty(ex.Message)) ShowErrorDialog("Exception: " + ex.GetType().Name);
@@ -401,6 +406,8 @@ namespace Windar.TrayApp
         {
             if (!Instance.Daemon.Started) return;
             Instance.MainForm.PlaydarBrowser.Navigate("about:blank");
+            Instance.MainForm.Refresh();
+            Application.DoEvents();
             Instance.MainForm.startDaemonButton.Enabled = false;
             Instance.MainForm.stopDaemonButton.Enabled = false;
             Instance.MainForm.restartDaemonButton.Enabled = false;

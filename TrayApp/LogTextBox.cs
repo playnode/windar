@@ -247,7 +247,7 @@ namespace Windar.TrayApp
 
         public void Close()
         {
-            _timer.Stop();
+            if (_timer != null) _timer.Stop();
         }
 
         public bool ScrollAtEnd

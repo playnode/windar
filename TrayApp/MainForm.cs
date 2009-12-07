@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
+using Windar.TrayApp.Configuration;
 
 namespace Windar.TrayApp
 {
@@ -29,67 +30,13 @@ namespace Windar.TrayApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        private string _lastLink;
         private bool _reallyClose;
         private bool _resizing;
+        private string _lastLink;
+        private TabPage _lastSelectedTab;
         private FormWindowState _lastWindowState;
         private Size _oldSize;
-
-        #region Properties
-
-        private WebBrowser _playdarBrowser;
-        private TabPage _logBoxTab;
-        private LogTextBox _logBox;
-
-        internal WebBrowser PlaydarBrowser
-        {
-            get
-            {
-                if (_playdarBrowser == null)
-                {
-                    var ctrl = mainformTabControl.Controls.Find("playdarBrowser", true);
-                    if (ctrl.Length <= 0) throw new ApplicationException("Didn't find playdarBrowser!");
-                    _playdarBrowser = (WebBrowser) ctrl[0];
-                }
-                return _playdarBrowser;
-            }
-        }
-
-        private TabPage LogBoxTab
-        {
-            get
-            {
-                if (_logBoxTab == null)
-                {
-                    var ctrl = mainformTabControl.Controls.Find("logTabPage", true);
-                    if (ctrl.Length > 0) _logBoxTab = (TabPage) ctrl[0];
-                }
-                return _logBoxTab;
-            }
-        }
-
-        private LogTextBox LogBox
-        {
-            get
-            {
-                if (_logBox == null)
-                {
-                    var ctrl = mainformTabControl.Controls.Find("logBox", true);
-                    if (ctrl.Length > 0) _logBox = (LogTextBox) ctrl[0];
-                }
-                return _logBox;
-            }
-        }
-
-        public TabControl TabControl
-        {
-            get
-            {
-                return mainformTabControl;
-            }
-        }
-
-        #endregion
+        private IOptionsPage _optionsPage;
 
         #region Init
 
@@ -109,39 +56,59 @@ namespace Windar.TrayApp
             GoToAboutPage();
 
 #if DEBUG
-            LogBox.Load();
-            LogBox.VScroll += RichTextBoxPlus_VScroll;
-            LogBox.ScrollToEnd();
+            logBox.Load();
+            logBox.VScroll += RichTextBoxPlus_VScroll;
+            logBox.ScrollToEnd();
 #else
-            mainformTabControl.TabPages.Remove(LogBoxTab);
+            MainTabControl.TabPages.Remove(logBoxTab);
             _logBoxTab = null;
             _logBox = null;
 #endif
+
+            //TODO: Re-add tabs.
+            optionsTabControl.TabPages.Remove(scriptsTabPage);
+            optionsTabControl.TabPages.Remove(pluginsTabPage);
+            optionsTabControl.TabPages.Remove(propsTabPage);
 
             LoadPlaydarHomepage();
         }
 
         private void RichTextBoxPlus_VScroll(object sender, EventArgs e)
         {
-            if (LogBox != null)
+            if (logBox != null)
             {
-                Program.Instance.MainForm.followTailCheckBox.Checked = LogBox.FollowTail;
+                Program.Instance.MainForm.followTailCheckBox.Checked = logBox.FollowTail;
             }
         }
 
         #endregion
 
-        public void GoToAboutPage()
+        public void EnsureVisible()
         {
-            var page = mainformTabControl.TabPages["aboutTabPage"];
-            mainformTabControl.SelectTab(page);
+            if (WindowState == FormWindowState.Minimized)
+            {
+                WindowState = _lastWindowState;
+            }
+            if (!Visible) Show();
+            Program.Instance.MainForm.Activate();
+            if (Properties.Settings.Default.MainFormVisible) return;
+            Properties.Settings.Default.MainFormVisible = true;
+            Properties.Settings.Default.Save();
         }
 
-        public void GoToPlaydarPage()
+        public void GoToAboutPage()
+        {
+            var page = MainTabControl.TabPages["aboutTabPage"];
+            MainTabControl.SelectTab(page);
+        }
+
+        public void GoToPlaydarHomePage()
         {
             LoadPlaydarHomepage();
-            var page = mainformTabControl.TabPages["playdarTabPage"];
-            mainformTabControl.SelectTab(page);
+            if (MainTabControl.SelectedTab != playdarTabPage)
+            {
+                MainTabControl.SelectTab(playdarTabPage);
+            }
         }
 
         #region Playdar daemon browser.
@@ -153,6 +120,46 @@ namespace Windar.TrayApp
                 || !PlaydarBrowser.Document.Url.Equals(Program.PlaydarDaemon))
             {
                 PlaydarBrowser.Navigate(Program.PlaydarDaemon);
+            }
+        }
+
+        private void startDaemonButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.StartDaemon();
+        }
+
+        private void stopDaemonButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.StopDaemon();
+        }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.RestartDaemon();
+            PlaydarBrowser.Refresh();
+        }
+
+        private void homeButton_Click(object sender, EventArgs e)
+        {
+            if (Program.Instance.Daemon.Started)
+            {
+                LoadPlaydarHomepage();
+            }
+        }
+
+        private void backButton_Click(object sender, EventArgs e)
+        {
+            if (Program.Instance.Daemon.Started)
+            {
+                PlaydarBrowser.GoBack();
+            }
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            if (Program.Instance.Daemon.Started)
+            {
+                PlaydarBrowser.Refresh();
             }
         }
 
@@ -224,10 +231,26 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Log
+
+        private void followTailCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (logBox == null) return;
+            logBox.FollowTail = followTailCheckBox.Checked;
+            if (logBox.FollowTail) logBox.ScrollToEnd();
+        }
+
+        #endregion
+
         #region Closing
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (MainTabControl.SelectedTab == optionsTabPage)
+            {
+                e.Cancel = !ApplyOptionsOrCancel();
+                if (e.Cancel) return;
+            }
             if (_reallyClose) return;
             e.Cancel = true;
             Hide();
@@ -237,7 +260,7 @@ namespace Windar.TrayApp
 
         internal void Exit()
         {
-            if (LogBox != null) LogBox.Close();
+            if (logBox != null) logBox.Close();
             _reallyClose = true;
             Close();
         }
@@ -318,10 +341,10 @@ namespace Windar.TrayApp
 
         private void MainForm_ResizeEnd(object sender, EventArgs e)
         {
-            if (mainformTabControl.SelectedTab == LogBoxTab 
-                && LogBoxTab != null
-                && Size != _oldSize 
-                && LogBox != null) LogBox.ScrollToEnd();
+            if (MainTabControl.SelectedTab == logTabPage
+                && logTabPage != null
+                && Size != _oldSize
+                && logBox != null) logBox.ScrollToEnd();
             _resizing = false;
             PersistWindowLayout();
         }
@@ -329,16 +352,16 @@ namespace Windar.TrayApp
         private void MainForm_Resize(object sender, EventArgs e)
         {
             if (_resizing) return;
-            if (mainformTabControl.SelectedTab == LogBoxTab
-                && LogBoxTab != null)
+            if (MainTabControl.SelectedTab == logTabPage
+                && logTabPage != null)
             {
-                if (LogBox != null)
+                if (logBox != null)
                 {
                     if (_lastWindowState == FormWindowState.Maximized)
                     {
-                        LogBox.ReSetText();
+                        logBox.ReSetText();
                     }
-                    LogBox.ScrollToEnd();
+                    logBox.ScrollToEnd();
                 }
             }
             if (WindowState != FormWindowState.Minimized)
@@ -350,81 +373,114 @@ namespace Windar.TrayApp
 
         #endregion
 
-        public void EnsureVisible()
+        #region Tab control selection changes.
+
+        private void MainTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
         {
-            if (WindowState == FormWindowState.Minimized) WindowState = _lastWindowState;
-            if (!Visible) Show();
-            Program.Instance.MainForm.Activate();
-            if (Properties.Settings.Default.MainFormVisible) return;
-            Properties.Settings.Default.MainFormVisible = true;
-            Properties.Settings.Default.Save();
+            if (_lastSelectedTab == optionsTabPage) ApplyOptionsOrCancel();
         }
 
-        private void mainformTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (mainformTabControl.SelectedTab == LogBoxTab
-                && LogBoxTab != null)
+            // Remember last selected tab.
+            _lastSelectedTab = MainTabControl.SelectedTab;
+
+            // Check the new selected tab.
+            if (MainTabControl.SelectedTab == logTabPage
+                && logTabPage != null)
             {
-                if (LogBox != null)
+                if (logBox != null)
                 {
-                    LogBox.Visible = true;
-                    LogBox.Updating = true;
+                    logBox.Visible = true;
+                    logBox.Updating = true;
                 }
                 followTailCheckBox.Checked = true;
-                if (LogBox != null)
+                if (logBox != null)
                 {
-                    LogBox.ReSetText();
-                    LogBox.ScrollToEnd();
-                    LogBox.Visible = true;
+                    logBox.ReSetText();
+                    logBox.ScrollToEnd();
+                    logBox.Visible = true;
                 }
             }
             else
             {
-                if (LogBox != null)
+                if (logBox != null) logBox.Updating = false;
+                if (MainTabControl.SelectedTab == playdarTabPage)
                 {
-                    LogBox.Updating = false;
+                    GoToPlaydarHomePage();
+                }
+                if (MainTabControl.SelectedTab == optionsTabPage)
+                {
+                    optionsTabControl.SelectTab(generalOptionsTabPage);
+                    LoadGeneralOptionsTabPage();
                 }
             }
         }
 
-        private void followTailCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void optionsTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
         {
-            if (LogBox != null)
+            e.Cancel = !ApplyOptionsOrCancel();
+        }
+
+        private void optionsTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (optionsTabControl.SelectedTab == generalOptionsTabPage)
             {
-                LogBox.FollowTail = followTailCheckBox.Checked;
-                if (LogBox.FollowTail) LogBox.ScrollToEnd();
+                LoadGeneralOptionsTabPage();
+            }
+            else if (optionsTabControl.SelectedTab == modsTabPage)
+            {
+                _optionsPage = new PlaydarModulesPage();
+                _optionsPage.Load();
+            }
+            else if (optionsTabControl.SelectedTab == scriptsTabPage)
+            {
+                _optionsPage = new ResolverScriptsPage();
+                _optionsPage.Load();
+            }
+            else if (optionsTabControl.SelectedTab == pluginsTabPage)
+            {
+                _optionsPage = new PluginsPage();
+                _optionsPage.Load();
+            }
+            else if (optionsTabControl.SelectedTab == propsTabPage)
+            {
+                _optionsPage = new PluginPropertiesPage();
+                _optionsPage.Load();
+            }
+            else
+            {
+                if (Log.IsWarnEnabled)
+                {
+                    Log.Warn("Unexpected config tab, " + optionsTabControl.SelectedTab.Name);
+                }
             }
         }
 
-        private void startDaemonButton_Click(object sender, EventArgs e)
+        #endregion
+
+        private void LoadGeneralOptionsTabPage()
         {
-            Program.Instance.StartDaemon();
+            _optionsPage = new GeneralOptionsPage();
+            _optionsPage.Load();
+            nodeNameTextBox.Text = "Test";
+            portTextBox.Text = "60210";
         }
 
-        private void stopDaemonButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Check if changes. Require save or cancel changes.
+        /// </summary>
+        /// <returns>Returns true if ok to proceed, false otherwise.</returns>
+        private bool ApplyOptionsOrCancel()
         {
-            Program.Instance.StopDaemon();
-        }
-
-        private void restartButton_Click(object sender, EventArgs e)
-        {
-            Program.Instance.RestartDaemon();
-        }
-
-        private void homeButton_Click(object sender, EventArgs e)
-        {
-            if (Program.Instance.Daemon.Started)
+            if (Visible && _optionsPage.Changed)
             {
-                LoadPlaydarHomepage();
+                var result = Program.ShowYesNoCancelDialog("Save changes?");
+                if (result == DialogResult.Cancel) return false;
+                if (result == DialogResult.Yes) _optionsPage.SaveChanges();
+                _optionsPage.Reset();
             }
-        }
-
-        private void backButton_Click(object sender, EventArgs e)
-        {
-            if (Program.Instance.Daemon.Started)
-            {
-                PlaydarBrowser.GoBack();
-            }
+            return true;
         }
     }
 }
