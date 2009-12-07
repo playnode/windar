@@ -1,0 +1,82 @@
+%%%
+%%% Playdar configuration file.
+%%%
+%%% This configuration file contains Erlang terms.
+%%% In case you want to understand the syntax, here are the concepts:
+%%%
+%%%  - The character to comment a line is %
+%%%
+%%%  - Each term ends in a dot, for example:
+%%%      override_global.
+%%%
+%%%  - A tuple has a fixed definition, its elements are
+%%%    enclosed in {}, and separated with commas:
+%%%      {loglevel, 4}.
+%%%
+%%%  - A list can have as many elements as you want,
+%%%    and is enclosed in [], for example:
+%%%      [http_poll, web_admin, tls]
+%%%
+%%%  - A keyword (aka Erlang atom) is a word in lowercase.
+%%%
+%%%  - Strings are enclosed in "" and can have spaces, dots, etc.
+%%%      {language, "en"}.
+%%%      {name, "Joe"}.
+%%%
+%%%  - This term includes a tuple, a keyword, a list and two strings:
+%%%      {dirs, ["/home/joe/music", "/mnt/music"]}.
+%%%
+
+%% Set a name, to be used on the LAN/etc:
+
+%%{name, "Commander mxcl"}.
+
+%% List of scripts to be started (resolver scripts)
+%% You need quotes. You need a trailing comma, EXCEPT the last one in the list!
+
+{scripts,[
+    %"contrib/echonest/echonest-resolver.py",
+    %"contrib/mp3tunes/mp3tunes-resolver.py"
+]}.
+ 
+%% Settings for the Playdar webserver.
+%%
+%% If you don't listen on your LAN interface then you won't be able to serve
+%% files to others on your LAN using the lan resolver.
+%%
+%% Playdar ignores any HTTP requests that don't originate from localhost, except
+%% for requests to stream valid files (typically ones resolved by lan resolver).
+%%
+%% "0.0.0.0" means listen on all interfaces, and is recommended.
+%% 
+
+{web,[
+    {port, 60210},
+    {max, 100},
+    {ip, "0.0.0.0"}, 
+    {docroot, "priv/www"}
+]}.
+
+%% Set to true to serve up docroot/crossdomain.xml (defaults to true)
+
+{crossdomain, true}.
+
+%% List of module DIRECTORY NAMES that should not be loaded automatically:
+
+{modules_blacklist, [
+    "playdar-tcp",
+    "audioscrobbler",
+    "aolmusic"
+]}.
+
+%% Set to true for log output listing query results with scoring information
+
+{explain, false}.
+
+%% Put library/scanner database files in current directory (default)
+
+{{library, dbdir}, "."}.
+
+%% Put auth database file in current directory (default) 
+
+{authdbdir, "."}.
