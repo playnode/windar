@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Windar.TrayApp.Configuration.Parser.Basic;
-
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
     public class EndTerm : ParserToken

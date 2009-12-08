@@ -16,17 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-
-namespace Windar.TrayApp.Configuration.Parser.Basic
+namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    class ParserException : Exception
+    public class Integer : NumericExpression
     {
-        public ParserToken IncompleteToken { get; private set; }
-
-        public ParserException() { }
-        public ParserException(string msg) : base(msg) { }
-        public ParserException(string msg, Exception ex) : base(msg, ex) { }
-        public ParserException(string msg, ParserToken partialToken) : base(msg) { IncompleteToken = partialToken; }
     }
 }

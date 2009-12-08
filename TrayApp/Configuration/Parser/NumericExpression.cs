@@ -16,18 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Parser.Basic
+namespace Windar.TrayApp.Configuration.Parser
 {
-    /// <summary>
-    /// This is a stub class required by the generic Parser class. This class 
-    /// should be extended to override the ToString method. By design, using
-    /// the ToString method should be used to re-write the parsed data.
-    /// </summary>
-    public class ParserToken
+    public class NumericExpression : ParserToken, IValueToken
     {
+        public string Text { get; set; }
+
         public override string ToString()
         {
-            throw new System.NotImplementedException();
+            return Text;
         }
     }
 }

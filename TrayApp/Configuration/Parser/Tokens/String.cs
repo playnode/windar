@@ -16,17 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Windar.TrayApp.Configuration.Parser.Basic;
+using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class String : ParserToken
+    public class String : ParserToken, IValueToken
     {
         public string Text { get; set; }
 
         public override string ToString()
         {
-            return Text;
+            return new StringBuilder()
+                .Append('"').Append(Text).Append('"').ToString();
         }
     }
 }

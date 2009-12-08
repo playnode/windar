@@ -18,7 +18,7 @@
 
 using System.Text;
 
-namespace Windar.TrayApp.Configuration.Parser.Basic
+namespace Windar.TrayApp.Configuration.Parser
 {
     public abstract class Parser<T> where T : new()
     {

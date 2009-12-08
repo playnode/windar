@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Text;
+using System;
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class Comment : Whitespace
+    class ParserException : Exception
     {
-        public override string ToString()
-        {
-            var result = new StringBuilder();
-            result.Append('%').Append(Text).Append("\n");
-            return result.ToString();
-        }
+        public ParserToken IncompleteToken { get; private set; }
+
+        public ParserException() { }
+        public ParserException(string msg) : base(msg) { }
+        public ParserException(string msg, Exception ex) : base(msg, ex) { }
+        public ParserException(string msg, ParserToken partialToken) : base(msg) { IncompleteToken = partialToken; }
     }
 }

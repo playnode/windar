@@ -18,43 +18,20 @@
 
 using System.Reflection;
 using log4net;
-using Windar.TrayApp.Configuration.Parser.Basic;
 using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
     /// <summary>
-    /// This is a simple parser for extracting tokens to allow for the
-    /// configuration terms to be parsed and updated before being written back
-    /// to file. This is done to preserve manual edits.
+    /// NOTE: This is a simple parser for extracting erlang terms 
+    /// to allow for the Playdar configuration terms to be parsed and updated
+    /// before being written back to file. This is to preserve manual edits.
     /// </summary>
     public class ErlangTermsParser : Parser<ParserToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         public ErlangTermsParser(ParserInputStream stream) : base(stream) { }
-
-        #region Character validation functions.
-
-        private static bool IsValidAtomNameFirstChar(int c)
-        {
-            return c > 96 && c < 123;  // Lower-case letters.
-        }
-
-        private static bool IsValidAtomNameChar(int c)
-        {
-            return (c > 96 && c < 123) // Lower-case letters.
-                || (c > 63 && c < 91)  // Upper-case letters and '@' char.
-                || (c == '_');         // Underscore.
-        }
-
-        private static bool IsValidNumericalExpressionFirstChar(int c)
-        {
-            return (c > 47 && c < 58)  // Digits 0-9.
-                || (c == '('); // Brackets (not currently supported).
-        }
-
-        #endregion
 
         public override ParserToken NextToken()
         {
@@ -70,12 +47,12 @@ namespace Windar.TrayApp.Configuration.Parser
                     case '\r':
                         {
                             InputStream.PushBack(c);
-                            return GetWhitespace();
+                            return WhitespaceParser.GetWhitespace(InputStream);
                         }
                     case '{':
                         {
                             InputStream.PushBack(c);
-                            return GetTuple();
+                            return TupleParser.GetTuple(InputStream);
                         }
                     case '.':
                         {
@@ -90,18 +67,6 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
             }
             return null;
-        }
-
-        private Whitespace GetWhitespace()
-        {
-            var parser = new WhitespaceParser(InputStream);
-            return parser.NextToken();
-        }
-
-        private Tuple GetTuple()
-        {
-            var parser = new TupleParser(InputStream);
-            return parser.NextToken();
         }
     }
 }

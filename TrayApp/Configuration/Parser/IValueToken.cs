@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Windar: Playdar for Windows
  * Copyright (C) 2009 Steven Robertson <steve@playnode.org>
  *
@@ -16,17 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Text;
-
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class Comment : Whitespace
+    public interface IValueToken
     {
-        public override string ToString()
-        {
-            var result = new StringBuilder();
-            result.Append('%').Append(Text).Append("\n");
-            return result.ToString();
-        }
+        
     }
 }

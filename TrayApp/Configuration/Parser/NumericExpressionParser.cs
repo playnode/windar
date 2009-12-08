@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Reflection;
 using System.Text;
 using log4net;
@@ -23,19 +24,23 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class WhitespaceParser : Parser<Whitespace>
+    /// <summary>
+    /// Simple number values are only supported at the moment. Potentially
+    /// there would be support for numerical expressions, later.
+    /// </summary>
+    class NumericExpressionParser : Parser<NumericExpression>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public WhitespaceParser(ParserInputStream stream) : base(stream) { }
+        public NumericExpressionParser(ParserInputStream stream) : base(stream) { }
 
         #region State
 
         private enum State
         {
             Initial,
-            Comment,
-            WhiteSpace,
+            Integer,
+            Float,
         }
 
         private State _state = State.Initial;
@@ -51,36 +56,33 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static Whitespace GetWhitespace(ParserInputStream stream)
+        internal static NumericExpression GetExpression(ParserInputStream stream)
         {
-            return new WhitespaceParser(stream).NextToken();
+            return new NumericExpressionParser(stream).NextToken();
         }
 
-        public override Whitespace NextToken()
+        public override NumericExpression NextToken()
         {
-            int c;
             var buffer = new StringBuilder();
+            int c;
             while ((c = InputStream.NextChar()) != -1)
             {
                 switch (_state)
                 {
                     case State.Initial:
                         {
+                            if (IsValidDigit(c))
+                            {
+                                InputStream.PushBack(c);
+                                ChangeState(State.Integer);
+                                break;
+                            }
+
                             switch ((char) c)
                             {
-                                case '%':
+                                case '(':
                                     {
-                                        ChangeState(State.Comment);
-                                        break;
-                                    }
-                                case ' ':
-                                case '\t':
-                                case '\n':
-                                case '\r':
-                                    {
-                                        InputStream.PushBack(c);
-                                        ChangeState(State.WhiteSpace);
-                                        break;
+                                        throw new NotImplementedException();
                                     }
                                 default:
                                     {
@@ -89,52 +91,47 @@ namespace Windar.TrayApp.Configuration.Parser
                                         throw new ParserException(msg);
                                     }
                             }
-                            break;
                         }
-                    case State.Comment:
+                    case State.Integer:
                         {
-                            switch ((char) c)
+                            if (IsValidDigit(c))
                             {
-                                case '\r':
-                                    {
-                                        // Discard.
-                                        break;
-                                    }
-                                case '\n':
-                                    {
-                                        return new Comment { Text = buffer.ToString() };
-                                    }
-                                default:
-                                    {
-                                        buffer.Append((char) c);
-                                        break;
-                                    }
+                                buffer.Append((char) c);
+                                break;
                             }
-                            break;
-                        }
-                    case State.WhiteSpace:
-                        {
+
                             switch ((char) c)
                             {
-                                case '\r':
-                                    {
-                                        // Discard.
-                                        break;
-                                    }
-                                case ' ':
-                                case '\t':
-                                case '\n':
+                                case '.':
                                     {
                                         buffer.Append((char) c);
+                                        ChangeState(State.Float);
                                         break;
                                     }
                                 default:
                                     {
                                         InputStream.PushBack(c);
-                                        return new Whitespace { Text = buffer.ToString() };
+                                        return new Integer { Text = buffer.ToString() };
                                     }
                             }
                             break;
+                        }
+                    case State.Float:
+                        {
+                            if (IsValidDigit(c))
+                            {
+                                buffer.Append((char) c);
+                                break;
+                            }
+
+                            switch ((char) c)
+                            {
+                                default:
+                                    {
+                                        InputStream.PushBack(c);
+                                        return new Float { Text = buffer.ToString() };
+                                    }
+                            }
                         }
                     default:
                         {
@@ -144,8 +141,19 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
             }
 
-            // End of file.
-            return null;
+            const string endmsg = "Unexpected end while parsing NumericExpression.";
+            if (Log.IsErrorEnabled) Log.Error(endmsg);
+            throw new ParserException(endmsg);
+        }
+
+        private static bool IsValidDigit(int c)
+        {
+            return c > 47 && c < 58; // Digits 0-9.
+        }
+
+        internal static bool IsValidExpressionFirstChar(int c)
+        {
+            return IsValidDigit(c) || (c == '(');
         }
     }
 }

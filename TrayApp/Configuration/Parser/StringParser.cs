@@ -23,19 +23,18 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class WhitespaceParser : Parser<Whitespace>
+    class StringParser : Parser<String>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public WhitespaceParser(ParserInputStream stream) : base(stream) { }
+        public StringParser(ParserInputStream stream) : base(stream) { }
 
         #region State
 
         private enum State
         {
             Initial,
-            Comment,
-            WhiteSpace,
+            StringOpen,
         }
 
         private State _state = State.Initial;
@@ -51,35 +50,30 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static Whitespace GetWhitespace(ParserInputStream stream)
+        internal static String GetString(ParserInputStream stream)
         {
-            return new WhitespaceParser(stream).NextToken();
+            return new StringParser(stream).NextToken();
         }
 
-        public override Whitespace NextToken()
+        public override String NextToken()
         {
-            int c;
             var buffer = new StringBuilder();
+            int c;
             while ((c = InputStream.NextChar()) != -1)
             {
+                if (Log.IsDebugEnabled)
+                {
+                    Log.Debug("StringParser: c = " + ParserInputStream.ToNameString(c));
+                }
                 switch (_state)
                 {
                     case State.Initial:
                         {
                             switch ((char) c)
                             {
-                                case '%':
+                                case '"':
                                     {
-                                        ChangeState(State.Comment);
-                                        break;
-                                    }
-                                case ' ':
-                                case '\t':
-                                case '\n':
-                                case '\r':
-                                    {
-                                        InputStream.PushBack(c);
-                                        ChangeState(State.WhiteSpace);
+                                        ChangeState(State.StringOpen);
                                         break;
                                     }
                                 default:
@@ -91,50 +85,27 @@ namespace Windar.TrayApp.Configuration.Parser
                             }
                             break;
                         }
-                    case State.Comment:
+                    case State.StringOpen:
                         {
+                            if (IsValidStringValueCharacter(c))
+                            {
+                                buffer.Append((char) c);
+                                break;
+                            }
+
                             switch ((char) c)
                             {
-                                case '\r':
+                                case '"':
                                     {
-                                        // Discard.
-                                        break;
-                                    }
-                                case '\n':
-                                    {
-                                        return new Comment { Text = buffer.ToString() };
+                                        return new String { Text = buffer.ToString() };
                                     }
                                 default:
                                     {
-                                        buffer.Append((char) c);
-                                        break;
+                                        var msg = GetEdgeUnknownErrorMessage(c, _state.ToString());
+                                        if (Log.IsErrorEnabled) Log.Error(msg);
+                                        throw new ParserException(msg);
                                     }
                             }
-                            break;
-                        }
-                    case State.WhiteSpace:
-                        {
-                            switch ((char) c)
-                            {
-                                case '\r':
-                                    {
-                                        // Discard.
-                                        break;
-                                    }
-                                case ' ':
-                                case '\t':
-                                case '\n':
-                                    {
-                                        buffer.Append((char) c);
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        InputStream.PushBack(c);
-                                        return new Whitespace { Text = buffer.ToString() };
-                                    }
-                            }
-                            break;
                         }
                     default:
                         {
@@ -144,8 +115,15 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
             }
 
-            // End of file.
-            return null;
+            const string endmsg = "Unexpected end while parsing String.";
+            if (Log.IsErrorEnabled) Log.Error(endmsg);
+            throw new ParserException(endmsg);
+        }
+
+        internal static bool IsValidStringValueCharacter(int c)
+        {
+            //TODO: Check what characters are disallowed in string value.
+            return ((char) c) != '"';
         }
     }
 }

@@ -16,17 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Text;
-
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class Comment : Whitespace
+    public class Comma : ParserToken
     {
         public override string ToString()
         {
-            var result = new StringBuilder();
-            result.Append('%').Append(Text).Append("\n");
-            return result.ToString();
+            return ",";
         }
     }
 }

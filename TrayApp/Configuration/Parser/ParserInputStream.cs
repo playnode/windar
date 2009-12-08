@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Text;
 using log4net;
 
-namespace Windar.TrayApp.Configuration.Parser.Basic
+namespace Windar.TrayApp.Configuration.Parser
 {
     /// <summary>
     /// This class provides the character input stream to the Parser class.
@@ -271,7 +271,7 @@ namespace Windar.TrayApp.Configuration.Parser.Basic
                 case 0x7E:
                     {
                         var result = new StringBuilder();
-                        result.Append(c);
+                        result.Append((char) c);
                         return result.ToString();
                     }
                 case 0x7F:

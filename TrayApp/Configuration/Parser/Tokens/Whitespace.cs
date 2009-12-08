@@ -18,7 +18,6 @@
 
 using System;
 using System.Text;
-using Windar.TrayApp.Configuration.Parser.Basic;
 
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {

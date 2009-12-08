@@ -17,18 +17,27 @@
  */
 
 using System.Collections.Generic;
-using Windar.TrayApp.Configuration.Parser.Basic;
+using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class Tuple : ParserToken
+    public class Tuple : ParserToken, IValueToken
     {
-        public string AtomName { get; set; }
         public List<ParserToken> Tokens { get; private set; }
 
         public Tuple()
         {
             Tokens = new List<ParserToken>();
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            result.Append('{');
+            foreach (var token in Tokens) 
+                result.Append(token.ToString());
+            result.Append('}');
+            return result.ToString();
         }
     }
 }
