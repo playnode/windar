@@ -18,11 +18,12 @@
 
 using System.Reflection;
 using log4net;
+using Windar.TrayApp.Configuration.Parser;
 using Windar.TrayApp.Configuration.Parser.Tokens;
 
-namespace Windar.TrayApp.Configuration.Parser
+namespace Windar.TrayApp.Configuration.Values
 {
-    public class SingleValueAtomTuple : TupleToken
+    public class NamedValue : TupleToken
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -55,10 +56,18 @@ namespace Windar.TrayApp.Configuration.Parser
             get
             {
                 IValueToken result = null;
+                var foundName = false;
                 foreach (var token in Tokens)
                 {
                     // Ignore white-space.
                     if (!(token is IValueToken)) continue;
+
+                    // Ignore the atom name.
+                    if (!foundName)
+                    {
+                        foundName = true;
+                        continue;
+                    }
 
                     // Return value found.
                     if (Log.IsDebugEnabled) Log.Debug("Found and returning value = " + (IValueToken) token);
@@ -100,12 +109,7 @@ namespace Windar.TrayApp.Configuration.Parser
             }
         }
 
-        private SingleValueAtomTuple()
-        {
-            // Private constructor used in CreateFrom method.
-        }
-
-        public SingleValueAtomTuple(string name, IValueToken value)
+        public NamedValue(string name, IValueToken value)
         {
             Tokens.Add(new AtomToken { Text = name });
             Tokens.Add(new CommaToken());
@@ -113,20 +117,20 @@ namespace Windar.TrayApp.Configuration.Parser
             Tokens.Add((ParserToken) value);
         }
 
-        public SingleValueAtomTuple(string name, string value)
+        /// <summary>
+        /// Extending class to add value token.
+        /// </summary>
+        /// <param name="name">Name for the value.</param>
+        protected NamedValue(string name)
         {
             Tokens.Add(new AtomToken { Text = name });
             Tokens.Add(new CommaToken());
             Tokens.Add(new WhitespaceToken { Text = " " });
-            Tokens.Add(new StringToken { Text = value });
         }
 
-        public SingleValueAtomTuple(string name, bool value)
+        private NamedValue()
         {
-            Tokens.Add(new AtomToken { Text = name });
-            Tokens.Add(new CommaToken());
-            Tokens.Add(new WhitespaceToken { Text = " " });
-            Tokens.Add(new AtomToken { Text = value ? "true" : "false" });
+            // Private constructor used in CreateFrom method.
         }
 
         /// <summary>
@@ -134,24 +138,22 @@ namespace Windar.TrayApp.Configuration.Parser
         /// suitable. A suitable tuple would have a single value, and a single
         /// atom as first part of the tuple.
         /// </summary>
-        /// <param name="tuple">Tuple to use in creating a SingleValueAtomTuple instance.</param>
-        /// <returns>An instance of SingleValueAtomTuple based on the give tuple.</returns>
-        public static SingleValueAtomTuple CreateFrom(TupleToken tuple)
+        /// <param name="tuple">Tuple to use in creating a NamedValue instance.</param>
+        /// <returns>An instance of NamedValue based on the give tuple.</returns>
+        public static NamedValue CreateFrom(TupleToken tuple)
         {
-            SingleValueAtomTuple result = null;
+            NamedValue result = null;
             foreach (var tupleToken in tuple.Tokens)
             {
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
 
                 // We're expecting the atom to be the first value token.
+                // Otherwise, quite and return false.
                 if (!(tupleToken is AtomToken)) break;
-                if (((AtomToken) tupleToken).Text.Equals("name"))
-                {
-                    //result = new SingleValueAtomTuple { Tokens = new List<ParserToken>() };
-                    //foreach (var token in tuple.Tokens) result.Tokens.Add(token);
-                    result = new SingleValueAtomTuple { Tokens = tuple.Tokens };
-                }
+
+                // Create the NamedValue instance and return.
+                result = new NamedValue { Tokens = tuple.Tokens };
                 break;
             }
             return result;

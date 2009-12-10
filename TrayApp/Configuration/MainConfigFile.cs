@@ -19,16 +19,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using log4net;
 using Windar.TrayApp.Configuration.Parser;
 using Windar.TrayApp.Configuration.Parser.Tokens;
+using Windar.TrayApp.Configuration.Values;
 
 namespace Windar.TrayApp.Configuration
 {
     public class MainConfigFile : IConfigFile
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         private ErlangTermsDocument _configFile;
-        private SingleValueAtomTuple _nodeNameTuple;
+        private NamedString _nodeName;
+        private NamedBoolean _crossDomain;
 
         #region Properties
 
@@ -47,21 +53,54 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
+                if (Log.IsDebugEnabled) Log.Debug("Getting NodeName");
                 string result = null;
-                if (_nodeNameTuple == null) _nodeNameTuple = _configFile.FindSingleValueAtomTuple("name");
-                if (_nodeNameTuple != null) result = _nodeNameTuple.Name;
+                if (_nodeName == null)
+                {
+                    if (Log.IsDebugEnabled) Log.Debug("Finding NodeName");
+                    _nodeName = _configFile.FindNamedString("name");
+                    if (Log.IsDebugEnabled) Log.Debug("Found NodeName");
+                }
+                if (_nodeName != null)
+                {
+                    if (Log.IsDebugEnabled) Log.Debug("Returning NodeName.Value");
+                    result = _nodeName.Value;
+                }
                 return result;
             }
             set
             {
-                if (_nodeNameTuple == null) _nodeNameTuple = _configFile.FindSingleValueAtomTuple("name");
-                if (_nodeNameTuple != null) _nodeNameTuple.Value = new StringToken { Text = value };
+                if (_nodeName == null) _nodeName = _configFile.FindNamedString("name");
+                if (_nodeName != null) _nodeName.Value = value;
                 else
                 {
-                    _nodeNameTuple = new SingleValueAtomTuple("name", value);
+                    _nodeName = new NamedString("name", value);
                     _configFile.Tokens.Add(new WhitespaceToken { Text = "\n\n" });
                     _configFile.Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
-                    _configFile.Tokens.Add(_nodeNameTuple);
+                    _configFile.Tokens.Add(_nodeName);
+                }
+            }
+        }
+
+        public bool CrossDomain
+        {
+            get
+            {
+                var result = false;
+                if (_crossDomain == null) _crossDomain = _configFile.FindNamedBoolean("crossdomain");
+                if (_crossDomain != null) result = _crossDomain.Value;
+                return result;
+            }
+            set
+            {
+                if (_crossDomain == null) _crossDomain = _configFile.FindNamedBoolean("crossdomain");
+                if (_crossDomain != null) _crossDomain.Value = value;
+                else
+                {
+                    _crossDomain = new NamedBoolean("crossdomain", value);
+                    _configFile.Tokens.Add(new WhitespaceToken { Text = "\n\n" });
+                    _configFile.Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    _configFile.Tokens.Add(_nodeName);
                 }
             }
         }
@@ -80,16 +119,14 @@ namespace Windar.TrayApp.Configuration
 
         public MainConfigFile()
         {
-            Scripts = new List<string>();
-            ModulesBlacklist = new List<string>();
+            //Scripts = new List<string>();
+            //ModulesBlacklist = new List<string>();
         }
 
         public void Load(string filename)
         {
             _configFile = new ErlangTermsDocument();
             _configFile.Load(new FileInfo(filename));
-
-            // Extract data from file, for defined properties.
         }
 
         public override string ToString()

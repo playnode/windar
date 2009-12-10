@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TestConfiguration\playdar.conf.example" />
+    <None Include="TestConfiguration\playdartcp.conf.example" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrayApp\TrayApp.csproj">

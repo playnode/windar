@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text;
 using log4net;
 using Windar.TrayApp.Configuration.Parser.Tokens;
+using Windar.TrayApp.Configuration.Values;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
@@ -101,17 +102,66 @@ namespace Windar.TrayApp.Configuration.Parser
             //TODO: Using _file
         }
 
-        public SingleValueAtomTuple FindSingleValueAtomTuple(string name)
+        public NamedValue FindNamedValue(string name)
         {
-            SingleValueAtomTuple result = null;
+            NamedValue result = null;
             foreach (var token in Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
 
                 var tuple = (TupleToken) token;
-                var svaTuple = SingleValueAtomTuple.CreateFrom(tuple);
+                var svaTuple = NamedValue.CreateFrom(tuple);
                 if (svaTuple == null) continue;
+                if (Log.IsInfoEnabled)
+                {
+                    Log.Info("Found named string: name = " + name
+                        + ", value = " + svaTuple.Value);
+                }
+                result = svaTuple;
+                break;
+            }
+            return result;
+        }
+
+        public NamedString FindNamedString(string name)
+        {
+            NamedString result = null;
+            foreach (var token in Tokens)
+            {
+                // Only interested in tuples.
+                if (!(token is TupleToken)) continue;
+
+                var tuple = (TupleToken) token;
+                var svaTuple = NamedString.CreateFrom(tuple);
+                if (svaTuple == null) continue;
+                if (Log.IsInfoEnabled)
+                {
+                    Log.Info("Found named string: name = " + name 
+                        + ", value = " + svaTuple.Value);
+                }
+                result = svaTuple;
+                break;
+            }
+            return result;
+        }
+
+        public NamedBoolean FindNamedBoolean(string name)
+        {
+            NamedBoolean result = null;
+            foreach (var token in Tokens)
+            {
+                // Only interested in tuples.
+                if (!(token is TupleToken)) continue;
+
+                var tuple = (TupleToken) token;
+                var svaTuple = NamedBoolean.CreateFrom(tuple);
+                if (svaTuple == null) continue;
+                if (Log.IsInfoEnabled)
+                {
+                    Log.Info("Found named string: name = " + name
+                        + ", value = " + svaTuple.Value);
+                }
                 result = svaTuple;
                 break;
             }

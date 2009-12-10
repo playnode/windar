@@ -48,7 +48,9 @@
     <Compile Include="Configuration\GeneralOptionsPage.cs" />
     <Compile Include="Configuration\IConfigFile.cs" />
     <Compile Include="Configuration\IOptionsPage.cs" />
-    <Compile Include="Configuration\Parser\SingleListValueAtomTuple.cs" />
+    <Compile Include="Configuration\Values\NamedBoolean.cs" />
+    <Compile Include="Configuration\Values\NamedInteger.cs" />
+    <Compile Include="Configuration\Values\NamedList.cs" />
     <Compile Include="Configuration\MainConfigFile.cs" />
     <Compile Include="Configuration\Parser\AtomParser.cs" />
     <Compile Include="Configuration\Parser\ErlangTermsDocument.cs" />
@@ -79,8 +81,11 @@
     <Compile Include="Configuration\PluginPropertiesPage.cs" />
     <Compile Include="Configuration\PluginsPage.cs" />
     <Compile Include="Configuration\ResolverScriptsPage.cs" />
-    <Compile Include="Configuration\Parser\SingleValueAtomTuple.cs" />
-    <Compile Include="Configuration\Parser\SingleValueMultiAtomTuple.cs" />
+    <Compile Include="Configuration\Values\NamedListOfNamedValues.cs" />
+    <Compile Include="Configuration\Values\NamedListOfString.cs" />
+    <Compile Include="Configuration\Values\NamedString.cs" />
+    <Compile Include="Configuration\Values\NamedValue.cs" />
+    <Compile Include="Configuration\Values\NamesWithSharedValue.cs" />
     <Compile Include="Configuration\TcpConfigFile.cs" />
     <Compile Include="DirectoryDialog.cs" />
     <Compile Include="MainForm.cs">

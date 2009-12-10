@@ -70,6 +70,7 @@ namespace Windar.TrayApp
             {
                 var doc = new ErlangTermsDocument();
                 doc.Load(new FileInfo(TestConfigurationPath + "playdar.conf.example"));
+                Log.Info("Erlang terms document loaded.");
             }
             catch (Exception ex)
             {
@@ -85,8 +86,16 @@ namespace Windar.TrayApp
             {
                 var config = new MainConfigFile();
                 config.Load(TestConfigurationPath + "playdar.conf.example");
+                Log.Info("Configuration file loaded.");
+
+                // Change name.
                 Log.Info("Current name = " + config.NodeName);
                 config.NodeName = "TEST";
+
+                // Change crossdomain.
+                Log.Info("Current crossdomain = " + config.CrossDomain);
+                config.CrossDomain = false;
+
                 Log.Info("\n" + config);
             }
             catch (Exception ex)
@@ -103,6 +112,7 @@ namespace Windar.TrayApp
             {
                 var config = new MainConfigFile();
                 config.Load(TestConfigurationPath + "playdartcp.conf.example");
+                Log.Info("Configuration file loaded.");
             }
             catch (Exception ex)
             {
