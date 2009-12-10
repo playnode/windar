@@ -16,24 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.IO;
-using Windar.TrayApp.Configuration.Parser;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Windar.TrayApp.Configuration
+namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class TcpConfigFile : IConfigFile
+    public class TupleToken : ParserToken, IValueToken
     {
-        private ErlangTermsDocument _configFile;
+        public List<ParserToken> Tokens { get; set; }
 
-        public void Load(string filename)
+        public TupleToken()
         {
-            _configFile = new ErlangTermsDocument();
-            _configFile.Load(new FileInfo(filename));
+            Tokens = new List<ParserToken>();
         }
 
-        public void Save()
+        public override string ToString()
         {
-            _configFile.Save();
+            var result = new StringBuilder();
+            result.Append('{');
+            foreach (var token in Tokens) 
+                result.Append(token.ToString());
+            result.Append('}');
+            return result.ToString();
         }
     }
 }

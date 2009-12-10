@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class String : ParserToken, IValueToken
+    public class StringToken : ParserToken, IValueToken
     {
         public string Text { get; set; }
 

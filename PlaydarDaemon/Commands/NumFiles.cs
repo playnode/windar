@@ -25,12 +25,12 @@ namespace Windar.PlaydarController.Commands
     {
         public override string Run()
         {
-            Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
+            Runner.RunCommand(@"cd " + DaemonController.Instance.Paths.PlaydarDataPath);
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(DaemonController.Instance.ErlCmd).Append('"');
+            cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname windar-scan@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(DaemonController.Instance.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
             cmd.Append(" -extra playdar@localhost \"numfiles\"");
             Runner.RunCommand(cmd.ToString());

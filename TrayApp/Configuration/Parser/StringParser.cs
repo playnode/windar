@@ -23,7 +23,7 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class StringParser : Parser<String>
+    class StringParser : Parser<StringToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -50,12 +50,12 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static String GetString(ParserInputStream stream)
+        internal static StringToken GetString(ParserInputStream stream)
         {
             return new StringParser(stream).NextToken();
         }
 
-        public override String NextToken()
+        public override StringToken NextToken()
         {
             var buffer = new StringBuilder();
             int c;
@@ -97,7 +97,7 @@ namespace Windar.TrayApp.Configuration.Parser
                             {
                                 case '"':
                                     {
-                                        return new String { Text = buffer.ToString() };
+                                        return new StringToken { Text = buffer.ToString() };
                                     }
                                 default:
                                     {

@@ -46,34 +46,9 @@ namespace Windar.PlaydarController
 
         internal static DaemonController Instance { get; private set; }
 
+        internal WindarPaths Paths { get; private set; }
+
         public bool Started { get; private set; }
-
-        private string ApplicationPath { get; set; }
-
-        private string _erlPath;
-        private string _erlCmd;
-        private string _playdarPath;
-        private string _playdarDataPath;
-
-        internal string ErlPath
-        {
-            get { return _erlPath ?? (_erlPath = ApplicationPath + @"\minimerl"); }
-        }
-
-        internal string ErlCmd
-        {
-            get { return _erlCmd ?? (_erlCmd = ErlPath + @"\bin\erl.exe"); }
-        }
-
-        internal string PlaydarPath
-        {
-            get { return _playdarPath ?? (_playdarPath = ApplicationPath + @"\playdar"); }
-        }
-
-        internal string PlaydarDataPath
-        {
-            get { return _playdarDataPath ?? (_playdarDataPath = @"%AppData%\Windar"); }
-        }
 
         public int NumFiles
         {
@@ -97,7 +72,7 @@ namespace Windar.PlaydarController
 
         public DaemonController(string appPath)
         {
-            ApplicationPath = appPath;
+            Paths = new WindarPaths(appPath);
             Instance = this;
             Started = false;
         }
@@ -134,7 +109,7 @@ namespace Windar.PlaydarController
         {
             var cmd = Cmd<Scan>.Create();
             cmd.ScanCompleted += ScanCmd_ScanCompleted;
-            cmd.ApplicationPath = path;
+            cmd.ScanPath = path;
             cmd.RunAsync();
         }
 

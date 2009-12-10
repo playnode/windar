@@ -56,7 +56,7 @@ namespace Windar.TrayApp.Configuration.Parser
                         }
                     case '.':
                         {
-                            return new EndTerm();
+                            return new TermEndToken();
                         }
                     default:
                         {

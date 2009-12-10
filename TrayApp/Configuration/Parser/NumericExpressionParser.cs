@@ -111,7 +111,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 default:
                                     {
                                         InputStream.PushBack(c);
-                                        return new Integer { Text = buffer.ToString() };
+                                        return new IntegerToken { Text = buffer.ToString() };
                                     }
                             }
                             break;
@@ -129,7 +129,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 default:
                                     {
                                         InputStream.PushBack(c);
-                                        return new Float { Text = buffer.ToString() };
+                                        return new FloatToken { Text = buffer.ToString() };
                                     }
                             }
                         }

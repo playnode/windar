@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class Whitespace : ParserToken
+    public class WhitespaceToken : ParserToken
     {
         public string Text { get; set; }
 

@@ -30,6 +30,7 @@
 %% Set a name, to be used on the LAN/etc:
 
 %%{name, "Commander mxcl"}.
+{name, "Commander mxcl"}.
 
 %% List of scripts to be started (resolver scripts)
 %% You need quotes. You need a trailing comma, EXCEPT the last one in the list!

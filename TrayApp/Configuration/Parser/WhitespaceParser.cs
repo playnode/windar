@@ -23,7 +23,7 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class WhitespaceParser : Parser<Whitespace>
+    class WhitespaceParser : Parser<WhitespaceToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -51,12 +51,12 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static Whitespace GetWhitespace(ParserInputStream stream)
+        internal static WhitespaceToken GetWhitespace(ParserInputStream stream)
         {
             return new WhitespaceParser(stream).NextToken();
         }
 
-        public override Whitespace NextToken()
+        public override WhitespaceToken NextToken()
         {
             int c;
             var buffer = new StringBuilder();
@@ -102,7 +102,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                     }
                                 case '\n':
                                     {
-                                        return new Comment { Text = buffer.ToString() };
+                                        return new CommentToken { Text = buffer.ToString() };
                                     }
                                 default:
                                     {
@@ -131,7 +131,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 default:
                                     {
                                         InputStream.PushBack(c);
-                                        return new Whitespace { Text = buffer.ToString() };
+                                        return new WhitespaceToken { Text = buffer.ToString() };
                                     }
                             }
                             break;

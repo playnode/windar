@@ -23,7 +23,7 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class AtomParser : Parser<Atom>
+    class AtomParser : Parser<AtomToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -51,12 +51,12 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static Atom GetAtom(ParserInputStream stream)
+        internal static AtomToken GetAtom(ParserInputStream stream)
         {
             return new AtomParser(stream).NextToken();
         }
 
-        public override Atom NextToken()
+        public override AtomToken NextToken()
         {
             var buffer = new StringBuilder();
             int c;
@@ -109,7 +109,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 case '\r':
                                     {
                                         InputStream.PushBack(c);
-                                        return new Atom { Text = buffer.ToString() };
+                                        return new AtomToken { Text = buffer.ToString() };
                                     }
                                 default:
                                     {
@@ -132,7 +132,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 case '\'':
                                     {
                                         buffer.Append((char) c);
-                                        return new Atom { Text = buffer.ToString() };
+                                        return new AtomToken { Text = buffer.ToString() };
                                     }
                                 default:
                                     {

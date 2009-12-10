@@ -16,28 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using System.Text;
-
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class List : ParserToken
+    public class FloatToken : NumericExpression
     {
-        public List<ParserToken> Tokens { get; private set; }
-
-        public List()
-        {
-            Tokens = new List<ParserToken>();
-        }
-
-        public override string ToString()
-        {
-            var result = new StringBuilder();
-            result.Append('[');
-            foreach (var token in Tokens)
-                result.Append(token.ToString());
-            result.Append(']');
-            return result.ToString();
-        }
     }
 }

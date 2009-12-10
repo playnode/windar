@@ -18,11 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser.Tokens
 {
-    public class EndTerm : ParserToken
+    public class IntegerToken : NumericExpression
     {
-        public override string ToString()
-        {
-            return ".";
-        }
     }
 }

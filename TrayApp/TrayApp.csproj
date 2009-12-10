@@ -48,35 +48,39 @@
     <Compile Include="Configuration\GeneralOptionsPage.cs" />
     <Compile Include="Configuration\IConfigFile.cs" />
     <Compile Include="Configuration\IOptionsPage.cs" />
+    <Compile Include="Configuration\Parser\SingleListValueAtomTuple.cs" />
     <Compile Include="Configuration\MainConfigFile.cs" />
     <Compile Include="Configuration\Parser\AtomParser.cs" />
+    <Compile Include="Configuration\Parser\ErlangTermsDocument.cs" />
     <Compile Include="Configuration\Parser\NumericExpressionParser.cs" />
     <Compile Include="Configuration\Parser\IValueToken.cs" />
     <Compile Include="Configuration\Parser\ListParser.cs" />
     <Compile Include="Configuration\Parser\StringParser.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Atom.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Comma.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Comment.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Float.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Integer.cs" />
-    <Compile Include="Configuration\Parser\Tokens\List.cs" />
+    <Compile Include="Configuration\Parser\Tokens\AtomToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\CommaToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\CommentToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\FloatToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\IntegerToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\ListToken.cs" />
     <Compile Include="Configuration\Parser\NumericExpression.cs" />
     <Compile Include="Configuration\Parser\ParserException.cs" />
     <Compile Include="Configuration\Parser\Parser.cs" />
     <Compile Include="Configuration\Parser\ParserInputStream.cs" />
     <Compile Include="Configuration\Parser\ParserToken.cs" />
     <Compile Include="Configuration\Parser\ErlangTermsParser.cs" />
-    <Compile Include="Configuration\Parser\Tokens\String.cs" />
-    <Compile Include="Configuration\Parser\Tokens\EndTerm.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Tuple.cs" />
+    <Compile Include="Configuration\Parser\Tokens\StringToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\TermEndToken.cs" />
+    <Compile Include="Configuration\Parser\Tokens\TupleToken.cs" />
     <Compile Include="Configuration\Parser\TupleParser.cs" />
     <Compile Include="Configuration\Parser\WhitespaceParser.cs" />
-    <Compile Include="Configuration\Parser\Tokens\Whitespace.cs" />
+    <Compile Include="Configuration\Parser\Tokens\WhitespaceToken.cs" />
     <Compile Include="Configuration\PeerInfo.cs" />
     <Compile Include="Configuration\PlaydarModulesPage.cs" />
     <Compile Include="Configuration\PluginPropertiesPage.cs" />
     <Compile Include="Configuration\PluginsPage.cs" />
     <Compile Include="Configuration\ResolverScriptsPage.cs" />
+    <Compile Include="Configuration\Parser\SingleValueAtomTuple.cs" />
+    <Compile Include="Configuration\Parser\SingleValueMultiAtomTuple.cs" />
     <Compile Include="Configuration\TcpConfigFile.cs" />
     <Compile Include="DirectoryDialog.cs" />
     <Compile Include="MainForm.cs">
@@ -135,6 +139,10 @@
     <None Include="Resources\playdar-text.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PlaydarDaemon\PlaydarDaemon.csproj">
       <Project>{E5218BD7-EF33-49A9-BC01-B6AE21956E43}</Project>
       <Name>PlaydarDaemon</Name>

@@ -16,15 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
-{
-    public class Atom : ParserToken, IValueToken
-    {
-        public string Text { get; set; }
+using Windar.TrayApp.Configuration.Parser.Tokens;
 
-        public override string ToString()
-        {
-            return Text;
-        }
+namespace Windar.TrayApp.Configuration.Parser
+{
+    public class SingleListValueAtomTuple : TupleToken
+    {
     }
 }

@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+using Windar.TrayApp.Configuration.Parser.Tokens;
+
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class Comma : ParserToken
+    public class SingleValueMultiAtomTuple : TupleToken
     {
-        public override string ToString()
-        {
-            return ",";
-        }
     }
 }

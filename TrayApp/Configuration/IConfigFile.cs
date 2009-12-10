@@ -20,6 +20,7 @@ namespace Windar.TrayApp.Configuration
 {
     public interface IConfigFile
     {
-        
+        void Load(string filename);
+        void Save();
     }
 }

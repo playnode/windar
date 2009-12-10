@@ -202,7 +202,7 @@ namespace Windar.TrayApp
 
         #endregion
 
-        #region Application Exception Handling
+        #region Application exception handling.
 
         public static void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {

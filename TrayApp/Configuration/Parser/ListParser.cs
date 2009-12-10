@@ -22,7 +22,7 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class ListParser : Parser<List>
+    class ListParser : Parser<ListToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -51,14 +51,14 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static List GetList(ParserInputStream stream)
+        internal static ListToken GetList(ParserInputStream stream)
         {
             return new ListParser(stream).NextToken();
         }
 
-        public override List NextToken()
+        public override ListToken NextToken()
         {
-            var result = new List();
+            var result = new ListToken();
             int c;
             while ((c = InputStream.NextChar()) != -1)
             {
@@ -232,7 +232,7 @@ namespace Windar.TrayApp.Configuration.Parser
                             {
                                 case ',':
                                     {
-                                        result.Tokens.Add(new Comma());
+                                        result.Tokens.Add(new CommaToken());
                                         ChangeState(State.SegmentBegin);
                                         break;
                                     }

@@ -22,7 +22,7 @@ using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class TupleParser : Parser<Tuple>
+    class TupleParser : Parser<TupleToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -51,14 +51,14 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        internal static Tuple GetTuple(ParserInputStream stream)
+        internal static TupleToken GetTuple(ParserInputStream stream)
         {
             return new TupleParser(stream).NextToken();
         }
 
-        public override Tuple NextToken()
+        public override TupleToken NextToken()
         {
-            var result = new Tuple();
+            var result = new TupleToken();
             int c;
             while ((c = InputStream.NextChar()) != -1)
             {
@@ -232,7 +232,7 @@ namespace Windar.TrayApp.Configuration.Parser
                             {
                                 case ',':
                                     {
-                                        result.Tokens.Add(new Comma());
+                                        result.Tokens.Add(new CommaToken());
                                         ChangeState(State.SegmentBegin);
                                         break;
                                     }

@@ -63,25 +63,17 @@ namespace Windar.TrayApp.Configuration.Parser
             int nextChar;
             do
             {
-                // Pop last character on the queue if there are items pushed-back
-                if (_pushbackQueue.Count > 0)
-                {
-                    nextChar = _pushbackQueue.Pop();
-                }
-                else
-                {
-                    // Read the next character from the input stream
-                    nextChar = _stream.Read();
-                }
+                // Pop last character on the queue if there are items pushed-back.
+                // Otherwise read the next character from the input stream.
+                nextChar = _pushbackQueue.Count > 0 ? _pushbackQueue.Pop() : _stream.Read();
 
                 // Increment char count.
                 if (nextChar != -1) CharCount++;
-
-            } while (nextChar == '\r'); // Ignore linefeed
+            } while (nextChar == '\r'); // Ignore linefeed.
 
             if (nextChar == '\n')
             {
-                // Count new lines and track column position
+                // Count new lines and track column position.
                 LineNo += 1;
                 ColNo = 0;
             }
@@ -90,7 +82,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 ColNo++;
             }
 
-            // Update checksum and return next character
+            // Update checksum and return next character.
             UpdateChecksum(nextChar);
             if (Log.IsDebugEnabled) Log.Debug("Char: " + ToNameString(nextChar));
 
@@ -274,8 +266,8 @@ namespace Windar.TrayApp.Configuration.Parser
                         result.Append((char) c);
                         return result.ToString();
                     }
-                case 0x7F:
-                    return "0x" + c.ToString("X2").ToUpper() + " <DEL>";
+                case 0x7F: return "0x" + c.ToString("X2").ToUpper() + " <DEL>";
+                case -1: return "EOF";
                 default:
                     {
                         var result = new StringBuilder();

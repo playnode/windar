@@ -53,16 +53,16 @@ namespace Windar.PlaydarController.Commands
         {
             Cmd<CopyAppFilesToAppData>.Create().Run();
 
-            Runner.RunCommand(@"cd " + DaemonController.Instance.PlaydarDataPath);
+            Runner.RunCommand(@"cd " + DaemonController.Instance.Paths.PlaydarDataPath);
 
             //NOTE: Following is not currently required as etc is found in current dir.
             //Runner.RunCommand("set PLAYDAR_ETC=" + Paths.PlaydarDataPath + @"\etc");
 
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(DaemonController.Instance.ErlCmd).Append('"');
+            cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname playdar@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(DaemonController.Instance.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -boot start_sasl");
             cmd.Append(" -s reloader");
             cmd.Append(" -s playdar");
