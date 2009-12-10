@@ -17,11 +17,10 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using log4net;
-using Windar.TrayApp.Configuration.Parser;
-using Windar.TrayApp.Configuration.Parser;
 using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp.Configuration
@@ -140,13 +139,119 @@ namespace Windar.TrayApp.Configuration
             }
         }
 
-        //public List<string> Scripts { get; private set; }
-        //public int HttpPort { get; set; }
-        //public int Max { get; set; }
-        //public string ListeningIp { get; set; }
-        //public string DocRoot { get; set; }
-        //public List<string> ModulesBlacklist { get; private set; }
-        //public string LibraryDbDir { get; set; }
+        public int HttpPort
+        {
+            get
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+        
+        public int Max
+        {
+            get
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+
+        public string ListeningIp
+        {
+            get
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+
+        public string DocRoot
+        {
+            get
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+
+        public string LibraryDbDir
+        {
+            get
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+            set
+            {
+                //TODO
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region Resolver scripts list management.
+
+        public List<string> ListResolverScripts()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
+        public void AddResolverScript(string path)
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
+        public void RemoveResolverScript(string path)
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Modules blacklist management.
+
+        public List<string> ListModulesBlacklist()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
+        public void AddModuleToBlacklist()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
+        public void RemoveModuleFromBlacklist()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

@@ -26,7 +26,7 @@ namespace Windar.TrayApp.Configuration.Parser
     /// should be extended to override the ToString method. By design, using
     /// the ToString method should be used to re-write the parsed data.
     /// </summary>
-    public class ParserToken
+    class ParserToken
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 

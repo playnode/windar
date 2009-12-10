@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class AtomToken : ParserToken, IValueToken
+    class AtomToken : ParserToken, IValueToken
     {
         public string Text { get; set; }
 

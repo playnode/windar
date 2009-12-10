@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public abstract class Parser<T> where T : new()
+    abstract class Parser<T> where T : new()
     {
         #region Properties
 

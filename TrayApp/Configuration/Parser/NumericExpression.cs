@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class NumericExpression : ParserToken, IValueToken
+    class NumericExpression : ParserToken, IValueToken
     {
         public string Text { get; set; }
 

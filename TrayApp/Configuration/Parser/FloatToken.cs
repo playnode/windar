@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class FloatToken : NumericExpression
+    class FloatToken : NumericExpression
     {
     }
 }

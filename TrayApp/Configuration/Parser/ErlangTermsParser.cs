@@ -26,7 +26,7 @@ namespace Windar.TrayApp.Configuration.Parser
     /// to allow for the Playdar configuration terms to be parsed and updated
     /// before being written back to file. This is to preserve manual edits.
     /// </summary>
-    public class ErlangTermsParser : Parser<ParserToken>
+    class ErlangTermsParser : Parser<ParserToken>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 

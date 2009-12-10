@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class IntegerToken : NumericExpression
+    class IntegerToken : NumericExpression
     {
     }
 }

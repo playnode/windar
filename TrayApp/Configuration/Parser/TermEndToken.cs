@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class TermEndToken : ParserToken
+    class TermEndToken : ParserToken
     {
         public override string ToString()
         {

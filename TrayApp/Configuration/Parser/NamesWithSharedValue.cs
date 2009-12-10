@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    internal class NamesWithSharedValue : TupleToken
+    class NamesWithSharedValue : TupleToken
     {
         //TODO: NamesWithSharedValue
     }

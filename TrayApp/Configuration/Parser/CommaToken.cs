@@ -18,7 +18,7 @@
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class CommaToken : ParserToken
+    class CommaToken : ParserToken
     {
         public override string ToString()
         {

@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class CommentToken : WhitespaceToken
+    class CommentToken : WhitespaceToken
     {
         public override string ToString()
         {

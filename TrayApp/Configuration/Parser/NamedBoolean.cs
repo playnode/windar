@@ -22,7 +22,7 @@ using log4net;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    internal class NamedBoolean : NamedValue
+    class NamedBoolean : NamedValue
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 

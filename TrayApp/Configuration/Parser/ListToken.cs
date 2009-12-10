@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    public class ListToken : ParserToken, IValueToken
+    class ListToken : ParserToken, IValueToken
     {
         public List<ParserToken> Tokens { get; set; }
 

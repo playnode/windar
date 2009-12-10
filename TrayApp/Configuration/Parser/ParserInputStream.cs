@@ -28,7 +28,7 @@ namespace Windar.TrayApp.Configuration.Parser
     /// This class provides the character input stream to the Parser class.
     /// It supports a pushback queue, character counting and checksum.
     /// </summary>
-    public class ParserInputStream
+    class ParserInputStream
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 

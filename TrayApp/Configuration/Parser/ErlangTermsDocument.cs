@@ -28,7 +28,7 @@ namespace Windar.TrayApp.Configuration.Parser
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public List<ParserToken> Tokens { get; private set; }
+        internal List<ParserToken> Tokens { get; private set; }
 
         private FileInfo _file;
 

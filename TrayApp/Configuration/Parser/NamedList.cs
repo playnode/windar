@@ -21,7 +21,7 @@ using log4net;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    internal class NamedList : ListToken
+    class NamedList : ListToken
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
