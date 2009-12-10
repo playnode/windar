@@ -21,6 +21,7 @@ using System.IO;
 using System.Reflection;
 using log4net;
 using NUnit.Framework;
+using Windar.Common;
 using Windar.TrayApp.Configuration;
 using Windar.TrayApp.Configuration.Parser;
 
@@ -85,7 +86,7 @@ namespace Windar.TrayApp
             try
             {
                 var config = new MainConfigFile();
-                config.Load(TestConfigurationPath + "playdar.conf.example");
+                config.Load(new FileInfo(TestConfigurationPath + "playdar.conf.example"));
                 Log.Info("Configuration file loaded.");
 
                 // Change name.
@@ -95,6 +96,18 @@ namespace Windar.TrayApp
                 // Change crossdomain.
                 Log.Info("Current crossdomain = " + config.CrossDomain);
                 config.CrossDomain = false;
+
+                // Change authdbdir.
+                Log.Info("Current authdbdir = " + config.AuthDbDir);
+                config.AuthDbDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Windar\";
+
+                // Change explain.
+                Log.Info("Current explain = " + config.Explain);
+                config.Explain = true;
+
+                //TODO: Add module to blacklist.
+
+                //TODO: Remove module from blacklist.
 
                 Log.Info("\n" + config);
             }
@@ -111,7 +124,7 @@ namespace Windar.TrayApp
             try
             {
                 var config = new MainConfigFile();
-                config.Load(TestConfigurationPath + "playdartcp.conf.example");
+                config.Load(new FileInfo(TestConfigurationPath + "playdartcp.conf.example"));
                 Log.Info("Configuration file loaded.");
             }
             catch (Exception ex)

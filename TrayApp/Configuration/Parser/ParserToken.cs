@@ -38,6 +38,11 @@ namespace Windar.TrayApp.Configuration.Parser
             }
         }
 
+        /// <summary>
+        /// Require all extending classes to override ToString method.
+        /// Otherwise NotImplementedException is thrown.
+        /// </summary>
+        /// <returns>Not implemented.</returns>
         public override string ToString()
         {
             throw new System.NotImplementedException();

@@ -19,7 +19,7 @@
 using System;
 using System.Text;
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+namespace Windar.TrayApp.Configuration.Parser
 {
     public class WhitespaceToken : ParserToken
     {

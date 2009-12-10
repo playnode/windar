@@ -16,9 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Values
+using System.Text;
+
+namespace Windar.TrayApp.Configuration.Parser
 {
-    class NamedInteger
+    public class CommentToken : WhitespaceToken
     {
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            result.Append('%').Append(Text).Append("\n");
+            return result.ToString();
+        }
     }
 }

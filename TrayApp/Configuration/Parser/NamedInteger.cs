@@ -19,30 +19,28 @@
 using System;
 using System.Reflection;
 using log4net;
-using Windar.TrayApp.Configuration.Parser;
-using Windar.TrayApp.Configuration.Parser.Tokens;
 
-namespace Windar.TrayApp.Configuration.Values
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class NamedBoolean : NamedValue
+    internal class NamedInteger : NamedValue
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public new bool Value
+        public new int Value
         {
             get
             {
-                return Convert.ToBoolean(((AtomToken) base.Value).Text);
+                return Int32.Parse(((IntegerToken) base.Value).Text);
             }
             set
             {
-                base.Value = new AtomToken { Text = value ? "true" : "false" };
+                base.Value = new IntegerToken { Text = value.ToString() };
             }
         }
 
-        public NamedBoolean(string name, bool value) : base(name)
+        public NamedInteger(string name, int value) : base(name)
         {
-            Tokens.Add(new AtomToken { Text = value ? "true" : "false" });
+            Tokens.Add(new IntegerToken { Text = value.ToString() });
         }
 
         /// <summary>
@@ -50,13 +48,13 @@ namespace Windar.TrayApp.Configuration.Values
         /// suitable. A suitable tuple would have a single value, and a single
         /// atom as first part of the tuple.
         /// </summary>
-        /// <param name="tuple">Tuple to use in creating a NamedBoolean instance.</param>
-        /// <returns>An instance of NamedBoolean based on the give tuple.</returns>
-        public static new NamedBoolean CreateFrom(TupleToken tuple)
+        /// <param name="tuple">Tuple to use in creating a NamedInteger instance.</param>
+        /// <returns>An instance of NamedInteger based on the give tuple.</returns>
+        public static new NamedInteger CreateFrom(TupleToken tuple)
         {
-            if (Log.IsDebugEnabled) Log.Debug("Trying to create a NamedBoolean from tuple = " + tuple);
+            if (Log.IsDebugEnabled) Log.Debug("Trying to create a NamedInteger from tuple = " + tuple);
 
-            NamedBoolean result = null;
+            NamedInteger result = null;
             string name = null;
             var foundName = false;
             foreach (var tupleToken in tuple.Tokens)
@@ -79,11 +77,11 @@ namespace Windar.TrayApp.Configuration.Values
 
                 // We're expecting an atom to be the next value token.
                 // Otherwise, quit and return false.
-                if (!(tupleToken is AtomToken)) break;
+                if (!(tupleToken is NamedInteger)) break;
 
-                // Create the NamedBoolean instance and return.
-                var value = Convert.ToBoolean(((AtomToken) tupleToken).Text);
-                result = new NamedBoolean(name, value) { Tokens = tuple.Tokens };
+                // Create the NamedInteger instance and return.
+                var value = Int32.Parse(((IntegerToken) tupleToken).Text);
+                result = new NamedInteger(name, value) { Tokens = tuple.Tokens };
                 break;
             }
             return result;

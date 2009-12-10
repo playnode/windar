@@ -16,24 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.IO;
 using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp.Configuration
 {
-    public class TcpConfigFile : IConfigFile
+    public class TcpConfigFile : ErlangTermsDocument
     {
-        private ErlangTermsDocument _configFile;
-
-        public void Load(string filename)
-        {
-            _configFile = new ErlangTermsDocument();
-            _configFile.Load(new FileInfo(filename));
-        }
-
-        public void Save()
-        {
-            _configFile.Save();
-        }
     }
 }

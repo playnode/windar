@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class IntegerToken : NumericExpression
+    internal class NamesWithSharedValue : TupleToken
     {
+        //TODO: NamesWithSharedValue
     }
 }

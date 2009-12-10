@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Windar.TrayApp.Configuration.Parser.Tokens;
-
-namespace Windar.TrayApp.Configuration.Values
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class NamedList : TupleToken
+    public class IntegerToken : NumericExpression
     {
     }
 }

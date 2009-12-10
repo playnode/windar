@@ -19,7 +19,6 @@
 using System.Reflection;
 using System.Text;
 using log4net;
-using Windar.TrayApp.Configuration.Parser.Tokens;
 
 namespace Windar.TrayApp.Configuration.Parser
 {

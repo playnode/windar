@@ -231,16 +231,12 @@ namespace Windar.TrayApp
 
         #endregion
 
-        #region Log
-
         private void followTailCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (logBox == null) return;
             logBox.FollowTail = followTailCheckBox.Checked;
             if (logBox.FollowTail) logBox.ScrollToEnd();
         }
-
-        #endregion
 
         #region Closing
 

@@ -16,18 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Text;
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class StringToken : ParserToken, IValueToken
+    public class ListToken : ParserToken, IValueToken
     {
-        public string Text { get; set; }
+        public List<ParserToken> Tokens { get; set; }
+
+        public ListToken()
+        {
+            Tokens = new List<ParserToken>();
+        }
 
         public override string ToString()
         {
-            return new StringBuilder()
-                .Append('"').Append(Text).Append('"').ToString();
+            var result = new StringBuilder();
+            result.Append('[');
+            foreach (var token in Tokens)
+                result.Append(token.ToString());
+            result.Append(']');
+            return result.ToString();
         }
     }
 }

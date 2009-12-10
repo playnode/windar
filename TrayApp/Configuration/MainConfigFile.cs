@@ -17,24 +17,23 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using log4net;
 using Windar.TrayApp.Configuration.Parser;
-using Windar.TrayApp.Configuration.Parser.Tokens;
-using Windar.TrayApp.Configuration.Values;
+using Windar.TrayApp.Configuration.Parser;
+using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp.Configuration
 {
-    public class MainConfigFile : IConfigFile
+    public class MainConfigFile : ErlangTermsDocument
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        private ErlangTermsDocument _configFile;
         private NamedString _nodeName;
         private NamedBoolean _crossDomain;
+        private NamedBoolean _explain;
+        private NamedString _authdbdir;
 
         #region Properties
 
@@ -43,8 +42,8 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 var result = new StringBuilder();
-                result.Append(DateTime.Now.ToShortTimeString());
-                result.Append(", ").Append(DateTime.Now.ToLongDateString());
+                result.Append(DateTime.Now.ToShortTimeString()).Append(", ");
+                result.Append(DateTime.Now.ToLongDateString()).Append('.');
                 return result.ToString();
             }
         }
@@ -53,31 +52,44 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                if (Log.IsDebugEnabled) Log.Debug("Getting NodeName");
                 string result = null;
-                if (_nodeName == null)
-                {
-                    if (Log.IsDebugEnabled) Log.Debug("Finding NodeName");
-                    _nodeName = _configFile.FindNamedString("name");
-                    if (Log.IsDebugEnabled) Log.Debug("Found NodeName");
-                }
-                if (_nodeName != null)
-                {
-                    if (Log.IsDebugEnabled) Log.Debug("Returning NodeName.Value");
-                    result = _nodeName.Value;
-                }
+                if (_nodeName == null) _nodeName = FindNamedString("name");
+                if (_nodeName != null) result = _nodeName.Value;
                 return result;
             }
             set
             {
-                if (_nodeName == null) _nodeName = _configFile.FindNamedString("name");
+                if (_nodeName == null) _nodeName = FindNamedString("name");
                 if (_nodeName != null) _nodeName.Value = value;
                 else
                 {
                     _nodeName = new NamedString("name", value);
-                    _configFile.Tokens.Add(new WhitespaceToken { Text = "\n\n" });
-                    _configFile.Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
-                    _configFile.Tokens.Add(_nodeName);
+                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
+                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(_nodeName);
+                }
+            }
+        }
+
+        public string AuthDbDir
+        {
+            get
+            {
+                string result = null;
+                if (_authdbdir == null) _authdbdir = FindNamedString("authdbdir");
+                if (_authdbdir != null) result = _authdbdir.Value;
+                return result;
+            }
+            set
+            {
+                if (_authdbdir == null) _authdbdir = FindNamedString("authdbdir");
+                if (_authdbdir != null) _authdbdir.Value = value;
+                else
+                {
+                    _authdbdir = new NamedString("authdbdir", value);
+                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
+                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(_authdbdir);
                 }
             }
         }
@@ -87,56 +99,55 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 var result = false;
-                if (_crossDomain == null) _crossDomain = _configFile.FindNamedBoolean("crossdomain");
+                if (_crossDomain == null) _crossDomain = FindNamedBoolean("crossdomain");
                 if (_crossDomain != null) result = _crossDomain.Value;
                 return result;
             }
             set
             {
-                if (_crossDomain == null) _crossDomain = _configFile.FindNamedBoolean("crossdomain");
+                if (_crossDomain == null) _crossDomain = FindNamedBoolean("crossdomain");
                 if (_crossDomain != null) _crossDomain.Value = value;
                 else
                 {
                     _crossDomain = new NamedBoolean("crossdomain", value);
-                    _configFile.Tokens.Add(new WhitespaceToken { Text = "\n\n" });
-                    _configFile.Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
-                    _configFile.Tokens.Add(_nodeName);
+                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
+                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(_crossDomain);
                 }
             }
         }
 
-        public List<string> Scripts { get; private set; }
-        public int HttpPort { get; set; }
-        public int Max { get; set; } //TODO: Max what?
-        public string ListeningIp { get; set; }
-        public string DocRoot { get; set; }
-        public List<string> ModulesBlacklist { get; private set; }
-        public bool ExplainResults { get; set; }
-        public string LibraryDbPath { get; set; }
-        public string AuthDbPath { get; set; }
+        public bool Explain
+        {
+            get
+            {
+                var result = false;
+                if (_explain == null) _explain = FindNamedBoolean("explain");
+                if (_explain != null) result = _explain.Value;
+                return result;
+            }
+            set
+            {
+                if (_explain == null) _explain = FindNamedBoolean("explain");
+                if (_explain != null) _explain.Value = value;
+                else
+                {
+                    _explain = new NamedBoolean("explain", value);
+                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
+                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(_explain);
+                }
+            }
+        }
+
+        //public List<string> Scripts { get; private set; }
+        //public int HttpPort { get; set; }
+        //public int Max { get; set; }
+        //public string ListeningIp { get; set; }
+        //public string DocRoot { get; set; }
+        //public List<string> ModulesBlacklist { get; private set; }
+        //public string LibraryDbDir { get; set; }
 
         #endregion
-
-        public MainConfigFile()
-        {
-            //Scripts = new List<string>();
-            //ModulesBlacklist = new List<string>();
-        }
-
-        public void Load(string filename)
-        {
-            _configFile = new ErlangTermsDocument();
-            _configFile.Load(new FileInfo(filename));
-        }
-
-        public override string ToString()
-        {
-            return _configFile.ToString();
-        }
-
-        public void Save()
-        {
-            _configFile.Save();
-        }
     }
 }

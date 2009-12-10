@@ -18,15 +18,16 @@
 
 using System.Text;
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class CommentToken : WhitespaceToken
+    public class StringToken : ParserToken, IValueToken
     {
+        public string Text { get; set; }
+
         public override string ToString()
         {
-            var result = new StringBuilder();
-            result.Append('%').Append(Text).Append("\n");
-            return result.ToString();
+            return new StringBuilder()
+                .Append('"').Append(Text).Append('"').ToString();
         }
     }
 }

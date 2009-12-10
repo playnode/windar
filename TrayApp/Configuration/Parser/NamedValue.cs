@@ -18,12 +18,10 @@
 
 using System.Reflection;
 using log4net;
-using Windar.TrayApp.Configuration.Parser;
-using Windar.TrayApp.Configuration.Parser.Tokens;
 
-namespace Windar.TrayApp.Configuration.Values
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class NamedValue : TupleToken
+    internal class NamedValue : TupleToken
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
@@ -37,6 +35,7 @@ namespace Windar.TrayApp.Configuration.Values
                     if (!(token is AtomToken)) continue;
                     if (Log.IsDebugEnabled) Log.Debug("Found and returning atom name = " + ((AtomToken) token).Text);
                     result = ((AtomToken) token).Text;
+                    break;
                 }
                 return result;
             }
@@ -47,6 +46,7 @@ namespace Windar.TrayApp.Configuration.Values
                     if (!(token is AtomToken)) continue;
                     if (Log.IsDebugEnabled) Log.Debug("Found and setting atom name = " + ((AtomToken) token).Text);
                     ((AtomToken) token).Text = value;
+                    break;
                 }
             }
         }

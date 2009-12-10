@@ -16,9 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Values
+namespace Windar.TrayApp.Configuration.Parser
 {
-    class NamedListOfNamedValues
+    public class AtomToken : ParserToken, IValueToken
     {
+        public string Text { get; set; }
+
+        public override string ToString()
+        {
+            return Text;
+        }
     }
 }

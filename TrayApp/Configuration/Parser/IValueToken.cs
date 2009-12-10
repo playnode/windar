@@ -20,6 +20,5 @@ namespace Windar.TrayApp.Configuration.Parser
 {
     public interface IValueToken
     {
-        
     }
 }

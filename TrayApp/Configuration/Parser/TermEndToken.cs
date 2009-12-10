@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Windar: Playdar for Windows
  * Copyright (C) 2009 Steven Robertson <steve@playnode.org>
  *
@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public interface IConfigFile
+    public class TermEndToken : ParserToken
     {
-        void Load(string filename);
-        void Save();
+        public override string ToString()
+        {
+            return ".";
+        }
     }
 }

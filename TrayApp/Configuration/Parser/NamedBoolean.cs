@@ -16,32 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Reflection;
 using log4net;
-using Windar.TrayApp.Configuration.Parser;
-using Windar.TrayApp.Configuration.Parser.Tokens;
 
-namespace Windar.TrayApp.Configuration.Values
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class NamedString : NamedValue
+    internal class NamedBoolean : NamedValue
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public new string Value
+        public new bool Value
         {
             get
             {
-                return ((StringToken) base.Value).Text;
+                return Convert.ToBoolean(((AtomToken) base.Value).Text);
             }
             set
             {
-                base.Value = new StringToken { Text = value };
+                base.Value = new AtomToken { Text = value ? "true" : "false" };
             }
         }
 
-        public NamedString(string name, string value) : base(name)
+        public NamedBoolean(string name, bool value) : base(name)
         {
-            Tokens.Add(new StringToken { Text = value });
+            Tokens.Add(new AtomToken { Text = value ? "true" : "false" });
         }
 
         /// <summary>
@@ -51,15 +50,17 @@ namespace Windar.TrayApp.Configuration.Values
         /// </summary>
         /// <param name="tuple">Tuple to use in creating a NamedBoolean instance.</param>
         /// <returns>An instance of NamedBoolean based on the give tuple.</returns>
-        public static new NamedString CreateFrom(TupleToken tuple)
+        public static new NamedBoolean CreateFrom(TupleToken tuple)
         {
-            if (Log.IsDebugEnabled) Log.Debug("Trying to create a NamedString from tuple = " + tuple);
+            if (Log.IsDebugEnabled) Log.Debug("Trying to create a NamedBoolean from tuple = " + tuple);
 
-            NamedString result = null;
+            NamedBoolean result = null;
             string name = null;
             var foundName = false;
             foreach (var tupleToken in tuple.Tokens)
             {
+                if (Log.IsDebugEnabled) Log.Debug("name = " + name);
+
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
 
@@ -78,11 +79,12 @@ namespace Windar.TrayApp.Configuration.Values
 
                 // We're expecting an atom to be the next value token.
                 // Otherwise, quit and return false.
-                if (!(tupleToken is StringToken)) break;
+                if (!(tupleToken is AtomToken)) break;
 
                 // Create the NamedBoolean instance and return.
-                var value = ((StringToken) tupleToken).Text;
-                result = new NamedString(name, value) { Tokens = tuple.Tokens };
+                var value = Convert.ToBoolean(((AtomToken) tupleToken).Text);
+                result = new NamedBoolean(name, value) { Tokens = tuple.Tokens };
+                if (Log.IsDebugEnabled) Log.Debug("Result = " + result);
                 break;
             }
             return result;

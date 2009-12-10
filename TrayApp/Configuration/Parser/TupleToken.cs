@@ -16,15 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Windar.TrayApp.Configuration.Parser.Tokens
+using System.Collections.Generic;
+using System.Text;
+
+namespace Windar.TrayApp.Configuration.Parser
 {
-    public class AtomToken : ParserToken, IValueToken
+    public class TupleToken : ParserToken, IValueToken
     {
-        public string Text { get; set; }
+        public List<ParserToken> Tokens { get; set; }
+
+        public TupleToken()
+        {
+            Tokens = new List<ParserToken>();
+        }
 
         public override string ToString()
         {
-            return Text;
+            var result = new StringBuilder();
+            result.Append('{');
+            foreach (var token in Tokens) 
+                result.Append(token.ToString());
+            result.Append('}');
+            return result.ToString();
         }
     }
 }
