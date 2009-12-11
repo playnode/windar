@@ -105,6 +105,9 @@ namespace Windar.TrayApp
                 Log.Info("Current explain = " + config.Explain);
                 config.Explain = true;
 
+                // Change port.
+                Log.Info("Current port = " + config.HttpPort);
+
                 //TODO: Add module to blacklist.
 
                 //TODO: Remove module from blacklist.

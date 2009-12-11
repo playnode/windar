@@ -128,7 +128,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
                 if (Log.IsInfoEnabled)
                 {
-                    Log.Info("Found named string: name = " + name
+                    Log.Info("Found named value: name = " + name
                         + ", value = " + named.Value);
                 }
                 result = named;
@@ -198,7 +198,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
                 if (Log.IsInfoEnabled)
                 {
-                    Log.Info("Found named string: name = " + name
+                    Log.Info("Found named boolean: name = " + name
                         + ", value = " + named.Value);
                 }
                 result = named;
@@ -217,10 +217,16 @@ namespace Windar.TrayApp.Configuration.Parser
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
 
+                if (Log.IsDebugEnabled) Log.Debug("TupleToken = " + token);
+
                 // Try to create a named value from tuple.
                 var tuple = (TupleToken) token;
                 var named = NamedList.CreateFrom(tuple);
-                if (named == null) continue;
+                if (named == null)
+                {
+                    if (Log.IsDebugEnabled) Log.Debug("NamedList Is Nothing");
+                    continue;
+                }
 
                 // Found named tuple?
                 if (named.Name != name)
@@ -233,7 +239,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
                 if (Log.IsInfoEnabled)
                 {
-                    Log.Info("Found named string: name = " + name
+                    Log.Info("Found named list: name = " + name
                         + ", list = " + named.List);
                 }
                 result = named;

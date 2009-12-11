@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Reflection;
 using log4net;
 
@@ -79,13 +80,13 @@ namespace Windar.TrayApp.Configuration.Parser
         }
 
         // ReSharper disable SuggestBaseTypeForParameter
-        public NamedList(string name, ListToken list)
+        public NamedList(string name, List<ParserToken> list)
         // ReSharper restore SuggestBaseTypeForParameter
         {
             Tokens.Add(new AtomToken { Text = name });
             Tokens.Add(new CommaToken());
             Tokens.Add(new WhitespaceToken { Text = " " });
-            Tokens.Add(list);
+            Tokens.Add(new ListToken(list));
         }
 
         /// <summary>
@@ -113,21 +114,40 @@ namespace Windar.TrayApp.Configuration.Parser
         /// <returns>An instance of NamedList based on the give tuple.</returns>
         public static NamedList CreateFrom(TupleToken tuple)
         {
+            if (Log.IsDebugEnabled) Log.Debug("Trying to create a NamedList from tuple = " + tuple);
+
             NamedList result = null;
+            string name = null;
+            var foundName = false;
             foreach (var tupleToken in tuple.Tokens)
             {
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
 
-                // We're expecting the atom to be the first value token.
-                // Otherwise, quite and return false.
+                if (!foundName)
+                {
+                    // We're expecting the atom to be the first value token.
+                    // Otherwise, quit and return false.
+                    if (!(tupleToken is AtomToken)) break;
+
+                    // Store the name and look for the value.
+                    name = ((AtomToken) tupleToken).Text;
+                    if (Log.IsDebugEnabled) Log.Debug("Found name = " + name);
+                    foundName = true;
+                    continue;
+                }
+
+                // We're expecting a list to be the next value token.
+                // Otherwise, quit and return false.
                 if (!(tupleToken is ListToken)) break;
 
                 // Create the NamedList instance and return.
-                result = new NamedList { Tokens = tuple.Tokens };
+                var value = ((ListToken) tupleToken).Tokens;
+                result = new NamedList(name, value) { Tokens = tuple.Tokens };
+                if (Log.IsDebugEnabled) Log.Debug("Result = " + result);
                 break;
             }
             return result;
         }
-   }
+    }
 }

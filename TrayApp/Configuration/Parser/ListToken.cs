@@ -30,6 +30,11 @@ namespace Windar.TrayApp.Configuration.Parser
             Tokens = new List<ParserToken>();
         }
 
+        public ListToken(List<ParserToken> list)
+        {
+            Tokens = list;
+        }
+
         public override string ToString()
         {
             var result = new StringBuilder();

@@ -148,7 +148,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
 
-                // We're expecting the atom to be the first value token.
+                // We're expecting the atom name to be the first value token.
                 // Otherwise, quite and return false.
                 if (!(tupleToken is AtomToken)) break;
 

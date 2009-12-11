@@ -75,7 +75,7 @@ namespace Windar.TrayApp.Configuration.Parser
                     continue;
                 }
 
-                // We're expecting an atom to be the next value token.
+                // We're expecting an integer to be the next value token.
                 // Otherwise, quit and return false.
                 if (!(tupleToken is NamedInteger)) break;
 

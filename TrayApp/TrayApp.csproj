@@ -82,7 +82,6 @@
     <Compile Include="Configuration\ResolverScriptsPage.cs" />
     <Compile Include="Configuration\Parser\NamedString.cs" />
     <Compile Include="Configuration\Parser\NamedValue.cs" />
-    <Compile Include="Configuration\Parser\NamesWithSharedValue.cs" />
     <Compile Include="Configuration\TcpConfigFile.cs" />
     <Compile Include="DirectoryDialog.cs" />
     <Compile Include="MainForm.cs">

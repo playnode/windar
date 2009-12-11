@@ -27,12 +27,13 @@ namespace Windar.TrayApp.Configuration
 {
     public class MainConfigFile : ErlangTermsDocument
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
-
         private NamedString _nodeName;
         private NamedBoolean _crossDomain;
         private NamedBoolean _explain;
         private NamedString _authdbdir;
+        private NamedList _web;
+        private NamedList _scripts;
+        private NamedList _blacklist;
 
         #region Properties
 
@@ -143,13 +144,53 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                //TODO
-                throw new NotImplementedException();
+                var result = -1;
+
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null)
+                {
+                    // Extract http port from web list.
+                    foreach (var token in _web.Tokens)
+                    {
+                        // Only interested in tuples in the list token.
+                        if (!(token is ListToken)) continue;
+                        foreach (var listToken in ((ListToken) token).Tokens)
+                        {
+                            // Only interested in tuple tokens here.
+                            if (!(listToken is TupleToken)) continue;
+
+                            // Find tuple with name "port".
+                            var foundName = false;
+                            foreach (var tupleToken in ((TupleToken) listToken).Tokens)
+                            {
+                                // Only interested in value tokens here.
+                                if (!(tupleToken is IValueToken)) continue;
+                                if (!foundName)
+                                {
+                                    if (!(tupleToken is AtomToken)) continue;
+                                    if (((AtomToken) tupleToken).Text != "port") break;
+                                    foundName = true;
+                                    continue;
+                                }
+                                if (!(tupleToken is IntegerToken)) break;
+                                result = Int32.Parse(((IntegerToken) tupleToken).Text);
+                            }
+                        }
+                    }
+                }
+                return result;
             }
             set
             {
-                //TODO
-                throw new NotImplementedException();
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null)
+                {
+                    //TODO: Exctract http port from web list and update it.
+                }
+                else
+                {
+                    //TODO: Create web list and set http port as specified.
+                }
             }
         }
         
