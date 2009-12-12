@@ -16,22 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Reflection;
-using log4net;
 using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp.Configuration
 {
     public class MainConfigFile : ErlangTermsDocument
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
-
         private NamedString _nodeName;
         private NamedBoolean _crossDomain;
         private NamedBoolean _explain;
         private NamedString _authdbdir;
+        private TupleToken _libdbdir;
         private NamedList _web;
         private NamedList _scripts;
         private NamedList _blacklist;
@@ -54,10 +50,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _nodeName = new NamedString("name", value);
-                    Tokens.Add(new WhitespaceToken("\n\n"));
-                    Tokens.Add(new WindarAddedComment());
-                    Tokens.Add(_nodeName);
-                    Tokens.Add(new TermEndToken());
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_nodeName);
+                    Document.Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -78,10 +74,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _authdbdir = new NamedString("authdbdir", value);
-                    Tokens.Add(new WhitespaceToken("\n\n"));
-                    Tokens.Add(new WindarAddedComment());
-                    Tokens.Add(_authdbdir);
-                    Tokens.Add(new TermEndToken());
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_authdbdir);
+                    Document.Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -102,10 +98,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _crossDomain = new NamedBoolean("crossdomain", value);
-                    Tokens.Add(new WhitespaceToken("\n\n"));
-                    Tokens.Add(new WindarAddedComment());
-                    Tokens.Add(_crossDomain);
-                    Tokens.Add(new TermEndToken());
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_crossDomain);
+                    Document.Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -126,10 +122,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _explain = new NamedBoolean("explain", value);
-                    Tokens.Add(new WhitespaceToken("\n\n"));
-                    Tokens.Add(new WindarAddedComment());
-                    Tokens.Add(_explain);
-                    Tokens.Add(new TermEndToken());
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_explain);
+                    Document.Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -149,47 +145,6 @@ namespace Windar.TrayApp.Configuration
                 if (_web == null) _web = CreateWebConfigItem();
                 _web.SetNamedValue("port", value);
             }
-        }
-        
-        private NamedList CreateWebConfigItem()
-        {
-            /*
-            {web,[
-                {port, 60210},
-                {max, 100},
-                {ip, "0.0.0.0"}, 
-                {docroot, "priv/www"}
-            ]}.
-            */
-
-            Tokens.Add(new WhitespaceToken("\n\n"));
-            Tokens.Add(new WindarAddedComment());
-            var list = new ListToken();
-
-            // Port
-            list.Tokens.Add(new WhitespaceToken("\n    "));
-            list.Tokens.Add(new NamedInteger("port", 60210));
-            list.Tokens.Add(new CommaToken());
-
-            // Max
-            list.Tokens.Add(new WhitespaceToken("\n    "));
-            list.Tokens.Add(new NamedInteger("max", 100));
-            list.Tokens.Add(new CommaToken());
-
-            // IP
-            list.Tokens.Add(new WhitespaceToken("\n    "));
-            list.Tokens.Add(new NamedString("ip", "0.0.0.0"));
-            list.Tokens.Add(new CommaToken());
-
-            // DocRoot
-            list.Tokens.Add(new WhitespaceToken("\n    "));
-            list.Tokens.Add(new NamedString("docroot", "priv/www"));
-            list.Tokens.Add(new WhitespaceToken("\n"));
-
-            var result = new NamedList("web", list);
-            Tokens.Add(result);
-            Tokens.Add(new TermEndToken());
-            return result;
         }
 
         public int Max
@@ -247,17 +202,109 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                //TODO
-                throw new NotImplementedException();
+                string result = null;
+                if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
+                if (_libdbdir != null)
+                {
+                    var valueTokens = _libdbdir.GetValueTokens();
+                    result = ((StringToken) valueTokens[1]).Text;
+                }
+                return result;
             }
             set
             {
-                //TODO
-                throw new NotImplementedException();
+                if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
+                if (_libdbdir == null)
+                {
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    _libdbdir = new TupleToken();
+                    var tuple = new TupleToken();
+                    tuple.Tokens.Add(new AtomToken("library"));
+                    tuple.Tokens.Add(new CommaToken());
+                    tuple.Tokens.Add(new WhitespaceToken(" "));
+                    tuple.Tokens.Add(new AtomToken("dbdir"));
+                    _libdbdir.Tokens.Add(tuple);
+                    _libdbdir.Tokens.Add(new CommaToken());
+                    _libdbdir.Tokens.Add(new WhitespaceToken(" "));
+                    _libdbdir.Tokens.Add(new StringToken(value));
+                    Document.Tokens.Add(_libdbdir);
+                    Document.Tokens.Add(new TermEndToken());
+                }
+                var valueTokens = _libdbdir.GetValueTokens();
+                ((StringToken) valueTokens[1]).Text = value;
             }
         }
 
         #endregion
+
+        private NamedList CreateWebConfigItem()
+        {
+            /*
+            {web,[
+                {port, 60210},
+                {max, 100},
+                {ip, "0.0.0.0"}, 
+                {docroot, "priv/www"}
+            ]}.
+            */
+
+            Document.Tokens.Add(new WhitespaceToken("\n\n"));
+            Document.Tokens.Add(new WindarAddedComment());
+            var list = new ListToken();
+
+            // Port
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedInteger("port", 60210));
+            list.Tokens.Add(new CommaToken());
+
+            // Max
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedInteger("max", 100));
+            list.Tokens.Add(new CommaToken());
+
+            // IP
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedString("ip", "0.0.0.0"));
+            list.Tokens.Add(new CommaToken());
+
+            // DocRoot
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedString("docroot", "priv/www"));
+            list.Tokens.Add(new WhitespaceToken("\n"));
+
+            var result = new NamedList("web", list);
+            Document.Tokens.Add(result);
+            Document.Tokens.Add(new TermEndToken());
+            return result;
+        }
+
+        private TupleToken FindLibraryDbDir()
+        {
+            TupleToken result = null;
+
+            // Search through all the tuples at the top-level of file.
+            foreach (var token in Document.GetTupleTokens())
+            {
+                // Only interested in a tuple with a tuple as a first item.
+                var valueTokens = token.GetValueTokens();
+                if (!(valueTokens[0] is TupleToken)) continue;
+
+                // Check the tuple names expected: {library, dbdir}
+                var tuple = (TupleToken) valueTokens[0];
+                var values = tuple.GetValueTokens();
+                if (!(values[0] is AtomToken) || ((AtomToken) values[0]).Text != "library" ||
+                    !(values[1] is AtomToken) || ((AtomToken) values[1]).Text != "dbdir") continue;
+
+                // Ensure it has the expected StringToken type.
+                if (valueTokens[1] is StringToken)
+                {
+                    // Found result.
+                    result = token;
+                }
+            }
+            return result;
+        }
 
         #region Resolver scripts list management.
 
@@ -275,10 +322,10 @@ namespace Windar.TrayApp.Configuration
             if (_scripts == null)
             {
                 _scripts = new NamedList("scripts", new ListToken());
-                Tokens.Add(new WhitespaceToken("\n\n"));
-                Tokens.Add(new WindarAddedComment());
-                Tokens.Add(_scripts);
-                Tokens.Add(new TermEndToken());
+                Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(_scripts);
+                Document.Tokens.Add(new TermEndToken());
             }
             _scripts.AddListItem(script);
         }
@@ -307,10 +354,10 @@ namespace Windar.TrayApp.Configuration
             if (_blacklist == null)
             {
                 _blacklist = new NamedList("modules_blacklist", new ListToken());
-                Tokens.Add(new WhitespaceToken("\n\n"));
-                Tokens.Add(new WindarAddedComment());
-                Tokens.Add(_blacklist);
-                Tokens.Add(new TermEndToken());
+                Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(_blacklist);
+                Document.Tokens.Add(new TermEndToken());
             }
             _blacklist.AddListItem(module);
         }

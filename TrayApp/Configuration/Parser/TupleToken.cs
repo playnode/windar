@@ -21,10 +21,8 @@ using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class TupleToken : ParserToken, IValueToken
+    class TupleToken : CompositeToken, IValueToken
     {
-        public List<ParserToken> Tokens { get; set; }
-
         public TupleToken()
         {
             Tokens = new List<ParserToken>();

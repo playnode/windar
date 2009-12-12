@@ -164,6 +164,17 @@ namespace Windar.TrayApp.Configuration.Parser
             return result;
         }
 
+        public List<string> GetStringsList()
+        {
+            var result = new List<string>();
+            foreach (var token in List.Tokens)
+            {
+                if (!(token is StringToken)) continue;
+                result.Add(((StringToken) token).Text);
+            }
+            return result;
+        }
+
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -173,6 +184,8 @@ namespace Windar.TrayApp.Configuration.Parser
             result.Append('}');
             return result.ToString();
         }
+
+        #region Named items.
 
         private TupleToken GetTupleNamed(string name)
         {
@@ -271,16 +284,9 @@ namespace Windar.TrayApp.Configuration.Parser
             named.Value = value;
         }
 
-        public List<string> GetStringsList()
-        {
-            var result = new List<string>();
-            foreach (var token in List.Tokens)
-            {
-                if (!(token is StringToken)) continue;
-                result.Add(((StringToken) token).Text);
-            }
-            return result;
-        }
+        #endregion
+
+        #region List items.
 
         public void AddListItem(string item)
         {
@@ -408,5 +414,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 continue;
             }
         }
+
+        #endregion
     }
 }

@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -28,21 +27,21 @@ namespace Windar.TrayApp.Configuration.Parser
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        internal List<ParserToken> Tokens { get; private set; }
+        internal CompositeToken Document { get; private set; }
 
         private FileInfo _file;
 
         public void Load(FileInfo file)
         {
             _file = file;
-            Tokens = new List<ParserToken>();
+            Document = new CompositeToken();
 
             var stream = new ParserInputStream(_file.OpenText());
             var parser = new ErlangTermsParser(stream);
             ParserToken token;
             while ((token = parser.NextToken()) != null)
             {
-                Tokens.Add(token);
+                Document.Tokens.Add(token);
                 if (!Log.IsInfoEnabled) continue;
                 if (token is CommentToken)
                 {
@@ -91,7 +90,7 @@ namespace Windar.TrayApp.Configuration.Parser
         public override string ToString()
         {
             var result = new StringBuilder();
-            foreach (var token in Tokens) result.Append(token.ToString());
+            foreach (var token in Document.Tokens) result.Append(token.ToString());
             return result.ToString();
         }
 
@@ -107,7 +106,7 @@ namespace Windar.TrayApp.Configuration.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedValue result = null;
-            foreach (var token in Tokens)
+            foreach (var token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
@@ -142,7 +141,7 @@ namespace Windar.TrayApp.Configuration.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedString result = null;
-            foreach (var token in Tokens)
+            foreach (var token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
@@ -177,7 +176,7 @@ namespace Windar.TrayApp.Configuration.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedBoolean result = null;
-            foreach (var token in Tokens)
+            foreach (var token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
@@ -212,7 +211,7 @@ namespace Windar.TrayApp.Configuration.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedList result = null;
-            foreach (var token in Tokens)
+            foreach (var token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;

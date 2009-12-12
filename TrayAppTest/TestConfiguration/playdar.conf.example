@@ -37,9 +37,6 @@
 {scripts,[
     %"contrib/echonest/echonest-resolver.py",
     %"contrib/mp3tunes/mp3tunes-resolver.py"
-
-%% Added by Windar at 02:03, 12 December 2009.
-"Test script"
 ]}.
  
 %% Settings for the Playdar webserver.

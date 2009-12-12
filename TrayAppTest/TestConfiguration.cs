@@ -120,6 +120,10 @@ namespace Windar.TrayApp
                 Log.Info("Current docroot = " + config.DocRoot);
                 config.DocRoot = "priv/www2";
 
+                // Change {library, dbdir}
+                Log.Info("Current {library, dbdir} = " + config.LibraryDbDir);
+                config.LibraryDbDir = "/tmp";
+
                 // Add and remove script.
                 config.AddScript("Test script 1");
                 config.AddScript("Test script 2");
