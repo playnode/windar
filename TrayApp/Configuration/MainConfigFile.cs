@@ -295,29 +295,30 @@ namespace Windar.TrayApp.Configuration
 
         public List<string> ListModulesBlacklist()
         {
-            var result = new List<string>();
+            List<string> result = null;
             if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
-            if (_blacklist != null)
-            {
-                foreach (var token in _blacklist.Tokens)
-                {
-                    if (!(token is StringToken)) continue;
-                    result.Add(((StringToken) token).Text);
-                }
-            }
+            if (_blacklist != null) result = _blacklist.GetStringsList();
             return result;
         }
 
-        public void AddModuleToBlacklist()
+        public void BlockModule(string module)
         {
-            //TODO
-            throw new NotImplementedException();
+            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
+            if (_blacklist == null)
+            {
+                _blacklist = new NamedList("modules_blacklist", new ListToken());
+                Tokens.Add(new WhitespaceToken("\n\n"));
+                Tokens.Add(new WindarAddedComment());
+                Tokens.Add(_blacklist);
+                Tokens.Add(new TermEndToken());
+            }
+            _blacklist.AddListItem(module);
         }
 
-        public void RemoveModuleFromBlacklist()
+        public void UnblockModule(string module)
         {
-            //TODO
-            throw new NotImplementedException();
+            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
+            if (_blacklist != null) _blacklist.RemoveListItem(module);
         }
 
         #endregion

@@ -34,10 +34,13 @@
 %% List of scripts to be started (resolver scripts)
 %% You need quotes. You need a trailing comma, EXCEPT the last one in the list!
 
-%{scripts,[
+{scripts,[
     %"contrib/echonest/echonest-resolver.py",
     %"contrib/mp3tunes/mp3tunes-resolver.py"
-%]}.
+
+%% Added by Windar at 02:03, 12 December 2009.
+"Test script"
+]}.
  
 %% Settings for the Playdar webserver.
 %%

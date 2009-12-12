@@ -332,26 +332,52 @@ namespace Windar.TrayApp.Configuration.Parser
                     // Remove the resolver script from list.
                     List.Tokens.Remove(token);
 
-                    // Remove previous Windar comment (if applicable).
-                    if (previousTokens.Count > 0 
-                        && previousTokens.Peek() is CommentToken 
-                        && ((CommentToken) previousTokens.Peek()).Text.StartsWith(WindarAddedComment.WindarCommentBegin))
+                    if (previousTokens.Peek() is WhitespaceToken
+                        && !(previousTokens.Peek() is CommentToken))
                     {
-                        List.Tokens.Remove(previousTokens.Pop());
+                        // Remove preceeding whitespace.
+                        while (previousTokens.Peek() is WhitespaceToken
+                            && !(previousTokens.Peek() is CommentToken))
+                        {
+                            List.Tokens.Remove(previousTokens.Pop());
+                        }
 
-                        // Remove previous newline.
-                        if (previousTokens.Count > 0 
-                            && previousTokens.Peek() is WhitespaceToken
-                            && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                        // Remove comma token.
+                        if (previousTokens.Peek() is CommaToken)
+                        {
+                            List.Tokens.Remove(previousTokens.Pop());
+                        }
+                    }
+                    else
+                    {
+                        // Remove previous Windar comment (if applicable).
+                        if (previousTokens.Count > 0
+                            && previousTokens.Peek() is CommentToken
+                            && ((CommentToken) previousTokens.Peek()).Text.StartsWith(WindarAddedComment.WindarCommentBegin))
                         {
                             List.Tokens.Remove(previousTokens.Pop());
 
                             // Remove previous newline.
-                            if (previousTokens.Count > 0 
+                            if (previousTokens.Count > 0
                                 && previousTokens.Peek() is WhitespaceToken
                                 && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
                             {
                                 List.Tokens.Remove(previousTokens.Pop());
+
+                                // Remove previous newline.
+                                if (previousTokens.Count > 0
+                                    && previousTokens.Peek() is WhitespaceToken
+                                    && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                                {
+                                    List.Tokens.Remove(previousTokens.Pop());
+
+                                    // Remove comma token, if found.
+                                    if (previousTokens.Count > 0
+                                        && previousTokens.Peek() is CommaToken)
+                                    {
+                                        List.Tokens.Remove(previousTokens.Pop());
+                                    }
+                                }
                             }
                         }
                     }

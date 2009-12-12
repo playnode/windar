@@ -123,13 +123,17 @@ namespace Windar.TrayApp
                 // Add and remove script.
                 config.AddScript("Test script 1");
                 config.AddScript("Test script 2");
-                //config.RemoveScript("Test script 1");
+                config.RemoveScript("Test script 1");
                 //config.RemoveScript("Test script 2");
                 //config.AddScript("Test script 1");
                 //config.AddScript("Test script 2");
                 //config.RemoveScript("Test script");
 
-                //TODO: Add and remove module from blacklist.
+                // Add and remove module from blacklist.
+                config.BlockModule("Test module 1");
+                config.BlockModule("Test module 2");
+                config.UnblockModule("Test module 1");
+                config.UnblockModule("aolmusic");
 
                 Log.Info("\n" + config);
             }
