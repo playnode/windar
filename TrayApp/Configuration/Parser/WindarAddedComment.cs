@@ -34,6 +34,8 @@ namespace Windar.TrayApp.Configuration.Parser
             }
         }
 
-        public WindarAddedComment() : base("% Added by Windar at " + Timestamp) { }
+        public const string WindarCommentBegin = "% Added by Windar at ";
+
+        public WindarAddedComment() : base(WindarCommentBegin + Timestamp) { }
     }
 }

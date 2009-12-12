@@ -156,6 +156,14 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
+        public int CountListValues()
+        {
+            var result = 0;
+            foreach (var token in List.Tokens)
+                if (token is IValueToken) result++;
+            return result;
+        }
+
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -207,21 +215,37 @@ namespace Windar.TrayApp.Configuration.Parser
 
         public int GetNamedInteger(string name)
         {
-            return NamedInteger.CreateFrom(GetTupleNamed(name)).Value;
+            var result = -1;
+            var tuple = GetTupleNamed(name);
+            if (tuple != null)
+            {
+                var named = NamedInteger.CreateFrom(tuple);
+                if (named != null) result = named.Value;
+            }
+            return result;
         }
 
         public string GetNamedString(string name)
         {
-            return NamedString.CreateFrom(GetTupleNamed(name)).Value;
+            string result = null;
+            var tuple = GetTupleNamed(name);
+            if (tuple != null)
+            {
+                var named = NamedString.CreateFrom(tuple);
+                if (named != null) result = named.Value;
+            }
+            return result;
         }
 
         public void SetNamedValue(string name, int value)
         {
-            var named = NamedInteger.CreateFrom(GetTupleNamed(name));
+            NamedInteger named = null;
+            var tuple = GetTupleNamed(name);
+            if (tuple != null) named = NamedInteger.CreateFrom(tuple);
             if (named == null)
             {
                 named = new NamedInteger(name, value);
-                if (CountValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+                if (CountListValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
                 List.Tokens.Add(new WhitespaceToken("\n"));
                 List.Tokens.Add(new WindarAddedComment());
                 List.Tokens.Add(named);
@@ -232,11 +256,13 @@ namespace Windar.TrayApp.Configuration.Parser
 
         public void SetNamedValue(string name, string value)
         {
-            var named = NamedString.CreateFrom(GetTupleNamed(name));
+            NamedString named = null;
+            var tuple = GetTupleNamed(name);
+            if (tuple != null) named = NamedString.CreateFrom(tuple);
             if (named == null)
             {
                 named = new NamedString(name, value);
-                if (CountValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+                if (CountListValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
                 List.Tokens.Add(new WhitespaceToken("\n"));
                 List.Tokens.Add(new WindarAddedComment());
                 List.Tokens.Add(named);
@@ -245,22 +271,116 @@ namespace Windar.TrayApp.Configuration.Parser
             named.Value = value;
         }
 
-        private int CountValues()
+        public List<string> GetStringsList()
         {
-            var result = 0;
-            foreach (var token in Tokens)
-                if (token is IValueToken) result++;
+            var result = new List<string>();
+            foreach (var token in List.Tokens)
+            {
+                if (!(token is StringToken)) continue;
+                result.Add(((StringToken) token).Text);
+            }
             return result;
         }
 
         public void AddListItem(string item)
         {
-            //TODO
+            if (GetStringsList().Contains(item))
+            {
+                if (Log.IsWarnEnabled)
+                {
+                    Log.Warn("Trying to add item which is already in the list. Item = " + item);
+                }
+                return;
+            }
+            var n = CountListValues();
+            if (n == 0)
+            {
+                // Check if there is already some leading newline or comment line.
+                var c = 0;
+                foreach (var token in List.Tokens)
+                {
+                    if (!(token is WhitespaceToken)) break;
+                    c++;
+                    if (token is CommentToken) break;
+                    if (((WhitespaceToken) token).Text == "\n") break;
+                }
+                if (c == 0) List.Tokens.Insert(List.Tokens.Count, new WhitespaceToken("\n"));
+            }
+            if (n > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+            List.Tokens.Add(new WhitespaceToken("\n"));
+            List.Tokens.Add(new WindarAddedComment());
+            List.Tokens.Add(new StringToken(item));
+            List.Tokens.Add(new WhitespaceToken("\n"));
         }
 
         public void RemoveListItem(string item)
         {
-            //TODO
+            if (!GetStringsList().Contains(item))
+            {
+                if (Log.IsWarnEnabled)
+                {
+                    Log.Warn("Trying to remove item which is not in list. Item = " + item);
+                }
+                return;
+            }
+            var previousTokens = new Stack<ParserToken>();
+            foreach (var token in List.Tokens)
+            {
+                if (Log.IsDebugEnabled) Log.Debug("Token = " + token);
+                if (token is StringToken && ((StringToken) token).Text == item)
+                {
+                    // Remove the resolver script from list.
+                    List.Tokens.Remove(token);
+
+                    // Remove previous Windar comment (if applicable).
+                    if (previousTokens.Count > 0 
+                        && previousTokens.Peek() is CommentToken 
+                        && ((CommentToken) previousTokens.Peek()).Text.StartsWith(WindarAddedComment.WindarCommentBegin))
+                    {
+                        List.Tokens.Remove(previousTokens.Pop());
+
+                        // Remove previous newline.
+                        if (previousTokens.Count > 0 
+                            && previousTokens.Peek() is WhitespaceToken
+                            && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                        {
+                            List.Tokens.Remove(previousTokens.Pop());
+
+                            // Remove previous newline.
+                            if (previousTokens.Count > 0 
+                                && previousTokens.Peek() is WhitespaceToken
+                                && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                            {
+                                List.Tokens.Remove(previousTokens.Pop());
+                            }
+                        }
+                    }
+
+                    // Find position of first non-whitespace token.
+                    var pos = -1;
+                    foreach (var tok in List.Tokens)
+                    {
+                        pos++;
+                        if (!(tok is WhitespaceToken)) break;
+                        continue;
+                    }
+
+                    // Remove previous comma token.
+                    if (List.Tokens[pos] is CommaToken) List.Tokens.Remove(List.Tokens[pos]);
+
+                    // Remove last newline if no more items in list.
+                    if (CountListValues() == 0)
+                    {
+                        if (List.Tokens[pos] is WhitespaceToken
+                            && ((WhitespaceToken) List.Tokens[pos]).Text == "\n")
+                            List.Tokens.Remove(List.Tokens[pos]);
+                    }
+
+                    break;
+                }
+                previousTokens.Push(token);
+                continue;
+            }
         }
     }
 }

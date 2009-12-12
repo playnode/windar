@@ -18,12 +18,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using log4net;
 using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp.Configuration
 {
     public class MainConfigFile : ErlangTermsDocument
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         private NamedString _nodeName;
         private NamedBoolean _crossDomain;
         private NamedBoolean _explain;
@@ -257,22 +261,32 @@ namespace Windar.TrayApp.Configuration
 
         #region Resolver scripts list management.
 
-        public List<string> ListResolverScripts()
+        public List<string> ListScripts()
         {
-            //TODO
-            throw new NotImplementedException();
+            List<string> result = null;
+            if (_scripts == null) _scripts = FindNamedList("scripts");
+            if (_scripts != null) result = _scripts.GetStringsList();
+            return result;
         }
 
-        public void AddResolverScript(string path)
+        public void AddScript(string script)
         {
-            //TODO
-            throw new NotImplementedException();
+            if (_scripts == null) _scripts = FindNamedList("scripts");
+            if (_scripts == null)
+            {
+                _scripts = new NamedList("scripts", new ListToken());
+                Tokens.Add(new WhitespaceToken("\n\n"));
+                Tokens.Add(new WindarAddedComment());
+                Tokens.Add(_scripts);
+                Tokens.Add(new TermEndToken());
+            }
+            _scripts.AddListItem(script);
         }
 
-        public void RemoveResolverScript(string path)
+        public void RemoveScript(string script)
         {
-            //TODO
-            throw new NotImplementedException();
+            if (_scripts == null) _scripts = FindNamedList("scripts");
+            if (_scripts != null) _scripts.RemoveListItem(script);
         }
 
         #endregion
@@ -281,8 +295,17 @@ namespace Windar.TrayApp.Configuration
 
         public List<string> ListModulesBlacklist()
         {
-            //TODO
-            throw new NotImplementedException();
+            var result = new List<string>();
+            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
+            if (_blacklist != null)
+            {
+                foreach (var token in _blacklist.Tokens)
+                {
+                    if (!(token is StringToken)) continue;
+                    result.Add(((StringToken) token).Text);
+                }
+            }
+            return result;
         }
 
         public void AddModuleToBlacklist()

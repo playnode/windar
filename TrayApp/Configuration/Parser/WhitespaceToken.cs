@@ -68,8 +68,14 @@ namespace Windar.TrayApp.Configuration.Parser
                             result.Append("\\n");
                             break;
                         }
+                    case '"':
+                        {
+                            result.Append("\\\"");
+                            break;
+                        }
                     default:
-                        throw new ApplicationException("Unexpected case in switch statement.");
+                        result.Append(c);
+                        break;
                 }
             }
             result.Append("\" (").Append(Text.Length).Append(' ');

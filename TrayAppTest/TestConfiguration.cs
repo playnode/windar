@@ -120,9 +120,16 @@ namespace Windar.TrayApp
                 Log.Info("Current docroot = " + config.DocRoot);
                 config.DocRoot = "priv/www2";
 
-                //TODO: Add module to blacklist.
+                // Add and remove script.
+                config.AddScript("Test script 1");
+                config.AddScript("Test script 2");
+                //config.RemoveScript("Test script 1");
+                //config.RemoveScript("Test script 2");
+                //config.AddScript("Test script 1");
+                //config.AddScript("Test script 2");
+                //config.RemoveScript("Test script");
 
-                //TODO: Remove module from blacklist.
+                //TODO: Add and remove module from blacklist.
 
                 Log.Info("\n" + config);
             }
