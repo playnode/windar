@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using log4net;
 
 namespace Windar.TrayApp.Configuration.Parser
@@ -79,13 +80,21 @@ namespace Windar.TrayApp.Configuration.Parser
             }
         }
 
-        // ReSharper disable SuggestBaseTypeForParameter
-        public NamedList(string name, List<ParserToken> list)
-        // ReSharper restore SuggestBaseTypeForParameter
+        #region Constructors
+
+        public NamedList(string name, ListToken list)
         {
-            Tokens.Add(new AtomToken { Text = name });
+            Tokens.Add(new AtomToken(name));
             Tokens.Add(new CommaToken());
-            Tokens.Add(new WhitespaceToken { Text = " " });
+            Tokens.Add(new WhitespaceToken(" "));
+            Tokens.Add(new ListToken(list.Tokens));
+        }
+
+        public NamedList(string name, List<ParserToken> list)
+        {
+            Tokens.Add(new AtomToken(name));
+            Tokens.Add(new CommaToken());
+            Tokens.Add(new WhitespaceToken(" "));
             Tokens.Add(new ListToken(list));
         }
 
@@ -95,14 +104,9 @@ namespace Windar.TrayApp.Configuration.Parser
         /// <param name="name">Name for the value.</param>
         protected NamedList(string name)
         {
-            Tokens.Add(new AtomToken { Text = name });
+            Tokens.Add(new AtomToken(name));
             Tokens.Add(new CommaToken());
-            Tokens.Add(new WhitespaceToken { Text = " " });
-        }
-
-        private NamedList()
-        {
-            // Private constructor used in CreateFrom method.
+            Tokens.Add(new WhitespaceToken(" "));
         }
 
         /// <summary>
@@ -148,6 +152,115 @@ namespace Windar.TrayApp.Configuration.Parser
                 break;
             }
             return result;
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            result.Append('{');
+            foreach (var token in Tokens)
+                result.Append(token.ToString());
+            result.Append('}');
+            return result.ToString();
+        }
+
+        private TupleToken GetTupleNamed(string name)
+        {
+            TupleToken result = null;
+            foreach (var token in Tokens)
+            {
+                // Only interested in tuples in the list token.
+                if (!(token is ListToken)) continue;
+                foreach (var listToken in ((ListToken) token).Tokens)
+                {
+                    // Only interested in tuple tokens here.
+                    if (!(listToken is TupleToken)) continue;
+
+                    // Find tuple with name.
+                    var foundName = false;
+                    foreach (var tupleToken in ((TupleToken) listToken).Tokens)
+                    {
+                        // Only interested in value tokens here.
+                        if (!(tupleToken is IValueToken)) continue;
+                        if (!foundName)
+                        {
+                            if (!(tupleToken is AtomToken)) continue;
+                            if (((AtomToken) tupleToken).Text != name) break;
+                            foundName = true;
+                            continue;
+                        }
+                        result = (TupleToken) listToken;
+                        break;
+                    }
+
+                    // Break loop if result found.
+                    if (result != null) break;
+                }
+
+                // Break loop if result found.
+                if (result != null) break;
+            }
+            return result;
+        }
+
+        public int GetNamedInteger(string name)
+        {
+            return NamedInteger.CreateFrom(GetTupleNamed(name)).Value;
+        }
+
+        public string GetNamedString(string name)
+        {
+            return NamedString.CreateFrom(GetTupleNamed(name)).Value;
+        }
+
+        public void SetNamedValue(string name, int value)
+        {
+            var named = NamedInteger.CreateFrom(GetTupleNamed(name));
+            if (named == null)
+            {
+                named = new NamedInteger(name, value);
+                if (CountValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+                List.Tokens.Add(new WhitespaceToken("\n"));
+                List.Tokens.Add(new WindarAddedComment());
+                List.Tokens.Add(named);
+                List.Tokens.Add(new WhitespaceToken("\n"));
+            }
+            named.Value = value;
+        }
+
+        public void SetNamedValue(string name, string value)
+        {
+            var named = NamedString.CreateFrom(GetTupleNamed(name));
+            if (named == null)
+            {
+                named = new NamedString(name, value);
+                if (CountValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+                List.Tokens.Add(new WhitespaceToken("\n"));
+                List.Tokens.Add(new WindarAddedComment());
+                List.Tokens.Add(named);
+                List.Tokens.Add(new WhitespaceToken("\n"));
+            }
+            named.Value = value;
+        }
+
+        private int CountValues()
+        {
+            var result = 0;
+            foreach (var token in Tokens)
+                if (token is IValueToken) result++;
+            return result;
+        }
+
+        public void AddListItem(string item)
+        {
+            //TODO
+        }
+
+        public void RemoveListItem(string item)
+        {
+            //TODO
         }
     }
 }

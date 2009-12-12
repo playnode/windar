@@ -18,9 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using log4net;
 using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp.Configuration
@@ -36,17 +33,6 @@ namespace Windar.TrayApp.Configuration
         private NamedList _blacklist;
 
         #region Properties
-
-        private static string Timestamp
-        {
-            get
-            {
-                var result = new StringBuilder();
-                result.Append(DateTime.Now.ToShortTimeString()).Append(", ");
-                result.Append(DateTime.Now.ToLongDateString()).Append('.');
-                return result.ToString();
-            }
-        }
 
         public string NodeName
         {
@@ -64,9 +50,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _nodeName = new NamedString("name", value);
-                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
-                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(new WhitespaceToken("\n\n"));
+                    Tokens.Add(new WindarAddedComment());
                     Tokens.Add(_nodeName);
+                    Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -87,9 +74,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _authdbdir = new NamedString("authdbdir", value);
-                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
-                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(new WhitespaceToken("\n\n"));
+                    Tokens.Add(new WindarAddedComment());
                     Tokens.Add(_authdbdir);
+                    Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -110,9 +98,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _crossDomain = new NamedBoolean("crossdomain", value);
-                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
-                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(new WhitespaceToken("\n\n"));
+                    Tokens.Add(new WindarAddedComment());
                     Tokens.Add(_crossDomain);
+                    Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -133,9 +122,10 @@ namespace Windar.TrayApp.Configuration
                 else
                 {
                     _explain = new NamedBoolean("explain", value);
-                    Tokens.Add(new WhitespaceToken { Text = "\n\n" });
-                    Tokens.Add(new CommentToken { Text = "% Added by Windar " + Timestamp });
+                    Tokens.Add(new WhitespaceToken("\n\n"));
+                    Tokens.Add(new WindarAddedComment());
                     Tokens.Add(_explain);
+                    Tokens.Add(new TermEndToken());
                 }
             }
         }
@@ -145,66 +135,73 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 var result = -1;
-
                 if (_web == null) _web = FindNamedList("web");
-                if (_web != null)
-                {
-                    // Extract http port from web list.
-                    foreach (var token in _web.Tokens)
-                    {
-                        // Only interested in tuples in the list token.
-                        if (!(token is ListToken)) continue;
-                        foreach (var listToken in ((ListToken) token).Tokens)
-                        {
-                            // Only interested in tuple tokens here.
-                            if (!(listToken is TupleToken)) continue;
-
-                            // Find tuple with name "port".
-                            var foundName = false;
-                            foreach (var tupleToken in ((TupleToken) listToken).Tokens)
-                            {
-                                // Only interested in value tokens here.
-                                if (!(tupleToken is IValueToken)) continue;
-                                if (!foundName)
-                                {
-                                    if (!(tupleToken is AtomToken)) continue;
-                                    if (((AtomToken) tupleToken).Text != "port") break;
-                                    foundName = true;
-                                    continue;
-                                }
-                                if (!(tupleToken is IntegerToken)) break;
-                                result = Int32.Parse(((IntegerToken) tupleToken).Text);
-                            }
-                        }
-                    }
-                }
+                if (_web != null) result = _web.GetNamedInteger("port");
                 return result;
             }
             set
             {
                 if (_web == null) _web = FindNamedList("web");
-                if (_web != null)
-                {
-                    //TODO: Exctract http port from web list and update it.
-                }
-                else
-                {
-                    //TODO: Create web list and set http port as specified.
-                }
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("port", value);
             }
         }
         
+        private NamedList CreateWebConfigItem()
+        {
+            /*
+            {web,[
+                {port, 60210},
+                {max, 100},
+                {ip, "0.0.0.0"}, 
+                {docroot, "priv/www"}
+            ]}.
+            */
+
+            Tokens.Add(new WhitespaceToken("\n\n"));
+            Tokens.Add(new WindarAddedComment());
+            var list = new ListToken();
+
+            // Port
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedInteger("port", 60210));
+            list.Tokens.Add(new CommaToken());
+
+            // Max
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedInteger("max", 100));
+            list.Tokens.Add(new CommaToken());
+
+            // IP
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedString("ip", "0.0.0.0"));
+            list.Tokens.Add(new CommaToken());
+
+            // DocRoot
+            list.Tokens.Add(new WhitespaceToken("\n    "));
+            list.Tokens.Add(new NamedString("docroot", "priv/www"));
+            list.Tokens.Add(new WhitespaceToken("\n"));
+
+            var result = new NamedList("web", list);
+            Tokens.Add(result);
+            Tokens.Add(new TermEndToken());
+            return result;
+        }
+
         public int Max
         {
             get
             {
-                //TODO
-                throw new NotImplementedException();
+                var result = -1;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedInteger("max");
+                return result;
             }
             set
             {
-                //TODO
-                throw new NotImplementedException();
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("max", value);
             }
         }
 
@@ -212,13 +209,16 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                //TODO
-                throw new NotImplementedException();
+                string result = null;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedString("ip");
+                return result;
             }
             set
             {
-                //TODO
-                throw new NotImplementedException();
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("ip", value);
             }
         }
 
@@ -226,13 +226,16 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                //TODO
-                throw new NotImplementedException();
+                string result = null;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedString("docroot");
+                return result;
             }
             set
             {
-                //TODO
-                throw new NotImplementedException();
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("docroot", value);
             }
         }
 

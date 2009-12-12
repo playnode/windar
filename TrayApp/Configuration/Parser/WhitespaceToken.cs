@@ -25,6 +25,16 @@ namespace Windar.TrayApp.Configuration.Parser
     {
         public string Text { get; set; }
 
+        public WhitespaceToken()
+        {
+            
+        }
+
+        public WhitespaceToken(string text)
+        {
+            Text = text;
+        }
+
         public override string ToString()
         {
             return Text;

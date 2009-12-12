@@ -34,13 +34,13 @@ namespace Windar.TrayApp.Configuration.Parser
             }
             set
             {
-                base.Value = new IntegerToken { Text = value.ToString() };
+                base.Value = new IntegerToken(value.ToString());
             }
         }
 
         public NamedInteger(string name, int value) : base(name)
         {
-            Tokens.Add(new IntegerToken { Text = value.ToString() });
+            Tokens.Add(new IntegerToken(value.ToString()));
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Windar.TrayApp.Configuration.Parser
 
                 // We're expecting an integer to be the next value token.
                 // Otherwise, quit and return false.
-                if (!(tupleToken is NamedInteger)) break;
+                if (!(tupleToken is IntegerToken)) break;
 
                 // Create the NamedInteger instance and return.
                 var value = Int32.Parse(((IntegerToken) tupleToken).Text);

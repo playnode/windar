@@ -23,7 +23,7 @@ namespace Windar.TrayApp.Configuration.Parser
 {
     class ListToken : ParserToken, IValueToken
     {
-        public List<ParserToken> Tokens { get; set; }
+        public List<ParserToken> Tokens { get; protected set; }
 
         public ListToken()
         {

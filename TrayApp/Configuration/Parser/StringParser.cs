@@ -96,7 +96,7 @@ namespace Windar.TrayApp.Configuration.Parser
                             {
                                 case '"':
                                     {
-                                        return new StringToken { Text = buffer.ToString() };
+                                        return new StringToken(buffer.ToString());
                                     }
                                 default:
                                     {

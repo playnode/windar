@@ -22,6 +22,16 @@ namespace Windar.TrayApp.Configuration.Parser
 {
     class CommentToken : WhitespaceToken
     {
+        public CommentToken()
+        {
+            
+        }
+
+        public CommentToken(string text)
+        {
+            Text = text;
+        }
+
         public override string ToString()
         {
             var result = new StringBuilder();

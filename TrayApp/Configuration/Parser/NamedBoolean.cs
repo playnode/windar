@@ -34,13 +34,13 @@ namespace Windar.TrayApp.Configuration.Parser
             }
             set
             {
-                base.Value = new AtomToken { Text = value ? "true" : "false" };
+                base.Value = new AtomToken(value ? "true" : "false");
             }
         }
 
         public NamedBoolean(string name, bool value) : base(name)
         {
-            Tokens.Add(new AtomToken { Text = value ? "true" : "false" });
+            Tokens.Add(new AtomToken(value ? "true" : "false"));
         }
 
         /// <summary>

@@ -16,25 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Text;
+
 namespace Windar.TrayApp.Configuration.Parser
 {
-    class AtomToken : ParserToken, IValueToken
+    class WindarAddedComment : CommentToken
     {
-        public string Text { get; set; }
-
-        public AtomToken()
+        internal static string Timestamp
         {
-            
+            get
+            {
+                var result = new StringBuilder();
+                result.Append(DateTime.Now.ToShortTimeString()).Append(", ");
+                result.Append(DateTime.Now.ToLongDateString()).Append('.');
+                return result.ToString();
+            }
         }
 
-        public AtomToken(string text)
-        {
-            Text = text;
-        }
-
-        public override string ToString()
-        {
-            return Text;
-        }
+        public WindarAddedComment() : base("% Added by Windar at " + Timestamp) { }
     }
 }

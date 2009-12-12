@@ -24,6 +24,16 @@ namespace Windar.TrayApp.Configuration.Parser
     {
         public string Text { get; set; }
 
+        public StringToken()
+        {
+            
+        }
+
+        public StringToken(string text)
+        {
+            Text = text;
+        }
+
         public override string ToString()
         {
             return new StringBuilder()

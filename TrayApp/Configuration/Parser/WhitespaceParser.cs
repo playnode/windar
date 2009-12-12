@@ -101,7 +101,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                     }
                                 case '\n':
                                     {
-                                        return new CommentToken { Text = buffer.ToString() };
+                                        return new CommentToken(buffer.ToString());
                                     }
                                 default:
                                     {
@@ -130,7 +130,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 default:
                                     {
                                         InputStream.PushBack(c);
-                                        return new WhitespaceToken { Text = buffer.ToString() };
+                                        return new WhitespaceToken(buffer.ToString());
                                     }
                             }
                             break;

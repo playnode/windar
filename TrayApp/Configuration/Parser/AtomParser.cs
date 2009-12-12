@@ -108,7 +108,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 case '\r':
                                     {
                                         InputStream.PushBack(c);
-                                        return new AtomToken { Text = buffer.ToString() };
+                                        return new AtomToken(buffer.ToString());
                                     }
                                 default:
                                     {
@@ -131,7 +131,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 case '\'':
                                     {
                                         buffer.Append((char) c);
-                                        return new AtomToken { Text = buffer.ToString() };
+                                        return new AtomToken(buffer.ToString());
                                     }
                                 default:
                                     {

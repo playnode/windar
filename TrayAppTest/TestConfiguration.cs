@@ -21,7 +21,6 @@ using System.IO;
 using System.Reflection;
 using log4net;
 using NUnit.Framework;
-using Windar.Common;
 using Windar.TrayApp.Configuration;
 using Windar.TrayApp.Configuration.Parser;
 
@@ -107,6 +106,19 @@ namespace Windar.TrayApp
 
                 // Change port.
                 Log.Info("Current port = " + config.HttpPort);
+                config.HttpPort = 3100;
+
+                // Change max.
+                Log.Info("Current max = " + config.Max);
+                config.Max = 99;
+
+                // Change ip.
+                Log.Info("Current ip = " + config.ListeningIp);
+                config.ListeningIp = "198.168.1.12";
+
+                // Change docroot.
+                Log.Info("Current docroot = " + config.DocRoot);
+                config.DocRoot = "priv/www2";
 
                 //TODO: Add module to blacklist.
 

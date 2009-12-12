@@ -33,13 +33,13 @@ namespace Windar.TrayApp.Configuration.Parser
             }
             set
             {
-                base.Value = new StringToken { Text = value };
+                base.Value = new StringToken(value);
             }
         }
 
         public NamedString(string name, string value) : base(name)
         {
-            Tokens.Add(new StringToken { Text = value });
+            Tokens.Add(new StringToken(value));
         }
 
         /// <summary>

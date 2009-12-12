@@ -75,6 +75,7 @@
     <Compile Include="Configuration\Parser\TupleParser.cs" />
     <Compile Include="Configuration\Parser\WhitespaceParser.cs" />
     <Compile Include="Configuration\Parser\WhitespaceToken.cs" />
+    <Compile Include="Configuration\Parser\WindarAddedComment.cs" />
     <Compile Include="Configuration\PeerInfo.cs" />
     <Compile Include="Configuration\PlaydarModulesPage.cs" />
     <Compile Include="Configuration\PluginPropertiesPage.cs" />

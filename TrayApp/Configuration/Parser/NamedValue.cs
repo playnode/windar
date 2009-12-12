@@ -111,9 +111,9 @@ namespace Windar.TrayApp.Configuration.Parser
 
         public NamedValue(string name, IValueToken value)
         {
-            Tokens.Add(new AtomToken { Text = name });
+            Tokens.Add(new AtomToken(name));
             Tokens.Add(new CommaToken());
-            Tokens.Add(new WhitespaceToken { Text = " " });
+            Tokens.Add(new WhitespaceToken(" "));
             Tokens.Add((ParserToken) value);
         }
 
@@ -123,9 +123,9 @@ namespace Windar.TrayApp.Configuration.Parser
         /// <param name="name">Name for the value.</param>
         protected NamedValue(string name)
         {
-            Tokens.Add(new AtomToken { Text = name });
+            Tokens.Add(new AtomToken(name));
             Tokens.Add(new CommaToken());
-            Tokens.Add(new WhitespaceToken { Text = " " });
+            Tokens.Add(new WhitespaceToken(" "));
         }
 
         private NamedValue()
