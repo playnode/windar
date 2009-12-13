@@ -70,9 +70,9 @@ namespace Windar.PlaydarController
 
         #endregion
 
-        public DaemonController(string appPath)
+        public DaemonController(WindarPaths paths)
         {
-            Paths = new WindarPaths(appPath);
+            Paths = paths;
             Instance = this;
             Started = false;
         }

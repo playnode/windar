@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using log4net;
@@ -34,16 +35,26 @@ namespace Windar.TrayApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        internal const string PlaydarDaemon = "http://localhost:60210/";
-
         internal static Program Instance { get; private set; }
 
+        internal string PlaydarDaemon
+        {
+            get
+            {
+                var result = new StringBuilder();
+                result.Append("http://localhost:");
+                result.Append(MainConfig.WebPort).Append('/');
+                return result.ToString();
+            }
+        }
+
+        internal WindarPaths Paths { get; private set; }
         internal MainForm MainForm { get; private set; }
         internal DaemonController Daemon { get; private set; }
         internal Tray Tray { get; private set; }
         internal PluginHost PluginHost { get; private set; }
         internal MainConfigFile MainConfig { get; private set; }
-        internal TcpConfigFile TcpConfig { get; private set; }
+        internal TcpConfigFile PeerConfig { get; private set; }
 
         #region Win32 API
 
@@ -107,16 +118,16 @@ namespace Windar.TrayApp
         {
             Instance = this;
             SetupShutdownFileWatcher();
+            Paths = new WindarPaths(Application.StartupPath);
             MainForm = new MainForm();
-            Daemon = new DaemonController(Application.StartupPath);
+            Daemon = new DaemonController(Paths);
             Tray = new Tray();
             PluginHost = new PluginHost();
-            MainConfig = new MainConfigFile();
-            TcpConfig = new TcpConfigFile();
         }
 
         private void Run()
         {
+            LoadConfiguration();
             PluginHost.Load();
             Daemon.Start();
             if (Properties.Settings.Default.MainFormVisible) MainForm.EnsureVisible();
@@ -434,19 +445,31 @@ namespace Windar.TrayApp
 
         #region Configuration files.
 
-        internal void LoadConfiguration()
+        private void LoadConfiguration()
         {
-            var paths = new WindarPaths(Application.StartupPath);
-            MainConfig.Load(new FileInfo(paths.PlaydarDataPath + @"\etc\playdar.conf"));
-            TcpConfig.Load(new FileInfo(paths.PlaydarDataPath + @"\etc\playdartcp.conf"));
+            //TODO: Check for errors in configuration files.
+            //TODO: Exception handling for errors in configuration files.
 
-            //TODO: Lock configuration files.
+            MainConfig = new MainConfigFile();
+            MainConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdar.conf"));
+
+            PeerConfig = new TcpConfigFile();
+            PeerConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdartcp.conf"));
+        }
+
+        internal void ReloadConfiguration()
+        {
+            LoadConfiguration();
         }
 
         internal void SaveConfiguration()
         {
             MainConfig.Save();
-            TcpConfig.Save();
+
+            // Always disable default sharing as it conflicts with the peer
+            // configuration provided by this UI.
+            PeerConfig.Share = false;
+            PeerConfig.Save();
         }
 
         #endregion

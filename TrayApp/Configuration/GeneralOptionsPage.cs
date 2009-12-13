@@ -23,70 +23,154 @@ namespace Windar.TrayApp.Configuration
 {
     class GeneralOptionsPage : IOptionsPage
     {
-        public string NodeName
-        {
-            get
-            {
-                var result = Program.Instance.MainConfig.Name;
-                if (string.IsNullOrEmpty(result)) result = Environment.MachineName;
-                return result;
-            }
-            set { Program.Instance.MainConfig.Name = value; }
-        }
+        private bool _autostartChanged;
+        private bool _nodeNameChanged;
+        private bool _portChanged;
+        private bool _allowIncomingChanged;
+        private bool _forwardQueriesChanged;
+        private bool _peersChanged;
 
-        public int Port
-        {
-            get { return Program.Instance.MainConfig.WebPort; }
-            set { Program.Instance.MainConfig.WebPort = value; }
-        }
-        
-        public bool BlockIncoming
-        {
-            get { return Program.Instance.TcpConfig.Listen; }
-            set { Program.Instance.TcpConfig.Listen = value; }
-        }
-        
-        public bool DefaultShare
-        {
-            get { return Program.Instance.TcpConfig.Share; }
-            set { Program.Instance.TcpConfig.Share = value; }
-        }
-        
-        public bool ForwardQueries
-        {
-            get { return Program.Instance.TcpConfig.Forward; }
-            set { Program.Instance.TcpConfig.Forward = value; }
-        }
-        
-        public List<PeerInfo> Peers
-        {
-            get { return Program.Instance.TcpConfig.GetPeers(); }
-        }
+        private bool _origAutoStart;
+        private string _origNodeName;
+        private int _origPort;
+        private bool _origAllowIncoming;
+        private bool _origForwardQueries;
 
-        public bool AutoStart { get; set; }
+        public void Load()
+        {
+            var mainConfig = Program.Instance.MainConfig;
+            var peerConfig = Program.Instance.PeerConfig;
+            _origAutoStart = false; //TODO
+            _origNodeName = mainConfig.Name;
+            _origPort = peerConfig.Port;
+            _origAllowIncoming = peerConfig.Listen;
+            _origForwardQueries = peerConfig.Forward;
+        }
 
         public bool Changed
         {
             get
             {
-                //TODO
-                return true;
+                return _autostartChanged
+                       || _nodeNameChanged
+                       || _portChanged
+                       || _allowIncomingChanged
+                       || _forwardQueriesChanged
+                       || _peersChanged;
             }
         }
 
-        public void Load()
+        #region Page options
+
+        public bool AutoStart
         {
-            Program.Instance.LoadConfiguration();
+            get
+            {
+                //TODO
+                return false;
+            }
+            set
+            {
+                //TODO
+                _autostartChanged = value != _origAutoStart;
+            }
         }
 
-        public void SaveChanges()
+        public string NodeName
         {
-            //TODO
+            get
+            {
+                string result;
+                var configName = Program.Instance.MainConfig.Name;
+                if (!string.IsNullOrEmpty(configName)) result = configName;
+                else
+                {
+                    _origNodeName = null;
+                    result = Environment.MachineName;
+                }
+                return result;
+            }
+            set
+            {
+                if (_origNodeName == null)
+                {
+                    _nodeNameChanged = (value != Environment.MachineName)
+                                       && !string.IsNullOrEmpty(value);
+                }
+                else
+                {
+                    _nodeNameChanged = value != _origNodeName;
+                }
+                if (_nodeNameChanged)
+                {
+                    Program.Instance.MainConfig.Name = value;
+                }
+            }
         }
 
-        public void Reset()
+        public int Port
+        {
+            get
+            {
+                return Program.Instance.PeerConfig.Port;
+            }
+            set
+            {
+                _portChanged = value != _origPort;
+                Program.Instance.PeerConfig.Port = value;
+            }
+        }
+        
+        public bool AllowIncoming
+        {
+            get
+            {
+                return Program.Instance.PeerConfig.Listen;
+            }
+            set
+            {
+                _allowIncomingChanged = value != _origAllowIncoming;
+                Program.Instance.PeerConfig.Listen = value;
+            }
+        }
+        
+        public bool ForwardQueries
+        {
+            get
+            {
+                return Program.Instance.PeerConfig.Forward;
+            }
+            set
+            {
+                _forwardQueriesChanged = value != _origForwardQueries;
+                Program.Instance.PeerConfig.Forward = value;
+            }
+        }
+
+        #region Peers
+
+        public List<PeerInfo> Peers
+        {
+            get
+            {
+                return Program.Instance.PeerConfig.GetPeers();
+            }
+        }
+
+        public void RemovePeer(string host, int port)
         {
             //TODO
+            _peersChanged = true;
         }
+
+        public void AddNewPeer(string host, int port, bool share)
+        {
+            //TODO
+            _peersChanged = true;
+        }
+
+        #endregion
+
+        #endregion
     }
 }

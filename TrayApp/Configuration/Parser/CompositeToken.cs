@@ -17,6 +17,7 @@
  */
 
 using System.Collections.Generic;
+using System.Text;
 
 namespace Windar.TrayApp.Configuration.Parser
 {
@@ -66,6 +67,13 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
             }
             return result;
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            foreach (var token in Tokens) result.Append(token);
+            return result.ToString();
         }
     }
 }

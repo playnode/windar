@@ -117,9 +117,9 @@ namespace Windar.TrayApp
         {
             if (PlaydarBrowser.Document == null
                 || PlaydarBrowser.Document.Url == null
-                || !PlaydarBrowser.Document.Url.Equals(Program.PlaydarDaemon))
+                || !PlaydarBrowser.Document.Url.Equals(Program.Instance.PlaydarDaemon))
             {
-                PlaydarBrowser.Navigate(Program.PlaydarDaemon);
+                PlaydarBrowser.Navigate(Program.Instance.PlaydarDaemon);
             }
         }
 
@@ -171,13 +171,13 @@ namespace Windar.TrayApp
         private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             var url = e.Url.ToString();
-            if (url.Equals(Program.PlaydarDaemon))
+            if (url.Equals(Program.Instance.PlaydarDaemon))
             {
                 homeButton.Enabled = false;
                 backButton.Enabled = false;
                 return;
             }
-            if (url.StartsWith(Program.PlaydarDaemon))
+            if (url.StartsWith(Program.Instance.PlaydarDaemon))
             {
                 homeButton.Enabled = true;
                 backButton.Enabled = true;
@@ -201,7 +201,7 @@ namespace Windar.TrayApp
         private void playdarBrowser_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
-            if (!_lastLink.StartsWith(Program.PlaydarDaemon))
+            if (!_lastLink.StartsWith(Program.Instance.PlaydarDaemon))
             {
                 PlaydarBrowser.Navigate(_lastLink);
             }
@@ -373,7 +373,7 @@ namespace Windar.TrayApp
 
         private void MainTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
         {
-            if (_lastSelectedTab == optionsTabPage) ApplyOptionsOrCancel();
+            if (_lastSelectedTab == optionsTabPage) e.Cancel = !ApplyOptionsOrCancel();
         }
 
         private void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -408,7 +408,7 @@ namespace Windar.TrayApp
                 if (MainTabControl.SelectedTab == optionsTabPage)
                 {
                     optionsTabControl.SelectTab(generalOptionsTabPage);
-                    LoadGeneralOptionsTabPage();
+                    SetupGeneralOptionsPage();
                 }
             }
         }
@@ -422,27 +422,23 @@ namespace Windar.TrayApp
         {
             if (optionsTabControl.SelectedTab == generalOptionsTabPage)
             {
-                LoadGeneralOptionsTabPage();
+                SetupGeneralOptionsPage();
             }
             else if (optionsTabControl.SelectedTab == modsTabPage)
             {
-                _optionsPage = new PlaydarModulesPage();
-                _optionsPage.Load();
+                SetupModulesPage();
             }
             else if (optionsTabControl.SelectedTab == scriptsTabPage)
             {
-                _optionsPage = new ResolverScriptsPage();
-                _optionsPage.Load();
+                SetupScriptsPage();
             }
             else if (optionsTabControl.SelectedTab == pluginsTabPage)
             {
-                _optionsPage = new PluginsPage();
-                _optionsPage.Load();
+                SetupPluginsPage();
             }
             else if (optionsTabControl.SelectedTab == propsTabPage)
             {
-                _optionsPage = new PluginPropertiesPage();
-                _optionsPage.Load();
+                SetupPluginsPropertiesPage();
             }
             else
             {
@@ -455,36 +451,6 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private DataGridViewRow GetPeerListRow(string host, int port, bool share)
-        {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = host });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = port });
-            row.Cells.Add(new DataGridViewCheckBoxCell { Value = share });
-            return row;
-        }
-
-        private DataGridViewRow GetPeerListRow(PeerInfo peer)
-        {
-            return GetPeerListRow(peer.Host, peer.Port, peer.Share);
-        }
-
-        private void LoadGeneralOptionsTabPage()
-        {
-            var options = new GeneralOptionsPage();
-            _optionsPage = options;
-            options.Load();
-            nodeNameTextBox.Text = options.NodeName;
-            portTextBox.Text = options.Port.ToString();
-            allowIncomingCheckBox.Checked = !options.BlockIncoming;
-            shareTextBox.Checked = options.DefaultShare;
-            forwardCheckBox.Checked = options.ForwardQueries;
-            foreach (var peer in options.Peers)
-            {
-                peersGrid.Rows.Add(GetPeerListRow(peer));
-            }
-        }
-
         /// <summary>
         /// Check if changes. Require save or cancel changes.
         /// </summary>
@@ -495,10 +461,156 @@ namespace Windar.TrayApp
             {
                 var result = Program.ShowYesNoCancelDialog("Save changes?");
                 if (result == DialogResult.Cancel) return false;
-                if (result == DialogResult.Yes) _optionsPage.SaveChanges();
-                _optionsPage.Reset();
+                if (result == DialogResult.Yes) Program.Instance.SaveConfiguration();
             }
             return true;
+        }
+
+        #region General options page.
+
+        private void SetupGeneralOptionsPage()
+        {
+            Program.Instance.ReloadConfiguration();
+            GeneralOptionsPage options;
+            _optionsPage = options = new GeneralOptionsPage();
+            _optionsPage.Load();
+
+            nodeNameTextBox.Text = options.NodeName;
+            portTextBox.Text = options.Port.ToString();
+            allowIncomingCheckBox.Checked = options.AllowIncoming;
+            forwardCheckBox.Checked = options.ForwardQueries;
+            //TODO: Autostart
+
+            // Peers
+            peersGrid.Rows.Clear();
+            foreach (var peer in options.Peers)
+                peersGrid.Rows.Add(GetPeerListRow(peer));
+            peersGrid.Rows[0].Selected = false;
+        }
+
+        private void generalOptionsCancelButton_Click(object sender, EventArgs e)
+        {
+            CancelGeneralOptions();
+        }
+
+        private void generalOptionsSaveButton_Click(object sender, EventArgs e)
+        {
+            Program.Instance.SaveConfiguration();
+            SetupGeneralOptionsPage();
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void CancelGeneralOptions()
+        {
+            SetupGeneralOptionsPage();
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        #region Change handling.
+
+        private void allowIncomingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ((GeneralOptionsPage) _optionsPage).AllowIncoming = allowIncomingCheckBox.Checked;
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void autostartCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ((GeneralOptionsPage) _optionsPage).AutoStart = autostartCheckBox.Checked;
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void forwardCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ((GeneralOptionsPage) _optionsPage).ForwardQueries = forwardCheckBox.Checked;
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void nodeNameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ((GeneralOptionsPage) _optionsPage).NodeName = nodeNameTextBox.Text;
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void portTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                ((GeneralOptionsPage) _optionsPage).Port = Int32.Parse(portTextBox.Text);
+                generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+                generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            }
+            catch (FormatException ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                portTextBox.Text = "";
+            }
+        }
+
+        private void peersGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //TODO
+        }
+
+        #endregion
+
+        #region Peers
+
+        private static DataGridViewRow GetPeerListRow(string host, int port, bool share)
+        {
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = host });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = port });
+            row.Cells.Add(new DataGridViewCheckBoxCell { Value = share });
+            return row;
+        }
+
+        private static DataGridViewRow GetPeerListRow(PeerInfo peer)
+        {
+            return GetPeerListRow(peer.Host, peer.Port, peer.Share);
+        }
+
+        private void peersGrid_RowLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            peersGrid.Rows[e.RowIndex].Selected = false;
+        }
+
+        #endregion
+
+        #endregion
+
+        private void SetupModulesPage()
+        {
+            PlaydarModulesPage options;
+            _optionsPage = options = new PlaydarModulesPage();
+            _optionsPage.Load();
+        }
+
+        private void SetupScriptsPage()
+        {
+            ResolverScriptsPage options;
+            _optionsPage = options = new ResolverScriptsPage();
+            _optionsPage.Load();
+        }
+
+        private void SetupPluginsPage()
+        {
+            PluginsPage options;
+            _optionsPage = options = new PluginsPage();
+            _optionsPage.Load();
+        }
+
+        private void SetupPluginsPropertiesPage()
+        {
+            PluginPropertiesPage options;
+            _optionsPage = options = new PluginPropertiesPage();
+            _optionsPage.Load();
         }
     }
 }

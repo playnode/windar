@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -35,8 +36,8 @@ namespace Windar.TrayApp.Configuration.Parser
         {
             _file = file;
             Document = new CompositeToken();
-
-            var stream = new ParserInputStream(_file.OpenText());
+            var reader = file.OpenText();
+            var stream = new ParserInputStream(reader);
             var parser = new ErlangTermsParser(stream);
             ParserToken token;
             while ((token = parser.NextToken()) != null)
@@ -85,6 +86,9 @@ namespace Windar.TrayApp.Configuration.Parser
                     Log.Info("Token, Unrecognised!");
                 }
             }
+
+            // Close the file.
+            reader.Close();
         }
 
         public override string ToString()
@@ -96,7 +100,11 @@ namespace Windar.TrayApp.Configuration.Parser
 
         public void Save()
         {
-            //TODO: Using _file
+            _file.Delete();
+            var fs = _file.OpenWrite();
+            var info = new UTF8Encoding(true).GetBytes(Document.ToString());
+            fs.Write(info, 0, info.Length);
+            fs.Close();
         }
 
         #region Methods to find named values.

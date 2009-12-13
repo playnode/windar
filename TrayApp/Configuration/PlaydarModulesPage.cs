@@ -25,21 +25,11 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 //TODO
-                return true;
+                return false;
             }
         }
 
         public void Load()
-        {
-            //TODO
-        }
-
-        public void SaveChanges()
-        {
-            //TODO
-        }
-
-        public void Reset()
         {
             //TODO
         }

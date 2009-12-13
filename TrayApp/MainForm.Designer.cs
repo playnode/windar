@@ -78,14 +78,12 @@ namespace Windar.TrayApp
             this.label3 = new System.Windows.Forms.Label();
             this.portTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.forwardCheckBox = new System.Windows.Forms.CheckBox();
-            this.shareTextBox = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.allowIncomingCheckBox = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.autostartCheckBox = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.forwardCheckBox = new System.Windows.Forms.CheckBox();
             this.peersGroupBox = new System.Windows.Forms.GroupBox();
             this.peersGrid = new System.Windows.Forms.DataGridView();
             this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -430,6 +428,7 @@ namespace Windar.TrayApp
             this.generalOptionsCancelButton.TabIndex = 17;
             this.generalOptionsCancelButton.Text = "Cancel";
             this.generalOptionsCancelButton.UseVisualStyleBackColor = true;
+            this.generalOptionsCancelButton.Click += new System.EventHandler(this.generalOptionsCancelButton_Click);
             // 
             // generalOptionsSaveButton
             // 
@@ -441,6 +440,7 @@ namespace Windar.TrayApp
             this.generalOptionsSaveButton.TabIndex = 16;
             this.generalOptionsSaveButton.Text = "Save";
             this.generalOptionsSaveButton.UseVisualStyleBackColor = true;
+            this.generalOptionsSaveButton.Click += new System.EventHandler(this.generalOptionsSaveButton_Click);
             // 
             // aboutGroupBox
             // 
@@ -490,6 +490,7 @@ namespace Windar.TrayApp
             this.nodeNameTextBox.Name = "nodeNameTextBox";
             this.nodeNameTextBox.Size = new System.Drawing.Size(120, 20);
             this.nodeNameTextBox.TabIndex = 0;
+            this.nodeNameTextBox.TextChanged += new System.EventHandler(this.nodeNameTextBox_TextChanged);
             // 
             // label3
             // 
@@ -508,22 +509,21 @@ namespace Windar.TrayApp
             this.portTextBox.Name = "portTextBox";
             this.portTextBox.Size = new System.Drawing.Size(50, 20);
             this.portTextBox.TabIndex = 5;
+            this.portTextBox.TextChanged += new System.EventHandler(this.portTextBox_TextChanged);
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 4;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 87.89238F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.10762F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 178F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
-            this.tableLayoutPanel2.Controls.Add(this.forwardCheckBox, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.shareTextBox, 1, 1);
-            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 1);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.checkBox3, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.forwardCheckBox, 1, 1);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 49);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 4;
@@ -531,88 +531,71 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(426, 62);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(479, 62);
             this.tableLayoutPanel2.TabIndex = 6;
-            // 
-            // forwardCheckBox
-            // 
-            this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(157, 43);
-            this.forwardCheckBox.Name = "forwardCheckBox";
-            this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.forwardCheckBox.TabIndex = 9;
-            this.forwardCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // shareTextBox
-            // 
-            this.shareTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.shareTextBox.AutoSize = true;
-            this.shareTextBox.Location = new System.Drawing.Point(157, 23);
-            this.shareTextBox.Name = "shareTextBox";
-            this.shareTextBox.Size = new System.Drawing.Size(15, 14);
-            this.shareTextBox.TabIndex = 7;
-            this.shareTextBox.UseVisualStyleBackColor = true;
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 40);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(139, 20);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Forward on queries to other nodes";
-            // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(47, 23);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Share with everyone";
             // 
             // allowIncomingCheckBox
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(157, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(200, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
             this.allowIncomingCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(56, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 20);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Block all incoming connections";
+            this.allowIncomingCheckBox.CheckedChanged += new System.EventHandler(this.allowIncomingCheckBox_CheckedChanged);
             // 
             // label6
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(181, 3);
+            this.label6.Location = new System.Drawing.Point(243, 3);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(169, 13);
+            this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
-            this.label6.Text = "Automatically start Windar on login";
+            this.label6.Text = "Automatically start Windar on login:";
             // 
-            // checkBox3
+            // autostartCheckBox
             // 
-            this.checkBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(356, 3);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(15, 14);
-            this.checkBox3.TabIndex = 11;
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.autostartCheckBox.AutoSize = true;
+            this.autostartCheckBox.Location = new System.Drawing.Point(421, 3);
+            this.autostartCheckBox.Name = "autostartCheckBox";
+            this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.autostartCheckBox.TabIndex = 11;
+            this.autostartCheckBox.UseVisualStyleBackColor = true;
+            this.autostartCheckBox.CheckedChanged += new System.EventHandler(this.autostartCheckBox_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(53, 3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(141, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Allow incoming connections:";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(20, 23);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(174, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Forward on queries to other nodes :";
+            // 
+            // forwardCheckBox
+            // 
+            this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.forwardCheckBox.AutoSize = true;
+            this.forwardCheckBox.Location = new System.Drawing.Point(200, 23);
+            this.forwardCheckBox.Name = "forwardCheckBox";
+            this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.forwardCheckBox.TabIndex = 9;
+            this.forwardCheckBox.UseVisualStyleBackColor = true;
+            this.forwardCheckBox.CheckedChanged += new System.EventHandler(this.forwardCheckBox_CheckedChanged);
             // 
             // peersGroupBox
             // 
@@ -649,6 +632,8 @@ namespace Windar.TrayApp
             this.peersGrid.Size = new System.Drawing.Size(559, 175);
             this.peersGrid.StandardTab = true;
             this.peersGrid.TabIndex = 9;
+            this.peersGrid.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_RowLeave);
+            this.peersGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellContentClick);
             // 
             // peerAddress
             // 
@@ -670,7 +655,7 @@ namespace Windar.TrayApp
             // 
             this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.peerShare.FillWeight = 43.7529F;
-            this.peerShare.HeaderText = "Sharing";
+            this.peerShare.HeaderText = "Share";
             this.peerShare.MinimumWidth = 50;
             this.peerShare.Name = "peerShare";
             this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -1196,9 +1181,7 @@ namespace Windar.TrayApp
         private System.Windows.Forms.TextBox portTextBox;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.CheckBox forwardCheckBox;
-        private System.Windows.Forms.CheckBox shareTextBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox allowIncomingCheckBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox peersGroupBox;
@@ -1219,7 +1202,7 @@ namespace Windar.TrayApp
         private System.Windows.Forms.Button cancelLibraryChangesButton;
         private System.Windows.Forms.Button saveLibraryChangesButton;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox autostartCheckBox;
         private System.Windows.Forms.TabPage scriptsTabPage;
         private System.Windows.Forms.Panel scriptsPanel;
         private System.Windows.Forms.TabPage pluginsTabPage;

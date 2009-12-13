@@ -22,7 +22,5 @@ namespace Windar.TrayApp.Configuration
     {
         bool Changed { get; }
         void Load();
-        void SaveChanges();
-        void Reset();
     }
 }

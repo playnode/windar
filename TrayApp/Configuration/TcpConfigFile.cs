@@ -234,7 +234,7 @@ namespace Windar.TrayApp.Configuration
 
         public void RemovePeer(string host, int port)
         {
-            //TODO: This is almost exactly the same code as in NamedList.RemoveStringsListItem() ... Try to use a common method.
+            ////TODO: This is almost exactly the same code as in NamedList.RemoveStringsListItem() ... Try to use a common method.
 
             var previousTokens = new Stack<ParserToken>();
             foreach (var token in _peers.List.Tokens)
@@ -402,6 +402,5 @@ namespace Windar.TrayApp.Configuration
                 }
             }
         }
-
     }
 }

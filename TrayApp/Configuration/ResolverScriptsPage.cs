@@ -33,15 +33,5 @@ namespace Windar.TrayApp.Configuration
         {
             //TODO
         }
-
-        public void SaveChanges()
-        {
-            //TODO
-        }
-
-        public void Reset()
-        {
-            //TODO
-        }
     }
 }

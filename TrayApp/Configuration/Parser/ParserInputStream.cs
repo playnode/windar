@@ -37,7 +37,7 @@ namespace Windar.TrayApp.Configuration.Parser
         public int CharCount { get; private set; }
         public int Checksum { get; private set; }
 
-        private readonly TextReader _stream;
+        private TextReader _stream;
         private readonly Stack<int> _pushbackQueue;
 
         public ParserInputStream(string text)
@@ -85,6 +85,9 @@ namespace Windar.TrayApp.Configuration.Parser
             // Update checksum and return next character.
             UpdateChecksum(nextChar);
             if (Log.IsDebugEnabled) Log.Debug("Char: " + ToNameString(nextChar));
+
+            // Nullify the stream on EOF.
+            if (nextChar == -1) _stream = null;
 
             return nextChar;
         }
