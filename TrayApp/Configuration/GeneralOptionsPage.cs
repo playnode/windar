@@ -23,13 +23,19 @@ namespace Windar.TrayApp.Configuration
 {
     class GeneralOptionsPage : IOptionsPage
     {
+        // Change flags.
         private bool _autostartChanged;
         private bool _nodeNameChanged;
         private bool _portChanged;
         private bool _allowIncomingChanged;
         private bool _forwardQueriesChanged;
-        private bool _peersChanged;
 
+        // Changed peers are special case.
+        // We're not tracking list items.
+        private bool _peersChanged;
+        public bool NewPeersToAdd { get; set; }
+
+        // Original values.
         private bool _origAutoStart;
         private string _origNodeName;
         private int _origPort;
@@ -56,7 +62,8 @@ namespace Windar.TrayApp.Configuration
                        || _portChanged
                        || _allowIncomingChanged
                        || _forwardQueriesChanged
-                       || _peersChanged;
+                       || _peersChanged
+                       || NewPeersToAdd;
             }
         }
 
@@ -159,13 +166,13 @@ namespace Windar.TrayApp.Configuration
 
         public void RemovePeer(string host, int port)
         {
-            //TODO
+            Program.Instance.PeerConfig.RemovePeer(host, port);
             _peersChanged = true;
         }
 
         public void AddNewPeer(string host, int port, bool share)
         {
-            //TODO
+            Program.Instance.PeerConfig.SetPeerInfo(host, port, share);
             _peersChanged = true;
         }
 

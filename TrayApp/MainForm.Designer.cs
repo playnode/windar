@@ -78,9 +78,6 @@ namespace Windar.TrayApp
             this.forwardCheckBox = new System.Windows.Forms.CheckBox();
             this.peersGroupBox = new System.Windows.Forms.GroupBox();
             this.peersGrid = new System.Windows.Forms.DataGridView();
-            this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peerPort = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peerShare = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.peersContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addPeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removePeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,6 +85,9 @@ namespace Windar.TrayApp
             this.libraryPanel = new System.Windows.Forms.Panel();
             this.libraryGrid = new System.Windows.Forms.DataGridView();
             this.LibraryItemPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.libraryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.libraryCancelButton = new System.Windows.Forms.Button();
             this.librarySaveButton = new System.Windows.Forms.Button();
             this.modsTabPage = new System.Windows.Forms.TabPage();
@@ -98,6 +98,9 @@ namespace Windar.TrayApp
             this.ModuleTargetTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ModuleLocalOnly = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ModuleEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.modsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addModMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeModMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modsCancelButton = new System.Windows.Forms.Button();
             this.modsSaveButton = new System.Windows.Forms.Button();
             this.pluginsTabPage = new System.Windows.Forms.TabPage();
@@ -105,6 +108,9 @@ namespace Windar.TrayApp
             this.pluginsGrid = new System.Windows.Forms.DataGridView();
             this.PluginName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PluginEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.pluginsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addPluginMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removePluginMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsCancelButton = new System.Windows.Forms.Button();
             this.pluginsSaveButton = new System.Windows.Forms.Button();
             this.propsTabPage = new System.Windows.Forms.TabPage();
@@ -114,6 +120,9 @@ namespace Windar.TrayApp
             this.propsGrid = new System.Windows.Forms.DataGridView();
             this.PropertyName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PropertyValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.propsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addPropMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removePropMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playdarTabPage = new System.Windows.Forms.TabPage();
             this.daemonSplitPanel = new System.Windows.Forms.SplitContainer();
             this.refreshButton = new System.Windows.Forms.Button();
@@ -128,19 +137,10 @@ namespace Windar.TrayApp
             this.logSplitPanel = new System.Windows.Forms.SplitContainer();
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
             this.logBoxPanel = new System.Windows.Forms.Panel();
-            this.libraryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.modsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addModMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeModMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pluginsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addPluginMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removePluginMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.propsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addPropMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removePropMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logBox = new Windar.TrayApp.LogTextBox();
+            this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.peerPort = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.peerShare = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.mainformBorderPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -160,15 +160,19 @@ namespace Windar.TrayApp
             this.libraryTabPage.SuspendLayout();
             this.libraryPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.libraryGrid)).BeginInit();
+            this.libraryContextMenu.SuspendLayout();
             this.modsTabPage.SuspendLayout();
             this.modsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.modsGrid)).BeginInit();
+            this.modsContextMenu.SuspendLayout();
             this.pluginsTabPage.SuspendLayout();
             this.pluginsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.pluginsGrid)).BeginInit();
+            this.pluginsContextMenu.SuspendLayout();
             this.propsTabPage.SuspendLayout();
             this.propsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.propsGrid)).BeginInit();
+            this.propsContextMenu.SuspendLayout();
             this.playdarTabPage.SuspendLayout();
             this.daemonSplitPanel.Panel1.SuspendLayout();
             this.daemonSplitPanel.Panel2.SuspendLayout();
@@ -179,10 +183,6 @@ namespace Windar.TrayApp
             this.logSplitPanel.Panel2.SuspendLayout();
             this.logSplitPanel.SuspendLayout();
             this.logBoxPanel.SuspendLayout();
-            this.libraryContextMenu.SuspendLayout();
-            this.modsContextMenu.SuspendLayout();
-            this.pluginsContextMenu.SuspendLayout();
-            this.propsContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainformBorderPanel
@@ -442,7 +442,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -463,7 +463,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(191, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(185, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -474,7 +474,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(233, 3);
+            this.label6.Location = new System.Drawing.Point(226, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -484,7 +484,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(411, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(404, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -495,7 +495,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(44, 3);
+            this.label2.Location = new System.Drawing.Point(38, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -505,7 +505,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 23);
+            this.label5.Location = new System.Drawing.Point(5, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
             this.label5.TabIndex = 8;
@@ -515,7 +515,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(191, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(185, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -559,36 +559,7 @@ namespace Windar.TrayApp
             this.peersGrid.StandardTab = true;
             this.peersGrid.TabIndex = 9;
             this.peersGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseDown);
-            this.peersGrid.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_RowLeave);
-            this.peersGrid.Click += new System.EventHandler(this.peersGrid_Click);
-            this.peersGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellContentClick);
-            // 
-            // peerAddress
-            // 
-            this.peerAddress.FillWeight = 137.5049F;
-            this.peerAddress.HeaderText = "DNS name or IP address";
-            this.peerAddress.MaxInputLength = 50;
-            this.peerAddress.MinimumWidth = 60;
-            this.peerAddress.Name = "peerAddress";
-            // 
-            // peerPort
-            // 
-            this.peerPort.FillWeight = 66.34409F;
-            this.peerPort.HeaderText = "Port";
-            this.peerPort.MaxInputLength = 10;
-            this.peerPort.MinimumWidth = 30;
-            this.peerPort.Name = "peerPort";
-            // 
-            // peerShare
-            // 
-            this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.peerShare.FillWeight = 43.7529F;
-            this.peerShare.HeaderText = "Share";
-            this.peerShare.MinimumWidth = 50;
-            this.peerShare.Name = "peerShare";
-            this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.peerShare.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.peerShare.Width = 50;
+            this.peersGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseClick);
             // 
             // peersContextMenu
             // 
@@ -603,12 +574,14 @@ namespace Windar.TrayApp
             this.addPeerMenuItem.Name = "addPeerMenuItem";
             this.addPeerMenuItem.Size = new System.Drawing.Size(117, 22);
             this.addPeerMenuItem.Text = "Add";
+            this.addPeerMenuItem.Click += new System.EventHandler(this.addPeerMenuItem_Click);
             // 
             // removePeerMenuItem
             // 
             this.removePeerMenuItem.Name = "removePeerMenuItem";
             this.removePeerMenuItem.Size = new System.Drawing.Size(117, 22);
             this.removePeerMenuItem.Text = "Remove";
+            this.removePeerMenuItem.Click += new System.EventHandler(this.removePeerMenuItem_Click);
             // 
             // libraryTabPage
             // 
@@ -665,6 +638,26 @@ namespace Windar.TrayApp
             // 
             this.LibraryItemPath.HeaderText = "Path";
             this.LibraryItemPath.Name = "LibraryItemPath";
+            // 
+            // libraryContextMenu
+            // 
+            this.libraryContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addLibPathMenuItem,
+            this.removeLibPathMenuItem});
+            this.libraryContextMenu.Name = "libraryContextMenu";
+            this.libraryContextMenu.Size = new System.Drawing.Size(118, 48);
+            // 
+            // addLibPathMenuItem
+            // 
+            this.addLibPathMenuItem.Name = "addLibPathMenuItem";
+            this.addLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addLibPathMenuItem.Text = "Add";
+            // 
+            // removeLibPathMenuItem
+            // 
+            this.removeLibPathMenuItem.Name = "removeLibPathMenuItem";
+            this.removeLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removeLibPathMenuItem.Text = "Remove";
             // 
             // libraryCancelButton
             // 
@@ -768,6 +761,26 @@ namespace Windar.TrayApp
             this.ModuleEnabled.HeaderText = "Enabled";
             this.ModuleEnabled.Name = "ModuleEnabled";
             // 
+            // modsContextMenu
+            // 
+            this.modsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addModMenuItem,
+            this.removeModMenuItem});
+            this.modsContextMenu.Name = "modsContextMenu";
+            this.modsContextMenu.Size = new System.Drawing.Size(118, 48);
+            // 
+            // addModMenuItem
+            // 
+            this.addModMenuItem.Name = "addModMenuItem";
+            this.addModMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addModMenuItem.Text = "Add";
+            // 
+            // removeModMenuItem
+            // 
+            this.removeModMenuItem.Name = "removeModMenuItem";
+            this.removeModMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removeModMenuItem.Text = "Remove";
+            // 
             // modsCancelButton
             // 
             this.modsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -855,6 +868,26 @@ namespace Windar.TrayApp
             this.PluginEnabled.ReadOnly = true;
             this.PluginEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.PluginEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // pluginsContextMenu
+            // 
+            this.pluginsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addPluginMenuItem,
+            this.removePluginMenuItem});
+            this.pluginsContextMenu.Name = "pluginsContextMenu";
+            this.pluginsContextMenu.Size = new System.Drawing.Size(118, 48);
+            // 
+            // addPluginMenuItem
+            // 
+            this.addPluginMenuItem.Name = "addPluginMenuItem";
+            this.addPluginMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addPluginMenuItem.Text = "Add";
+            // 
+            // removePluginMenuItem
+            // 
+            this.removePluginMenuItem.Name = "removePluginMenuItem";
+            this.removePluginMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removePluginMenuItem.Text = "Remove";
             // 
             // pluginsCancelButton
             // 
@@ -963,6 +996,26 @@ namespace Windar.TrayApp
             this.PropertyValue.HeaderText = "Value";
             this.PropertyValue.Name = "PropertyValue";
             this.PropertyValue.ReadOnly = true;
+            // 
+            // propsContextMenu
+            // 
+            this.propsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addPropMenuItem,
+            this.removePropMenuItem});
+            this.propsContextMenu.Name = "propsContextMenu";
+            this.propsContextMenu.Size = new System.Drawing.Size(118, 48);
+            // 
+            // addPropMenuItem
+            // 
+            this.addPropMenuItem.Name = "addPropMenuItem";
+            this.addPropMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addPropMenuItem.Text = "Add";
+            // 
+            // removePropMenuItem
+            // 
+            this.removePropMenuItem.Name = "removePropMenuItem";
+            this.removePropMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removePropMenuItem.Text = "Remove";
             // 
             // playdarTabPage
             // 
@@ -1144,86 +1197,6 @@ namespace Windar.TrayApp
             this.logBoxPanel.Size = new System.Drawing.Size(608, 374);
             this.logBoxPanel.TabIndex = 1;
             // 
-            // libraryContextMenu
-            // 
-            this.libraryContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addLibPathMenuItem,
-            this.removeLibPathMenuItem});
-            this.libraryContextMenu.Name = "libraryContextMenu";
-            this.libraryContextMenu.Size = new System.Drawing.Size(118, 48);
-            // 
-            // addLibPathMenuItem
-            // 
-            this.addLibPathMenuItem.Name = "addLibPathMenuItem";
-            this.addLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.addLibPathMenuItem.Text = "Add";
-            // 
-            // removeLibPathMenuItem
-            // 
-            this.removeLibPathMenuItem.Name = "removeLibPathMenuItem";
-            this.removeLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.removeLibPathMenuItem.Text = "Remove";
-            // 
-            // modsContextMenu
-            // 
-            this.modsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addModMenuItem,
-            this.removeModMenuItem});
-            this.modsContextMenu.Name = "modsContextMenu";
-            this.modsContextMenu.Size = new System.Drawing.Size(118, 48);
-            // 
-            // addModMenuItem
-            // 
-            this.addModMenuItem.Name = "addModMenuItem";
-            this.addModMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.addModMenuItem.Text = "Add";
-            // 
-            // removeModMenuItem
-            // 
-            this.removeModMenuItem.Name = "removeModMenuItem";
-            this.removeModMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.removeModMenuItem.Text = "Remove";
-            // 
-            // pluginsContextMenu
-            // 
-            this.pluginsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addPluginMenuItem,
-            this.removePluginMenuItem});
-            this.pluginsContextMenu.Name = "pluginsContextMenu";
-            this.pluginsContextMenu.Size = new System.Drawing.Size(118, 48);
-            // 
-            // addPluginMenuItem
-            // 
-            this.addPluginMenuItem.Name = "addPluginMenuItem";
-            this.addPluginMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.addPluginMenuItem.Text = "Add";
-            // 
-            // removePluginMenuItem
-            // 
-            this.removePluginMenuItem.Name = "removePluginMenuItem";
-            this.removePluginMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.removePluginMenuItem.Text = "Remove";
-            // 
-            // propsContextMenu
-            // 
-            this.propsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addPropMenuItem,
-            this.removePropMenuItem});
-            this.propsContextMenu.Name = "propsContextMenu";
-            this.propsContextMenu.Size = new System.Drawing.Size(118, 48);
-            // 
-            // addPropMenuItem
-            // 
-            this.addPropMenuItem.Name = "addPropMenuItem";
-            this.addPropMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.addPropMenuItem.Text = "Add";
-            // 
-            // removePropMenuItem
-            // 
-            this.removePropMenuItem.Name = "removePropMenuItem";
-            this.removePropMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.removePropMenuItem.Text = "Remove";
-            // 
             // logBox
             // 
             this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1240,6 +1213,34 @@ namespace Windar.TrayApp
             this.logBox.Text = "";
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;
+            // 
+            // peerAddress
+            // 
+            this.peerAddress.FillWeight = 137.5049F;
+            this.peerAddress.HeaderText = "DNS name or IP address";
+            this.peerAddress.MaxInputLength = 50;
+            this.peerAddress.MinimumWidth = 60;
+            this.peerAddress.Name = "peerAddress";
+            // 
+            // peerPort
+            // 
+            this.peerPort.FillWeight = 66.34409F;
+            this.peerPort.HeaderText = "Port";
+            this.peerPort.MaxInputLength = 10;
+            this.peerPort.MinimumWidth = 30;
+            this.peerPort.Name = "peerPort";
+            this.peerPort.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // peerShare
+            // 
+            this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.peerShare.FillWeight = 43.7529F;
+            this.peerShare.HeaderText = "Share";
+            this.peerShare.MinimumWidth = 50;
+            this.peerShare.Name = "peerShare";
+            this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.peerShare.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.peerShare.Width = 50;
             // 
             // MainForm
             // 
@@ -1280,15 +1281,19 @@ namespace Windar.TrayApp
             this.libraryTabPage.ResumeLayout(false);
             this.libraryPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.libraryGrid)).EndInit();
+            this.libraryContextMenu.ResumeLayout(false);
             this.modsTabPage.ResumeLayout(false);
             this.modsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.modsGrid)).EndInit();
+            this.modsContextMenu.ResumeLayout(false);
             this.pluginsTabPage.ResumeLayout(false);
             this.pluginsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.pluginsGrid)).EndInit();
+            this.pluginsContextMenu.ResumeLayout(false);
             this.propsTabPage.ResumeLayout(false);
             this.propsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.propsGrid)).EndInit();
+            this.propsContextMenu.ResumeLayout(false);
             this.playdarTabPage.ResumeLayout(false);
             this.daemonSplitPanel.Panel1.ResumeLayout(false);
             this.daemonSplitPanel.Panel2.ResumeLayout(false);
@@ -1300,10 +1305,6 @@ namespace Windar.TrayApp
             this.logSplitPanel.Panel2.ResumeLayout(false);
             this.logSplitPanel.ResumeLayout(false);
             this.logBoxPanel.ResumeLayout(false);
-            this.libraryContextMenu.ResumeLayout(false);
-            this.modsContextMenu.ResumeLayout(false);
-            this.pluginsContextMenu.ResumeLayout(false);
-            this.propsContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1370,9 +1371,6 @@ namespace Windar.TrayApp
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label7;
         internal System.Windows.Forms.Button refreshButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn peerAddress;
-        private System.Windows.Forms.DataGridViewTextBoxColumn peerPort;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn peerShare;
         private System.Windows.Forms.DataGridView modsGrid;
         private System.Windows.Forms.TabPage libraryTabPage;
         private System.Windows.Forms.Panel libraryPanel;
@@ -1403,5 +1401,8 @@ namespace Windar.TrayApp
         private System.Windows.Forms.ContextMenuStrip propsContextMenu;
         private System.Windows.Forms.ToolStripMenuItem addPropMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removePropMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn peerAddress;
+        private System.Windows.Forms.DataGridViewTextBoxColumn peerPort;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn peerShare;
     }
 }

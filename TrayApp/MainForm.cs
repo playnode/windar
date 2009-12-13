@@ -119,6 +119,11 @@ namespace Windar.TrayApp
                 || !PlaydarBrowser.Document.Url.Equals(Program.Instance.PlaydarDaemon))
             {
                 PlaydarBrowser.Navigate(Program.Instance.PlaydarDaemon);
+                //var headers = new StringBuilder();
+                //headers.Append("Cache-Control: no-cache\n");
+                //headers.Append("Pragma: no-cache\n");
+                //headers.Append("Expires: -1\n");
+                //PlaydarBrowser.Navigate(Program.Instance.PlaydarDaemon, "_self", new byte[0], headers.ToString());
             }
         }
 
@@ -481,61 +486,101 @@ namespace Windar.TrayApp
             forwardCheckBox.Checked = options.ForwardQueries;
             //TODO: Autostart
 
-            // Peers
-            peersGrid.Rows.Clear();
-            foreach (var peer in options.Peers)
-                peersGrid.Rows.Add(GetPeerListRow(peer));
-            peersGrid.Rows[0].Selected = false;
+            LoadPeers();
         }
 
         private void generalOptionsCancelButton_Click(object sender, EventArgs e)
         {
-            CancelGeneralOptions();
+            SetupGeneralOptionsPage();
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
         }
 
         private void generalOptionsSaveButton_Click(object sender, EventArgs e)
         {
+            foreach (var obj in peersGrid.Rows)
+            {
+                var row = (DataGridViewRow) obj;
+
+                // Get host, port and share from row.
+                var host = (string) row.Cells[0].Value;
+                var port = 0;
+                var portObj = row.Cells[1].Value;
+                if (portObj is int) port = (int) portObj;
+                else if (portObj is string)
+                {
+                    try
+                    {
+                        port = Int32.Parse((string) row.Cells[1].Value);
+                    }
+                    catch (FormatException ex)
+                    {
+                        if (Log.IsErrorEnabled) {
+                            Log.Error("Couldn't parse \"" + (string) row.Cells[1].Value + "\" as integer.", ex);
+                        }
+                    }
+                }
+                else
+                {
+                    if (Log.IsWarnEnabled)
+                    {
+                        Log.Warn("Unexpected type for port. portObj = " + portObj);
+                    }
+                }
+                var share = (bool) row.Cells[2].Value;
+
+                // Handle new and updated rows.
+                if (row.Tag != null)
+                {
+                    // Updating
+                    var tag = (PeerInfo) row.Tag;
+                    if (host != tag.Host || port != tag.Port)
+                    {
+                        ((GeneralOptionsPage) _optionsPage).RemovePeer(tag.Host, tag.Port);
+                        ((GeneralOptionsPage) _optionsPage).AddNewPeer(host, port, share);
+                    }
+                }
+                else
+                {
+                    // Adding
+                    ((GeneralOptionsPage) _optionsPage).AddNewPeer(host, port, share);
+                }
+            }
             Program.Instance.SaveConfiguration();
             SetupGeneralOptionsPage();
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
-        }
-
-        private void CancelGeneralOptions()
-        {
-            SetupGeneralOptionsPage();
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            UpdateGeneralOptionsButtons();
         }
 
         #region Change handling.
 
+        private void UpdateGeneralOptionsButtons()
+        {
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
         private void allowIncomingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).AllowIncoming = allowIncomingCheckBox.Checked;
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            UpdateGeneralOptionsButtons();
         }
 
         private void autostartCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).AutoStart = autostartCheckBox.Checked;
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            UpdateGeneralOptionsButtons();
         }
 
         private void forwardCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).ForwardQueries = forwardCheckBox.Checked;
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            UpdateGeneralOptionsButtons();
         }
 
         private void nodeNameTextBox_TextChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).NodeName = nodeNameTextBox.Text;
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            UpdateGeneralOptionsButtons();
         }
 
         private void portTextBox_TextChanged(object sender, EventArgs e)
@@ -543,8 +588,7 @@ namespace Windar.TrayApp
             try
             {
                 ((GeneralOptionsPage) _optionsPage).Port = Int32.Parse(portTextBox.Text);
-                generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-                generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+                UpdateGeneralOptionsButtons();
             }
             catch (FormatException ex)
             {
@@ -553,32 +597,73 @@ namespace Windar.TrayApp
             }
         }
 
-        private void peersGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //TODO
-        }
+        // NOTE: Changes to peers are handled on add and remove rows.
 
         #endregion
 
         #region Peers
 
-        private static DataGridViewRow GetPeerListRow(string host, int port, bool share)
+        private void LoadPeers()
         {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = host });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = port });
-            row.Cells.Add(new DataGridViewCheckBoxCell { Value = share });
-            return row;
+            peersGrid.Rows.Clear();
+            foreach (var peer in ((GeneralOptionsPage) _optionsPage).Peers)
+                peersGrid.Rows.Add(GetPeerListRow(peer));
+            peersGrid.Rows[0].Selected = false;
         }
 
         private static DataGridViewRow GetPeerListRow(PeerInfo peer)
         {
-            return GetPeerListRow(peer.Host, peer.Port, peer.Share);
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = peer.Host });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = peer.Port });
+            row.Cells.Add(new DataGridViewCheckBoxCell { Value = peer.Share });
+            row.Tag = peer;
+            return row;
         }
 
-        private void peersGrid_RowLeave(object sender, DataGridViewCellEventArgs e)
+        private static DataGridViewRow GetPeerListRow()
         {
-            peersGrid.Rows[e.RowIndex].Selected = false;
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
+            row.Cells.Add(new DataGridViewCheckBoxCell { Value = false });
+            return row;
+        }
+
+        private void peersGrid_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            if (peersGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
+            foreach (var obj in peersGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
+            peersGrid.CurrentCell = null;
+        }
+
+        private void peersGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            peersContextMenu.Items["removePeerMenuItem"].Visible = peersGrid.SelectedRows.Count > 0;
+        }
+
+        private void addPeerMenuItem_Click(object sender, EventArgs e)
+        {
+            peersGrid.Rows.Add(GetPeerListRow());
+            ((GeneralOptionsPage) _optionsPage).NewPeersToAdd = true;
+            UpdateGeneralOptionsButtons();
+        }
+
+        private void removePeerMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var obj in peersGrid.SelectedRows)
+            {
+                var row = (DataGridViewRow) obj;
+                if (row.Tag != null && row.Tag is PeerInfo)
+                {
+                    var peer = (PeerInfo) row.Tag;
+                    ((GeneralOptionsPage) _optionsPage).RemovePeer(peer.Host, peer.Port);
+                }
+                peersGrid.Rows.Remove(row);
+            }
+            UpdateGeneralOptionsButtons();
         }
 
         #endregion
@@ -599,13 +684,6 @@ namespace Windar.TrayApp
             _optionsPage.Load();
         }
 
-        private void SetupScriptsPage()
-        {
-            ResolverScriptsPage options;
-            _optionsPage = options = new ResolverScriptsPage();
-            _optionsPage.Load();
-        }
-
         private void SetupPluginsPage()
         {
             PluginsPage options;
@@ -618,11 +696,6 @@ namespace Windar.TrayApp
             PluginPropertiesPage options;
             _optionsPage = options = new PluginPropertiesPage();
             _optionsPage.Load();
-        }
-
-        private void peersGrid_MouseDown(object sender, MouseEventArgs e)
-        {
-
         }
 
         private void libraryGrid_MouseDown(object sender, MouseEventArgs e)
@@ -643,11 +716,6 @@ namespace Windar.TrayApp
         private void propsGrid_MouseDown(object sender, MouseEventArgs e)
         {
 
-        }
-
-        private void peersGrid_Click(object sender, EventArgs e)
-        {
-            
         }
     }
 }
