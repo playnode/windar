@@ -16,19 +16,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace Windar.TrayApp.Configuration
 {
     class GeneralOptionsPage : IOptionsPage
     {
-        public string NodeName { get; set; }
-        public int Port { get; set; }
-        public bool BlockIncoming { get; set; }
-        public bool DefaultShare { get; set; }
-        public bool ForwardQueries { get; set; }
+        public string NodeName
+        {
+            get
+            {
+                var result = Program.Instance.MainConfig.Name;
+                if (string.IsNullOrEmpty(result)) result = Environment.MachineName;
+                return result;
+            }
+            set { Program.Instance.MainConfig.Name = value; }
+        }
+
+        public int Port
+        {
+            get { return Program.Instance.MainConfig.WebPort; }
+            set { Program.Instance.MainConfig.WebPort = value; }
+        }
+        
+        public bool BlockIncoming
+        {
+            get { return Program.Instance.TcpConfig.Listen; }
+            set { Program.Instance.TcpConfig.Listen = value; }
+        }
+        
+        public bool DefaultShare
+        {
+            get { return Program.Instance.TcpConfig.Share; }
+            set { Program.Instance.TcpConfig.Share = value; }
+        }
+        
+        public bool ForwardQueries
+        {
+            get { return Program.Instance.TcpConfig.Forward; }
+            set { Program.Instance.TcpConfig.Forward = value; }
+        }
+        
+        public List<PeerInfo> Peers
+        {
+            get { return Program.Instance.TcpConfig.GetPeers(); }
+        }
+
         public bool AutoStart { get; set; }
-        public List<PeerInfo> Peers { get; set; }
 
         public bool Changed
         {
@@ -41,7 +76,7 @@ namespace Windar.TrayApp.Configuration
 
         public void Load()
         {
-            //TODO
+            Program.Instance.LoadConfiguration();
         }
 
         public void SaveChanges()

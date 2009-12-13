@@ -78,8 +78,8 @@ namespace Windar.TrayApp
             this.label3 = new System.Windows.Forms.Label();
             this.portTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.forwardCheckBox = new System.Windows.Forms.CheckBox();
+            this.shareTextBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.allowIncomingCheckBox = new System.Windows.Forms.CheckBox();
@@ -88,6 +88,9 @@ namespace Windar.TrayApp
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.peersGroupBox = new System.Windows.Forms.GroupBox();
             this.peersGrid = new System.Windows.Forms.DataGridView();
+            this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.peerPort = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.peerShare = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.modsTabPage = new System.Windows.Forms.TabPage();
             this.modsOptionsPanel = new System.Windows.Forms.Panel();
             this.modsCancelButton = new System.Windows.Forms.Button();
@@ -122,9 +125,6 @@ namespace Windar.TrayApp
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
             this.logBoxPanel = new System.Windows.Forms.Panel();
             this.logBox = new Windar.TrayApp.LogTextBox();
-            this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peerPort = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peerShare = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.mainformBorderPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -515,9 +515,9 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 87.89238F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.10762F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 178F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
-            this.tableLayoutPanel2.Controls.Add(this.checkBox2, 1, 2);
-            this.tableLayoutPanel2.Controls.Add(this.checkBox1, 1, 1);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
+            this.tableLayoutPanel2.Controls.Add(this.forwardCheckBox, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.shareTextBox, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.label5, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.label4, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
@@ -534,31 +534,31 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.Size = new System.Drawing.Size(426, 62);
             this.tableLayoutPanel2.TabIndex = 6;
             // 
-            // checkBox2
+            // forwardCheckBox
             // 
-            this.checkBox2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(165, 43);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(15, 14);
-            this.checkBox2.TabIndex = 9;
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.forwardCheckBox.AutoSize = true;
+            this.forwardCheckBox.Location = new System.Drawing.Point(157, 43);
+            this.forwardCheckBox.Name = "forwardCheckBox";
+            this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.forwardCheckBox.TabIndex = 9;
+            this.forwardCheckBox.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // shareTextBox
             // 
-            this.checkBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(165, 23);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(15, 14);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.shareTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.shareTextBox.AutoSize = true;
+            this.shareTextBox.Location = new System.Drawing.Point(157, 23);
+            this.shareTextBox.Name = "shareTextBox";
+            this.shareTextBox.Size = new System.Drawing.Size(15, 14);
+            this.shareTextBox.TabIndex = 7;
+            this.shareTextBox.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 40);
+            this.label5.Location = new System.Drawing.Point(12, 40);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(139, 20);
             this.label5.TabIndex = 8;
@@ -568,7 +568,7 @@ namespace Windar.TrayApp
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(55, 23);
+            this.label4.Location = new System.Drawing.Point(47, 23);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(104, 13);
             this.label4.TabIndex = 6;
@@ -578,7 +578,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(165, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(157, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -588,9 +588,9 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 3);
+            this.label2.Location = new System.Drawing.Point(56, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(153, 13);
+            this.label2.Size = new System.Drawing.Size(95, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "Block all incoming connections";
             // 
@@ -598,7 +598,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(190, 3);
+            this.label6.Location = new System.Drawing.Point(181, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(169, 13);
             this.label6.TabIndex = 10;
@@ -608,7 +608,7 @@ namespace Windar.TrayApp
             // 
             this.checkBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(365, 3);
+            this.checkBox3.Location = new System.Drawing.Point(356, 3);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(15, 14);
             this.checkBox3.TabIndex = 11;
@@ -630,6 +630,8 @@ namespace Windar.TrayApp
             // 
             // peersGrid
             // 
+            this.peersGrid.AllowUserToAddRows = false;
+            this.peersGrid.AllowUserToDeleteRows = false;
             this.peersGrid.AllowUserToResizeRows = false;
             this.peersGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.peersGrid.BackgroundColor = System.Drawing.SystemColors.Control;
@@ -642,8 +644,38 @@ namespace Windar.TrayApp
             this.peersGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.peersGrid.Location = new System.Drawing.Point(7, 17);
             this.peersGrid.Name = "peersGrid";
+            this.peersGrid.RowHeadersVisible = false;
+            this.peersGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.peersGrid.Size = new System.Drawing.Size(559, 175);
+            this.peersGrid.StandardTab = true;
             this.peersGrid.TabIndex = 9;
+            // 
+            // peerAddress
+            // 
+            this.peerAddress.FillWeight = 137.5049F;
+            this.peerAddress.HeaderText = "DNS name or IP address";
+            this.peerAddress.MaxInputLength = 50;
+            this.peerAddress.MinimumWidth = 60;
+            this.peerAddress.Name = "peerAddress";
+            // 
+            // peerPort
+            // 
+            this.peerPort.FillWeight = 66.34409F;
+            this.peerPort.HeaderText = "Port";
+            this.peerPort.MaxInputLength = 10;
+            this.peerPort.MinimumWidth = 30;
+            this.peerPort.Name = "peerPort";
+            // 
+            // peerShare
+            // 
+            this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.peerShare.FillWeight = 43.7529F;
+            this.peerShare.HeaderText = "Sharing";
+            this.peerShare.MinimumWidth = 50;
+            this.peerShare.Name = "peerShare";
+            this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.peerShare.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.peerShare.Width = 50;
             // 
             // modsTabPage
             // 
@@ -852,6 +884,7 @@ namespace Windar.TrayApp
             this.propsGrid.RowHeadersVisible = false;
             this.propsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.propsGrid.Size = new System.Drawing.Size(572, 318);
+            this.propsGrid.StandardTab = true;
             this.propsGrid.TabIndex = 1;
             // 
             // PropertyName
@@ -1063,33 +1096,6 @@ namespace Windar.TrayApp
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;
             // 
-            // peerAddress
-            // 
-            this.peerAddress.FillWeight = 137.5049F;
-            this.peerAddress.HeaderText = "DNS name or IP address";
-            this.peerAddress.MaxInputLength = 50;
-            this.peerAddress.MinimumWidth = 60;
-            this.peerAddress.Name = "peerAddress";
-            // 
-            // peerPort
-            // 
-            this.peerPort.FillWeight = 66.34409F;
-            this.peerPort.HeaderText = "Port";
-            this.peerPort.MaxInputLength = 10;
-            this.peerPort.MinimumWidth = 30;
-            this.peerPort.Name = "peerPort";
-            // 
-            // peerShare
-            // 
-            this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.peerShare.FillWeight = 43.7529F;
-            this.peerShare.HeaderText = "Sharing";
-            this.peerShare.MinimumWidth = 50;
-            this.peerShare.Name = "peerShare";
-            this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.peerShare.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.peerShare.Width = 50;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1189,8 +1195,8 @@ namespace Windar.TrayApp
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox portTextBox;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox forwardCheckBox;
+        private System.Windows.Forms.CheckBox shareTextBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox allowIncomingCheckBox;

@@ -16,6 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.IO;
+using System.Text;
+
 namespace Windar.Common
 {
     public class WindarPaths
@@ -60,7 +64,15 @@ namespace Windar.Common
         {
             get
             {
-                return _playdarDataPath ?? (_playdarDataPath = @"%AppData%\Windar");
+                var result = _playdarDataPath;
+                if (result == null)
+                {
+                    var str = new StringBuilder();
+                    str.Append(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+                    str.Append(@"\Windar");
+                    result = str.ToString();
+                }
+                return result;
             }
         }
     }

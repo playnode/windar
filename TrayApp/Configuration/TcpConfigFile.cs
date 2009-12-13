@@ -110,6 +110,32 @@ namespace Windar.TrayApp.Configuration
 
         #region Peers
 
+        public List<PeerInfo> GetPeers()
+        {
+            var result = new List<PeerInfo>();
+            if (_peers == null) _peers = FindNamedList("peers");
+            if (_peers != null)
+            {
+                var list = (ListToken) _peers.GetValueTokens()[1];
+                foreach (var tuple in list.GetTupleTokens())
+                {
+                    var values = tuple.GetValueTokens();
+                    var host = ((StringToken) values[0]).Text;
+                    var port = ((IntegerToken) values[1]).Value;
+                    if (values.Count > 2 && values[2] != null && values[2] is AtomToken)
+                    {
+                        var share = ((BooleanToken) values[2]).Value;
+                        result.Add(new PeerInfo(host, port, share));
+                    }
+                    else
+                    {
+                        result.Add(new PeerInfo(host, port));
+                    }
+                }
+            }
+            return result;
+        }
+
         private TupleToken GetPeerInfoTuple(string host, int port)
         {
             TupleToken result = null;

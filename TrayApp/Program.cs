@@ -24,7 +24,9 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using log4net;
+using Windar.Common;
 using Windar.PlaydarController;
+using Windar.TrayApp.Configuration;
 
 namespace Windar.TrayApp
 {
@@ -35,10 +37,13 @@ namespace Windar.TrayApp
         internal const string PlaydarDaemon = "http://localhost:60210/";
 
         internal static Program Instance { get; private set; }
+
         internal MainForm MainForm { get; private set; }
         internal DaemonController Daemon { get; private set; }
         internal Tray Tray { get; private set; }
         internal PluginHost PluginHost { get; private set; }
+        internal MainConfigFile MainConfig { get; private set; }
+        internal TcpConfigFile TcpConfig { get; private set; }
 
         #region Win32 API
 
@@ -106,6 +111,8 @@ namespace Windar.TrayApp
             Daemon = new DaemonController(Application.StartupPath);
             Tray = new Tray();
             PluginHost = new PluginHost();
+            MainConfig = new MainConfigFile();
+            TcpConfig = new TcpConfigFile();
         }
 
         private void Run()
@@ -382,6 +389,8 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Daemon lifecycle.
+
         internal void StartDaemon()
         {
             Instance.Daemon.Start();
@@ -420,5 +429,26 @@ namespace Windar.TrayApp
             Instance.MainForm.stopDaemonButton.Enabled = true;
             Instance.MainForm.restartDaemonButton.Enabled = true;
         }
+
+        #endregion
+
+        #region Configuration files.
+
+        internal void LoadConfiguration()
+        {
+            var paths = new WindarPaths(Application.StartupPath);
+            MainConfig.Load(new FileInfo(paths.PlaydarDataPath + @"\etc\playdar.conf"));
+            TcpConfig.Load(new FileInfo(paths.PlaydarDataPath + @"\etc\playdartcp.conf"));
+
+            //TODO: Lock configuration files.
+        }
+
+        internal void SaveConfiguration()
+        {
+            MainConfig.Save();
+            TcpConfig.Save();
+        }
+
+        #endregion
     }
 }

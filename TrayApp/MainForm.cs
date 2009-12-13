@@ -455,12 +455,34 @@ namespace Windar.TrayApp
 
         #endregion
 
+        private DataGridViewRow GetPeerListRow(string host, int port, bool share)
+        {
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = host });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = port });
+            row.Cells.Add(new DataGridViewCheckBoxCell { Value = share });
+            return row;
+        }
+
+        private DataGridViewRow GetPeerListRow(PeerInfo peer)
+        {
+            return GetPeerListRow(peer.Host, peer.Port, peer.Share);
+        }
+
         private void LoadGeneralOptionsTabPage()
         {
-            _optionsPage = new GeneralOptionsPage();
-            _optionsPage.Load();
-            nodeNameTextBox.Text = "Test";
-            portTextBox.Text = "60210";
+            var options = new GeneralOptionsPage();
+            _optionsPage = options;
+            options.Load();
+            nodeNameTextBox.Text = options.NodeName;
+            portTextBox.Text = options.Port.ToString();
+            allowIncomingCheckBox.Checked = !options.BlockIncoming;
+            shareTextBox.Checked = options.DefaultShare;
+            forwardCheckBox.Checked = options.ForwardQueries;
+            foreach (var peer in options.Peers)
+            {
+                peersGrid.Rows.Add(GetPeerListRow(peer));
+            }
         }
 
         /// <summary>
