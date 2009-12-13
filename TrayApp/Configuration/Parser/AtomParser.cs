@@ -108,7 +108,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 case '\r':
                                     {
                                         InputStream.PushBack(c);
-                                        return new AtomToken(buffer.ToString());
+                                        return GetAtom(buffer.ToString());
                                     }
                                 default:
                                     {
@@ -131,7 +131,7 @@ namespace Windar.TrayApp.Configuration.Parser
                                 case '\'':
                                     {
                                         buffer.Append((char) c);
-                                        return new AtomToken(buffer.ToString());
+                                        return GetAtom(buffer.ToString());
                                     }
                                 default:
                                     {
@@ -152,6 +152,24 @@ namespace Windar.TrayApp.Configuration.Parser
             const string endmsg = "Unexpected end while parsing NumericExpression.";
             if (Log.IsErrorEnabled) Log.Error(endmsg);
             throw new ParserException(endmsg);
+        }
+
+        private static AtomToken GetAtom(string str)
+        {
+            AtomToken result;
+            switch (str)
+            {
+                case "true":
+                    result = new BooleanToken(true);
+                    break;
+                case "false":
+                    result = new BooleanToken(false);
+                    break;
+                default:
+                    result = new AtomToken(str);
+                    break;
+            }
+            return result;
         }
 
         internal static bool IsValidAtomFirstChar(int c)

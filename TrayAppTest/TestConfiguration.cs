@@ -89,8 +89,8 @@ namespace Windar.TrayApp
                 Log.Info("Configuration file loaded.");
 
                 // Change name.
-                Log.Info("Current name = " + config.NodeName);
-                config.NodeName = "TEST";
+                Log.Info("Current name = " + config.Name);
+                config.Name = "TEST";
 
                 // Change crossdomain.
                 Log.Info("Current crossdomain = " + config.CrossDomain);
@@ -105,20 +105,20 @@ namespace Windar.TrayApp
                 config.Explain = true;
 
                 // Change port.
-                Log.Info("Current port = " + config.HttpPort);
-                config.HttpPort = 3100;
+                Log.Info("Current port = " + config.WebPort);
+                config.WebPort = 3100;
 
                 // Change max.
-                Log.Info("Current max = " + config.Max);
-                config.Max = 99;
+                Log.Info("Current max = " + config.WebMax);
+                config.WebMax = 99;
 
                 // Change ip.
-                Log.Info("Current ip = " + config.ListeningIp);
-                config.ListeningIp = "198.168.1.12";
+                Log.Info("Current ip = " + config.WebIp);
+                config.WebIp = "198.168.1.12";
 
                 // Change docroot.
-                Log.Info("Current docroot = " + config.DocRoot);
-                config.DocRoot = "priv/www2";
+                Log.Info("Current docroot = " + config.WebDocRoot);
+                config.WebDocRoot = "priv/www2";
 
                 // Change {library, dbdir}
                 Log.Info("Current {library, dbdir} = " + config.LibraryDbDir);
@@ -153,9 +153,25 @@ namespace Windar.TrayApp
         {
             try
             {
-                var config = new MainConfigFile();
+                var config = new TcpConfigFile();
                 config.Load(new FileInfo(TestConfigurationPath + "playdartcp.conf.example"));
                 Log.Info("Configuration file loaded.");
+
+                var peer = config.GetPeerInfo("192.168.1.10", 60211);
+                Log.Info("PeerInfo = " + peer);
+
+                config.SetPeerInfo("192.168.1.10", 60211, true);
+                config.SetPeerInfo("10.1.1.10", 60211, false);
+                config.SetPeerInfo("10.1.1.11", 60211, false);
+                config.SetPeerInfo("10.1.1.12", 60211, false);
+                config.SetPeerInfo("10.1.1.13", 60211, false);
+                config.RemovePeer("10.1.1.11", 60211);
+                config.RemovePeer("10.1.1.10", 60211);
+                config.RemovePeer("10.1.1.12", 60211);
+                config.RemovePeer("10.1.1.13", 60211);
+                //config.RemovePeer("192.168.1.10", 60211);
+
+                Log.Info("\n" + config);
             }
             catch (Exception ex)
             {

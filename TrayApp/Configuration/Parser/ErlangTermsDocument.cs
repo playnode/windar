@@ -206,6 +206,41 @@ namespace Windar.TrayApp.Configuration.Parser
             return result;
         }
 
+        internal NamedInteger FindNamedInteger(string name)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
+
+            NamedInteger result = null;
+            foreach (var token in Document.Tokens)
+            {
+                // Only interested in tuples.
+                if (!(token is TupleToken)) continue;
+
+                // Try to create a named boolean from tuple.
+                var tuple = (TupleToken) token;
+                var named = NamedInteger.CreateFrom(tuple);
+                if (named == null) continue;
+
+                // Found named tuple?
+                if (named.Name != name)
+                {
+                    if (Log.IsDebugEnabled)
+                    {
+                        Log.Debug("Didn't match, name = " + named.Name);
+                    }
+                    continue;
+                }
+                if (Log.IsInfoEnabled)
+                {
+                    Log.Info("Found named integer: name = " + name
+                        + ", value = " + named.Value);
+                }
+                result = named;
+                break;
+            }
+            return result;
+        }
+
         internal NamedList FindNamedList(string name)
         {
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);

@@ -17,7 +17,6 @@
 
 {share, false}.
 
-
 % Peers to connect to on startup.
 % third param is bool: share our content with this node (overriding default)
 
@@ -28,8 +27,8 @@
 %    {"i-wish-this-existed.archive.org", 60211, false},
 %    {"i-wish-this-existed.jamendo.org", 60211, false},
 %    {"my-home-pc.example.com", 60211, true}
+    {"192.168.1.10", 60211}
 ]}.
-
 
 % Should queries be fwded to other active playdar-tcp connections?
 
@@ -48,4 +47,3 @@
 % of C will not be exposed to A. (This is normal behaviour for a darknet).
 
 {rewrite_identity, false}.
-

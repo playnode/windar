@@ -33,6 +33,14 @@ namespace Windar.TrayApp.Configuration.Parser
             Tokens = list;
         }
 
+        public int CountValues()
+        {
+            var result = 0;
+            foreach (var token in Tokens)
+                if (token is IValueToken) result++;
+            return result;
+        }
+
         public override string ToString()
         {
             var result = new StringBuilder();

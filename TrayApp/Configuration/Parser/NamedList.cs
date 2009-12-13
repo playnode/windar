@@ -156,14 +156,6 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #endregion
 
-        public int CountListValues()
-        {
-            var result = 0;
-            foreach (var token in List.Tokens)
-                if (token is IValueToken) result++;
-            return result;
-        }
-
         public List<string> GetStringsList()
         {
             var result = new List<string>();
@@ -258,7 +250,7 @@ namespace Windar.TrayApp.Configuration.Parser
             if (named == null)
             {
                 named = new NamedInteger(name, value);
-                if (CountListValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+                if (List.CountValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
                 List.Tokens.Add(new WhitespaceToken("\n"));
                 List.Tokens.Add(new WindarAddedComment());
                 List.Tokens.Add(named);
@@ -275,7 +267,7 @@ namespace Windar.TrayApp.Configuration.Parser
             if (named == null)
             {
                 named = new NamedString(name, value);
-                if (CountListValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
+                if (List.CountValues() > 0) List.Tokens.Insert(List.Tokens.Count - 1, new CommaToken());
                 List.Tokens.Add(new WhitespaceToken("\n"));
                 List.Tokens.Add(new WindarAddedComment());
                 List.Tokens.Add(named);
@@ -288,7 +280,7 @@ namespace Windar.TrayApp.Configuration.Parser
 
         #region List items.
 
-        public void AddListItem(string item)
+        public void AddStringsListItem(string item)
         {
             if (GetStringsList().Contains(item))
             {
@@ -298,7 +290,7 @@ namespace Windar.TrayApp.Configuration.Parser
                 }
                 return;
             }
-            var n = CountListValues();
+            var n = List.CountValues();
             if (n == 0)
             {
                 // Check if there is already some leading newline or comment line.
@@ -319,7 +311,7 @@ namespace Windar.TrayApp.Configuration.Parser
             List.Tokens.Add(new WhitespaceToken("\n"));
         }
 
-        public void RemoveListItem(string item)
+        public void RemoveStringsListItem(string item)
         {
             if (!GetStringsList().Contains(item))
             {
@@ -401,7 +393,7 @@ namespace Windar.TrayApp.Configuration.Parser
                     if (List.Tokens[pos] is CommaToken) List.Tokens.Remove(List.Tokens[pos]);
 
                     // Remove last newline if no more items in list.
-                    if (CountListValues() == 0)
+                    if (List.CountValues() == 0)
                     {
                         if (List.Tokens[pos] is WhitespaceToken
                             && ((WhitespaceToken) List.Tokens[pos]).Text == "\n")

@@ -23,220 +23,72 @@ namespace Windar.TrayApp.Configuration
 {
     public class MainConfigFile : ErlangTermsDocument
     {
-        private NamedString _nodeName;
-        private NamedBoolean _crossDomain;
-        private NamedBoolean _explain;
-        private NamedString _authdbdir;
-        private TupleToken _libdbdir;
-        private NamedList _web;
+        private NamedString _name;
         private NamedList _scripts;
+        private NamedList _web;
+        private NamedBoolean _crossdomain;
         private NamedList _blacklist;
+        private NamedString _authdbdir;
+        private NamedBoolean _explain;
+        private TupleToken _libdbdir;
 
-        #region Properties
-
-        public string NodeName
+        public string Name
         {
             get
             {
                 string result = null;
-                if (_nodeName == null) _nodeName = FindNamedString("name");
-                if (_nodeName != null) result = _nodeName.Value;
+                if (_name == null) _name = FindNamedString("name");
+                if (_name != null) result = _name.Value;
                 return result;
             }
             set
             {
-                if (_nodeName == null) _nodeName = FindNamedString("name");
-                if (_nodeName != null) _nodeName.Value = value;
+                if (_name == null) _name = FindNamedString("name");
+                if (_name != null) _name.Value = value;
                 else
                 {
-                    _nodeName = new NamedString("name", value);
+                    _name = new NamedString("name", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
                     Document.Tokens.Add(new WindarAddedComment());
-                    Document.Tokens.Add(_nodeName);
+                    Document.Tokens.Add(_name);
                     Document.Tokens.Add(new TermEndToken());
                 }
             }
         }
 
-        public string AuthDbDir
+        #region Scripts
+
+        public List<string> ListScripts()
         {
-            get
-            {
-                string result = null;
-                if (_authdbdir == null) _authdbdir = FindNamedString("authdbdir");
-                if (_authdbdir != null) result = _authdbdir.Value;
-                return result;
-            }
-            set
-            {
-                if (_authdbdir == null) _authdbdir = FindNamedString("authdbdir");
-                if (_authdbdir != null) _authdbdir.Value = value;
-                else
-                {
-                    _authdbdir = new NamedString("authdbdir", value);
-                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
-                    Document.Tokens.Add(_authdbdir);
-                    Document.Tokens.Add(new TermEndToken());
-                }
-            }
+            List<string> result = null;
+            if (_scripts == null) _scripts = FindNamedList("scripts");
+            if (_scripts != null) result = _scripts.GetStringsList();
+            return result;
         }
 
-        public bool CrossDomain
+        public void AddScript(string script)
         {
-            get
+            if (_scripts == null) _scripts = FindNamedList("scripts");
+            if (_scripts == null)
             {
-                var result = false;
-                if (_crossDomain == null) _crossDomain = FindNamedBoolean("crossdomain");
-                if (_crossDomain != null) result = _crossDomain.Value;
-                return result;
+                _scripts = new NamedList("scripts", new ListToken());
+                Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(_scripts);
+                Document.Tokens.Add(new TermEndToken());
             }
-            set
-            {
-                if (_crossDomain == null) _crossDomain = FindNamedBoolean("crossdomain");
-                if (_crossDomain != null) _crossDomain.Value = value;
-                else
-                {
-                    _crossDomain = new NamedBoolean("crossdomain", value);
-                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
-                    Document.Tokens.Add(_crossDomain);
-                    Document.Tokens.Add(new TermEndToken());
-                }
-            }
+            _scripts.AddStringsListItem(script);
         }
 
-        public bool Explain
+        public void RemoveScript(string script)
         {
-            get
-            {
-                var result = false;
-                if (_explain == null) _explain = FindNamedBoolean("explain");
-                if (_explain != null) result = _explain.Value;
-                return result;
-            }
-            set
-            {
-                if (_explain == null) _explain = FindNamedBoolean("explain");
-                if (_explain != null) _explain.Value = value;
-                else
-                {
-                    _explain = new NamedBoolean("explain", value);
-                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
-                    Document.Tokens.Add(_explain);
-                    Document.Tokens.Add(new TermEndToken());
-                }
-            }
-        }
-
-        public int HttpPort
-        {
-            get
-            {
-                var result = -1;
-                if (_web == null) _web = FindNamedList("web");
-                if (_web != null) result = _web.GetNamedInteger("port");
-                return result;
-            }
-            set
-            {
-                if (_web == null) _web = FindNamedList("web");
-                if (_web == null) _web = CreateWebConfigItem();
-                _web.SetNamedValue("port", value);
-            }
-        }
-
-        public int Max
-        {
-            get
-            {
-                var result = -1;
-                if (_web == null) _web = FindNamedList("web");
-                if (_web != null) result = _web.GetNamedInteger("max");
-                return result;
-            }
-            set
-            {
-                if (_web == null) _web = FindNamedList("web");
-                if (_web == null) _web = CreateWebConfigItem();
-                _web.SetNamedValue("max", value);
-            }
-        }
-
-        public string ListeningIp
-        {
-            get
-            {
-                string result = null;
-                if (_web == null) _web = FindNamedList("web");
-                if (_web != null) result = _web.GetNamedString("ip");
-                return result;
-            }
-            set
-            {
-                if (_web == null) _web = FindNamedList("web");
-                if (_web == null) _web = CreateWebConfigItem();
-                _web.SetNamedValue("ip", value);
-            }
-        }
-
-        public string DocRoot
-        {
-            get
-            {
-                string result = null;
-                if (_web == null) _web = FindNamedList("web");
-                if (_web != null) result = _web.GetNamedString("docroot");
-                return result;
-            }
-            set
-            {
-                if (_web == null) _web = FindNamedList("web");
-                if (_web == null) _web = CreateWebConfigItem();
-                _web.SetNamedValue("docroot", value);
-            }
-        }
-
-        public string LibraryDbDir
-        {
-            get
-            {
-                string result = null;
-                if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
-                if (_libdbdir != null)
-                {
-                    var valueTokens = _libdbdir.GetValueTokens();
-                    result = ((StringToken) valueTokens[1]).Text;
-                }
-                return result;
-            }
-            set
-            {
-                if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
-                if (_libdbdir == null)
-                {
-                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
-                    _libdbdir = new TupleToken();
-                    var tuple = new TupleToken();
-                    tuple.Tokens.Add(new AtomToken("library"));
-                    tuple.Tokens.Add(new CommaToken());
-                    tuple.Tokens.Add(new WhitespaceToken(" "));
-                    tuple.Tokens.Add(new AtomToken("dbdir"));
-                    _libdbdir.Tokens.Add(tuple);
-                    _libdbdir.Tokens.Add(new CommaToken());
-                    _libdbdir.Tokens.Add(new WhitespaceToken(" "));
-                    _libdbdir.Tokens.Add(new StringToken(value));
-                    Document.Tokens.Add(_libdbdir);
-                    Document.Tokens.Add(new TermEndToken());
-                }
-                var valueTokens = _libdbdir.GetValueTokens();
-                ((StringToken) valueTokens[1]).Text = value;
-            }
+            if (_scripts == null) _scripts = FindNamedList("scripts");
+            if (_scripts != null) _scripts.RemoveStringsListItem(script);
         }
 
         #endregion
+
+        #region Web
 
         private NamedList CreateWebConfigItem()
         {
@@ -279,6 +131,194 @@ namespace Windar.TrayApp.Configuration
             return result;
         }
 
+        public int WebPort
+        {
+            get
+            {
+                var result = -1;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedInteger("port");
+                return result;
+            }
+            set
+            {
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("port", value);
+            }
+        }
+
+        public int WebMax
+        {
+            get
+            {
+                var result = -1;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedInteger("max");
+                return result;
+            }
+            set
+            {
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("max", value);
+            }
+        }
+
+        public string WebIp
+        {
+            get
+            {
+                string result = null;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedString("ip");
+                return result;
+            }
+            set
+            {
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("ip", value);
+            }
+        }
+
+        public string WebDocRoot
+        {
+            get
+            {
+                string result = null;
+                if (_web == null) _web = FindNamedList("web");
+                if (_web != null) result = _web.GetNamedString("docroot");
+                return result;
+            }
+            set
+            {
+                if (_web == null) _web = FindNamedList("web");
+                if (_web == null) _web = CreateWebConfigItem();
+                _web.SetNamedValue("docroot", value);
+            }
+        }
+
+        #endregion
+
+        public bool CrossDomain
+        {
+            get
+            {
+                var result = false;
+                if (_crossdomain == null) _crossdomain = FindNamedBoolean("crossdomain");
+                if (_crossdomain != null) result = _crossdomain.Value;
+                return result;
+            }
+            set
+            {
+                if (_crossdomain == null) _crossdomain = FindNamedBoolean("crossdomain");
+                if (_crossdomain != null) _crossdomain.Value = value;
+                else
+                {
+                    _crossdomain = new NamedBoolean("crossdomain", value);
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_crossdomain);
+                    Document.Tokens.Add(new TermEndToken());
+                }
+            }
+        }
+
+        #region Modules blacklist
+
+        public List<string> ListModulesBlacklist()
+        {
+            List<string> result = null;
+            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
+            if (_blacklist != null) result = _blacklist.GetStringsList();
+            return result;
+        }
+
+        public void BlockModule(string module)
+        {
+            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
+            if (_blacklist == null)
+            {
+                _blacklist = new NamedList("modules_blacklist", new ListToken());
+                Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(_blacklist);
+                Document.Tokens.Add(new TermEndToken());
+            }
+            _blacklist.AddStringsListItem(module);
+        }
+
+        public void UnblockModule(string module)
+        {
+            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
+            if (_blacklist != null) _blacklist.RemoveStringsListItem(module);
+        }
+
+        #endregion
+
+        public bool Explain
+        {
+            get
+            {
+                var result = false;
+                if (_explain == null) _explain = FindNamedBoolean("explain");
+                if (_explain != null) result = _explain.Value;
+                return result;
+            }
+            set
+            {
+                if (_explain == null) _explain = FindNamedBoolean("explain");
+                if (_explain != null) _explain.Value = value;
+                else
+                {
+                    _explain = new NamedBoolean("explain", value);
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_explain);
+                    Document.Tokens.Add(new TermEndToken());
+                }
+            }
+        }
+
+        public string LibraryDbDir
+        {
+            get
+            {
+                string result = null;
+                if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
+                if (_libdbdir != null)
+                {
+                    var valueTokens = _libdbdir.GetValueTokens();
+                    result = ((StringToken) valueTokens[1]).Text;
+                }
+                return result;
+            }
+            set
+            {
+                if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
+                if (_libdbdir == null)
+                {
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    _libdbdir = new TupleToken();
+                    var tuple = new TupleToken();
+                    tuple.Tokens.Add(new AtomToken("library"));
+                    tuple.Tokens.Add(new CommaToken());
+                    tuple.Tokens.Add(new WhitespaceToken(" "));
+                    tuple.Tokens.Add(new AtomToken("dbdir"));
+                    _libdbdir.Tokens.Add(tuple);
+                    _libdbdir.Tokens.Add(new CommaToken());
+                    _libdbdir.Tokens.Add(new WhitespaceToken(" "));
+                    _libdbdir.Tokens.Add(new StringToken(value));
+                    Document.Tokens.Add(_libdbdir);
+                    Document.Tokens.Add(new TermEndToken());
+                }
+                var valueTokens = _libdbdir.GetValueTokens();
+                ((StringToken) valueTokens[1]).Text = value;
+            }
+        }
+
         private TupleToken FindLibraryDbDir()
         {
             TupleToken result = null;
@@ -306,68 +346,28 @@ namespace Windar.TrayApp.Configuration
             return result;
         }
 
-        #region Resolver scripts list management.
-
-        public List<string> ListScripts()
+        public string AuthDbDir
         {
-            List<string> result = null;
-            if (_scripts == null) _scripts = FindNamedList("scripts");
-            if (_scripts != null) result = _scripts.GetStringsList();
-            return result;
-        }
-
-        public void AddScript(string script)
-        {
-            if (_scripts == null) _scripts = FindNamedList("scripts");
-            if (_scripts == null)
+            get
             {
-                _scripts = new NamedList("scripts", new ListToken());
-                Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                Document.Tokens.Add(new WindarAddedComment());
-                Document.Tokens.Add(_scripts);
-                Document.Tokens.Add(new TermEndToken());
+                string result = null;
+                if (_authdbdir == null) _authdbdir = FindNamedString("authdbdir");
+                if (_authdbdir != null) result = _authdbdir.Value;
+                return result;
             }
-            _scripts.AddListItem(script);
-        }
-
-        public void RemoveScript(string script)
-        {
-            if (_scripts == null) _scripts = FindNamedList("scripts");
-            if (_scripts != null) _scripts.RemoveListItem(script);
-        }
-
-        #endregion
-
-        #region Modules blacklist management.
-
-        public List<string> ListModulesBlacklist()
-        {
-            List<string> result = null;
-            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
-            if (_blacklist != null) result = _blacklist.GetStringsList();
-            return result;
-        }
-
-        public void BlockModule(string module)
-        {
-            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
-            if (_blacklist == null)
+            set
             {
-                _blacklist = new NamedList("modules_blacklist", new ListToken());
-                Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                Document.Tokens.Add(new WindarAddedComment());
-                Document.Tokens.Add(_blacklist);
-                Document.Tokens.Add(new TermEndToken());
+                if (_authdbdir == null) _authdbdir = FindNamedString("authdbdir");
+                if (_authdbdir != null) _authdbdir.Value = value;
+                else
+                {
+                    _authdbdir = new NamedString("authdbdir", value);
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(_authdbdir);
+                    Document.Tokens.Add(new TermEndToken());
+                }
             }
-            _blacklist.AddListItem(module);
         }
-
-        public void UnblockModule(string module)
-        {
-            if (_blacklist == null) _blacklist = FindNamedList("modules_blacklist");
-            if (_blacklist != null) _blacklist.RemoveListItem(module);
-        }
-
-        #endregion
     }
 }

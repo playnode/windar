@@ -16,13 +16,84 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Text;
+
 namespace Windar.TrayApp.Configuration
 {
-    class PeerInfo
+    public class PeerInfo
     {
-        public string Name { get; set; }
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public bool Sharing { get; set; }
+        private string _host;
+        private int _port;
+        private bool _share;
+
+        protected bool HostChanged { get; private set; }
+        protected bool PortChanged { get; private set; }
+        protected bool ShareChanged { get; private set; }
+
+        public string Host
+        {
+            get
+            {
+                return _host;
+            }
+            set
+            {
+                HostChanged = _host != value;
+                _host = value;
+            }
+        }
+
+        public int Port
+        {
+            get
+            {
+                return _port;
+            }
+            set
+            {
+                PortChanged = _port != value;
+                _port = value;
+            }
+        }
+
+        public bool Share
+        {
+            get
+            {
+                return _share;
+            }
+            set
+            {
+                // Always true if this property is ever set.
+                // Because it's an optional property.
+                ShareChanged = true;
+                _share = value;
+            }
+        }
+
+        public PeerInfo(string host, int port)
+        {
+            _host = host;
+            _port = port;
+        }
+
+        public PeerInfo(string host, int port, bool share)
+        {
+            _host = host;
+            _port = port;
+            _share = share;
+        }
+
+        protected bool IsChanged()
+        {
+            return HostChanged || PortChanged || ShareChanged;
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            result.Append("{\"").Append(_host).Append("\", ").Append(_port).Append("}");
+            return result.ToString();
+        }
     }
 }

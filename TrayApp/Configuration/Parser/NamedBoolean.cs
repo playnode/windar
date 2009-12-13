@@ -30,17 +30,18 @@ namespace Windar.TrayApp.Configuration.Parser
         {
             get
             {
-                return Convert.ToBoolean(((AtomToken) base.Value).Text);
+                //return Convert.ToBoolean(((AtomToken) base.Value).Text);
+                return new BooleanToken((AtomToken) base.Value).Value;
             }
             set
             {
-                base.Value = new AtomToken(value ? "true" : "false");
+                base.Value = new BooleanToken(value);
             }
         }
 
         public NamedBoolean(string name, bool value) : base(name)
         {
-            Tokens.Add(new AtomToken(value ? "true" : "false"));
+            Tokens.Add(new BooleanToken(value));
         }
 
         /// <summary>
