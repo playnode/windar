@@ -66,7 +66,6 @@ namespace Windar.TrayApp
 #endif
 
             //TODO: Re-add tabs.
-            optionsTabControl.TabPages.Remove(scriptsTabPage);
             optionsTabControl.TabPages.Remove(pluginsTabPage);
             optionsTabControl.TabPages.Remove(propsTabPage);
 
@@ -393,9 +392,10 @@ namespace Windar.TrayApp
                 followTailCheckBox.Checked = true;
                 if (logBox != null)
                 {
+                    logBoxPanel.Visible = false;
                     logBox.ReSetText();
                     logBox.ScrollToEnd();
-                    logBox.Visible = true;
+                    logBoxPanel.Visible = true;
                 }
             }
             else
@@ -424,13 +424,13 @@ namespace Windar.TrayApp
             {
                 SetupGeneralOptionsPage();
             }
+            else if (optionsTabControl.SelectedTab == libraryTabPage)
+            {
+                SetupLibraryPage();
+            }
             else if (optionsTabControl.SelectedTab == modsTabPage)
             {
                 SetupModulesPage();
-            }
-            else if (optionsTabControl.SelectedTab == scriptsTabPage)
-            {
-                SetupScriptsPage();
             }
             else if (optionsTabControl.SelectedTab == pluginsTabPage)
             {
@@ -585,6 +585,13 @@ namespace Windar.TrayApp
 
         #endregion
 
+        private void SetupLibraryPage()
+        {
+            LibraryOptionsPage options;
+            _optionsPage = options = new LibraryOptionsPage();
+            _optionsPage.Load();
+        }
+
         private void SetupModulesPage()
         {
             PlaydarModulesPage options;
@@ -611,6 +618,36 @@ namespace Windar.TrayApp
             PluginPropertiesPage options;
             _optionsPage = options = new PluginPropertiesPage();
             _optionsPage.Load();
+        }
+
+        private void peersGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void libraryGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void modsGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void pluginsGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void propsGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void peersGrid_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

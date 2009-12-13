@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Configuration\GeneralOptionsPage.cs" />
     <Compile Include="Configuration\IOptionsPage.cs" />
+    <Compile Include="Configuration\LibraryOptionsPage.cs" />
     <Compile Include="Configuration\Parser\BooleanToken.cs" />
     <Compile Include="Configuration\Parser\CompositeToken.cs" />
     <Compile Include="Configuration\Parser\NamedBoolean.cs" />

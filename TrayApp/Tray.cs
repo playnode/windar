@@ -66,7 +66,7 @@ namespace Windar.TrayApp
             _scanfilesMenuItem = new MenuItem("Scan Files", Scan);
             _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
-            _restartMenuItem = new MenuItem("Restart Playdar Core", Restart);
+            _restartMenuItem = new MenuItem("Restart Resolver Service", Restart);
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
 
             // Demos menu.
