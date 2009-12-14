@@ -43,7 +43,9 @@ namespace Windar.TrayApp
             {
                 var result = new StringBuilder();
                 result.Append("http://localhost:");
-                result.Append(MainConfig.WebPort).Append('/');
+                var port = 60211;
+                if (MainConfig != null) port = MainConfig.WebPort;
+                result.Append(port).Append('/');
                 return result.ToString();
             }
         }
@@ -448,13 +450,25 @@ namespace Windar.TrayApp
         private void LoadConfiguration()
         {
             //TODO: Check for errors in configuration files.
-            //TODO: Exception handling for errors in configuration files.
+            //TODO: Better exception handling for errors in configuration files.
+            try
+            {
+                MainConfig = new MainConfigFile();
+                MainConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdar.conf"));
 
-            MainConfig = new MainConfigFile();
-            MainConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdar.conf"));
+                PeerConfig = new TcpConfigFile();
+                PeerConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdartcp.conf"));
+            }
+            catch (Exception ex)
+            {
+                const string msg = "Exception when reading configuration files.";
+                if (Log.IsErrorEnabled) Log.Error(msg, ex);
+                ShowErrorDialog(msg);
 
-            PeerConfig = new TcpConfigFile();
-            PeerConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdartcp.conf"));
+                //TODO: Handle configuration parse errors gracefully.
+                MainConfig = null;
+                PeerConfig = null;
+            }
         }
 
         internal void ReloadConfiguration()

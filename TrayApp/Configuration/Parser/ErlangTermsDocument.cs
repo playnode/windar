@@ -40,55 +40,64 @@ namespace Windar.TrayApp.Configuration.Parser
             var stream = new ParserInputStream(reader);
             var parser = new ErlangTermsParser(stream);
             ParserToken token;
-            while ((token = parser.NextToken()) != null)
+            try
             {
-                Document.Tokens.Add(token);
-                if (!Log.IsInfoEnabled) continue;
-                if (token is CommentToken)
+                while ((token = parser.NextToken()) != null)
                 {
-                    var str = token.ToString();
-                    Log.Info("Token, Comment: " + str.Substring(0, str.Length - 1));
-                }
-                else if (token is TermEndToken)
-                {
-                    Log.Info("Token, TermEnd.");
-                }
-                else if (token is NumericExpression)
-                {
-                    var str = token.ToString();
-                    if (str.IndexOf('\n') > 0) Log.Info("Token, NumericExpression (multi-line)\n" + str);
-                    else Log.Info("Token, NumericExpression: " + str);
-                }
-                else if (token is ListToken)
-                {
-                    var str = token.ToString();
-                    if (str.IndexOf('\n') > 0) Log.Info("Token, List (multi-line)\n" + str);
-                    else Log.Info("Token, List: " + str);
-                }
-                else if (token is StringToken)
-                {
-                    var str = token.ToString();
-                    if (str.IndexOf('\n') > 0) Log.Info("Token, String (multi-line)\n" + str);
-                    else Log.Info("Token, String: \"" + str + '"');
-                }
-                else if (token is TupleToken)
-                {
-                    var str = token.ToString();
-                    if (str.IndexOf('\n') > 0) Log.Info("Token, Tuple (multi-line)\n" + str);
-                    else Log.Info("Token, Tuple: " + str);
-                }
-                else if (token is WhitespaceToken)
-                {
-                    Log.Info("Token, Whitespace: " + ((WhitespaceToken) token).ToEscapedString());
-                }
-                else
-                {
-                    Log.Info("Token, Unrecognised!");
+                    Document.Tokens.Add(token);
+                    if (!Log.IsInfoEnabled) continue;
+                    if (token is CommentToken)
+                    {
+                        var str = token.ToString();
+                        Log.Info("Token, Comment: " + str.Substring(0, str.Length - 1));
+                    }
+                    else if (token is TermEndToken)
+                    {
+                        Log.Info("Token, TermEnd.");
+                    }
+                    else if (token is NumericExpression)
+                    {
+                        var str = token.ToString();
+                        if (str.IndexOf('\n') > 0) Log.Info("Token, NumericExpression (multi-line)\n" + str);
+                        else Log.Info("Token, NumericExpression: " + str);
+                    }
+                    else if (token is ListToken)
+                    {
+                        var str = token.ToString();
+                        if (str.IndexOf('\n') > 0) Log.Info("Token, List (multi-line)\n" + str);
+                        else Log.Info("Token, List: " + str);
+                    }
+                    else if (token is StringToken)
+                    {
+                        var str = token.ToString();
+                        if (str.IndexOf('\n') > 0) Log.Info("Token, String (multi-line)\n" + str);
+                        else Log.Info("Token, String: \"" + str + '"');
+                    }
+                    else if (token is TupleToken)
+                    {
+                        var str = token.ToString();
+                        if (str.IndexOf('\n') > 0) Log.Info("Token, Tuple (multi-line)\n" + str);
+                        else Log.Info("Token, Tuple: " + str);
+                    }
+                    else if (token is WhitespaceToken)
+                    {
+                        Log.Info("Token, Whitespace: " + ((WhitespaceToken) token).ToEscapedString());
+                    }
+                    else
+                    {
+                        Log.Info("Token, Unrecognised!");
+                    }
                 }
             }
-
-            // Close the file.
-            reader.Close();
+            catch (Exception ex)
+            {
+                throw new Exception("Exception when loading erlang terms document.", ex);
+            }
+            finally
+            {
+                // Close the file.
+                reader.Close();
+            }
         }
 
         public override string ToString()

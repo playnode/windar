@@ -358,23 +358,15 @@ namespace Windar.TrayApp.Configuration.Parser
                             // Remove previous newline.
                             if (previousTokens.Count > 0
                                 && previousTokens.Peek() is WhitespaceToken
-                                && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                                && ((WhitespaceToken) previousTokens.Peek()).Text == "\n\n")
                             {
                                 List.Tokens.Remove(previousTokens.Pop());
 
-                                // Remove previous newline.
+                                // Remove comma token, if found.
                                 if (previousTokens.Count > 0
-                                    && previousTokens.Peek() is WhitespaceToken
-                                    && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                                    && previousTokens.Peek() is CommaToken)
                                 {
                                     List.Tokens.Remove(previousTokens.Pop());
-
-                                    // Remove comma token, if found.
-                                    if (previousTokens.Count > 0
-                                        && previousTokens.Peek() is CommaToken)
-                                    {
-                                        List.Tokens.Remove(previousTokens.Pop());
-                                    }
                                 }
                             }
                         }

@@ -234,7 +234,8 @@ namespace Windar.TrayApp.Configuration
 
         public void RemovePeer(string host, int port)
         {
-            ////TODO: This is almost exactly the same code as in NamedList.RemoveStringsListItem() ... Try to use a common method.
+            //TODO: This is almost exactly the same code as in NamedList.RemoveStringsListItem() ... Try to use a common method.
+            //TODO: When first item is removed, there are newlines being written. Fix.
 
             var previousTokens = new Stack<ParserToken>();
             foreach (var token in _peers.List.Tokens)
@@ -280,23 +281,15 @@ namespace Windar.TrayApp.Configuration
                             // Remove previous newline.
                             if (previousTokens.Count > 0
                                 && previousTokens.Peek() is WhitespaceToken
-                                && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                                && ((WhitespaceToken) previousTokens.Peek()).Text == "\n\n")
                             {
                                 _peers.List.Tokens.Remove(previousTokens.Pop());
 
-                                // Remove previous newline.
+                                // Remove comma token, if found.
                                 if (previousTokens.Count > 0
-                                    && previousTokens.Peek() is WhitespaceToken
-                                    && ((WhitespaceToken) previousTokens.Peek()).Text == "\n")
+                                    && previousTokens.Peek() is CommaToken)
                                 {
                                     _peers.List.Tokens.Remove(previousTokens.Pop());
-
-                                    // Remove comma token, if found.
-                                    if (previousTokens.Count > 0
-                                        && previousTokens.Peek() is CommaToken)
-                                    {
-                                        _peers.List.Tokens.Remove(previousTokens.Pop());
-                                    }
                                 }
                             }
                         }
