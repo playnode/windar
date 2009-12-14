@@ -608,7 +608,9 @@ namespace Windar.TrayApp
             peersGrid.Rows.Clear();
             foreach (var peer in ((GeneralOptionsPage) _optionsPage).Peers)
                 peersGrid.Rows.Add(GetPeerListRow(peer));
+            if (peersGrid.Rows.Count <= 0) return;
             peersGrid.Rows[0].Selected = false;
+            peersGrid.CurrentCell = null;
         }
 
         private static DataGridViewRow GetPeerListRow(PeerInfo peer)
@@ -625,7 +627,7 @@ namespace Windar.TrayApp
         {
             var row = new DataGridViewRow();
             row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = "60211" });
             row.Cells.Add(new DataGridViewCheckBoxCell { Value = false });
             return row;
         }
@@ -649,6 +651,11 @@ namespace Windar.TrayApp
             peersGrid.Rows.Add(GetPeerListRow());
             ((GeneralOptionsPage) _optionsPage).NewPeersToAdd = true;
             UpdateGeneralOptionsButtons();
+            
+            // Select the first cell the new row.
+            var row = peersGrid.Rows[peersGrid.Rows.Count - 1];
+            peersGrid.CurrentCell = row.Cells[0];
+            peersGrid.BeginEdit(false);
         }
 
         private void removePeerMenuItem_Click(object sender, EventArgs e)

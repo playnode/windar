@@ -160,17 +160,24 @@ namespace Windar.TrayApp
                 var peer = config.GetPeerInfo("192.168.1.10", 60211);
                 Log.Info("PeerInfo = " + peer);
 
-                config.SetPeerInfo("192.168.1.10", 60211, true);
-                config.SetPeerInfo("10.1.1.10", 60211, false);
-                config.SetPeerInfo("10.1.1.11", 60211, false);
-                config.SetPeerInfo("10.1.1.12", 60211, false);
-                config.SetPeerInfo("10.1.1.13", 60211, false);
-                config.RemovePeer("10.1.1.11", 60211);
-                config.RemovePeer("10.1.1.10", 60211);
-                config.RemovePeer("10.1.1.12", 60211);
-                config.RemovePeer("10.1.1.13", 60211);
+                //config.SetPeerInfo("192.168.1.10", 60211, true);
+                //config.SetPeerInfo("10.1.1.10", 60211, false);
+                //config.SetPeerInfo("10.1.1.11", 60211, false);
+                //config.SetPeerInfo("10.1.1.12", 60211, false);
+                //config.SetPeerInfo("10.1.1.13", 60211, false);
+                //config.RemovePeer("10.1.1.11", 60211);
+                //config.RemovePeer("10.1.1.10", 60211);
+                //config.RemovePeer("10.1.1.12", 60211);
+                //config.RemovePeer("10.1.1.13", 60211);
                 //config.RemovePeer("192.168.1.10", 60211);
 
+                config.SetPeerInfo("192.168.1.10", 60211, true);
+
+                config.RemovePeer("10.1.1.45", 60211);
+                config.RemovePeer("k-os.podzone.net", 60211);
+                config.RemovePeer("playnode.k-os.net", 60211);
+                config.RemovePeer("192.168.1.10", 60211);
+                
                 Log.Info("\n" + config);
             }
             catch (Exception ex)
