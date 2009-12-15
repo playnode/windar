@@ -442,7 +442,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -463,7 +463,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(184, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(182, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -474,7 +474,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(225, 3);
+            this.label6.Location = new System.Drawing.Point(223, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -484,7 +484,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(403, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(401, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -495,7 +495,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(37, 3);
+            this.label2.Location = new System.Drawing.Point(35, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -505,9 +505,9 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 23);
+            this.label5.Location = new System.Drawing.Point(5, 20);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(174, 13);
+            this.label5.Size = new System.Drawing.Size(171, 20);
             this.label5.TabIndex = 8;
             this.label5.Text = "Forward on queries to other nodes :";
             // 
@@ -515,7 +515,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(184, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(182, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -558,6 +558,7 @@ namespace Windar.TrayApp
             this.peersGrid.Size = new System.Drawing.Size(559, 175);
             this.peersGrid.StandardTab = true;
             this.peersGrid.TabIndex = 9;
+            this.peersGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellValueChanged);
             this.peersGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseDown);
             this.peersGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseClick);
             // 

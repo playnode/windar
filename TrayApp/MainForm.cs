@@ -526,9 +526,19 @@ namespace Windar.TrayApp
             {
                 var result = Program.ShowYesNoCancelDialog("Save changes?");
                 if (result == DialogResult.Cancel) return false;
-                if (result == DialogResult.Yes) Program.Instance.SaveConfiguration();
+                if (result == DialogResult.Yes)
+                {
+                    if (_optionsPage is GeneralOptionsPage) SaveGeneralOptions();
+                }
             }
             return true;
+        }
+
+        private static void ShowApplyChangesDialog()
+        {
+            Program.Instance.SaveConfiguration();
+            if (Program.ShowYesNoDialog("Restart Playdar to apply changes?"))
+                Program.Instance.Daemon.Restart();
         }
 
         #region General options page.
@@ -549,14 +559,7 @@ namespace Windar.TrayApp
             LoadPeers();
         }
 
-        private void generalOptionsCancelButton_Click(object sender, EventArgs e)
-        {
-            SetupGeneralOptionsPage();
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
-        }
-
-        private void generalOptionsSaveButton_Click(object sender, EventArgs e)
+        private void SaveGeneralOptions()
         {
             foreach (var obj in peersGrid.Rows)
             {
@@ -575,7 +578,8 @@ namespace Windar.TrayApp
                     }
                     catch (FormatException ex)
                     {
-                        if (Log.IsErrorEnabled) {
+                        if (Log.IsErrorEnabled)
+                        {
                             Log.Error("Couldn't parse \"" + (string) row.Cells[1].Value + "\" as integer.", ex);
                         }
                     }
@@ -609,6 +613,19 @@ namespace Windar.TrayApp
             Program.Instance.SaveConfiguration();
             SetupGeneralOptionsPage();
             UpdateGeneralOptionsButtons();
+            ShowApplyChangesDialog();
+        }
+
+        private void generalOptionsCancelButton_Click(object sender, EventArgs e)
+        {
+            SetupGeneralOptionsPage();
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void generalOptionsSaveButton_Click(object sender, EventArgs e)
+        {
+            SaveGeneralOptions();
         }
 
         #region Change handling.
@@ -730,6 +747,13 @@ namespace Windar.TrayApp
                 }
                 peersGrid.Rows.Remove(row);
             }
+            UpdateGeneralOptionsButtons();
+        }
+
+        private void peersGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (peersGrid.Rows.Count <= 0 || peersGrid.Rows[e.RowIndex].Tag == null) return;
+            ((GeneralOptionsPage) _optionsPage).PeerValueChanged = true;
             UpdateGeneralOptionsButtons();
         }
 

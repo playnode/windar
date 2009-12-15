@@ -34,6 +34,7 @@ namespace Windar.TrayApp.Configuration
         // We're not tracking list items.
         private bool _peersChanged;
         public bool NewPeersToAdd { get; set; }
+        public bool PeerValueChanged { get; set; }
 
         // Original values.
         private bool _origAutoStart;
@@ -63,7 +64,8 @@ namespace Windar.TrayApp.Configuration
                        || _allowIncomingChanged
                        || _forwardQueriesChanged
                        || _peersChanged
-                       || NewPeersToAdd;
+                       || NewPeersToAdd
+                       || PeerValueChanged;
             }
         }
 
