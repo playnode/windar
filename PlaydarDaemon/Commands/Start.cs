@@ -53,10 +53,8 @@ namespace Windar.PlaydarController.Commands
         {
             Cmd<CopyAppFilesToAppData>.Create().Run();
 
-            Runner.RunCommand(@"cd " + DaemonController.Instance.Paths.PlaydarDataPath);
-
-            //NOTE: Following is not currently required as etc is found in current dir.
-            //Runner.RunCommand("set PLAYDAR_ETC=" + Paths.PlaydarDataPath + @"\etc");
+            Runner.RunCommand("cd " + DaemonController.Instance.Paths.PlaydarPath);
+            Runner.RunCommand("set PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');

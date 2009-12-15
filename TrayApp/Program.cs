@@ -130,6 +130,7 @@ namespace Windar.TrayApp
         private void Run()
         {
             LoadConfiguration();
+            CheckConfig();
             PluginHost.Load();
             Daemon.Start();
             if (Properties.Settings.Default.MainFormVisible) MainForm.EnsureVisible();
@@ -473,6 +474,19 @@ namespace Windar.TrayApp
                 MainConfig = null;
                 PeerConfig = null;
             }
+        }
+
+        private void CheckConfig()
+        {
+            var path = Paths.PlaydarDataPath;
+            path = path.Replace('\\', '/');
+            var update = (MainConfig.LibraryDbDir != path)
+                || (MainConfig.AuthDbDir != path);
+
+            if (!update) return;
+            MainConfig.LibraryDbDir = path;
+            MainConfig.AuthDbDir = path;
+            SaveConfiguration();
         }
 
         internal void ReloadConfiguration()

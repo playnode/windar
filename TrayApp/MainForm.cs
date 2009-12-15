@@ -157,7 +157,6 @@ namespace Windar.TrayApp
             {
                 PlaydarBrowser.DocumentText = html.ToString();
             }
-            Application.DoEvents();
         }
 
         private void startDaemonButton_Click(object sender, EventArgs e)

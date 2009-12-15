@@ -32,20 +32,6 @@ namespace Windar.PlaydarController.Commands
             cmd.Append(" \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\\\"");
             Runner.RunCommand(cmd.ToString());
 
-            // 'priv' folder, containing web files.
-            cmd = new StringBuilder();
-            cmd.Append("if not exist \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\priv\" ");
-            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\priv\"");
-            cmd.Append(" \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\priv\\\"");
-            Runner.RunCommand(cmd.ToString());
-
-            // 'playdar_modules' folder, containing web files.
-            cmd = new StringBuilder();
-            cmd.Append("if not exist \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\playdar_modules\" ");
-            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\playdar_modules\"");
-            cmd.Append(" \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\playdar_modules\\\"");
-            Runner.RunCommand(cmd.ToString());
-
             ContinueWhenDone();
             return Output;
         }

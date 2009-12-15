@@ -442,7 +442,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -474,7 +474,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(223, 3);
+            this.label6.Location = new System.Drawing.Point(222, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -484,7 +484,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(401, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(400, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -1053,7 +1053,7 @@ namespace Windar.TrayApp
             this.playdarTabPage.Name = "playdarTabPage";
             this.playdarTabPage.Size = new System.Drawing.Size(608, 403);
             this.playdarTabPage.TabIndex = 1;
-            this.playdarTabPage.Text = "Resolver";
+            this.playdarTabPage.Text = "Playdar";
             this.playdarTabPage.UseVisualStyleBackColor = true;
             // 
             // daemonSplitPanel
