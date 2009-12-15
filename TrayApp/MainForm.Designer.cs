@@ -78,6 +78,9 @@ namespace Windar.TrayApp
             this.forwardCheckBox = new System.Windows.Forms.CheckBox();
             this.peersGroupBox = new System.Windows.Forms.GroupBox();
             this.peersGrid = new System.Windows.Forms.DataGridView();
+            this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.peerPort = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.peerShare = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.peersContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addPeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removePeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,12 +128,12 @@ namespace Windar.TrayApp
             this.removePropMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playdarTabPage = new System.Windows.Forms.TabPage();
             this.daemonSplitPanel = new System.Windows.Forms.SplitContainer();
-            this.refreshButton = new System.Windows.Forms.Button();
-            this.restartDaemonButton = new System.Windows.Forms.Button();
-            this.backButton = new System.Windows.Forms.Button();
-            this.homeButton = new System.Windows.Forms.Button();
-            this.stopDaemonButton = new System.Windows.Forms.Button();
-            this.startDaemonButton = new System.Windows.Forms.Button();
+            this.RefreshButton = new System.Windows.Forms.Button();
+            this.RestartDaemonButton = new System.Windows.Forms.Button();
+            this.BackButton = new System.Windows.Forms.Button();
+            this.HomeButton = new System.Windows.Forms.Button();
+            this.StopDaemonButton = new System.Windows.Forms.Button();
+            this.StartDaemonButton = new System.Windows.Forms.Button();
             this.playdarBorderPanel = new System.Windows.Forms.Panel();
             this.PlaydarBrowser = new System.Windows.Forms.WebBrowser();
             this.logTabPage = new System.Windows.Forms.TabPage();
@@ -138,9 +141,6 @@ namespace Windar.TrayApp
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
             this.logBoxPanel = new System.Windows.Forms.Panel();
             this.logBox = new Windar.TrayApp.LogTextBox();
-            this.peerAddress = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peerPort = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peerShare = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.mainformBorderPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -442,7 +442,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -463,7 +463,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(185, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(184, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -474,7 +474,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(226, 3);
+            this.label6.Location = new System.Drawing.Point(225, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -484,7 +484,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(404, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(403, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -495,7 +495,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(38, 3);
+            this.label2.Location = new System.Drawing.Point(37, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -505,7 +505,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(5, 23);
+            this.label5.Location = new System.Drawing.Point(4, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
             this.label5.TabIndex = 8;
@@ -515,7 +515,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(185, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(184, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -560,6 +560,34 @@ namespace Windar.TrayApp
             this.peersGrid.TabIndex = 9;
             this.peersGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseDown);
             this.peersGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseClick);
+            // 
+            // peerAddress
+            // 
+            this.peerAddress.FillWeight = 137.5049F;
+            this.peerAddress.HeaderText = "DNS name or IP address";
+            this.peerAddress.MaxInputLength = 50;
+            this.peerAddress.MinimumWidth = 60;
+            this.peerAddress.Name = "peerAddress";
+            // 
+            // peerPort
+            // 
+            this.peerPort.FillWeight = 66.34409F;
+            this.peerPort.HeaderText = "Port";
+            this.peerPort.MaxInputLength = 10;
+            this.peerPort.MinimumWidth = 30;
+            this.peerPort.Name = "peerPort";
+            this.peerPort.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // peerShare
+            // 
+            this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.peerShare.FillWeight = 43.7529F;
+            this.peerShare.HeaderText = "Share";
+            this.peerShare.MinimumWidth = 50;
+            this.peerShare.Name = "peerShare";
+            this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.peerShare.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.peerShare.Width = 50;
             // 
             // peersContextMenu
             // 
@@ -1024,7 +1052,7 @@ namespace Windar.TrayApp
             this.playdarTabPage.Name = "playdarTabPage";
             this.playdarTabPage.Size = new System.Drawing.Size(608, 403);
             this.playdarTabPage.TabIndex = 1;
-            this.playdarTabPage.Text = "Resolver Service";
+            this.playdarTabPage.Text = "Resolver";
             this.playdarTabPage.UseVisualStyleBackColor = true;
             // 
             // daemonSplitPanel
@@ -1038,12 +1066,12 @@ namespace Windar.TrayApp
             // 
             // daemonSplitPanel.Panel1
             // 
-            this.daemonSplitPanel.Panel1.Controls.Add(this.refreshButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.restartDaemonButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.backButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.homeButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.stopDaemonButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.startDaemonButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.RefreshButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.RestartDaemonButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.BackButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.HomeButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.StopDaemonButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.StartDaemonButton);
             // 
             // daemonSplitPanel.Panel2
             // 
@@ -1052,71 +1080,71 @@ namespace Windar.TrayApp
             this.daemonSplitPanel.SplitterDistance = 25;
             this.daemonSplitPanel.TabIndex = 2;
             // 
-            // refreshButton
+            // RefreshButton
             // 
-            this.refreshButton.Location = new System.Drawing.Point(134, 0);
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(60, 23);
-            this.refreshButton.TabIndex = 6;
-            this.refreshButton.Text = "Refresh";
-            this.refreshButton.UseVisualStyleBackColor = true;
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            this.RefreshButton.Location = new System.Drawing.Point(134, 0);
+            this.RefreshButton.Name = "RefreshButton";
+            this.RefreshButton.Size = new System.Drawing.Size(60, 23);
+            this.RefreshButton.TabIndex = 6;
+            this.RefreshButton.Text = "Refresh";
+            this.RefreshButton.UseVisualStyleBackColor = true;
+            this.RefreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
-            // restartDaemonButton
+            // RestartDaemonButton
             // 
-            this.restartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.restartDaemonButton.Location = new System.Drawing.Point(546, 0);
-            this.restartDaemonButton.Name = "restartDaemonButton";
-            this.restartDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.restartDaemonButton.TabIndex = 5;
-            this.restartDaemonButton.Text = "Restart";
-            this.restartDaemonButton.UseVisualStyleBackColor = true;
-            this.restartDaemonButton.Click += new System.EventHandler(this.restartButton_Click);
+            this.RestartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.RestartDaemonButton.Location = new System.Drawing.Point(546, 0);
+            this.RestartDaemonButton.Name = "RestartDaemonButton";
+            this.RestartDaemonButton.Size = new System.Drawing.Size(60, 23);
+            this.RestartDaemonButton.TabIndex = 5;
+            this.RestartDaemonButton.Text = "Restart";
+            this.RestartDaemonButton.UseVisualStyleBackColor = true;
+            this.RestartDaemonButton.Click += new System.EventHandler(this.restartButton_Click);
             // 
-            // backButton
+            // BackButton
             // 
-            this.backButton.Enabled = false;
-            this.backButton.Location = new System.Drawing.Point(68, 0);
-            this.backButton.Name = "backButton";
-            this.backButton.Size = new System.Drawing.Size(60, 23);
-            this.backButton.TabIndex = 4;
-            this.backButton.Text = "Back";
-            this.backButton.UseVisualStyleBackColor = true;
-            this.backButton.Click += new System.EventHandler(this.backButton_Click);
+            this.BackButton.Enabled = false;
+            this.BackButton.Location = new System.Drawing.Point(68, 0);
+            this.BackButton.Name = "BackButton";
+            this.BackButton.Size = new System.Drawing.Size(60, 23);
+            this.BackButton.TabIndex = 4;
+            this.BackButton.Text = "Back";
+            this.BackButton.UseVisualStyleBackColor = true;
+            this.BackButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // homeButton
+            // HomeButton
             // 
-            this.homeButton.Enabled = false;
-            this.homeButton.Location = new System.Drawing.Point(2, 0);
-            this.homeButton.Name = "homeButton";
-            this.homeButton.Size = new System.Drawing.Size(60, 23);
-            this.homeButton.TabIndex = 3;
-            this.homeButton.Text = "Home";
-            this.homeButton.UseVisualStyleBackColor = true;
-            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
+            this.HomeButton.Enabled = false;
+            this.HomeButton.Location = new System.Drawing.Point(2, 0);
+            this.HomeButton.Name = "HomeButton";
+            this.HomeButton.Size = new System.Drawing.Size(60, 23);
+            this.HomeButton.TabIndex = 3;
+            this.HomeButton.Text = "Home";
+            this.HomeButton.UseVisualStyleBackColor = true;
+            this.HomeButton.Click += new System.EventHandler(this.homeButton_Click);
             // 
-            // stopDaemonButton
+            // StopDaemonButton
             // 
-            this.stopDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.stopDaemonButton.Location = new System.Drawing.Point(480, 0);
-            this.stopDaemonButton.Name = "stopDaemonButton";
-            this.stopDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.stopDaemonButton.TabIndex = 2;
-            this.stopDaemonButton.Text = "Stop";
-            this.stopDaemonButton.UseVisualStyleBackColor = true;
-            this.stopDaemonButton.Click += new System.EventHandler(this.stopDaemonButton_Click);
+            this.StopDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.StopDaemonButton.Location = new System.Drawing.Point(480, 0);
+            this.StopDaemonButton.Name = "StopDaemonButton";
+            this.StopDaemonButton.Size = new System.Drawing.Size(60, 23);
+            this.StopDaemonButton.TabIndex = 2;
+            this.StopDaemonButton.Text = "Stop";
+            this.StopDaemonButton.UseVisualStyleBackColor = true;
+            this.StopDaemonButton.Click += new System.EventHandler(this.stopDaemonButton_Click);
             // 
-            // startDaemonButton
+            // StartDaemonButton
             // 
-            this.startDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.startDaemonButton.Enabled = false;
-            this.startDaemonButton.Location = new System.Drawing.Point(414, 0);
-            this.startDaemonButton.Name = "startDaemonButton";
-            this.startDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.startDaemonButton.TabIndex = 1;
-            this.startDaemonButton.Text = "Start";
-            this.startDaemonButton.UseVisualStyleBackColor = true;
-            this.startDaemonButton.Click += new System.EventHandler(this.startDaemonButton_Click);
+            this.StartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.StartDaemonButton.Enabled = false;
+            this.StartDaemonButton.Location = new System.Drawing.Point(414, 0);
+            this.StartDaemonButton.Name = "StartDaemonButton";
+            this.StartDaemonButton.Size = new System.Drawing.Size(60, 23);
+            this.StartDaemonButton.TabIndex = 1;
+            this.StartDaemonButton.Text = "Start";
+            this.StartDaemonButton.UseVisualStyleBackColor = true;
+            this.StartDaemonButton.Click += new System.EventHandler(this.startDaemonButton_Click);
             // 
             // playdarBorderPanel
             // 
@@ -1151,7 +1179,7 @@ namespace Windar.TrayApp
             this.logTabPage.Name = "logTabPage";
             this.logTabPage.Size = new System.Drawing.Size(608, 403);
             this.logTabPage.TabIndex = 4;
-            this.logTabPage.Text = "Service Log";
+            this.logTabPage.Text = "Log";
             this.logTabPage.UseVisualStyleBackColor = true;
             // 
             // logSplitPanel
@@ -1213,34 +1241,6 @@ namespace Windar.TrayApp
             this.logBox.Text = "";
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;
-            // 
-            // peerAddress
-            // 
-            this.peerAddress.FillWeight = 137.5049F;
-            this.peerAddress.HeaderText = "DNS name or IP address";
-            this.peerAddress.MaxInputLength = 50;
-            this.peerAddress.MinimumWidth = 60;
-            this.peerAddress.Name = "peerAddress";
-            // 
-            // peerPort
-            // 
-            this.peerPort.FillWeight = 66.34409F;
-            this.peerPort.HeaderText = "Port";
-            this.peerPort.MaxInputLength = 10;
-            this.peerPort.MinimumWidth = 30;
-            this.peerPort.Name = "peerPort";
-            this.peerPort.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // peerShare
-            // 
-            this.peerShare.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.peerShare.FillWeight = 43.7529F;
-            this.peerShare.HeaderText = "Share";
-            this.peerShare.MinimumWidth = 50;
-            this.peerShare.Name = "peerShare";
-            this.peerShare.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.peerShare.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.peerShare.Width = 50;
             // 
             // MainForm
             // 
@@ -1326,11 +1326,11 @@ namespace Windar.TrayApp
         private System.Windows.Forms.SplitContainer daemonSplitPanel;
         private System.Windows.Forms.SplitContainer logSplitPanel;
         private System.Windows.Forms.CheckBox followTailCheckBox;
-        internal System.Windows.Forms.Button stopDaemonButton;
-        internal System.Windows.Forms.Button startDaemonButton;
-        internal System.Windows.Forms.Button restartDaemonButton;
-        internal System.Windows.Forms.Button backButton;
-        internal System.Windows.Forms.Button homeButton;
+        internal System.Windows.Forms.Button StopDaemonButton;
+        internal System.Windows.Forms.Button StartDaemonButton;
+        internal System.Windows.Forms.Button RestartDaemonButton;
+        internal System.Windows.Forms.Button BackButton;
+        internal System.Windows.Forms.Button HomeButton;
         private System.Windows.Forms.TabControl optionsTabControl;
         private System.Windows.Forms.Panel generalOptionsPanel;
         private System.Windows.Forms.GroupBox aboutGroupBox;
@@ -1370,7 +1370,7 @@ namespace Windar.TrayApp
         private System.Windows.Forms.TextBox nodeNameTextBox;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label7;
-        internal System.Windows.Forms.Button refreshButton;
+        internal System.Windows.Forms.Button RefreshButton;
         private System.Windows.Forms.DataGridView modsGrid;
         private System.Windows.Forms.TabPage libraryTabPage;
         private System.Windows.Forms.Panel libraryPanel;

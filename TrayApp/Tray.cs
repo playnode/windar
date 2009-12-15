@@ -66,7 +66,7 @@ namespace Windar.TrayApp
             _scanfilesMenuItem = new MenuItem("Scan Files", Scan);
             _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
-            _restartMenuItem = new MenuItem("Restart Resolver Service", Restart);
+            _restartMenuItem = new MenuItem("Restart Playdar", Restart);
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
 
             // Demos menu.
@@ -132,7 +132,7 @@ namespace Windar.TrayApp
 
         private static void Shutdown(object sender, EventArgs e)
         {
-            Program.Instance.Shutdown();
+            Program.Shutdown();
         }
 
         private static void Restart(object sender, EventArgs e)
@@ -282,6 +282,7 @@ namespace Windar.TrayApp
         private static void PlaydarStarted(object sender, EventArgs e)
         {
             Program.Instance.ShowTrayInfo("Playdar started.");
+            //Program.Instance.MainForm.PlaydarBrowser.Refresh();
         }
 
         private static void PlaydarStartFailed(object sender, EventArgs e)

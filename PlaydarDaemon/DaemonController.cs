@@ -85,17 +85,19 @@ namespace Windar.PlaydarController
             cmd.PlaydarStarted += StartCmd_PlaydarStarted;
             cmd.PlaydarStartFailed += StartCmd_PlaydarStartFailed;
             cmd.RunAsync();
+            Started = true;
         }
 
         public void Stop()
         {
             Cmd<Stop>.Create().Run();
+            Started = false;
             PlaydarStopped(this, new EventArgs());
         }
 
         public void Restart()
         {
-            Stop();
+            if (Started) Stop();
             System.Threading.Thread.Sleep(2000);
             Start();
         }

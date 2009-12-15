@@ -140,12 +140,12 @@ namespace Windar.TrayApp
 
         #region Program exit.
 
-        internal void Shutdown()
+        internal static void Shutdown()
         {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
-            PluginHost.Shutdown();
-            Daemon.Stop();
-            MainForm.Exit();
+            Instance.PluginHost.Shutdown();
+            Instance.Daemon.Stop();
+            Instance.MainForm.Exit();
             Application.Exit();
         }
 
@@ -181,7 +181,7 @@ namespace Windar.TrayApp
                 case ControlEventType.CtrlShutdownEvent:
                     // Return true to show that the event was handled.
                     result = true;
-                    Instance.Shutdown();
+                    Shutdown();
                     break;
             }
             return result;
@@ -191,7 +191,7 @@ namespace Windar.TrayApp
 
         #region Uninstaller shutdown file-watcher.
 
-        private void SetupShutdownFileWatcher()
+        private static void SetupShutdownFileWatcher()
         {
             // Create a new FileSystemWatcher and set its properties.
             var watcher = new FileSystemWatcher
@@ -212,7 +212,7 @@ namespace Windar.TrayApp
             watcher.EnableRaisingEvents = true;
         }
 
-        private void ShutdownFile_OnChanged(object source, FileSystemEventArgs e)
+        private static void ShutdownFile_OnChanged(object source, FileSystemEventArgs e)
         {
             if (Log.IsInfoEnabled) Log.Info("Shutdown initiated by the file-system event.");
             Shutdown();
@@ -226,35 +226,37 @@ namespace Windar.TrayApp
 
         public static void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            //TODO: Add an option to exit application.
-            if (Log.IsErrorEnabled)
-            {
-                if (e.ExceptionObject == null) Log.Error("Unhandled Exception. No ExceptionObject!");
-                else
-                {
-                    if (e.ExceptionObject is Exception) Log.Error("Unhandled Exception", (Exception) e.ExceptionObject);
-                    else Log.Error("Unhandled Exception. Unexpected ExceptionObject (Type = " + e.ExceptionObject.GetType().Name + ")");
-                }
-                ShowErrorDialog("Application Error. Please see log file for more information.");
-            }
-            else
-            {
-                ShowErrorDialog("Application Error");
-            }
+            HandleUnhandledException("Program Exception", (Exception) e.ExceptionObject);
         }
 
         public static void HandleThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            //TODO: Add an option to exit application.
-            if (Log.IsErrorEnabled)
+            HandleUnhandledException("Thread Exception", e.Exception);
+        }
+
+        private static void HandleUnhandledException(string msg, Exception ex)
+        {
+            string errMsg = null;
+            if (Log.IsErrorEnabled) Log.Error(msg, ex);
+            if (ex != null && ex.Message != null) errMsg = ex.Message;
+            var msgBuild = new StringBuilder();
+            if (errMsg != null)
             {
-                Log.Error("Default handler for main thread exception.", e.Exception);
-                ShowErrorDialog("Application Error. Please see log file for more information.");
+                msgBuild.Append(errMsg);
+                if (!(errMsg[errMsg.Length - 1] == '.' || errMsg[errMsg.Length - 1] == '!')) 
+                    msgBuild.Append('.');
+                msgBuild.Append(' ');
             }
-            else
-            {
-                ShowErrorDialog("Application Error");
-            }
+            msgBuild.Append("Quit program?");
+            var result = MessageBox.Show(msgBuild.ToString(),
+                                         msg, 
+                                         MessageBoxButtons.YesNo, 
+                                         MessageBoxIcon.Exclamation,
+                                         MessageBoxDefaultButton.Button2);
+            if (result != DialogResult.Yes) return;
+            if (MessageBox.Show("Are you sure?", "Confirm quit program", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                Shutdown();
         }
 
         #endregion
@@ -407,40 +409,42 @@ namespace Windar.TrayApp
         internal void StartDaemon()
         {
             Instance.Daemon.Start();
-            Instance.MainForm.startDaemonButton.Enabled = false;
-            Instance.MainForm.stopDaemonButton.Enabled = true;
-            Instance.MainForm.restartDaemonButton.Enabled = true;
+            Instance.MainForm.StartDaemonButton.Enabled = false;
+            Instance.MainForm.StopDaemonButton.Enabled = true;
+            Instance.MainForm.RestartDaemonButton.Enabled = true;
             Instance.MainForm.LoadPlaydarHomepage();
+            Instance.MainForm.RefreshButton.Enabled = true;
         }
 
         internal void StopDaemon()
         {
             Instance.Daemon.Stop();
-            Instance.MainForm.startDaemonButton.Enabled = true;
-            Instance.MainForm.stopDaemonButton.Enabled = false;
-            Instance.MainForm.restartDaemonButton.Enabled = false;
-            Instance.MainForm.PlaydarBrowser.Navigate("about:blank");
-            Instance.MainForm.homeButton.Enabled = false;
-            Instance.MainForm.backButton.Enabled = false;
+            Instance.MainForm.StartDaemonButton.Enabled = true;
+            Instance.MainForm.StopDaemonButton.Enabled = false;
+            Instance.MainForm.RestartDaemonButton.Enabled = false;
+            Instance.MainForm.ShowDaemonPage();
+            Instance.MainForm.HomeButton.Enabled = false;
+            Instance.MainForm.BackButton.Enabled = false;
+            Instance.MainForm.RefreshButton.Enabled = false;
         }
 
         internal void RestartDaemon()
         {
             if (!Instance.Daemon.Started) return;
-            Instance.MainForm.PlaydarBrowser.Navigate("about:blank");
-            Instance.MainForm.Refresh();
-            Application.DoEvents();
-            Instance.MainForm.startDaemonButton.Enabled = false;
-            Instance.MainForm.stopDaemonButton.Enabled = false;
-            Instance.MainForm.restartDaemonButton.Enabled = false;
-            Instance.MainForm.homeButton.Enabled = false;
-            Instance.MainForm.backButton.Enabled = false;
+            Instance.MainForm.ShowDaemonPage("Restarting");
+            Instance.MainForm.StartDaemonButton.Enabled = false;
+            Instance.MainForm.StopDaemonButton.Enabled = false;
+            Instance.MainForm.RestartDaemonButton.Enabled = false;
+            Instance.MainForm.HomeButton.Enabled = false;
+            Instance.MainForm.BackButton.Enabled = false;
+            Instance.MainForm.RefreshButton.Enabled = false;
             Instance.Daemon.Restart();
             if (!Instance.Daemon.Started) return;
             Instance.MainForm.PlaydarBrowser.Navigate(PlaydarDaemon);
-            Instance.MainForm.startDaemonButton.Enabled = false;
-            Instance.MainForm.stopDaemonButton.Enabled = true;
-            Instance.MainForm.restartDaemonButton.Enabled = true;
+            Instance.MainForm.RefreshButton.Enabled = true;
+            Instance.MainForm.StartDaemonButton.Enabled = false;
+            Instance.MainForm.StopDaemonButton.Enabled = true;
+            Instance.MainForm.RestartDaemonButton.Enabled = true;
         }
 
         #endregion

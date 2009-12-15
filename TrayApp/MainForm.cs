@@ -19,6 +19,7 @@
 using System;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
@@ -29,6 +30,9 @@ namespace Windar.TrayApp
     partial class MainForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
+        [DllImport("wininet.dll", SetLastError = true)]
+        private static extern long DeleteUrlCacheEntry(string lpszUrlName);
 
         private bool _reallyClose;
         private bool _resizing;
@@ -69,6 +73,7 @@ namespace Windar.TrayApp
             optionsTabControl.TabPages.Remove(pluginsTabPage);
             optionsTabControl.TabPages.Remove(propsTabPage);
 
+            ShowDaemonPage();
             LoadPlaydarHomepage();
         }
 
@@ -119,12 +124,40 @@ namespace Windar.TrayApp
                 || !PlaydarBrowser.Document.Url.Equals(Program.Instance.PlaydarDaemon))
             {
                 PlaydarBrowser.Navigate(Program.Instance.PlaydarDaemon);
-                //var headers = new StringBuilder();
-                //headers.Append("Cache-Control: no-cache\n");
-                //headers.Append("Pragma: no-cache\n");
-                //headers.Append("Expires: -1\n");
-                //PlaydarBrowser.Navigate(Program.Instance.PlaydarDaemon, "_self", new byte[0], headers.ToString());
             }
+        }
+
+        internal void ShowDaemonPage()
+        {
+            ShowDaemonPage(null);
+        }
+
+        internal void ShowDaemonPage(string text)
+        {
+            if (string.IsNullOrEmpty(text)) text = "&nbsp;";
+            PlaydarBrowser.Stop();
+            var html = new StringBuilder();
+            html.Append("<html>").Append(Environment.NewLine);
+            html.Append("<head>").Append(Environment.NewLine);
+            html.Append("<style>").Append(Environment.NewLine);
+            html.Append("body { font-family: verdana; }").Append(Environment.NewLine);
+            html.Append("</style>").Append(Environment.NewLine);
+            html.Append("</head>").Append(Environment.NewLine);
+            html.Append("<body bgcolor=\"");
+            html.Append(ColorTranslator.ToHtml(Color.FromKnownColor(KnownColor.ControlLight)));
+            html.Append("\">").Append(Environment.NewLine);
+            html.Append(text).Append(Environment.NewLine);
+            html.Append("</body></html>");
+            if (PlaydarBrowser.Document != null) 
+            {
+                PlaydarBrowser.Document.OpenNew(true);
+                PlaydarBrowser.Document.Write(html.ToString());
+            }
+            else
+            {
+                PlaydarBrowser.DocumentText = html.ToString();
+            }
+            Application.DoEvents();
         }
 
         private void startDaemonButton_Click(object sender, EventArgs e)
@@ -140,7 +173,6 @@ namespace Windar.TrayApp
         private void restartButton_Click(object sender, EventArgs e)
         {
             Program.Instance.RestartDaemon();
-            PlaydarBrowser.Refresh();
         }
 
         private void homeButton_Click(object sender, EventArgs e)
@@ -161,10 +193,7 @@ namespace Windar.TrayApp
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
-            if (Program.Instance.Daemon.Started)
-            {
-                PlaydarBrowser.Refresh();
-            }
+            if (Program.Instance.Daemon.Started) PlaydarBrowser.Refresh();
         }
 
         private void playdarLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -175,30 +204,38 @@ namespace Windar.TrayApp
         private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             var url = e.Url.ToString();
+            if (Log.IsDebugEnabled) Log.Debug("Navigating to " + url);
+
+            // Make sure the page isn't from the cache!
+            DeleteUrlCacheEntry(url);
+
+            // Handle some expected pages.
             if (url.Equals(Program.Instance.PlaydarDaemon))
             {
-                homeButton.Enabled = false;
-                backButton.Enabled = false;
+                HomeButton.Enabled = false;
+                BackButton.Enabled = false;
                 return;
             }
             if (url.StartsWith(Program.Instance.PlaydarDaemon))
             {
-                homeButton.Enabled = true;
-                backButton.Enabled = true;
+                HomeButton.Enabled = true;
+                BackButton.Enabled = true;
                 return;
             }
             if (url.StartsWith("res://ieframe.dll/navcancl.htm"))
             {
+                ShowDaemonPage("Error");
                 e.Cancel = true;
             }
             else if (url.Equals("about:blank"))
             {
-                e.Cancel = false;
+                ShowDaemonPage();
+                e.Cancel = true;
             }
             else
             {
-                e.Cancel = true;
                 System.Diagnostics.Process.Start(url);
+                e.Cancel = true;
             }
         }
 
@@ -225,7 +262,29 @@ namespace Windar.TrayApp
 
         private void playdarBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            var url = e.Url.ToString();
+            if (Log.IsDebugEnabled) Log.Debug("Document completed. " + url);
+
             if (PlaydarBrowser.Document == null) return;
+
+            if (PlaydarBrowser.Document.Title == "Internet Explorer cannot display the webpage")
+            {
+                RefreshButton.Enabled = false;
+                if (url.Equals(Program.Instance.PlaydarDaemon))
+                {
+                    StartDaemonButton.Enabled = true;
+                    RestartDaemonButton.Enabled = false;
+                    StopDaemonButton.Enabled = false;
+                    ShowDaemonPage("Playdar service not running.");
+                }
+                else
+                {
+                    ShowDaemonPage("Page not available.");
+                }
+                return;
+            }
+
+            // Attach click event handler to all javascript links too.
             var links = PlaydarBrowser.Document.Links;
             foreach (HtmlElement var in links)
             {
@@ -246,16 +305,17 @@ namespace Windar.TrayApp
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MainTabControl.SelectedTab == optionsTabPage)
-            {
-                e.Cancel = !ApplyOptionsOrCancel();
-                if (e.Cancel) return;
-            }
+            if (MainTabControl.SelectedTab == optionsTabPage
+                && (e.Cancel = !ApplyOptionsOrCancel())) return;
             if (_reallyClose) return;
-            e.Cancel = true;
-            Hide();
-            Properties.Settings.Default.MainFormVisible = false;
-            Properties.Settings.Default.Save();
+            if (!Program.Instance.Daemon.Started) Program.Shutdown();
+            else
+            {
+                e.Cancel = true;
+                Hide();
+                Properties.Settings.Default.MainFormVisible = false;
+                Properties.Settings.Default.Save();
+            }
         }
 
         internal void Exit()
