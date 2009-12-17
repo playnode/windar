@@ -9,11 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaydarDaemon", "PlaydarDae
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerPlugin", "Plugins\PlayerPlugin\PlayerPlugin.csproj", "{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectronomePlugin", "Plugins\Electronome\ElectronomePlugin.csproj", "{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrobblerPlugin", "Plugins\ScrobblerPlugin\ScrobblerPlugin.csproj", "{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrobblerPlugin", "Plugins\Scrobbler\ScrobblerPlugin.csproj", "{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrayAppTest", "TrayAppTest\TrayAppTest.csproj", "{27B87E5E-C9B1-42CA-88A7-11A7C2696E3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{EAE18896-A315-4F98-BA06-3EF97D878969}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0FB1C6E3-70C7-422F-B04C-D02FC69322C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,5 +56,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D99D0151-B872-4AFC-9DC3-7207A1BF99B0} = {EAE18896-A315-4F98-BA06-3EF97D878969}
+		{3202D3B8-DB45-4B99-A2DD-65A698E701B9} = {EAE18896-A315-4F98-BA06-3EF97D878969}
+		{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA} = {EAE18896-A315-4F98-BA06-3EF97D878969}
+		{27B87E5E-C9B1-42CA-88A7-11A7C2696E3A} = {0FB1C6E3-70C7-422F-B04C-D02FC69322C2}
 	EndGlobalSection
 EndGlobal

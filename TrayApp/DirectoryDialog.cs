@@ -25,6 +25,11 @@ namespace Windar.TrayApp
 {
     class DirectoryDialog
     {
+        #region Win32 API
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(HandleRef hWnd, int msg, int wParam, string lParam);
+
         [DllImport("ole32", EntryPoint = "CoTaskMemFree", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
         public static extern int CoTaskMemFree(IntPtr hMem);
 
@@ -37,6 +42,8 @@ namespace Windar.TrayApp
         [DllImport("shell32", EntryPoint = "SHGetPathFromIDList", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
         public static extern int ShGetPathFromIdList(IntPtr pidList, StringBuilder lpBuffer);
 
+        #endregion
+
         public struct BrowseInfo
         {
             public IntPtr WndOwner;
@@ -44,7 +51,7 @@ namespace Windar.TrayApp
             public string DisplayName;
             public string Title;
             public int Flags;
-            public int Callback;
+            public BrowseCallBackProc Callback;
             public int Param;
             public int Image;
         }
@@ -52,42 +59,42 @@ namespace Windar.TrayApp
         public enum BrowseForTypes
         {
             Computers = 4096,
-            Directories = 1,
+            Directories = 1539, //1,
             FilesAndDirectories = 16384,
-            FileSystemAncestors = 8
+            FileSystemAncestors = 8,
         }
+
+        //private uint BIF_RETURNONLYFSDIRS = 0x0001;
+        //private uint BIF_DONTGOBELOWDOMAIN = 0x0002;
+        //private uint BIF_NONEWFOLDERBUTTON = 0x0200;
+        //private uint BIF_NOTRANSLATETARGETS = 0x0400;
+
+        //private uint BIF_BROWSEINCLUDEFILES = 0x4000;
+        //private uint BIF_USENEWUI = 0x0040 + 0x0010;
+        //private uint BIF_NEWDIALOGSTYLE = 0x0040;
+        //private uint BIF_SHAREABLE = 0x8000;
+        //private uint BIF_BROWSEFORCOMPUTER = 0x1000;
 
         const int MaxPath = 260;
 
+        #region Select folder callback
+
+        public delegate int BrowseCallBackProc(IntPtr hwnd, int msg, IntPtr lp, IntPtr wp);
+
+        public int OnBrowseEvent(IntPtr hWnd, int msg, IntPtr lp, IntPtr lpData)
+        {
+            if (msg == 1) SendMessage(new HandleRef(null, hWnd), 1127, 1, InitialPath);
+            return 0;
+        }
+
+        #endregion
+
         #region Properties
 
-        private BrowseForTypes _browseFor = BrowseForTypes.Directories;
-        private string _title = "";
-        private string _selected = "";
-
-        public BrowseForTypes BrowseFor
-        {
-            get { return _browseFor; }
-            set { _browseFor = value; }
-        }
-
-        public string Title
-        {
-            get { return _title; }
-            set
-            {
-                if (ReferenceEquals(value, DBNull.Value))
-                {
-                    throw new ArgumentNullException();
-                }
-                _title = value;
-            }
-        }
-
-        public string Selected
-        {
-            get { return _selected; }
-        }
+        public BrowseForTypes BrowseFor { get; set; }
+        public string InitialPath { get; set; }
+        public string Title { get; set; }
+        public string Selected { get; private set; }
 
         #endregion
 
@@ -104,11 +111,13 @@ namespace Windar.TrayApp
 
         protected bool RunDialog(IntPtr hWndOwner)
         {
+            if (BrowseFor == 0) BrowseFor = BrowseForTypes.FilesAndDirectories;
             var bi = new BrowseInfo();
             var hTitle = GCHandle.Alloc(Title, GCHandleType.Pinned);
             bi.WndOwner = hWndOwner;
             bi.Title = Title;
             bi.Flags = (int) BrowseFor;
+            bi.Callback = new BrowseCallBackProc(OnBrowseEvent);
             var buffer = new StringBuilder(MaxPath) {Length = MaxPath};
             bi.DisplayName = buffer.ToString();
             var ptr = ShBrowseForFolder(ref bi);
@@ -116,13 +125,13 @@ namespace Windar.TrayApp
             if (ptr.ToInt64() == 0) return false;
             if (BrowseFor == BrowseForTypes.Computers)
             {
-                _selected = bi.DisplayName.Trim();
+                Selected = bi.DisplayName.Trim();
             }
             else
             {
                 var path = new StringBuilder(MaxPath);
                 ShGetPathFromIdList(ptr, path);
-                _selected = path.ToString();
+                Selected = path.ToString();
             }
             CoTaskMemFree(ptr);
             return true;

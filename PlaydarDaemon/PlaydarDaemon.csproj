@@ -8,8 +8,8 @@
     <ProjectGuid>{E5218BD7-EF33-49A9-BC01-B6AE21956E43}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Windar.PlaydarController</RootNamespace>
-    <AssemblyName>Windar.PlaydarController</AssemblyName>
+    <RootNamespace>Windar.PlaydarDaemon</RootNamespace>
+    <AssemblyName>Windar.PlaydarDaemon</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,10 +36,15 @@
       <HintPath>..\Libraries\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CopyAppFilesToAppData.cs" />
+    <Compile Include="Commands\DumpLibrary.cs" />
+    <Compile Include="Commands\InitAppData.cs" />
+    <Compile Include="Commands\Resolvers.cs" />
+    <Compile Include="Commands\Status.cs" />
     <Compile Include="DaemonController.cs" />
     <Compile Include="Commands\NumFiles.cs" />
     <Compile Include="Commands\Ping.cs" />

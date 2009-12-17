@@ -361,7 +361,7 @@ Section "Windar Tray Application" SEC_WINDAR
    ;Windar application components:
    File Temp\Windar.exe
    File Temp\Windar.Common.dll
-   File Temp\Windar.PlaydarController.dll
+   File Temp\Windar.PlaydarDaemon.dll
    File Temp\Windar.PluginAPI.dll
 
    ;Configuration
@@ -370,7 +370,7 @@ Section "Windar Tray Application" SEC_WINDAR
    ;Debug build PDB files:
    File Temp\Windar.pdb
    File Temp\Windar.Common.pdb
-   File Temp\Windar.PlaydarController.pdb
+   File Temp\Windar.PlaydarDaemon.pdb
    File Temp\Windar.PluginAPI.pdb
    
    ;Other libs:

@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Net;
@@ -62,9 +63,9 @@ namespace Windar.TrayApp
             _spiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdarWebsite);
             _searchMenuItem = new MenuItem("Search", OpenSearchWebsite);
             _playlickMenuItem = new MenuItem("Playlick", OpenPlaylickWebsite);
-            _balloonsMenuItem = new MenuItem("Show Balloons", ToggleShowBalloons) {Checked = Properties.Settings.Default.ShowBalloons };
+            _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) {Checked = Properties.Settings.Default.ShowBalloons };
             _scanfilesMenuItem = new MenuItem("Scan Files", Scan);
-            _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
+            _numfilesMenuItem = new MenuItem("Track List", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
             _restartMenuItem = new MenuItem("Restart Playdar", Restart);
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
@@ -163,12 +164,12 @@ namespace Windar.TrayApp
 
         private void Scan(object sender, EventArgs e)
         {
+            //TODO: Prevent there being more than one dialog here, but also focus dialog if necessary.
             var dialog = new DirectoryDialog
-                             {
-                                 BrowseFor = DirectoryDialog.BrowseForTypes.FilesAndDirectories,
-                                 Title = "Select a file or a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
-                             };
-
+            {
+                BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
+                Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
+            };
             if (dialog.ShowDialog(this) != DialogResult.OK) return;
             Program.Instance.Daemon.AddScanFileOrFolder(dialog.Selected);
             Program.Instance.ShowTrayInfo("Scanning in progress.");
@@ -222,7 +223,7 @@ namespace Windar.TrayApp
                     msg.Append("Go to download website now?");
                     if (Program.ShowYesNoDialog(msg.ToString()))
                     {
-                        System.Diagnostics.Process.Start("http://windar.org/download/");
+                        Process.Start("http://windar.org/download/");
                     }
 
                     //TODO: Download and install automatically?
@@ -250,22 +251,22 @@ namespace Windar.TrayApp
 
         private static void OpenPlaygrub(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://playgrub.com/");
+            Process.Start("http://playgrub.com/");
         }
 
         private static void OpenSpiffdarWebsite(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://spiffdar.org/");
+            Process.Start("http://spiffdar.org/");
         }
 
         private static void OpenPlaylickWebsite(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.playlick.com/");
+            Process.Start("http://www.playlick.com/");
         }
 
         private static void OpenSearchWebsite(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.playdar.org/demos/search.html");
+            Process.Start("http://www.playdar.org/demos/search.html");
         }
 
         #endregion
@@ -282,7 +283,6 @@ namespace Windar.TrayApp
         private static void PlaydarStarted(object sender, EventArgs e)
         {
             Program.Instance.ShowTrayInfo("Playdar started.");
-            //Program.Instance.MainForm.PlaydarBrowser.Refresh();
         }
 
         private static void PlaydarStartFailed(object sender, EventArgs e)

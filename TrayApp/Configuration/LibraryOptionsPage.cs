@@ -16,22 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+
 namespace Windar.TrayApp.Configuration
 {
     class LibraryOptionsPage : IOptionsPage
     {
+        private bool _scanpathsChange;
+
+        public bool ScanPathValueChanged { get; set; }
+        public bool NewPathsToAdd { get; set; }
+
+        public void Load()
+        {
+            // Nothing to do.
+        }
+
         public bool Changed
         {
             get
             {
-                //TODO
-                return false;
+                return _scanpathsChange
+                       || ScanPathValueChanged
+                       || NewPathsToAdd;
             }
         }
 
-        public void Load()
+        #region Page options
+
+        #region Scan paths
+
+        public List<string> ScanPaths
         {
-            //TODO
+            get
+            {
+                return Program.Instance.Config.Main.ListScanPaths();
+            }
         }
+
+        public void RemoveScanPath(string path)
+        {
+            Program.Instance.Config.Main.RemoveScanPath(path);
+            _scanpathsChange = true;
+        }
+
+        public void AddScanPath(string path)
+        {
+            Program.Instance.Config.Main.AddScanPath(path);
+            _scanpathsChange = true;
+        }
+
+        #endregion
+
+        #endregion
     }
 }

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Windar")]
 [assembly: AssemblyDescription("Playdar for Windows")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("www.windar.org")]
+[assembly: AssemblyCompany("Windar")]
 [assembly: AssemblyProduct("Windar")]
 [assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.2.1376")]
-[assembly: AssemblyFileVersion("0.1.2.1376")]
+[assembly: AssemblyVersion("0.1.2.1507")]
+[assembly: AssemblyFileVersion("0.1.2.1507")]

@@ -30,12 +30,6 @@ namespace Windar.TrayApp.Configuration
         private bool _allowIncomingChanged;
         private bool _forwardQueriesChanged;
 
-        // Changed peers are special case.
-        // We're not tracking list items.
-        private bool _peersChanged;
-        public bool NewPeersToAdd { get; set; }
-        public bool PeerValueChanged { get; set; }
-
         // Original values.
         private bool _origAutoStart;
         private string _origNodeName;
@@ -43,10 +37,17 @@ namespace Windar.TrayApp.Configuration
         private bool _origAllowIncoming;
         private bool _origForwardQueries;
 
+        // Changed list items handled differently.
+        // Not checking each and every value here.
+        private bool _peersChanged;
+
+        public bool NewPeersToAdd { get; set; }
+        public bool PeerValueChanged { get; set; }
+
         public void Load()
         {
-            var mainConfig = Program.Instance.MainConfig;
-            var peerConfig = Program.Instance.PeerConfig;
+            var mainConfig = Program.Instance.Config.Main;
+            var peerConfig = Program.Instance.Config.Peers;
             _origAutoStart = false; //TODO
             _origNodeName = mainConfig.Name;
             _origPort = peerConfig.Port;
@@ -90,7 +91,7 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 string result;
-                var configName = Program.Instance.MainConfig.Name;
+                var configName = Program.Instance.Config.Main.Name;
                 if (!string.IsNullOrEmpty(configName)) result = configName;
                 else
                 {
@@ -112,7 +113,7 @@ namespace Windar.TrayApp.Configuration
                 }
                 if (_nodeNameChanged)
                 {
-                    Program.Instance.MainConfig.Name = value;
+                    Program.Instance.Config.Main.Name = value;
                 }
             }
         }
@@ -121,12 +122,12 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.PeerConfig.Port;
+                return Program.Instance.Config.Peers.Port;
             }
             set
             {
                 _portChanged = value != _origPort;
-                Program.Instance.PeerConfig.Port = value;
+                Program.Instance.Config.Peers.Port = value;
             }
         }
         
@@ -134,12 +135,12 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.PeerConfig.Listen;
+                return Program.Instance.Config.Peers.Listen;
             }
             set
             {
                 _allowIncomingChanged = value != _origAllowIncoming;
-                Program.Instance.PeerConfig.Listen = value;
+                Program.Instance.Config.Peers.Listen = value;
             }
         }
         
@@ -147,12 +148,12 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.PeerConfig.Forward;
+                return Program.Instance.Config.Peers.Forward;
             }
             set
             {
                 _forwardQueriesChanged = value != _origForwardQueries;
-                Program.Instance.PeerConfig.Forward = value;
+                Program.Instance.Config.Peers.Forward = value;
             }
         }
 
@@ -162,19 +163,19 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.PeerConfig.GetPeers();
+                return Program.Instance.Config.Peers.GetPeers();
             }
         }
 
         public void RemovePeer(string host, int port)
         {
-            Program.Instance.PeerConfig.RemovePeer(host, port);
+            Program.Instance.Config.Peers.RemovePeer(host, port);
             _peersChanged = true;
         }
 
         public void AddNewPeer(string host, int port, bool share)
         {
-            Program.Instance.PeerConfig.SetPeerInfo(host, port, share);
+            Program.Instance.Config.Peers.SetPeerInfo(host, port, share);
             _peersChanged = true;
         }
 

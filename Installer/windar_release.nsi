@@ -361,7 +361,7 @@ Section "Windar Tray Application" SEC_WINDAR
    ;Windar application components:
    File Temp\Windar.exe
    File Temp\Windar.Common.dll
-   File Temp\Windar.PlaydarController.dll
+   File Temp\Windar.PlaydarDaemon.dll
    File Temp\Windar.PluginAPI.dll
 
    ;Configuration

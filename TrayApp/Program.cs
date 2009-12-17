@@ -26,7 +26,7 @@ using System.Threading;
 using System.Windows.Forms;
 using log4net;
 using Windar.Common;
-using Windar.PlaydarController;
+using Windar.PlaydarDaemon;
 using Windar.TrayApp.Configuration;
 
 namespace Windar.TrayApp
@@ -44,7 +44,7 @@ namespace Windar.TrayApp
                 var result = new StringBuilder();
                 result.Append("http://localhost:");
                 var port = 60211;
-                if (MainConfig != null) port = MainConfig.WebPort;
+                if (Config != null) port = Config.Main.WebPort;
                 result.Append(port).Append('/');
                 return result.ToString();
             }
@@ -55,8 +55,15 @@ namespace Windar.TrayApp
         internal DaemonController Daemon { get; private set; }
         internal Tray Tray { get; private set; }
         internal PluginHost PluginHost { get; private set; }
-        internal MainConfigFile MainConfig { get; private set; }
-        internal TcpConfigFile PeerConfig { get; private set; }
+
+        internal class ConfigGroup
+        {
+            public MainConfigFile Main { get; set; }
+            public TcpConfigFile Peers { get; set; }
+        }
+
+        // NOTE: Config set to null on config load exception.
+        internal ConfigGroup Config { get; private set; }
 
         #region Win32 API
 
@@ -119,17 +126,22 @@ namespace Windar.TrayApp
         private Program()
         {
             Instance = this;
-            SetupShutdownFileWatcher();
-            Paths = new WindarPaths(Application.StartupPath);
-            MainForm = new MainForm();
-            Daemon = new DaemonController(Paths);
-            Tray = new Tray();
-            PluginHost = new PluginHost();
+            Config = new ConfigGroup();
         }
 
         private void Run()
         {
-            LoadConfiguration();
+            Paths = new WindarPaths(Application.StartupPath);
+            Daemon = new DaemonController(Paths);
+
+            // Attempt to load the config files.
+            if (!LoadConfiguration()) return;
+
+            SetupShutdownFileWatcher();
+            MainForm = new MainForm();
+            Tray = new Tray();
+            PluginHost = new PluginHost();
+
             CheckConfig();
             PluginHost.Load();
             Daemon.Start();
@@ -143,10 +155,15 @@ namespace Windar.TrayApp
 
         internal static void Shutdown()
         {
+            Shutdown(false);
+        }
+
+        internal static void Shutdown(bool cancelSave)
+        {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
-            Instance.PluginHost.Shutdown();
-            Instance.Daemon.Stop();
-            Instance.MainForm.Exit();
+            if (Instance.PluginHost != null) Instance.PluginHost.Shutdown();
+            if (Instance.Daemon != null) Instance.Daemon.Stop();
+            if (Instance.MainForm != null) Instance.MainForm.Exit();
             Application.Exit();
         }
 
@@ -182,7 +199,7 @@ namespace Windar.TrayApp
                 case ControlEventType.CtrlShutdownEvent:
                     // Return true to show that the event was handled.
                     result = true;
-                    Shutdown();
+                    Shutdown(false);
                     break;
             }
             return result;
@@ -227,12 +244,12 @@ namespace Windar.TrayApp
 
         public static void HandleUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            HandleUnhandledException("Program Exception", (Exception) e.ExceptionObject);
+            HandleUnhandledException("Windar Program Exception", (Exception) e.ExceptionObject);
         }
 
         public static void HandleThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            HandleUnhandledException("Thread Exception", e.Exception);
+            HandleUnhandledException("Windar Thread Exception", e.Exception);
         }
 
         private static void HandleUnhandledException(string msg, Exception ex)
@@ -432,7 +449,7 @@ namespace Windar.TrayApp
         internal void RestartDaemon()
         {
             if (!Instance.Daemon.Started) return;
-            Instance.MainForm.ShowDaemonPage("Restarting");
+            Instance.MainForm.ShowDaemonPage("Restarting", false);
             Instance.MainForm.StartDaemonButton.Enabled = false;
             Instance.MainForm.StopDaemonButton.Enabled = false;
             Instance.MainForm.RestartDaemonButton.Enabled = false;
@@ -452,56 +469,76 @@ namespace Windar.TrayApp
 
         #region Configuration files.
 
-        private void LoadConfiguration()
+        internal void SaveConfiguration()
         {
-            //TODO: Check for errors in configuration files.
-            //TODO: Better exception handling for errors in configuration files.
+            Config.Main.Save();
+
+            // Always disable default sharing as it conflicts with the peer
+            // configuration provided by this UI for now.
+            Config.Peers.DefaultShare = false;
+            Config.Peers.Save();
+        }
+
+        /// <summary>
+        /// Load configuration from files.
+        /// </summary>
+        /// <returns>True if configuration loaded ok, false otherwise.</returns>
+        internal bool LoadConfiguration()
+        {
+            var result = false;
             try
             {
-                MainConfig = new MainConfigFile();
-                MainConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdar.conf"));
+                // Determine file paths.
+                var path = Paths.PlaydarDataPath;
+                var main = new FileInfo(path + @"\etc\playdar.conf");
+                var peer = new FileInfo(path + @"\etc\playdartcp.conf");
 
-                PeerConfig = new TcpConfigFile();
-                PeerConfig.Load(new FileInfo(Paths.PlaydarDataPath + @"\etc\playdartcp.conf"));
+                // Check the files exist.
+                if (!main.Exists) throw new WindarException("Main config file not found!");
+                if (!peer.Exists) throw new WindarException("Playdar TCP config file not found!");
+
+                // Load main config.
+                Config.Main = new MainConfigFile();
+                Config.Main.Load(main);
+
+                // Load peers config.
+                Config.Peers = new TcpConfigFile();
+                Config.Peers.Load(peer);
+
+                result = true;
+            }
+            catch (WindarException ex)
+            {
+                Config = null;
+                if (Log.IsErrorEnabled) Log.Error(ex.Message, ex);
+                ShowErrorDialog(ex.Message);
+                Shutdown();
             }
             catch (Exception ex)
             {
-                const string msg = "Exception when reading configuration files.";
+                Config = null;
+                var msg = new StringBuilder();
+                msg.Append("Exception when reading configuration files.");
                 if (Log.IsErrorEnabled) Log.Error(msg, ex);
-                ShowErrorDialog(msg);
-
-                //TODO: Handle configuration parse errors gracefully.
-                MainConfig = null;
-                PeerConfig = null;
+                //msg.Append(Environment.NewLine).Append(ex.Message);
+                ShowErrorDialog(msg.ToString());
+                Shutdown();
             }
+
+            return result;
         }
 
         private void CheckConfig()
         {
             var path = Paths.PlaydarDataPath;
             path = path.Replace('\\', '/');
-            var update = (MainConfig.LibraryDbDir != path)
-                || (MainConfig.AuthDbDir != path);
+            var update = (Config.Main.LibraryDbDir != path)
+                || (Config.Main.AuthDbDir != path);
 
             if (!update) return;
-            MainConfig.LibraryDbDir = path;
-            MainConfig.AuthDbDir = path;
+            Config.Main.LibraryDbDir = path;
+            Config.Main.AuthDbDir = path;
             SaveConfiguration();
-        }
-
-        internal void ReloadConfiguration()
-        {
-            LoadConfiguration();
-        }
-
-        internal void SaveConfiguration()
-        {
-            MainConfig.Save();
-
-            // Always disable default sharing as it conflicts with the peer
-            // configuration provided by this UI.
-            PeerConfig.Share = false;
-            PeerConfig.Save();
         }
 
         #endregion

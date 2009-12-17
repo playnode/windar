@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Windar Playdar controller")]
 [assembly: AssemblyDescription("Playdar daemon controller.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("www.windar.org")]
+[assembly: AssemblyCompany("Windar")]
 [assembly: AssemblyProduct("Windar")]
 [assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]

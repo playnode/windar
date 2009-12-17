@@ -20,7 +20,7 @@ using System;
 using System.Text;
 using Windar.Common;
 
-namespace Windar.PlaydarController.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
     class Scan : AsyncCmd<Scan>
     {
@@ -39,7 +39,7 @@ namespace Windar.PlaydarController.Commands
             Runner.RunCommand(@"cd " + DaemonController.Instance.Paths.PlaydarDataPath);
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname windar-scan@localhost");
+            cmd.Append(" -sname playdar-scan@localhost");
             cmd.Append(" -noinput");
             cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");

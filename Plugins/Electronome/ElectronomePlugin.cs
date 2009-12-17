@@ -22,20 +22,20 @@ using Windar.PluginAPI;
 
 namespace Windar.PlayerPlugin
 {
-    public class PlayerPlugin : IPlugin
+    public class ElectronomePlugin : IPlugin
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         #region Properties
 
         public IPluginHost Host { private get; set; }
-        public PlayerControl PlayerControl { get; private set; }
+        public Electronome Electronome { get; private set; }
 
         public string Name
         {
             get
             {
-                return "Player";
+                return "Electronome";
             }
         }
 
@@ -43,20 +43,20 @@ namespace Windar.PlayerPlugin
         {
             get
             {
-                return "Provides playdar audio playback via a plugin.";
+                return "Music discovery.";
             }
         }
 
         #endregion
 
-        public PlayerPlugin()
+        public ElectronomePlugin()
         {
-            PlayerControl = new PlayerControl();
+            Electronome = new Electronome();
         }
 
         public void Load()
         {
-            Host.AddTabPage(PlayerControl, Name);
+            Host.AddTabPage(Electronome, Name);
         }
 
         public void Shutdown()

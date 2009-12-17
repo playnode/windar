@@ -21,9 +21,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;VSTUDIO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -94,11 +95,20 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OutputDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OutputDisplay.Designer.cs">
+      <DependentUpon>OutputDisplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="PluginHost.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OutputDisplay.resx">
+      <DependentUpon>OutputDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -173,7 +183,7 @@
 IF EXIST "$(TargetDir)playdar" RMDIR /S /Q "$(TargetDir)playdar"
 XCOPY /E "$(ProjectDir)..\Installer\Payload\minimerl" "$(TargetDir)minimerl\"
 XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar" "$(TargetDir)playdar\"
-XCOPY /E /Y "$(ProjectDir)..\Plugins\PlayerPlugin\$(OutDir)*" "$(TargetDir)"
+XCOPY /E /Y "$(ProjectDir)..\Plugins\Electronome\$(OutDir)*" "$(TargetDir)"
 COPY /Y "$(ProjectDir)..\Installer\Utils\erlini\bin\Release\erlini.exe" "$(TargetDir)minimerl\bin"
 "$(TargetDir)minimerl\bin\erlini.exe"
 </PostBuildEvent>

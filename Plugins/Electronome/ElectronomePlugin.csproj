@@ -9,8 +9,8 @@
     <ProjectGuid>{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Windar.PlayerPlugin</RootNamespace>
-    <AssemblyName>Windar.PlayerPlugin</AssemblyName>
+    <RootNamespace>Windar.ElectronomePlugin</RootNamespace>
+    <AssemblyName>Windar.ElectronomePlugin</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,13 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PlayerControl.cs">
+    <Compile Include="Electronome.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PlayerControl.Designer.cs">
-      <DependentUpon>PlayerControl.cs</DependentUpon>
+    <Compile Include="Electronome.Designer.cs">
+      <DependentUpon>Electronome.cs</DependentUpon>
     </Compile>
-    <Compile Include="PlayerPlugin.cs" />
+    <Compile Include="ElectronomePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,8 +63,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PlayerControl.resx">
-      <DependentUpon>PlayerControl.cs</DependentUpon>
+    <EmbeddedResource Include="Electronome.resx">
+      <DependentUpon>Electronome.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
+using Windar.Common;
 using Windar.TrayApp.Configuration;
 
 namespace Windar.TrayApp
@@ -34,7 +35,7 @@ namespace Windar.TrayApp
         [DllImport("wininet.dll", SetLastError = true)]
         private static extern long DeleteUrlCacheEntry(string lpszUrlName);
 
-        private bool _reallyClose;
+        private bool _exiting;
         private bool _resizing;
         private string _lastLink;
         private TabPage _lastSelectedTab;
@@ -129,10 +130,10 @@ namespace Windar.TrayApp
 
         internal void ShowDaemonPage()
         {
-            ShowDaemonPage(null);
+            ShowDaemonPage(null, false);
         }
 
-        internal void ShowDaemonPage(string text)
+        internal void ShowDaemonPage(string text, bool newPage)
         {
             if (string.IsNullOrEmpty(text)) text = "&nbsp;";
             PlaydarBrowser.Stop();
@@ -150,7 +151,7 @@ namespace Windar.TrayApp
             html.Append("</body></html>");
             if (PlaydarBrowser.Document != null) 
             {
-                PlaydarBrowser.Document.OpenNew(true);
+                PlaydarBrowser.Document.OpenNew(!newPage);
                 PlaydarBrowser.Document.Write(html.ToString());
             }
             else
@@ -223,7 +224,7 @@ namespace Windar.TrayApp
             }
             if (url.StartsWith("res://ieframe.dll/navcancl.htm"))
             {
-                ShowDaemonPage("Error");
+                ShowDaemonPage("Error", true);
                 e.Cancel = true;
             }
             else if (url.Equals("about:blank"))
@@ -262,7 +263,29 @@ namespace Windar.TrayApp
         private void playdarBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             var url = e.Url.ToString();
-            if (Log.IsDebugEnabled) Log.Debug("Document completed. " + url);
+
+            if (Log.IsDebugEnabled)
+            {
+                var msg = new StringBuilder();
+                msg.Append("Document completed. URL = \"").Append(url).Append('"');
+                if (PlaydarBrowser.Document != null)
+                {
+                    msg.Append(", Title = ");
+                    msg.Append(PlaydarBrowser.Document.Title);
+                }
+                Log.Debug(msg.ToString());
+            }
+
+            RefreshButton.Enabled = true;
+            if (url.Equals(Program.Instance.PlaydarDaemon))
+            {
+                BackButton.Enabled = HomeButton.Enabled = false;
+            }
+            else
+            {
+                BackButton.Enabled = PlaydarBrowser.CanGoBack;
+                HomeButton.Enabled = true;
+            }
 
             if (PlaydarBrowser.Document == null) return;
 
@@ -274,11 +297,11 @@ namespace Windar.TrayApp
                     StartDaemonButton.Enabled = true;
                     RestartDaemonButton.Enabled = false;
                     StopDaemonButton.Enabled = false;
-                    ShowDaemonPage("Playdar service not running.");
+                    ShowDaemonPage("Playdar service not running.", false);
                 }
                 else
                 {
-                    ShowDaemonPage("Page not available.");
+                    ShowDaemonPage("Page not available.", false);
                 }
                 return;
             }
@@ -305,8 +328,11 @@ namespace Windar.TrayApp
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (MainTabControl.SelectedTab == optionsTabPage
+                && Program.Instance.Config != null
                 && (e.Cancel = !ApplyOptionsOrCancel())) return;
-            if (_reallyClose) return;
+
+            if (_exiting) return;
+
             if (!Program.Instance.Daemon.Started) Program.Shutdown();
             else
             {
@@ -320,7 +346,7 @@ namespace Windar.TrayApp
         internal void Exit()
         {
             if (logBox != null) logBox.Close();
-            _reallyClose = true;
+            _exiting = true;
             Close();
         }
 
@@ -436,7 +462,9 @@ namespace Windar.TrayApp
 
         private void MainTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
         {
-            if (_lastSelectedTab == optionsTabPage) e.Cancel = !ApplyOptionsOrCancel();
+            if (_lastSelectedTab != optionsTabPage) return;
+            if (Program.Instance.Config == null) e.Cancel = true;
+            else e.Cancel = !ApplyOptionsOrCancel();
         }
 
         private void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -471,6 +499,10 @@ namespace Windar.TrayApp
                 }
                 if (MainTabControl.SelectedTab == optionsTabPage)
                 {
+                    // Attempt to reload the configuration here.
+                    // If it fails the program will be shutdown.
+                    if (!Program.Instance.LoadConfiguration()) return;
+
                     optionsTabControl.SelectTab(generalOptionsTabPage);
                     SetupGeneralOptionsPage();
                 }
@@ -527,7 +559,10 @@ namespace Windar.TrayApp
                 if (result == DialogResult.Cancel) return false;
                 if (result == DialogResult.Yes)
                 {
-                    if (_optionsPage is GeneralOptionsPage) SaveGeneralOptions();
+                    if (_optionsPage is GeneralOptionsPage)
+                    {
+                        SaveGeneralOptions();
+                    }
                 }
             }
             return true;
@@ -535,16 +570,26 @@ namespace Windar.TrayApp
 
         private static void ShowApplyChangesDialog()
         {
-            Program.Instance.SaveConfiguration();
-            if (Program.ShowYesNoDialog("Restart Playdar to apply changes?"))
-                Program.Instance.Daemon.Restart();
+            var msg = new StringBuilder();
+            msg.Append("To apply changes you will also need to restart Playdar.");
+            msg.Append(Environment.NewLine).Append("Do you want to restart Playdar now?");
+            if (Program.ShowYesNoDialog(msg.ToString())) Program.Instance.Daemon.Restart();
+        }
+
+        private void cellEndEditTimer_Tick(object sender, EventArgs e)
+        {
+            if (_optionsPage is GeneralOptionsPage) peersGrid.EndEdit();
+            else if (_optionsPage is LibraryOptionsPage) libraryGrid.EndEdit();
+            else if (_optionsPage is PlaydarModulesPage) modsGrid.EndEdit();
+            else if (_optionsPage is PluginsPage) pluginsGrid.EndEdit();
+            else if (_optionsPage is PluginPropertiesPage) propsGrid.EndEdit();
+            cellEndEditTimer.Stop();
         }
 
         #region General options page.
 
         private void SetupGeneralOptionsPage()
         {
-            Program.Instance.ReloadConfiguration();
             GeneralOptionsPage options;
             _optionsPage = options = new GeneralOptionsPage();
             _optionsPage.Load();
@@ -555,7 +600,18 @@ namespace Windar.TrayApp
             forwardCheckBox.Checked = options.ForwardQueries;
             //TODO: Autostart
 
-            LoadPeers();
+            // Load peers table.
+            peersGrid.Rows.Clear();
+            foreach (var peer in options.Peers) peersGrid.Rows.Add(GetPeerListRow(peer));
+            peersGrid.CurrentCell = null;
+            if (peersGrid.Rows.Count <= 0) return;
+            peersGrid.Rows[0].Selected = false;
+        }
+
+        private void UpdateGeneralOptionsButtons()
+        {
+            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
+            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
         }
 
         private void SaveGeneralOptions()
@@ -597,22 +653,34 @@ namespace Windar.TrayApp
                 {
                     // Updating
                     var tag = (PeerInfo) row.Tag;
-                    if (host != tag.Host || port != tag.Port)
+                    if (host != tag.Host || port != tag.Port || share != tag.Share)
                     {
                         ((GeneralOptionsPage) _optionsPage).RemovePeer(tag.Host, tag.Port);
-                        ((GeneralOptionsPage) _optionsPage).AddNewPeer(host, port, share);
+                        if (!string.IsNullOrEmpty(host) && port > 0)
+                            ((GeneralOptionsPage) _optionsPage).AddNewPeer(host, port, share);
                     }
                 }
                 else
                 {
                     // Adding
-                    ((GeneralOptionsPage) _optionsPage).AddNewPeer(host, port, share);
+                    if (!string.IsNullOrEmpty(host) && port > 0)
+                        ((GeneralOptionsPage) _optionsPage).AddNewPeer(host, port, share);
                 }
             }
             Program.Instance.SaveConfiguration();
+
+            // Attempt to reload the configuration files.
+            // Don't continue to apply changes dialog if load fails.
+            if (!Program.Instance.LoadConfiguration()) return;
+
             SetupGeneralOptionsPage();
             UpdateGeneralOptionsButtons();
             ShowApplyChangesDialog();
+        }
+
+        private void generalOptionsSaveButton_Click(object sender, EventArgs e)
+        {
+            SaveGeneralOptions();
         }
 
         private void generalOptionsCancelButton_Click(object sender, EventArgs e)
@@ -622,18 +690,7 @@ namespace Windar.TrayApp
             generalOptionsCancelButton.Enabled = _optionsPage.Changed;
         }
 
-        private void generalOptionsSaveButton_Click(object sender, EventArgs e)
-        {
-            SaveGeneralOptions();
-        }
-
         #region Change handling.
-
-        private void UpdateGeneralOptionsButtons()
-        {
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
-        }
 
         private void allowIncomingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -673,21 +730,9 @@ namespace Windar.TrayApp
             }
         }
 
-        // NOTE: Changes to peers are handled on add and remove rows.
-
         #endregion
 
         #region Peers
-
-        private void LoadPeers()
-        {
-            peersGrid.Rows.Clear();
-            foreach (var peer in ((GeneralOptionsPage) _optionsPage).Peers)
-                peersGrid.Rows.Add(GetPeerListRow(peer));
-            if (peersGrid.Rows.Count <= 0) return;
-            peersGrid.Rows[0].Selected = false;
-            peersGrid.CurrentCell = null;
-        }
 
         private static DataGridViewRow GetPeerListRow(PeerInfo peer)
         {
@@ -708,6 +753,33 @@ namespace Windar.TrayApp
             return row;
         }
 
+        private void addPeerMenuItem_Click(object sender, EventArgs e)
+        {
+            peersGrid.Rows.Add(GetPeerListRow());
+            ((GeneralOptionsPage) _optionsPage).NewPeersToAdd = true;
+            UpdateGeneralOptionsButtons();
+
+            // Select the first cell the new row.
+            var row = peersGrid.Rows[peersGrid.Rows.Count - 1];
+            peersGrid.CurrentCell = row.Cells[0];
+            peersGrid.BeginEdit(false);
+        }
+
+        private void removePeerMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var obj in peersGrid.SelectedRows)
+            {
+                var row = (DataGridViewRow) obj;
+                if (row.Tag != null)
+                {
+                    var peer = (PeerInfo) row.Tag;
+                    ((GeneralOptionsPage) _optionsPage).RemovePeer(peer.Host, peer.Port);
+                }
+                peersGrid.Rows.Remove(row);
+            }
+            UpdateGeneralOptionsButtons();
+        }
+
         private void peersGrid_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
@@ -722,36 +794,21 @@ namespace Windar.TrayApp
             peersContextMenu.Items["removePeerMenuItem"].Visible = peersGrid.SelectedRows.Count > 0;
         }
 
-        private void addPeerMenuItem_Click(object sender, EventArgs e)
-        {
-            peersGrid.Rows.Add(GetPeerListRow());
-            ((GeneralOptionsPage) _optionsPage).NewPeersToAdd = true;
-            UpdateGeneralOptionsButtons();
-            
-            // Select the first cell the new row.
-            var row = peersGrid.Rows[peersGrid.Rows.Count - 1];
-            peersGrid.CurrentCell = row.Cells[0];
-            peersGrid.BeginEdit(false);
-        }
-
-        private void removePeerMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var obj in peersGrid.SelectedRows)
-            {
-                var row = (DataGridViewRow) obj;
-                if (row.Tag != null && row.Tag is PeerInfo)
-                {
-                    var peer = (PeerInfo) row.Tag;
-                    ((GeneralOptionsPage) _optionsPage).RemovePeer(peer.Host, peer.Port);
-                }
-                peersGrid.Rows.Remove(row);
-            }
-            UpdateGeneralOptionsButtons();
-        }
-
         private void peersGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (peersGrid.Rows.Count <= 0 || peersGrid.Rows[e.RowIndex].Tag == null) return;
+            ((GeneralOptionsPage) _optionsPage).PeerValueChanged = true;
+            UpdateGeneralOptionsButtons();
+        }
+
+        private void peersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var cell = peersGrid[e.ColumnIndex, e.RowIndex];
+            if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
+        }
+
+        private void peersGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
             ((GeneralOptionsPage) _optionsPage).PeerValueChanged = true;
             UpdateGeneralOptionsButtons();
         }
@@ -760,12 +817,246 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Library page.
+
         private void SetupLibraryPage()
         {
             LibraryOptionsPage options;
             _optionsPage = options = new LibraryOptionsPage();
             _optionsPage.Load();
+
+            // Load scan paths list.
+            libraryGrid.Rows.Clear();
+            foreach (var path in options.ScanPaths) libraryGrid.Rows.Add(GetScanPathRow(path));
+            libraryGrid.CurrentCell = null;
+            if (libraryGrid.Rows.Count <= 0) return;
+            libraryGrid.Rows[0].Selected = false;
         }
+
+        private void UpdateLibraryPageButtons()
+        {
+            librarySaveButton.Enabled = _optionsPage.Changed;
+            libraryCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void SaveLibrarySettings()
+        {
+            var options = (LibraryOptionsPage) _optionsPage;
+            foreach (var obj in libraryGrid.Rows)
+            {
+                var row = (DataGridViewRow) obj;
+                var path = (string) row.Cells[0].Value;
+
+                // Handle new and updated rows.
+                if (row.Tag != null)
+                {
+                    // Updating
+                    var tag = (string) row.Tag;
+                    if (path != tag)
+                    {
+                        options.RemoveScanPath(WindarPaths.ToUnixPath(tag));
+                        if (!string.IsNullOrEmpty(path)) 
+                            options.AddScanPath(WindarPaths.ToUnixPath(path));
+                    }
+                }
+                else
+                {
+                    // Adding
+                    if (!string.IsNullOrEmpty(path)) 
+                        options.AddScanPath(WindarPaths.ToUnixPath(path));
+                }
+            }
+            Program.Instance.SaveConfiguration();
+
+            // Attempt to reload the configuration files.
+            // Don't continue to apply changes dialog if load fails.
+            if (!Program.Instance.LoadConfiguration()) return;
+
+            SetupLibraryPage();
+            UpdateLibraryPageButtons();
+
+            //TODO: ShowRebuildIndexDialog();
+        }
+
+        private void SelectScanPath(DataGridViewCell cell)
+        {
+            var dialog = new DirectoryDialog
+            {
+                BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
+                Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
+            };
+            if (((string) cell.Value).Length > 0) dialog.InitialPath = (string) cell.Value;
+            if (dialog.ShowDialog(this) != DialogResult.OK) return;
+            cell.Value = dialog.Selected;
+        }
+
+        private static DataGridViewRow GetScanPathRow(string path)
+        {
+            var row = new DataGridViewRow();
+            var str = WindarPaths.ToWindowsPath(path);
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = str });
+            row.Tag = str;
+            return row;
+        }
+
+        private static DataGridViewRow GetScanPathRow()
+        {
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
+            return row;
+        }
+
+        private static void ShowTrackListDialog()
+        {
+            var build = new StringBuilder();
+            var lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
+            var n = 0;
+            foreach (var str in lines)
+            {
+                var line = str.Trim();
+                if (line.Length == 0) break;
+                var fields = line.Split('\t');
+                if (fields.Length < 6)
+                {
+                    foreach (var field in fields)
+                        build.Append(field).Append('\t');
+                    break;
+                }
+
+                // Artist
+                build.Append(fields[0]);
+
+                // Album
+                //build.Append(" - ");
+                //build.Append(fields[1]);
+
+                // Track
+                build.Append(" - ");
+                build.Append(fields[2]);
+
+                // Type
+                //build.Append(" (");
+                //build.Append(fields[3]);
+                //build.Append(")");
+
+                // Filename
+                //build.Append(Environment.NewLine);
+                //build.Append("<");
+                //build.Append(fields[4]);
+                //build.Append("> ");
+
+                // Length
+                //build.Append(fields[5]);
+
+                build.Append(Environment.NewLine);
+                n++;
+            }
+
+            var dialog = new OutputDisplay
+            {
+                TextBox = { Text = build.ToString().Trim() },
+                Text = n == 1 ? "Track List (1 track)" : "Track List (" + n + " tracks)"
+            };
+
+            dialog.TextBox.Font = new Font(
+                dialog.TextBox.Font.FontFamily,
+                dialog.TextBox.Font.Size,
+                dialog.TextBox.Font.Style);
+
+            dialog.ShowDialog();
+        }
+
+        private void addLibPathMenuItem_Click(object sender, EventArgs e)
+        {
+            libraryGrid.Rows.Add(GetScanPathRow());
+            ((LibraryOptionsPage) _optionsPage).NewPathsToAdd = true;
+            UpdateLibraryPageButtons();
+
+            // Select the first cell the new row.
+            var row = libraryGrid.Rows[libraryGrid.Rows.Count - 1];
+            libraryGrid.CurrentCell = row.Cells[0];
+            libraryGrid.BeginEdit(false);
+        }
+
+        private void removeLibPathMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var obj in libraryGrid.SelectedRows)
+            {
+                var row = (DataGridViewRow) obj;
+                if (row.Tag != null)
+                {
+                    var path = (string) row.Tag;
+                    ((LibraryOptionsPage) _optionsPage).RemoveScanPath(path);
+                }
+                libraryGrid.Rows.Remove(row);
+            }
+            UpdateLibraryPageButtons();
+        }
+
+        private void librarySaveButton_Click(object sender, EventArgs e)
+        {
+            SaveLibrarySettings();
+        }
+
+        private void libraryCancelButton_Click(object sender, EventArgs e)
+        {
+            SetupLibraryPage();
+            librarySaveButton.Enabled = _optionsPage.Changed;
+            libraryCancelButton.Enabled = _optionsPage.Changed;
+        }
+
+        private void reindexButton_Click(object sender, EventArgs e)
+        {
+            //TODO
+        }
+
+        private void tracklistButton_Click(object sender, EventArgs e)
+        {
+            ShowTrackListDialog();
+        }
+
+        private void libraryGrid_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            if (libraryGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
+            foreach (var obj in libraryGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
+            libraryGrid.CurrentCell = null;
+        }
+
+        private void libraryGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            libraryContextMenu.Items["removeLibPathMenuItem"].Visible = libraryGrid.SelectedRows.Count > 0;
+        }
+
+        private void libraryGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (libraryGrid.Rows.Count <= 0 || libraryGrid.Rows[e.RowIndex].Tag == null) return;
+            ((LibraryOptionsPage) _optionsPage).ScanPathValueChanged = true;
+            UpdateLibraryPageButtons();
+        }
+
+        private void libraryGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
+            if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
+        }
+
+        private void libraryGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
+            if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) SelectScanPath(cell);
+        }
+
+        private void libraryGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            ((LibraryOptionsPage) _optionsPage).ScanPathValueChanged = true;
+            UpdateLibraryPageButtons();
+        }
+
+        #endregion
+
+        #region Playdar modules
 
         private void SetupModulesPage()
         {
@@ -773,6 +1064,33 @@ namespace Windar.TrayApp
             _optionsPage = options = new PlaydarModulesPage();
             _optionsPage.Load();
         }
+
+        private void modsGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void modsGrid_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void modsGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void modsGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+
+        }
+
+        private void modsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        #endregion
 
         private void SetupPluginsPage()
         {
@@ -786,16 +1104,6 @@ namespace Windar.TrayApp
             PluginPropertiesPage options;
             _optionsPage = options = new PluginPropertiesPage();
             _optionsPage.Load();
-        }
-
-        private void libraryGrid_MouseDown(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void modsGrid_MouseDown(object sender, MouseEventArgs e)
-        {
-
         }
 
         private void pluginsGrid_MouseDown(object sender, MouseEventArgs e)

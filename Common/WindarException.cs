@@ -16,15 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Windows.Forms;
+using System;
 
-namespace Windar.PlayerPlugin
+namespace Windar.Common
 {
-    public partial class PlayerControl : UserControl
+    public class WindarException : Exception
     {
-        public PlayerControl()
-        {
-            InitializeComponent();
-        }
+        public WindarException(string str) : base(str) { }
     }
 }

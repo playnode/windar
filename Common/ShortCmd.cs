@@ -51,12 +51,12 @@ namespace Windar.Common
 
         protected void Cmd_CommandOutput(object sender, CmdRunner.CommandEventArgs e)
         {
-            _stdOutput.Append(e.Text);
+            _stdOutput.Append(e.Text).Append('\n');
         }
 
         protected void Cmd_CommandError(object sender, CmdRunner.CommandEventArgs e)
         {
-            _stdErr.Append(e.Text);
+            _stdErr.Append(e.Text).Append('\n');
         }
     }
 }

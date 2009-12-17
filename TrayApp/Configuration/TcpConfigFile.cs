@@ -84,7 +84,7 @@ namespace Windar.TrayApp.Configuration
             }
         }
 
-        public bool Share
+        public bool DefaultShare
         {
             get
             {

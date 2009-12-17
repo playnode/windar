@@ -86,6 +86,8 @@ namespace Windar.TrayApp
             this.removePeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.libraryTabPage = new System.Windows.Forms.TabPage();
             this.libraryPanel = new System.Windows.Forms.Panel();
+            this.reindexButton = new System.Windows.Forms.Button();
+            this.tracklistButton = new System.Windows.Forms.Button();
             this.libraryGrid = new System.Windows.Forms.DataGridView();
             this.LibraryItemPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.libraryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -141,6 +143,7 @@ namespace Windar.TrayApp
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
             this.logBoxPanel = new System.Windows.Forms.Panel();
             this.logBox = new Windar.TrayApp.LogTextBox();
+            this.cellEndEditTimer = new System.Windows.Forms.Timer(this.components);
             this.mainformBorderPanel.SuspendLayout();
             this.MainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -442,7 +445,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 97F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -463,7 +466,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(182, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(167, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -474,7 +477,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(222, 3);
+            this.label6.Location = new System.Drawing.Point(206, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -484,7 +487,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(400, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(384, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -495,7 +498,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(35, 3);
+            this.label2.Location = new System.Drawing.Point(20, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -505,9 +508,9 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(5, 20);
+            this.label5.Location = new System.Drawing.Point(22, 20);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(171, 20);
+            this.label5.Size = new System.Drawing.Size(139, 20);
             this.label5.TabIndex = 8;
             this.label5.Text = "Forward on queries to other nodes :";
             // 
@@ -515,7 +518,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(182, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(167, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -560,7 +563,9 @@ namespace Windar.TrayApp
             this.peersGrid.TabIndex = 9;
             this.peersGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellValueChanged);
             this.peersGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseDown);
+            this.peersGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.peersGrid_CellMouseClick);
             this.peersGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseClick);
+            this.peersGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellEndEdit);
             // 
             // peerAddress
             // 
@@ -627,6 +632,8 @@ namespace Windar.TrayApp
             // 
             this.libraryPanel.BackColor = System.Drawing.SystemColors.Control;
             this.libraryPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.libraryPanel.Controls.Add(this.reindexButton);
+            this.libraryPanel.Controls.Add(this.tracklistButton);
             this.libraryPanel.Controls.Add(this.libraryGrid);
             this.libraryPanel.Controls.Add(this.libraryCancelButton);
             this.libraryPanel.Controls.Add(this.librarySaveButton);
@@ -636,6 +643,28 @@ namespace Windar.TrayApp
             this.libraryPanel.Padding = new System.Windows.Forms.Padding(6);
             this.libraryPanel.Size = new System.Drawing.Size(594, 371);
             this.libraryPanel.TabIndex = 1;
+            // 
+            // reindexButton
+            // 
+            this.reindexButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.reindexButton.Location = new System.Drawing.Point(405, 337);
+            this.reindexButton.Name = "reindexButton";
+            this.reindexButton.Size = new System.Drawing.Size(92, 23);
+            this.reindexButton.TabIndex = 24;
+            this.reindexButton.Text = "Rebuild Index";
+            this.reindexButton.UseVisualStyleBackColor = true;
+            this.reindexButton.Click += new System.EventHandler(this.reindexButton_Click);
+            // 
+            // tracklistButton
+            // 
+            this.tracklistButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tracklistButton.Location = new System.Drawing.Point(503, 337);
+            this.tracklistButton.Name = "tracklistButton";
+            this.tracklistButton.Size = new System.Drawing.Size(78, 23);
+            this.tracklistButton.TabIndex = 23;
+            this.tracklistButton.Text = "Track List";
+            this.tracklistButton.UseVisualStyleBackColor = true;
+            this.tracklistButton.Click += new System.EventHandler(this.tracklistButton_Click);
             // 
             // libraryGrid
             // 
@@ -648,25 +677,31 @@ namespace Windar.TrayApp
             this.libraryGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.libraryGrid.BackgroundColor = System.Drawing.SystemColors.Control;
             this.libraryGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.libraryGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.libraryGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.libraryGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.LibraryItemPath});
             this.libraryGrid.ContextMenuStrip = this.libraryContextMenu;
+            this.libraryGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.libraryGrid.Location = new System.Drawing.Point(9, 9);
-            this.libraryGrid.MultiSelect = false;
             this.libraryGrid.Name = "libraryGrid";
+            this.libraryGrid.ReadOnly = true;
             this.libraryGrid.RowHeadersVisible = false;
             this.libraryGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.libraryGrid.Size = new System.Drawing.Size(572, 318);
             this.libraryGrid.StandardTab = true;
             this.libraryGrid.TabIndex = 22;
+            this.libraryGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellValueChanged);
             this.libraryGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseDown);
+            this.libraryGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseClick);
+            this.libraryGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseClick);
+            this.libraryGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellEndEdit);
+            this.libraryGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseDoubleClick);
             // 
             // LibraryItemPath
             // 
             this.LibraryItemPath.HeaderText = "Path";
             this.LibraryItemPath.Name = "LibraryItemPath";
+            this.LibraryItemPath.ReadOnly = true;
             // 
             // libraryContextMenu
             // 
@@ -681,12 +716,14 @@ namespace Windar.TrayApp
             this.addLibPathMenuItem.Name = "addLibPathMenuItem";
             this.addLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
             this.addLibPathMenuItem.Text = "Add";
+            this.addLibPathMenuItem.Click += new System.EventHandler(this.addLibPathMenuItem_Click);
             // 
             // removeLibPathMenuItem
             // 
             this.removeLibPathMenuItem.Name = "removeLibPathMenuItem";
             this.removeLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
             this.removeLibPathMenuItem.Text = "Remove";
+            this.removeLibPathMenuItem.Click += new System.EventHandler(this.removeLibPathMenuItem_Click);
             // 
             // libraryCancelButton
             // 
@@ -698,6 +735,7 @@ namespace Windar.TrayApp
             this.libraryCancelButton.TabIndex = 21;
             this.libraryCancelButton.Text = "Cancel";
             this.libraryCancelButton.UseVisualStyleBackColor = true;
+            this.libraryCancelButton.Click += new System.EventHandler(this.libraryCancelButton_Click);
             // 
             // librarySaveButton
             // 
@@ -709,6 +747,7 @@ namespace Windar.TrayApp
             this.librarySaveButton.TabIndex = 20;
             this.librarySaveButton.Text = "Save";
             this.librarySaveButton.UseVisualStyleBackColor = true;
+            this.librarySaveButton.Click += new System.EventHandler(this.librarySaveButton_Click);
             // 
             // modsTabPage
             // 
@@ -763,7 +802,11 @@ namespace Windar.TrayApp
             this.modsGrid.Size = new System.Drawing.Size(572, 318);
             this.modsGrid.StandardTab = true;
             this.modsGrid.TabIndex = 22;
+            this.modsGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.modsGrid_CellValueChanged);
             this.modsGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.modsGrid_MouseDown);
+            this.modsGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.modsGrid_CellMouseClick);
+            this.modsGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.modsGrid_MouseClick);
+            this.modsGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.modsGrid_CellEndEdit);
             // 
             // ModuleName
             // 
@@ -1243,6 +1286,10 @@ namespace Windar.TrayApp
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;
             // 
+            // cellEndEditTimer
+            // 
+            this.cellEndEditTimer.Tick += new System.EventHandler(this.cellEndEditTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1405,5 +1452,8 @@ namespace Windar.TrayApp
         private System.Windows.Forms.DataGridViewTextBoxColumn peerAddress;
         private System.Windows.Forms.DataGridViewTextBoxColumn peerPort;
         private System.Windows.Forms.DataGridViewCheckBoxColumn peerShare;
+        private System.Windows.Forms.Timer cellEndEditTimer;
+        private System.Windows.Forms.Button tracklistButton;
+        private System.Windows.Forms.Button reindexButton;
     }
 }

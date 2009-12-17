@@ -31,6 +31,7 @@ namespace Windar.TrayApp.Configuration
         private NamedString _authdbdir;
         private NamedBoolean _explain;
         private TupleToken _libdbdir;
+        private NamedList _scanpaths;
 
         public string Name
         {
@@ -369,5 +370,37 @@ namespace Windar.TrayApp.Configuration
                 }
             }
         }
+
+        #region Scan paths
+
+        public List<string> ListScanPaths()
+        {
+            List<string> result = null;
+            if (_scanpaths == null) _scanpaths = FindNamedList("scan_paths");
+            if (_scanpaths != null) result = _scanpaths.GetStringsList();
+            return result;
+        }
+
+        public void AddScanPath(string path)
+        {
+            if (_scanpaths == null) _scanpaths = FindNamedList("scan_paths");
+            if (_scanpaths == null)
+            {
+                _scanpaths = new NamedList("scan_paths", new ListToken());
+                Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(_scanpaths);
+                Document.Tokens.Add(new TermEndToken());
+            }
+            _scanpaths.AddStringsListItem(path);
+        }
+
+        public void RemoveScanPath(string path)
+        {
+            if (_scanpaths == null) _scanpaths = FindNamedList("scan_paths");
+            if (_scanpaths != null) _scanpaths.RemoveStringsListItem(path);
+        }
+
+        #endregion
     }
 }

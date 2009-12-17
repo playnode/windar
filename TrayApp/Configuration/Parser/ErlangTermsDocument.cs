@@ -109,7 +109,16 @@ namespace Windar.TrayApp.Configuration.Parser
 
         public void Save()
         {
-            _file.Delete();
+            // Make a backup of configution files before saving.
+            // These can be restored manually if necessary.
+            var filename = _file.FullName;
+            var bak = filename + ".bak";
+            var bakFile = new FileInfo(bak);
+            if (bakFile.Exists) bakFile.Delete();
+            _file.MoveTo(bak);
+            _file = new FileInfo(filename);
+
+            // Write the new updated file.
             var fs = _file.OpenWrite();
             var info = new UTF8Encoding(true).GetBytes(Document.ToString());
             fs.Write(info, 0, info.Length);

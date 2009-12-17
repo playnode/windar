@@ -70,7 +70,7 @@ ECHO Windar application components:
 @ECHO ON
 COPY Windar.exe %BUILD_TEMP%
 COPY Windar.Common.dll %BUILD_TEMP%
-COPY Windar.PlaydarController.dll %BUILD_TEMP%
+COPY Windar.PlaydarDaemon.dll %BUILD_TEMP%
 COPY Windar.PluginAPI.dll %BUILD_TEMP%
 @ECHO OFF
 

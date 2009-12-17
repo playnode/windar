@@ -20,9 +20,9 @@ using System;
 using System.Reflection;
 using log4net;
 using Windar.Common;
-using Windar.PlaydarController.Commands;
+using Windar.PlaydarDaemon.Commands;
 
-namespace Windar.PlaydarController
+namespace Windar.PlaydarDaemon
 {
     public class DaemonController
     {
@@ -75,6 +75,9 @@ namespace Windar.PlaydarController
             Paths = paths;
             Instance = this;
             Started = false;
+
+            // Create user AppData files if necessary.
+            Cmd<InitAppData>.Create().Run();
         }
 
         #region Commands
@@ -105,6 +108,16 @@ namespace Windar.PlaydarController
         public string Ping()
         {
             return Cmd<Ping>.Create().Run();
+        }
+
+        public string Status()
+        {
+            return Cmd<Status>.Create().Run();
+        }
+
+        public string DumpLibrary()
+        {
+            return Cmd<DumpLibrary>.Create().Run();
         }
 
         public void AddScanFileOrFolder(string path)

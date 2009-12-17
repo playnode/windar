@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.IO;
 using System.Text;
 
 namespace Windar.Common
@@ -64,16 +63,25 @@ namespace Windar.Common
         {
             get
             {
-                var result = _playdarDataPath;
-                if (result == null)
+                if (_playdarDataPath == null)
                 {
                     var str = new StringBuilder();
                     str.Append(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
                     str.Append(@"\Windar");
-                    result = str.ToString();
+                    _playdarDataPath = str.ToString();
                 }
-                return result;
+                return _playdarDataPath;
             }
+        }
+
+        public static string ToWindowsPath(string path)
+        {
+            return path.Replace('/', '\\');
+        }
+
+        public static string ToUnixPath(string path)
+        {
+            return path.Replace('\\', '/');
         }
     }
 }

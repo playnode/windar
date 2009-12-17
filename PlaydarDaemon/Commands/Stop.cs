@@ -19,7 +19,7 @@
 using System.Text;
 using Windar.Common;
 
-namespace Windar.PlaydarController.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
     class Stop : ShortCmd<Stop>
     {
@@ -30,7 +30,7 @@ namespace Windar.PlaydarController.Commands
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname win-playdar-wrapper@localhost");
+            cmd.Append(" -sname playdar-stop@localhost");
             cmd.Append(" -noinput");
             cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");

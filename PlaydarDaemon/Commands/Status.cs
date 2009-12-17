@@ -21,7 +21,7 @@ using Windar.Common;
 
 namespace Windar.PlaydarDaemon.Commands
 {
-    class Ping : ShortCmd<Ping>
+    class Status : ShortCmd<Status>
     {
         public override string Run()
         {
@@ -30,11 +30,11 @@ namespace Windar.PlaydarDaemon.Commands
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname playdar-ping@localhost");
+            cmd.Append(" -sname playdar-status@localhost");
             cmd.Append(" -noinput");
             cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"ping\"");
+            cmd.Append(" -extra playdar@localhost \"status\"");
             Runner.RunCommand(cmd.ToString());
             ContinueWhenDone();
             return Output;

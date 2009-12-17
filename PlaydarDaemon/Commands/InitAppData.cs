@@ -21,21 +21,17 @@ using Windar.Common;
 
 namespace Windar.PlaydarDaemon.Commands
 {
-    class Ping : ShortCmd<Ping>
+    class InitAppData : ShortCmd<InitAppData>
     {
         public override string Run()
         {
-            Runner.RunCommand("cd " + DaemonController.Instance.Paths.PlaydarPath);
-            Runner.RunCommand("set PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
-
+            // 'etc' folder, containing config file.
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
-            cmd.Append(" -sname playdar-ping@localhost");
-            cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
-            cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"ping\"");
+            cmd.Append("if not exist \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\" ");
+            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\etc\"");
+            cmd.Append(" \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\\\"");
             Runner.RunCommand(cmd.ToString());
+
             ContinueWhenDone();
             return Output;
         }

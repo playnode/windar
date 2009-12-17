@@ -20,7 +20,7 @@ using System;
 using System.Text;
 using Windar.Common;
 
-namespace Windar.PlaydarController.Commands
+namespace Windar.PlaydarDaemon.Commands
 {
     class Start : AsyncCmd<Start>
     {
@@ -51,8 +51,6 @@ namespace Windar.PlaydarController.Commands
 
         public override void RunAsync()
         {
-            Cmd<CopyAppFilesToAppData>.Create().Run();
-
             Runner.RunCommand("cd " + DaemonController.Instance.Paths.PlaydarPath);
             Runner.RunCommand("set PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
 
