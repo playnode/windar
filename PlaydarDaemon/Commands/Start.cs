@@ -62,6 +62,7 @@ namespace Windar.PlaydarDaemon.Commands
             cmd.Append(" -boot start_sasl");
             cmd.Append(" -s reloader");
             cmd.Append(" -s playdar");
+
             Runner.RunCommand(cmd.ToString());
         }
 

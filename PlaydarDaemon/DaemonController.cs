@@ -55,7 +55,7 @@ namespace Windar.PlaydarDaemon
             get
             {
                 var result = Cmd<NumFiles>.Create().Run();
-                if (Log.IsDebugEnabled) Log.Debug("NumFiles result = " + result);
+                if (Log.IsDebugEnabled) Log.Debug("NumFiles result = " + result.Trim());
                 try
                 {
                     return Int32.Parse(result);

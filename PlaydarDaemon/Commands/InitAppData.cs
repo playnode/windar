@@ -25,13 +25,13 @@ namespace Windar.PlaydarDaemon.Commands
     {
         public override string Run()
         {
-            // 'etc' folder, containing config file.
             var cmd = new StringBuilder();
             cmd.Append("if not exist \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\" ");
             cmd.Append("xcopy /e \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\etc\"");
             cmd.Append(" \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\\\"");
-            Runner.RunCommand(cmd.ToString());
 
+            Runner.SkipLogInfoOutput = true;
+            Runner.RunCommand(cmd.ToString());
             ContinueWhenDone();
             return Output;
         }

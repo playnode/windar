@@ -185,13 +185,21 @@ namespace Windar.TrayApp
                     var msg = logEvent.RenderedMessage;
                     if (msg.StartsWith("CMD.INF: "))
                     {
-                        sb.Append(msg.Substring(9, msg.Length - 9));
-                        sb.Append('\n');
+                        var str = msg.Substring(9, msg.Length - 9).Trim();
+                        if (str.Length > 0)
+                        {
+                            sb.Append(str);
+                            sb.Append('\n');
+                        }
                     }
                     else if (msg.StartsWith("CMD.ERR: "))
                     {
-                        sb.Append("ERROR! ").Append(msg.Substring(9, msg.Length - 9));
-                        sb.Append('\n');
+                        var str = msg.Substring(9, msg.Length - 9).Trim();
+                        if (str.Length > 0)
+                        {
+                            sb.Append("ERROR! ").Append(str);
+                            sb.Append('\n');
+                        }
                     }
                 }
             }
@@ -209,7 +217,11 @@ namespace Windar.TrayApp
             if (sb.Length > 0) _bufferChanged = true;
             var s = sb.ToString();
             sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(_buffer)) sb.Append(_buffer).Append('\n');
+            if (_buffer != null)
+            {
+                var trimmed = _buffer.Trim();
+                if (trimmed.Length > 0) sb.Append(trimmed).Append('\n');
+            }
             sb.Append(s);
 
             // Remove lines from beginning of buffer if necessary.

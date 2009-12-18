@@ -35,6 +35,7 @@ namespace Windar.PlaydarDaemon.Commands
             cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
             cmd.Append(" -extra playdar@localhost \"stop\"");
+
             Runner.RunCommand(cmd.ToString());
             ContinueWhenDone();
             return Output;

@@ -51,6 +51,7 @@ namespace Windar.Common
         private Thread _stdErrThread;
 
         public Process Process { get; private set; }
+        public bool SkipLogInfoOutput { get; set; }
 
         public CmdRunner()
         {
@@ -161,7 +162,7 @@ namespace Windar.Common
                     {
                         if (currentLine.Length > 0)
                         {
-                            if (Log.IsDebugEnabled) Log.Debug("CMD.INF: " + currentLine);
+                            if (!SkipLogInfoOutput && Log.IsDebugEnabled) Log.Debug("CMD.INF: " + currentLine);
                             if (CommandOutput != null) CommandOutput(this, new CommandEventArgs(currentLine));
                         }
                     }

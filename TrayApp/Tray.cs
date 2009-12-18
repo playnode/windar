@@ -38,10 +38,9 @@ namespace Windar.TrayApp
         private readonly MenuItem _aboutMenuItem;
         private readonly MenuItem _updateMenuItem;
         private readonly MenuItem _daemonMenuItem;
-        private readonly MenuItem _spiffdarMenuItem;
-        private readonly MenuItem _playgrubMenuItem;
-        private readonly MenuItem _searchMenuItem;
         private readonly MenuItem _playlickMenuItem;
+        private readonly MenuItem _playgrubMenuItem;
+        private readonly MenuItem _modeDemosMenuItem;
         private readonly MenuItem _balloonsMenuItem;
         private readonly MenuItem _scanfilesMenuItem;
         private readonly MenuItem _numfilesMenuItem;
@@ -59,11 +58,10 @@ namespace Windar.TrayApp
             _aboutMenuItem = new MenuItem("About Windar", ShowAbout);
             _updateMenuItem = new MenuItem("Check for Updates", CheckForUpdates);
             _daemonMenuItem = new MenuItem("Playdar Information", ShowDaemonInfo);
-            _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
-            _spiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdarWebsite);
-            _searchMenuItem = new MenuItem("Search", OpenSearchWebsite);
             _playlickMenuItem = new MenuItem("Playlick", OpenPlaylickWebsite);
-            _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) {Checked = Properties.Settings.Default.ShowBalloons };
+            _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
+            _modeDemosMenuItem = new MenuItem("More Demos", OpenMoreDemos);
+            _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) { Checked = Properties.Settings.Default.ShowBalloons };
             _scanfilesMenuItem = new MenuItem("Scan Files", ShowScanSelect);
             _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
@@ -72,10 +70,9 @@ namespace Windar.TrayApp
 
             // Demos menu.
             var demos = new MenuItem("Playdar Demos");
-            demos.MenuItems.Add(_searchMenuItem);
             demos.MenuItems.Add(_playlickMenuItem);
             demos.MenuItems.Add(_playgrubMenuItem);
-            demos.MenuItems.Add(_spiffdarMenuItem);
+            demos.MenuItems.Add(_modeDemosMenuItem);
 
             // Tray menu.
             _trayMenu = new ContextMenu();
@@ -233,24 +230,19 @@ namespace Windar.TrayApp
 
         #region Web links
 
-        private static void OpenPlaygrub(object sender, EventArgs e)
-        {
-            Process.Start("http://playgrub.com/");
-        }
-
-        private static void OpenSpiffdarWebsite(object sender, EventArgs e)
-        {
-            Process.Start("http://spiffdar.org/");
-        }
-
         private static void OpenPlaylickWebsite(object sender, EventArgs e)
         {
             Process.Start("http://www.playlick.com/");
         }
 
-        private static void OpenSearchWebsite(object sender, EventArgs e)
+        private static void OpenPlaygrub(object sender, EventArgs e)
         {
-            Process.Start("http://www.playdar.org/demos/search.html");
+            Process.Start("http://playgrub.com/");
+        }
+
+        private static void OpenMoreDemos(object sender, EventArgs e)
+        {
+            Process.Start("http://www.playdar.org/demos/");
         }
 
         #endregion

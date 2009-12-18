@@ -35,8 +35,11 @@ namespace Windar.PlaydarDaemon.Commands
         public override void RunAsync()
         {
             if (ScanPath == null) throw new ApplicationException("Path must be defined");
+
             Runner.CommandCompleted += Completed;
+
             Runner.RunCommand(@"cd " + DaemonController.Instance.Paths.PlaydarDataPath);
+
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname playdar-scan@localhost");
@@ -44,6 +47,7 @@ namespace Windar.PlaydarDaemon.Commands
             cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
             cmd.Append(" -extra playdar@localhost \"scan\" \"").Append(ScanPath).Append("\"");
+
             Runner.RunCommand(cmd.ToString());
         }
 
