@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -55,6 +56,7 @@ namespace Windar.TrayApp
         internal DaemonController Daemon { get; private set; }
         internal Tray Tray { get; private set; }
         internal PluginHost PluginHost { get; private set; }
+        internal Queue<string> ScanQueue { get; private set; }
 
         internal class ConfigGroup
         {
@@ -64,6 +66,10 @@ namespace Windar.TrayApp
 
         // NOTE: Config set to null on config load exception.
         internal ConfigGroup Config { get; private set; }
+
+        internal delegate void EnableReIndexButtonCallback();
+
+        private bool _scanning;
 
         #region Win32 API
 
@@ -84,10 +90,10 @@ namespace Windar.TrayApp
             Application.ThreadException += HandleThreadException;
 
             // Ensure only one instance of application runs.
-            bool createNew;
-            using (new Mutex(true, "Windar", out createNew))
+            bool notCurrentlyShown;
+            using (new Mutex(true, "Windar", out notCurrentlyShown))
             {
-                if (createNew)
+                if (notCurrentlyShown)
                 {
                     if (Log.IsInfoEnabled) Log.Info("Starting.");
                     Application.EnableVisualStyles();
@@ -126,26 +132,41 @@ namespace Windar.TrayApp
         private Program()
         {
             Instance = this;
+            SetupShutdownFileWatcher();
             Config = new ConfigGroup();
-        }
-
-        private void Run()
-        {
             Paths = new WindarPaths(Application.StartupPath);
             Daemon = new DaemonController(Paths);
-
-            // Attempt to load the config files.
-            if (!LoadConfiguration()) return;
-
-            SetupShutdownFileWatcher();
+            ScanQueue = new Queue<string>();
             MainForm = new MainForm();
             Tray = new Tray();
             PluginHost = new PluginHost();
 
+            // Register command event handlers.
+            Daemon.ScanCompleted += ScanCompleted;
+            Daemon.PlaydarStopped += PlaydarStopped;
+            Daemon.PlaydarStarted += PlaydarStarted;
+            Daemon.PlaydarStartFailed += PlaydarStartFailed;
+        }
+
+        private void Run()
+        {
+            // Attempt to load the config files.
+            if (!LoadConfiguration()) return;
+
             CheckConfig();
             PluginHost.Load();
             Daemon.Start();
+
             if (Properties.Settings.Default.MainFormVisible) MainForm.EnsureVisible();
+            else
+            {
+                // Need to call the EnsureVisible method to ensure
+                // that the scan files from tray menu works nicely.
+                MainForm.Opacity = 0;
+                MainForm.EnsureVisible();
+                MainForm.Hide();
+                MainForm.Opacity = 1;
+            }
             Application.Run(Tray);
         }
 
@@ -314,14 +335,25 @@ namespace Windar.TrayApp
 
         internal void ShowTrayInfo(string msg)
         {
-            ShowTrayInfo(msg, ToolTipIcon.Info);
+            ShowTrayInfo(msg, false);
+        }
+
+        internal void ShowTrayInfo(string msg, bool persist)
+        {
+            ShowTrayInfo(msg, ToolTipIcon.Info, persist);
         }
 
         internal void ShowTrayInfo(string msg, ToolTipIcon icon)
         {
+            ShowTrayInfo(msg, icon, false);
+        }
+
+        internal void ShowTrayInfo(string msg, ToolTipIcon icon, bool persist)
+        {
             if (!Properties.Settings.Default.ShowBalloons) return;
             Tray.NotifyIcon.Visible = true;
-            Tray.NotifyIcon.ShowBalloonTip(3, "Windar", msg, icon);
+            var timeout = persist ? 60*60 : 3;
+            Tray.NotifyIcon.ShowBalloonTip(timeout, "Windar", msg, icon);
         }
 
         #endregion
@@ -463,6 +495,55 @@ namespace Windar.TrayApp
             Instance.MainForm.StartDaemonButton.Enabled = false;
             Instance.MainForm.StopDaemonButton.Enabled = true;
             Instance.MainForm.RestartDaemonButton.Enabled = true;
+        }
+
+        #endregion
+
+        internal void AddScanPath(string path)
+        {
+            ScanQueue.Enqueue(path);
+            if (_scanning) return;
+            _scanning = true;
+            Daemon.Scan(ScanQueue.Dequeue());
+        }
+
+        #region Daemon event handlers.
+
+        private void PlaydarStopped(object sender, EventArgs e)
+        {
+            ShowTrayInfo("Playdar stopped.");
+        }
+
+        private void PlaydarStarted(object sender, EventArgs e)
+        {
+            ShowTrayInfo("Playdar started.");
+        }
+
+        private void PlaydarStartFailed(object sender, EventArgs e)
+        {
+            ShowTrayInfo("Playdar failed to start!", true);
+        }
+
+        private void ScanCompleted(object sender, EventArgs e)
+        {
+            if (ScanQueue.Count > 0) Daemon.Scan(ScanQueue.Dequeue());
+            else
+            {
+                ShowTrayInfo("Scan completed.", true);
+                _scanning = false;
+
+                if (MainForm.ReIndexButton.InvokeRequired)
+                {
+                    // It's on a different thread, so use Invoke.
+                    var d = new EnableReIndexButtonCallback(EnableReIndexButton);
+                    MainForm.ReIndexButton.Invoke(d, new object[] { });
+                }
+            }
+        }
+
+        private void EnableReIndexButton()
+        {
+            MainForm.ReIndexButton.Enabled = true;
         }
 
         #endregion

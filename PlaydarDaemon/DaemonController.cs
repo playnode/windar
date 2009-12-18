@@ -120,7 +120,7 @@ namespace Windar.PlaydarDaemon
             return Cmd<DumpLibrary>.Create().Run();
         }
 
-        public void AddScanFileOrFolder(string path)
+        public void Scan(string path)
         {
             var cmd = Cmd<Scan>.Create();
             cmd.ScanCompleted += ScanCmd_ScanCompleted;

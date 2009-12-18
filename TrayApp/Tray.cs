@@ -64,8 +64,8 @@ namespace Windar.TrayApp
             _searchMenuItem = new MenuItem("Search", OpenSearchWebsite);
             _playlickMenuItem = new MenuItem("Playlick", OpenPlaylickWebsite);
             _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) {Checked = Properties.Settings.Default.ShowBalloons };
-            _scanfilesMenuItem = new MenuItem("Scan Files", Scan);
-            _numfilesMenuItem = new MenuItem("Track List", NumFiles);
+            _scanfilesMenuItem = new MenuItem("Scan Files", ShowScanSelect);
+            _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
             _restartMenuItem = new MenuItem("Restart Playdar", Restart);
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
@@ -106,12 +106,6 @@ namespace Windar.TrayApp
             // Double-click handler for tray icon.
             NotifyIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
             NotifyIcon.MouseClick += TrayIcon_MouseClick;
-
-            // Register command event handlers.
-            Program.Instance.Daemon.ScanCompleted += ScanCompleted;
-            Program.Instance.Daemon.PlaydarStopped += PlaydarStopped;
-            Program.Instance.Daemon.PlaydarStarted += PlaydarStarted;
-            Program.Instance.Daemon.PlaydarStartFailed += PlaydarStartFailed;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -162,19 +156,6 @@ namespace Windar.TrayApp
             Program.ShowInfoDialog(result);
         }
 
-        private void Scan(object sender, EventArgs e)
-        {
-            //TODO: Prevent there being more than one dialog here, but also focus dialog if necessary.
-            var dialog = new DirectoryDialog
-            {
-                BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
-                Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
-            };
-            if (dialog.ShowDialog(this) != DialogResult.OK) return;
-            Program.Instance.Daemon.AddScanFileOrFolder(dialog.Selected);
-            Program.Instance.ShowTrayInfo("Scanning in progress.");
-        }
-
         #endregion
 
         #region Dialogs
@@ -182,13 +163,16 @@ namespace Windar.TrayApp
         private static void ShowAbout(object sender, EventArgs e)
         {
             Program.Instance.MainForm.GoToAboutPage();
-            Program.Instance.MainForm.EnsureVisible();
         }
 
         private static void ShowDaemonInfo(object sender, EventArgs e)
         {
             Program.Instance.MainForm.GoToPlaydarHomePage();
-            Program.Instance.MainForm.EnsureVisible();
+        }
+
+        private static void ShowScanSelect(object sender, EventArgs e)
+        {
+            Program.Instance.MainForm.GoToAddScanFolder();
         }
 
         #endregion
@@ -273,49 +257,18 @@ namespace Windar.TrayApp
 
         #endregion
 
-        #region Playdar controller event handlers.
-
-        private static void PlaydarStopped(object sender, EventArgs e)
-        {
-            Program.Instance.ShowTrayInfo("Playdar stopped.");
-        }
-
-        private static void PlaydarStarted(object sender, EventArgs e)
-        {
-            Program.Instance.ShowTrayInfo("Playdar started.");
-        }
-
-        private static void PlaydarStartFailed(object sender, EventArgs e)
-        {
-            Program.Instance.ShowTrayInfo("Playdar failed to start!");
-        }
-
-        private static void ScanCompleted(object sender, EventArgs e)
-        {
-            Program.Instance.ShowTrayInfo("Scan completed.");
-        }
-
-        #endregion
-
         #region Tray icon mouse clicks.
 
         private static void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (!Program.Instance.MainForm.Visible)
-            {
-                Program.Instance.MainForm.Opacity = 0;
-                Program.Instance.MainForm.GoToAboutPage();
-                Program.Instance.MainForm.Opacity = 1;
-            }
-            Program.Instance.MainForm.EnsureVisible();
+            if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.GoToAboutPage();
+            else Program.Instance.MainForm.EnsureVisible();
         }
 
         private static void TrayIcon_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && Program.Instance.MainForm.Visible)
-            {
                 Program.Instance.MainForm.EnsureVisible();
-            }
         }
 
         #endregion

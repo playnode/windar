@@ -17,7 +17,9 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -37,6 +39,7 @@ namespace Windar.TrayApp
 
         private bool _exiting;
         private bool _resizing;
+        private bool _inDirectoryDialog;
         private string _lastLink;
         private TabPage _lastSelectedTab;
         private FormWindowState _lastWindowState;
@@ -91,9 +94,7 @@ namespace Windar.TrayApp
         public void EnsureVisible()
         {
             if (WindowState == FormWindowState.Minimized)
-            {
                 WindowState = _lastWindowState;
-            }
             if (!Visible) Show();
             Program.Instance.MainForm.Activate();
             if (Properties.Settings.Default.MainFormVisible) return;
@@ -101,20 +102,89 @@ namespace Windar.TrayApp
             Properties.Settings.Default.Save();
         }
 
+        public bool InModalDialog()
+        {
+            var modal = _inDirectoryDialog;
+            if (modal) EnsureVisible();
+            return modal;
+        }
+
+        #region Navigation methods called from outside MainForm.
+
         public void GoToAboutPage()
         {
-            var page = MainTabControl.TabPages["aboutTabPage"];
-            MainTabControl.SelectTab(page);
+            if (InModalDialog()) return;
+            if (MainTabControl.SelectedTab != aboutTabPage)
+            {
+                if (!Program.Instance.MainForm.Visible)
+                {
+                    Program.Instance.MainForm.Opacity = 0;
+                    MainTabControl.SelectTab(aboutTabPage);
+                    Program.Instance.MainForm.Opacity = 1;
+                }
+                else
+                {
+                    MainTabControl.SelectTab(aboutTabPage);
+                }
+            }
+            Program.Instance.MainForm.EnsureVisible();
         }
 
         public void GoToPlaydarHomePage()
         {
-            LoadPlaydarHomepage();
+            if (InModalDialog()) return;
             if (MainTabControl.SelectedTab != playdarTabPage)
             {
-                MainTabControl.SelectTab(playdarTabPage);
+                if (!Program.Instance.MainForm.Visible)
+                {
+                    Program.Instance.MainForm.Opacity = 0;
+                    MainTabControl.SelectTab(playdarTabPage);
+                    Program.Instance.MainForm.Opacity = 1;
+                }
+                else
+                {
+                    MainTabControl.SelectTab(playdarTabPage);
+                }
             }
+            Program.Instance.MainForm.EnsureVisible();
+            LoadPlaydarHomepage();
         }
+
+        public void GoToAddScanFolder()
+        {
+            if (InModalDialog()) return;
+            if (MainTabControl.SelectedTab != optionsTabPage)
+            {
+                if (!Program.Instance.MainForm.Visible)
+                {
+                    Program.Instance.MainForm.Opacity = 0;
+                    MainTabControl.SelectTab(optionsTabPage);
+                    Program.Instance.MainForm.Opacity = 1;
+                }
+                else
+                {
+                    MainTabControl.SelectTab(optionsTabPage);
+                }
+            }
+            if (optionsTabControl.SelectedTab != libraryTabPage)
+            {
+                if (!Program.Instance.MainForm.Visible)
+                {
+                    Program.Instance.MainForm.Opacity = 0;
+                    optionsTabControl.SelectTab(libraryTabPage);
+                    Program.Instance.MainForm.Opacity = 1;
+                }
+                else
+                {
+                    optionsTabControl.SelectTab(libraryTabPage);
+                }
+            }
+            Program.Instance.MainForm.EnsureVisible();
+            SetupLibraryPage();
+            AddScanPath();
+        }
+
+        #endregion
 
         #region Playdar daemon browser.
 
@@ -239,7 +309,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private void playdarBrowser_NewWindow(object sender, System.ComponentModel.CancelEventArgs e)
+        private void playdarBrowser_NewWindow(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             if (!_lastLink.StartsWith(Program.Instance.PlaydarDaemon))
@@ -338,6 +408,7 @@ namespace Windar.TrayApp
             {
                 e.Cancel = true;
                 Hide();
+                MainTabControl.SelectTab(aboutTabPage);
                 Properties.Settings.Default.MainFormVisible = false;
                 Properties.Settings.Default.Save();
             }
@@ -547,23 +618,22 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Settings pages.
+
         /// <summary>
         /// Check if changes. Require save or cancel changes.
         /// </summary>
         /// <returns>Returns true if ok to proceed, false otherwise.</returns>
         private bool ApplyOptionsOrCancel()
         {
-            if (Visible && _optionsPage.Changed)
+            if (Visible && _optionsPage != null && _optionsPage.Changed)
             {
                 var result = Program.ShowYesNoCancelDialog("Save changes?");
                 if (result == DialogResult.Cancel) return false;
-                if (result == DialogResult.Yes)
-                {
-                    if (_optionsPage is GeneralOptionsPage)
-                    {
-                        SaveGeneralOptions();
-                    }
-                }
+                if (result == DialogResult.No) _optionsPage = null;
+                else if (_optionsPage is GeneralOptionsPage) SaveGeneralOptions();
+                else if (_optionsPage is LibraryOptionsPage) SaveLibrarySettings();
+                ResetOptionsPagesButtons();
             }
             return true;
         }
@@ -574,6 +644,12 @@ namespace Windar.TrayApp
             msg.Append("To apply changes you will also need to restart Playdar.");
             msg.Append(Environment.NewLine).Append("Do you want to restart Playdar now?");
             if (Program.ShowYesNoDialog(msg.ToString())) Program.Instance.Daemon.Restart();
+        }
+
+        private void ResetOptionsPagesButtons()
+        {
+            UpdateGeneralOptionsButtons();
+            UpdateLibraryPageButtons();
         }
 
         private void cellEndEditTimer_Tick(object sender, EventArgs e)
@@ -610,8 +686,10 @@ namespace Windar.TrayApp
 
         private void UpdateGeneralOptionsButtons()
         {
-            generalOptionsSaveButton.Enabled = _optionsPage.Changed;
-            generalOptionsCancelButton.Enabled = _optionsPage.Changed;
+            var state = _optionsPage != null && _optionsPage is GeneralOptionsPage;
+            state = state ? _optionsPage.Changed : false;
+            generalOptionsSaveButton.Enabled = state;
+            generalOptionsCancelButton.Enabled = state;
         }
 
         private void SaveGeneralOptions()
@@ -685,6 +763,7 @@ namespace Windar.TrayApp
 
         private void generalOptionsCancelButton_Click(object sender, EventArgs e)
         {
+            Program.Instance.LoadConfiguration();
             SetupGeneralOptionsPage();
             generalOptionsSaveButton.Enabled = _optionsPage.Changed;
             generalOptionsCancelButton.Enabled = _optionsPage.Changed;
@@ -803,6 +882,7 @@ namespace Windar.TrayApp
 
         private void peersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             var cell = peersGrid[e.ColumnIndex, e.RowIndex];
             if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
         }
@@ -828,15 +908,22 @@ namespace Windar.TrayApp
             // Load scan paths list.
             libraryGrid.Rows.Clear();
             foreach (var path in options.ScanPaths) libraryGrid.Rows.Add(GetScanPathRow(path));
+
+            // Deselect
             libraryGrid.CurrentCell = null;
             if (libraryGrid.Rows.Count <= 0) return;
             libraryGrid.Rows[0].Selected = false;
+
+            // Sort
+            libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
         private void UpdateLibraryPageButtons()
         {
-            librarySaveButton.Enabled = _optionsPage.Changed;
-            libraryCancelButton.Enabled = _optionsPage.Changed;
+            var state = _optionsPage != null && _optionsPage is LibraryOptionsPage;
+            state = state ? _optionsPage.Changed : false;
+            librarySaveButton.Enabled = state;
+            libraryCancelButton.Enabled = state;
         }
 
         private void SaveLibrarySettings()
@@ -873,21 +960,64 @@ namespace Windar.TrayApp
             if (!Program.Instance.LoadConfiguration()) return;
 
             SetupLibraryPage();
+
             UpdateLibraryPageButtons();
 
             //TODO: ShowRebuildIndexDialog();
+
+            // Deselect
+            libraryGrid.CurrentCell = null;
+            if (libraryGrid.Rows.Count <= 0) return;
+            libraryGrid.Rows[0].Selected = false;
+
+            // Sort
+            libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void SelectScanPath(DataGridViewCell cell)
+        private string SelectScanPath()
         {
+            return SelectScanPath(null);
+        }
+
+        private string SelectScanPath(string initialFolder)
+        {
+            string result = null;
             var dialog = new DirectoryDialog
             {
                 BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
                 Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
             };
-            if (((string) cell.Value).Length > 0) dialog.InitialPath = (string) cell.Value;
-            if (dialog.ShowDialog(this) != DialogResult.OK) return;
-            cell.Value = dialog.Selected;
+            if (!string.IsNullOrEmpty(initialFolder)) dialog.InitialPath = initialFolder;
+            _inDirectoryDialog = true;
+            if (dialog.ShowDialog(this) == DialogResult.OK) result = dialog.Selected;
+            _inDirectoryDialog = false;
+            return result;
+        }
+
+        private void SetScanPath(DataGridViewCell cell)
+        {
+            var str = (string) cell.Value;
+            var path = string.IsNullOrEmpty(str) ? SelectScanPath() : SelectScanPath(str);
+            if (!string.IsNullOrEmpty(path)) cell.Value = path;
+        }
+
+        private void AddScanPath()
+        {
+            var path = SelectScanPath();
+            if (string.IsNullOrEmpty(path)) return;
+
+            libraryGrid.Rows.Add(GetNewScanPathRow(path));
+            ((LibraryOptionsPage) _optionsPage).NewPathsToAdd = true;
+
+            UpdateLibraryPageButtons();
+
+            // Deselect
+            libraryGrid.CurrentCell = null;
+            if (libraryGrid.Rows.Count <= 0) return;
+            libraryGrid.Rows[0].Selected = false;
+
+            // Sort
+            libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
         private static DataGridViewRow GetScanPathRow(string path)
@@ -899,10 +1029,10 @@ namespace Windar.TrayApp
             return row;
         }
 
-        private static DataGridViewRow GetScanPathRow()
+        private static DataGridViewRow GetNewScanPathRow(string path)
         {
             var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = path });
             return row;
         }
 
@@ -910,11 +1040,12 @@ namespace Windar.TrayApp
         {
             var build = new StringBuilder();
             var lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
+            Array.Sort(lines);
             var n = 0;
             foreach (var str in lines)
             {
                 var line = str.Trim();
-                if (line.Length == 0) break;
+                if (line.Length == 0) continue;
                 var fields = line.Split('\t');
                 if (fields.Length < 6)
                 {
@@ -968,14 +1099,7 @@ namespace Windar.TrayApp
 
         private void addLibPathMenuItem_Click(object sender, EventArgs e)
         {
-            libraryGrid.Rows.Add(GetScanPathRow());
-            ((LibraryOptionsPage) _optionsPage).NewPathsToAdd = true;
-            UpdateLibraryPageButtons();
-
-            // Select the first cell the new row.
-            var row = libraryGrid.Rows[libraryGrid.Rows.Count - 1];
-            libraryGrid.CurrentCell = row.Cells[0];
-            libraryGrid.BeginEdit(false);
+            AddScanPath();
         }
 
         private void removeLibPathMenuItem_Click(object sender, EventArgs e)
@@ -985,12 +1109,21 @@ namespace Windar.TrayApp
                 var row = (DataGridViewRow) obj;
                 if (row.Tag != null)
                 {
-                    var path = (string) row.Tag;
+                    var path = WindarPaths.ToUnixPath((string) row.Tag);
                     ((LibraryOptionsPage) _optionsPage).RemoveScanPath(path);
                 }
                 libraryGrid.Rows.Remove(row);
             }
+
             UpdateLibraryPageButtons();
+
+            // Deselect
+            libraryGrid.CurrentCell = null;
+            if (libraryGrid.Rows.Count <= 0) return;
+            libraryGrid.Rows[0].Selected = false;
+
+            // Sort
+            libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
         private void librarySaveButton_Click(object sender, EventArgs e)
@@ -1000,14 +1133,66 @@ namespace Windar.TrayApp
 
         private void libraryCancelButton_Click(object sender, EventArgs e)
         {
+            Program.Instance.LoadConfiguration();
             SetupLibraryPage();
             librarySaveButton.Enabled = _optionsPage.Changed;
             libraryCancelButton.Enabled = _optionsPage.Changed;
+
+            // Deselect
+            libraryGrid.CurrentCell = null;
+            if (libraryGrid.Rows.Count <= 0) return;
+            libraryGrid.Rows[0].Selected = false;
+
+            // Sort
+            libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
         private void reindexButton_Click(object sender, EventArgs e)
         {
-            //TODO
+            //var confirm = Program.ShowOkCancelDialog("Are you sure you want to ");
+
+            var options = (LibraryOptionsPage) _optionsPage;
+            if (options.Changed)
+            {
+                var result = Program.ShowYesNoCancelDialog("Save changes?");
+                switch (result)
+                {
+                    case DialogResult.Yes:
+                        SaveLibrarySettings();
+                        break;
+                    case DialogResult.No:
+                        Program.Instance.LoadConfiguration();
+                        SetupLibraryPage();
+                        Application.DoEvents();
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            //TODO: Confirm.
+            //TODO: Save changes first?
+
+            var paths = options.ScanPaths;
+            if (paths.Count == 0) return;
+
+            ReIndexButton.Enabled = false;
+
+            Program.Instance.Daemon.Stop();
+            System.Threading.Thread.Sleep(2000);
+
+            // Delete the old index files.
+            var libraryFilename = Program.Instance.Paths.PlaydarDataPath + @"\library.db";
+            var libraryIndexFilename = Program.Instance.Paths.PlaydarDataPath + @"\library_index.db";
+            var libraryFileInfo = new FileInfo(libraryFilename);
+            var libraryIndexFileInfo = new FileInfo(libraryIndexFilename);
+            if (libraryFileInfo.Exists) libraryFileInfo.Delete();
+            if (libraryIndexFileInfo.Exists) libraryIndexFileInfo.Delete();
+
+            Program.Instance.Daemon.Start();
+
+            // Queue the folders to be re-scanned.
+            foreach (var path in paths) Program.Instance.AddScanPath(path);
         }
 
         private void tracklistButton_Click(object sender, EventArgs e)
@@ -1038,14 +1223,16 @@ namespace Windar.TrayApp
 
         private void libraryGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
             if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
         }
 
         private void libraryGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
-            if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) SelectScanPath(cell);
+            if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) SetScanPath(cell);
         }
 
         private void libraryGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -1115,5 +1302,7 @@ namespace Windar.TrayApp
         {
 
         }
+
+        #endregion
     }
 }

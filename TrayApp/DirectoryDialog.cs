@@ -18,11 +18,21 @@
 
 using System;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 namespace Windar.TrayApp
 {
+    /// <summary>
+    /// Using the Win32 API to find folders. Initially being used to find
+    /// files or folders, but just folders now.
+    /// More 
+    /// </summary>
+    /// <remarks>
+    /// Good example of API constants:
+    /// 
+    /// </remarks>
     class DirectoryDialog
     {
         #region Win32 API
@@ -56,24 +66,25 @@ namespace Windar.TrayApp
             public int Image;
         }
 
+        #region BrwoseForTypes
+
+        // Get more API constants from the following page:
+        // http://www.pinvoke.net/default.aspx/shell32/ShBrowseForFolder.html
+        private const int BrowseDirs = 0x0001;
+        private const int BrowseComputers = 0x1000;
+        private const int BrowseFiles = 0x4000;
+        private const int BrowseNotBelowDomain = 0x0002;
+        private const int BrowseNoNewFolderButton = 0x0200;
+        private const int BrowseNoTranslate = 0x0400;
+
         public enum BrowseForTypes
         {
-            Computers = 4096,
-            Directories = 1539, //1,
-            FilesAndDirectories = 16384,
-            FileSystemAncestors = 8,
+            Computers = BrowseComputers,
+            Directories = BrowseDirs | BrowseNotBelowDomain | BrowseNoNewFolderButton | BrowseNoTranslate,
+            FilesAndDirectories = Directories | BrowseFiles,
         }
 
-        //private uint BIF_RETURNONLYFSDIRS = 0x0001;
-        //private uint BIF_DONTGOBELOWDOMAIN = 0x0002;
-        //private uint BIF_NONEWFOLDERBUTTON = 0x0200;
-        //private uint BIF_NOTRANSLATETARGETS = 0x0400;
-
-        //private uint BIF_BROWSEINCLUDEFILES = 0x4000;
-        //private uint BIF_USENEWUI = 0x0040 + 0x0010;
-        //private uint BIF_NEWDIALOGSTYLE = 0x0040;
-        //private uint BIF_SHAREABLE = 0x8000;
-        //private uint BIF_BROWSEFORCOMPUTER = 0x1000;
+        #endregion
 
         const int MaxPath = 260;
 
