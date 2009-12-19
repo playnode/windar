@@ -401,21 +401,40 @@ Section "Playdar Core" SEC_PLAYDAR
    StrCpy $0 "epmd.exe"
    DetailPrint "Searching for processes called '$0'"
    KillProc::FindProcesses
-   StrCmp $1 "-1" error
-   StrCmp $0 "0" completed
+   StrCmp $1 "-1" epmd_error
+   StrCmp $0 "0" epmd_completed
    Sleep 1500   
    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
      "Found $0 epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES killproc IDNO completed    
-   killproc:
+     IDYES epmd_killproc IDNO epmd_completed    
+   epmd_killproc:
       StrCpy $0 "epmd.exe"
       DetailPrint "Killing all processes called '$0'"
       KillProc::KillProcesses
-      StrCmp $1 "-1" error
+      StrCmp $1 "-1" epmd_error
       DetailPrint "Killed $0 processes, faild to kill $1 processes."
-   error:
-   completed:
-   
+   epmd_error:
+   epmd_completed:
+      
+   ;Check for and offer to kill erl.exe process.
+   StrCpy $0 "erl.exe"
+   DetailPrint "Searching for processes called '$0'"
+   KillProc::FindProcesses
+   StrCmp $1 "-1" erl_error
+   StrCmp $0 "0" erl_completed
+   Sleep 1500   
+   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+     "Found $0 erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
+     IDYES erl_killproc IDNO erl_completed    
+   erl_killproc:
+      StrCpy $0 "epmd.exe"
+      DetailPrint "Killing all processes called '$0'"
+      KillProc::KillProcesses
+      StrCmp $1 "-1" erl_error
+      DetailPrint "Killed $0 processes, faild to kill $1 processes."
+   erl_error:
+   erl_completed:
+
    IfFileExists "$WINDIR\system32\libeay32.dll" openssl_lib_installed
       SetOutPath "$WINDIR\system32"
       File Payload\libeay32.dll
