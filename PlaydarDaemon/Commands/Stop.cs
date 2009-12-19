@@ -37,6 +37,7 @@ namespace Windar.PlaydarDaemon.Commands
             cmd.Append(" -extra playdar@localhost \"stop\"");
 
             Runner.RunCommand(cmd.ToString());
+
             ContinueWhenDone();
             return Output;
         }

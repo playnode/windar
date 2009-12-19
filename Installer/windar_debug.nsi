@@ -28,6 +28,7 @@
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_DESKTOP
 !define OPTION_SECTION_SC_QUICK_LAUNCH
+!define OPTION_SECTION_SC_STARTUP
 !define OPTION_FINISHPAGE
 !define OPTION_FINISHPAGE_LAUNCHER
 !define OPTION_FINISHPAGE_RELEASE_NOTES
@@ -74,12 +75,19 @@ ReserveFile windar.ini
 !include MUI.nsh ;Provides modern user interface.
 !include WordFunc.nsh ;Used by VersionCompare macro function.
 !include WinVer.nsh ;Windows version detection.
+!include Memento.nsh ;Remember user selections.
 
 ;-----------------------------------------------------------------------------
 ;Required macros.
 ;-----------------------------------------------------------------------------
 !insertmacro VersionCompare
 
+;-----------------------------------------------------------------------------
+;Memento selections stored in registry.
+;-----------------------------------------------------------------------------
+!define MEMENTO_REGISTRY_ROOT HKLM
+!define MEMENTO_REGISTRY_KEY Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar
+                
 ;-----------------------------------------------------------------------------
 ;Modern User Interface (MUI) defintions and setup.
 ;-----------------------------------------------------------------------------
@@ -380,11 +388,6 @@ Section "Windar Tray Application" SEC_WINDAR
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
    File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
-   
-   ;Shortcut in Startup folder.
-   DetailPrint "Adding shortcut in Startup folder to restart Windar on Windows login."
-   CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
-
 SectionEnd
 
 Section "Playdar Core" SEC_PLAYDAR
@@ -431,13 +434,30 @@ Section "Playdar Core" SEC_PLAYDAR
    SetOutPath "$INSTDIR\minimerl\bin"
    File Temp\erlini.exe
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
-
 SectionEnd
+
+SectionGroup "Additional Playdar Resolvers"
+
+${MementoSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
+   SectionIn 2
+   DetailPrint "Installing resolver for Magnatune."
+   SetOutPath "$INSTDIR\playdar\playdar_modules"
+   File /r Payload\playdar_modules\magnatune
+${MementoSectionEnd}
+
+${MementoSection} "AOL Music Index" SEC_AOL_RESOLVER
+   SectionIn 2
+   DetailPrint "Installing resolver for the AOL Music Index."
+   SetOutPath "$INSTDIR\playdar\playdar_modules"
+   File /r Payload\playdar_modules\aolmusic
+${MementoSectionEnd}
+
+SectionGroupEnd
 
 SectionGroup "Shortcuts"
 
 !ifdef OPTION_SECTION_SC_START_MENU
-   Section "Start Menu Shortcuts" SEC_START_MENU
+   ${MementoSection} "Start Menu Shortcuts" SEC_START_MENU
       SectionIn 1 2
 
       DetailPrint "Creating Start Menu Shortcuts"
@@ -449,32 +469,44 @@ SectionGroup "Shortcuts"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-   SectionEnd
+   ${MementoSectionEnd}
 !endif
 
 !ifdef OPTION_SECTION_SC_DESKTOP
-   Section "Desktop Shortcut" SEC_DESKTOP
+   ${MementoSection} "Desktop Shortcut" SEC_DESKTOP
       SectionIn 2
       DetailPrint "Creating Desktop Shortcuts"
       CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
-   SectionEnd
+   ${MementoSectionEnd}
 !endif
 
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
-   Section "Quick Launch Shortcut" SEC_QUICK_LAUNCH
+   ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
       SectionIn 1 2
       DetailPrint "Creating Quick Launch Shortcut"
       CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
-   SectionEnd
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_STARTUP
+   ${MementoSection} "Startup Folder Shortcut" SEC_STARTUP_FOLDER
+      SectionIn 1 2
+      DetailPrint "Adding shortcut in Startup folder to restart Windar on Windows login."
+      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
 !endif
 
 SectionGroupEnd
+
+${MementoSectionDone}
 
 ;Installer section descriptions
 ;--------------------------------
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Windows tray application for Playdar service."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYDAR} "Playdar core and minimum Erlang components."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolves free content from Magnatune."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves web content in the AOL Music Index."
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
 !endif
@@ -483,6 +515,9 @@ SectionGroupEnd
 !endif
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_QUICK_LAUNCH} "Quick Launch shortcut for Windar."
+!endif
+!ifdef OPTION_SECTION_SC_STARTUP
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_STARTUP_FOLDER} "Startup shortcut for Windar."
 !endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -619,5 +654,13 @@ Function .onInit
       SectionSetFlags ${SEC_QUICK_LAUNCH} ${SF_RO}
       SectionSetInstTypes ${SEC_QUICK_LAUNCH} 0
    ${EndIf}
+
+   ${MementoSectionRestore}
+   
+FunctionEnd
+
+Function .onInstSuccess
+
+   ${MementoSectionSave}
 
 FunctionEnd

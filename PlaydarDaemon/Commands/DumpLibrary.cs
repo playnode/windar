@@ -25,6 +25,8 @@ namespace Windar.PlaydarDaemon.Commands
     {
         public override string Run()
         {
+            Runner.SkipLogInfoOutput = true;
+
             Runner.RunCommand("CD " + DaemonController.Instance.Paths.PlaydarPath);
             Runner.RunCommand("SET PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
 
@@ -36,8 +38,8 @@ namespace Windar.PlaydarDaemon.Commands
             cmd.Append(" -s playdar_ctl");
             cmd.Append(" -extra playdar@localhost \"dump-library\"");
 
-            Runner.SkipLogInfoOutput = true;
             Runner.RunCommand(cmd.ToString());
+
             ContinueWhenDone();
             return Output;
         }

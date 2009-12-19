@@ -96,6 +96,7 @@ namespace Windar.TrayApp
 
         public void Shutdown()
         {
+            if (Plugins == null) return;
             foreach (var plugin in Plugins)
             {
                 plugin.Shutdown();

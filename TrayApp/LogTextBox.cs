@@ -219,7 +219,7 @@ namespace Windar.TrayApp
             sb = new StringBuilder();
             if (_buffer != null)
             {
-                var trimmed = _buffer.Trim();
+                var trimmed = _buffer.TrimEnd();
                 if (trimmed.Length > 0) sb.Append(trimmed).Append('\n');
             }
             sb.Append(s);

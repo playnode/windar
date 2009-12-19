@@ -378,6 +378,7 @@ namespace Windar.TrayApp.Configuration
             List<string> result = null;
             if (_scanpaths == null) _scanpaths = FindNamedList("scan_paths");
             if (_scanpaths != null) result = _scanpaths.GetStringsList();
+            if (result == null) result = new List<string>();
             return result;
         }
 

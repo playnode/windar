@@ -182,9 +182,52 @@ namespace Windar.TrayApp
         internal static void Shutdown(bool cancelSave)
         {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
-            if (Instance.PluginHost != null) Instance.PluginHost.Shutdown();
-            if (Instance.Daemon != null) Instance.Daemon.Stop();
-            if (Instance.MainForm != null) Instance.MainForm.Exit();
+            if (Instance.PluginHost != null)
+            {
+                try
+                {
+                    Instance.PluginHost.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    if (Log.IsErrorEnabled) Log.Error("PluginHost shutdown exception.", ex);
+                }
+            }
+            if (Instance.Daemon != null)
+            {
+                try
+                {
+                    Instance.Daemon.Stop();
+                }
+                catch (Exception ex)
+                {
+                    if (Log.IsErrorEnabled) Log.Error("Daemon shutdown exception.", ex);
+                }
+            }
+            if (Instance.MainForm != null)
+            {
+                try
+                {
+                    Instance.MainForm.Exit();
+                }
+                catch (Exception ex)
+                {
+                    if (Log.IsErrorEnabled) Log.Error("MainForm shutdown exception.", ex);
+                }
+            }
+            if (Instance.Tray != null)
+            {
+                try
+                {
+                    if (Instance.Tray.NotifyIcon != null) 
+                        Instance.Tray.NotifyIcon.Visible = false;
+                    Instance.Tray.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (Log.IsErrorEnabled) Log.Error("Tray shutdown exception.", ex);
+                }
+            }
             Application.Exit();
         }
 
