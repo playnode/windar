@@ -445,7 +445,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.64629F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.35371F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -466,7 +466,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(165, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(164, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(14, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -477,7 +477,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(203, 3);
+            this.label6.Location = new System.Drawing.Point(202, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -487,7 +487,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(381, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(380, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -498,7 +498,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 3);
+            this.label2.Location = new System.Drawing.Point(17, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -508,7 +508,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 20);
+            this.label5.Location = new System.Drawing.Point(19, 20);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(139, 20);
             this.label5.TabIndex = 8;
@@ -518,7 +518,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(165, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(164, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(14, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -625,7 +625,7 @@ namespace Windar.TrayApp
             this.libraryTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.libraryTabPage.Size = new System.Drawing.Size(600, 377);
             this.libraryTabPage.TabIndex = 7;
-            this.libraryTabPage.Text = "Local Library Paths";
+            this.libraryTabPage.Text = "Local Library";
             this.libraryTabPage.UseVisualStyleBackColor = true;
             // 
             // libraryPanel
@@ -757,7 +757,7 @@ namespace Windar.TrayApp
             this.modsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.modsTabPage.Size = new System.Drawing.Size(600, 377);
             this.modsTabPage.TabIndex = 4;
-            this.modsTabPage.Text = "Resolver Modules";
+            this.modsTabPage.Text = "Resolvers";
             this.modsTabPage.UseVisualStyleBackColor = true;
             // 
             // modsPanel

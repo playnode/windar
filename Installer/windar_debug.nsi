@@ -381,9 +381,6 @@ Section "Windar Tray Application" SEC_WINDAR
    File /oname=LICENSE.txt ..\LICENSE
    File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
    
-   ;Extra
-   File Payload\playdar-core.bat
-   
    ;Shortcut in Startup folder.
    DetailPrint "Adding shortcut in Startup folder to restart Windar on Windows login."
    CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
@@ -425,7 +422,11 @@ Section "Playdar Core" SEC_PLAYDAR
    SetOutPath "$INSTDIR"
    File /r Payload\minimerl
    File /r Payload\playdar
-   
+
+   ;Bat script to launch playdar-core in command window.
+   SetOutPath "$INSTDIR\playdar"
+   File Payload\playdar-core.bat
+
    ;Write the required erl.ini files.
    SetOutPath "$INSTDIR\minimerl\bin"
    File Temp\erlini.exe

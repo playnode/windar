@@ -51,8 +51,8 @@ namespace Windar.PlaydarDaemon.Commands
 
         public override void RunAsync()
         {
-            Runner.RunCommand("cd " + DaemonController.Instance.Paths.PlaydarPath);
-            Runner.RunCommand("set PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
+            Runner.RunCommand("CD " + DaemonController.Instance.Paths.PlaydarPath);
+            Runner.RunCommand("SET PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');

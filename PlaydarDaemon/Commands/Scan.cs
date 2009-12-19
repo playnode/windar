@@ -38,7 +38,7 @@ namespace Windar.PlaydarDaemon.Commands
 
             Runner.CommandCompleted += Completed;
 
-            Runner.RunCommand(@"cd " + DaemonController.Instance.Paths.PlaydarDataPath);
+            Runner.RunCommand(@"CD " + DaemonController.Instance.Paths.PlaydarDataPath);
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');

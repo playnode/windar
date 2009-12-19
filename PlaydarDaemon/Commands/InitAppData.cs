@@ -26,9 +26,18 @@ namespace Windar.PlaydarDaemon.Commands
         public override string Run()
         {
             var cmd = new StringBuilder();
-            cmd.Append("if not exist \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\" ");
-            cmd.Append("xcopy /e \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\etc\"");
-            cmd.Append(" \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\\\"");
+
+            // Make path to %AppData%\Windar\etc
+            cmd.Append("IF NOT EXIST \"").Append(DaemonController.Instance.Paths.PlaydarDataPath);
+            cmd.Append("MKDIR \"").Append(DaemonController.Instance.Paths.PlaydarDataPath);
+            cmd.Append("IF NOT EXIST \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\" ");
+            cmd.Append("MKDIR \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\"");
+
+            // Copy template configuration files, if not already present.
+            cmd.Append("IF NOT EXIST \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\\playdar.conf\" ");
+            cmd.Append("COPY \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\etc\\playdar.conf\"");
+            cmd.Append("IF NOT EXIST \"").Append(DaemonController.Instance.Paths.PlaydarDataPath).Append("\\etc\\playdartcp.conf\" ");
+            cmd.Append("COPY \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\etc\\playdartcp.conf\"");
 
             Runner.SkipLogInfoOutput = true;
             Runner.RunCommand(cmd.ToString());

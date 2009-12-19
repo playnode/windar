@@ -74,6 +74,7 @@ namespace Windar.TrayApp
 #endif
 
             //TODO: Re-add tabs.
+            optionsTabControl.TabPages.Remove(modsTabPage);
             optionsTabControl.TabPages.Remove(pluginsTabPage);
             optionsTabControl.TabPages.Remove(propsTabPage);
 
@@ -662,7 +663,7 @@ namespace Windar.TrayApp
             cellEndEditTimer.Stop();
         }
 
-        #region General options page.
+        #region General options.
 
         private void SetupGeneralOptionsPage()
         {
@@ -897,7 +898,7 @@ namespace Windar.TrayApp
 
         #endregion
 
-        #region Library page.
+        #region Local library.
 
         private void SetupLibraryPage()
         {
@@ -1243,7 +1244,7 @@ namespace Windar.TrayApp
 
         #endregion
 
-        #region Playdar modules
+        #region Resolvers
 
         private void SetupModulesPage()
         {
@@ -1279,17 +1280,12 @@ namespace Windar.TrayApp
 
         #endregion
 
+        #region Plugins
+
         private void SetupPluginsPage()
         {
             PluginsPage options;
             _optionsPage = options = new PluginsPage();
-            _optionsPage.Load();
-        }
-
-        private void SetupPluginsPropertiesPage()
-        {
-            PluginPropertiesPage options;
-            _optionsPage = options = new PluginPropertiesPage();
             _optionsPage.Load();
         }
 
@@ -1298,10 +1294,23 @@ namespace Windar.TrayApp
 
         }
 
+        #endregion
+
+        #region Plugin properties.
+
+        private void SetupPluginsPropertiesPage()
+        {
+            PluginPropertiesPage options;
+            _optionsPage = options = new PluginPropertiesPage();
+            _optionsPage.Load();
+        }
+
         private void propsGrid_MouseDown(object sender, MouseEventArgs e)
         {
 
         }
+
+        #endregion
 
         #endregion
     }
