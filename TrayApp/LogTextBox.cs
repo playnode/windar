@@ -24,7 +24,6 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 using log4net.Appender;
-using Timer=System.Windows.Forms.Timer;
 
 namespace Windar.TrayApp
 {
@@ -185,7 +184,7 @@ namespace Windar.TrayApp
                     var msg = logEvent.RenderedMessage;
                     if (msg.StartsWith("CMD.INF: "))
                     {
-                        var str = msg.Substring(9, msg.Length - 9).Trim();
+                        var str = msg.Substring(9, msg.Length - 9).TrimEnd();
                         if (str.Length > 0)
                         {
                             sb.Append(str);
@@ -194,7 +193,7 @@ namespace Windar.TrayApp
                     }
                     else if (msg.StartsWith("CMD.ERR: "))
                     {
-                        var str = msg.Substring(9, msg.Length - 9).Trim();
+                        var str = msg.Substring(9, msg.Length - 9).TrimEnd();
                         if (str.Length > 0)
                         {
                             sb.Append("ERROR! ").Append(str);

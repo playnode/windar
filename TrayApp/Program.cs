@@ -57,6 +57,7 @@ namespace Windar.TrayApp
         internal Tray Tray { get; private set; }
         internal PluginHost PluginHost { get; private set; }
         internal Queue<string> ScanQueue { get; private set; }
+        internal bool Indexing { get; private set; }
 
         internal class ConfigGroup
         {
@@ -67,9 +68,7 @@ namespace Windar.TrayApp
         // NOTE: Config set to null on config load exception.
         internal ConfigGroup Config { get; private set; }
 
-        internal delegate void EnableReIndexButtonCallback();
-
-        private bool _scanning;
+        internal delegate void ScanCompletedCallback();
 
         #region Win32 API
 
@@ -378,25 +377,14 @@ namespace Windar.TrayApp
 
         internal void ShowTrayInfo(string msg)
         {
-            ShowTrayInfo(msg, false);
-        }
-
-        internal void ShowTrayInfo(string msg, bool persist)
-        {
-            ShowTrayInfo(msg, ToolTipIcon.Info, persist);
+            ShowTrayInfo(msg, ToolTipIcon.Info);
         }
 
         internal void ShowTrayInfo(string msg, ToolTipIcon icon)
         {
-            ShowTrayInfo(msg, icon, false);
-        }
-
-        internal void ShowTrayInfo(string msg, ToolTipIcon icon, bool persist)
-        {
             if (!Properties.Settings.Default.ShowBalloons) return;
             Tray.NotifyIcon.Visible = true;
-            var timeout = persist ? 60*60 : 3;
-            Tray.NotifyIcon.ShowBalloonTip(timeout, "Windar", msg, icon);
+            Tray.NotifyIcon.ShowBalloonTip(3, "Windar", msg, icon);
         }
 
         #endregion
@@ -545,8 +533,9 @@ namespace Windar.TrayApp
         internal void AddScanPath(string path)
         {
             ScanQueue.Enqueue(path);
-            if (_scanning) return;
-            _scanning = true;
+            if (Indexing) return;
+            Indexing = true;
+            ShowTrayInfo("Scan started.");
             Daemon.Scan(ScanQueue.Dequeue());
         }
 
@@ -564,7 +553,7 @@ namespace Windar.TrayApp
 
         private void PlaydarStartFailed(object sender, EventArgs e)
         {
-            ShowTrayInfo("Playdar failed to start!", true);
+            ShowTrayInfo("Playdar failed to start!");
         }
 
         private void ScanCompleted(object sender, EventArgs e)
@@ -572,21 +561,11 @@ namespace Windar.TrayApp
             if (ScanQueue.Count > 0) Daemon.Scan(ScanQueue.Dequeue());
             else
             {
-                ShowTrayInfo("Scan completed.", true);
-                _scanning = false;
-
-                if (MainForm.ReIndexButton.InvokeRequired)
-                {
-                    // It's on a different thread, so use Invoke.
-                    var d = new EnableReIndexButtonCallback(EnableReIndexButton);
-                    MainForm.ReIndexButton.Invoke(d, new object[] { });
-                }
+                Indexing = false;
+                ShowTrayInfo("Scan completed.");
+                var d = new ScanCompletedCallback(MainForm.ScanCompleted);
+                MainForm.Invoke(d);
             }
-        }
-
-        private void EnableReIndexButton()
-        {
-            MainForm.ReIndexButton.Enabled = true;
         }
 
         #endregion

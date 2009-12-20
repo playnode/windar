@@ -26,9 +26,9 @@
 ;-----------------------------------------------------------------------------
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_SECTION_SC_START_MENU
+!define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
 !define OPTION_SECTION_SC_QUICK_LAUNCH
-!define OPTION_SECTION_SC_STARTUP
 !define OPTION_FINISHPAGE
 !define OPTION_FINISHPAGE_LAUNCHER
 !define OPTION_FINISHPAGE_RELEASE_NOTES
@@ -476,10 +476,10 @@ SectionGroupEnd
 SectionGroup "Shortcuts"
 
 !ifdef OPTION_SECTION_SC_START_MENU
-   ${MementoSection} "Start Menu Shortcuts" SEC_START_MENU
+   ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
       SectionIn 1 2
 
-      DetailPrint "Creating Start Menu Shortcuts"
+      DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
 
       RMDir /r "$SMPROGRAMS\Windar"
       CreateDirectory "$SMPROGRAMS\Windar"
@@ -488,6 +488,14 @@ SectionGroup "Shortcuts"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
+   ${MementoSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
+      SectionIn 1 2
+      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
+      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
    ${MementoSectionEnd}
 !endif
 
@@ -504,14 +512,6 @@ SectionGroup "Shortcuts"
       SectionIn 1 2
       DetailPrint "Creating Quick Launch Shortcut"
       CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_STARTUP
-   ${MementoSection} "Startup Folder Shortcut" SEC_STARTUP_FOLDER
-      SectionIn 1 2
-      DetailPrint "Adding shortcut in Startup folder to restart Windar on Windows login."
-      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
    ${MementoSectionEnd}
 !endif
 
@@ -535,8 +535,8 @@ ${MementoSectionDone}
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_QUICK_LAUNCH} "Quick Launch shortcut for Windar."
 !endif
-!ifdef OPTION_SECTION_SC_STARTUP
-   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_STARTUP_FOLDER} "Startup shortcut for Windar."
+!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_STARTUP_FOLDER} "Startup folder shortcut to start Windar on login."
 !endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 

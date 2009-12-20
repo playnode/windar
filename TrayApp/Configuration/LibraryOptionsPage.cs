@@ -22,23 +22,26 @@ namespace Windar.TrayApp.Configuration
 {
     class LibraryOptionsPage : IOptionsPage
     {
-        private bool _scanpathsChange;
+        private List<string> _scanPaths;
+        private bool _scanPathsChanged;
 
+        public int SavedScanPathCount { get; private set; }
         public bool ScanPathValueChanged { get; set; }
-        public bool NewPathsToAdd { get; set; }
+        public bool ScanPathsToAdd { get; set; }
+        public bool ScanPathsRemoved { get; private set; }
 
         public void Load()
         {
-            // Nothing to do.
+            SavedScanPathCount = ScanPaths.Count;
         }
 
         public bool Changed
         {
             get
             {
-                return _scanpathsChange
+                return _scanPathsChanged
                        || ScanPathValueChanged
-                       || NewPathsToAdd;
+                       || ScanPathsToAdd;
             }
         }
 
@@ -50,20 +53,25 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.Config.Main.ListScanPaths();
+                if (_scanPaths == null) 
+                    _scanPaths = Program.Instance.Config.Main.ListScanPaths();
+                return _scanPaths;
             }
         }
 
         public void RemoveScanPath(string path)
         {
             Program.Instance.Config.Main.RemoveScanPath(path);
-            _scanpathsChange = true;
+            ScanPathsRemoved = true;
+            _scanPaths = Program.Instance.Config.Main.ListScanPaths();
+            _scanPathsChanged = true;
         }
 
         public void AddScanPath(string path)
         {
             Program.Instance.Config.Main.AddScanPath(path);
-            _scanpathsChange = true;
+            _scanPaths = Program.Instance.Config.Main.ListScanPaths();
+            _scanPathsChanged = true;
         }
 
         #endregion
