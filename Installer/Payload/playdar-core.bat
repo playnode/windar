@@ -8,7 +8,7 @@ IF NOT EXIST "%AppData%\Windar\etc" MKDIR "%AppData%\Windar\etc"
 IF NOT EXIST "%AppData%\Windar\etc\playdar.conf" COPY "%PLAYDAR_HOME%etc\playdar.conf" %PLAYDAR_ETC%
 IF NOT EXIST "%AppData%\Windar\etc\playdartcp.conf" COPY "%PLAYDAR_HOME%etc\playdartcp.conf" %PLAYDAR_ETC%
 
-CD %AppData%\Windar
+CD %PLAYDAR_HOME%
 
 SET PLAYDAR_CMD="%PLAYDAR_HOME%..\minimerl\bin\erl.exe"
 SET PLAYDAR_CMD=%PLAYDAR_CMD% -sname playdar@localhost

@@ -18,7 +18,6 @@
 
 using System;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
@@ -37,20 +36,17 @@ namespace Windar.TrayApp
     {
         #region Win32 API
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(HandleRef hWnd, int msg, int wParam, string lParam);
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPStr)] string lParam);
 
         [DllImport("ole32", EntryPoint = "CoTaskMemFree", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        public static extern int CoTaskMemFree(IntPtr hMem);
-
-        [DllImport("kernel32", EntryPoint = "lstrcat", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        public static extern IntPtr Lstrcat(string lpString1, string lpString2);
+        private static extern int CoTaskMemFree(IntPtr hMem);
 
         [DllImport("shell32", EntryPoint = "SHBrowseForFolder", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        public static extern IntPtr ShBrowseForFolder(ref BrowseInfo lpbi);
+        private static extern IntPtr ShBrowseForFolder(ref BrowseInfo lpbi);
 
         [DllImport("shell32", EntryPoint = "SHGetPathFromIDList", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        public static extern int ShGetPathFromIdList(IntPtr pidList, StringBuilder lpBuffer);
+        private static extern int ShGetPathFromIdList(IntPtr pidList, StringBuilder lpBuffer);
 
         #endregion
 
@@ -94,7 +90,12 @@ namespace Windar.TrayApp
 
         public int OnBrowseEvent(IntPtr hWnd, int msg, IntPtr lp, IntPtr lpData)
         {
-            if (msg == 1) SendMessage(new HandleRef(null, hWnd), 1127, 1, InitialPath);
+            if (msg == 1)
+            {
+                // BFFM_INITIALIZED = 1
+                // BFFM_SETSELECTIONW = 0x400 + 103;
+                SendMessage(hWnd, 1127, new IntPtr(1), InitialPath);
+            }
             return 0;
         }
 

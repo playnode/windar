@@ -427,7 +427,7 @@ Section "Playdar Core" SEC_PLAYDAR
      "Found $0 erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
      IDYES erl_killproc IDNO erl_completed    
    erl_killproc:
-      StrCpy $0 "epmd.exe"
+      StrCpy $0 "erl.exe"
       DetailPrint "Killing all processes called '$0'"
       KillProc::KillProcesses
       StrCmp $1 "-1" erl_error

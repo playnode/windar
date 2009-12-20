@@ -47,6 +47,7 @@ namespace Windar.TrayApp
         private FormWindowState _lastWindowState;
         private Size _oldSize;
         private IOptionsPage _optionsPage;
+        private int _navLoopCount;
 
         #region Init
 
@@ -277,8 +278,11 @@ namespace Windar.TrayApp
         private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             var url = e.Url.ToString();
-            if (Log.IsDebugEnabled && url != "about:blank")
-                Log.Debug("Navigating to " + url);
+            if (Log.IsDebugEnabled) Log.Debug("Navigating to " + url);
+
+            // Protect from loop if Internet Explorer is going haywire.
+            if (!url.Equals("about:blank")) _navLoopCount = 0;
+            else if (_navLoopCount++ > 2) return;
 
             // Make sure the page isn't from the cache!
             DeleteUrlCacheEntry(url);
@@ -1233,10 +1237,8 @@ namespace Windar.TrayApp
 
         private static void ShowTracklist()
         {
-            var build = new StringBuilder();
             var lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
-            Array.Sort(lines);
-            var n = 0;
+            var build = new StringBuilder();
             foreach (var str in lines)
             {
                 var line = str.Trim();
@@ -1274,8 +1276,20 @@ namespace Windar.TrayApp
                 // Length
                 //build.Append(fields[5]);
 
-                build.Append(Environment.NewLine);
+                build.Append('\n');
+            }
+
+            // Sort the formatted lines.
+            lines = build.ToString().Trim().Split('\n');
+            Array.Sort(lines);
+
+            var n = 0;
+            build = new StringBuilder();
+            foreach (var line in lines)
+            {
                 n++;
+                build.Append(line);
+                build.Append(Environment.NewLine);
             }
 
             Program.Instance.WaitingDialog.Stop();
@@ -1346,15 +1360,40 @@ namespace Windar.TrayApp
         private string SelectScanPath(string initialFolder)
         {
             string result = null;
-            var dialog = new DirectoryDialog
+            const string description = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library.";
+            try
             {
-                BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
-                Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
-            };
-            if (!string.IsNullOrEmpty(initialFolder)) dialog.InitialPath = initialFolder;
-            _inDirectoryDialog = true;
-            if (dialog.ShowDialog(this) == DialogResult.OK) result = dialog.Selected;
-            _inDirectoryDialog = false;
+                var dialog = new DirectoryDialog
+                {
+                    BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
+                    Title = description
+                };
+                
+                if (!string.IsNullOrEmpty(initialFolder)) 
+                    dialog.InitialPath = initialFolder;
+                
+                _inDirectoryDialog = true;
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                    result = dialog.Selected;
+                _inDirectoryDialog = false;
+            }
+            catch (AccessViolationException ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("DirectoryDialog. " + ex.Message);
+
+                // NOTE: Exception thrown on XP, related to P/Invoke.
+                // Fall back on .NET alternative.
+                var dialog = new FolderBrowserDialog
+                                 {
+                                     Description = description,
+                                     ShowNewFolderButton = false
+                                 };
+
+                _inDirectoryDialog = true;
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                    result = dialog.SelectedPath;
+                _inDirectoryDialog = false;
+            }
             return result;
         }
 
