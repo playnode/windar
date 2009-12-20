@@ -87,7 +87,7 @@ namespace Windar.TrayApp
             this.libraryTabPage = new System.Windows.Forms.TabPage();
             this.libraryPanel = new System.Windows.Forms.Panel();
             this.deleteIndexButton = new System.Windows.Forms.Button();
-            this.buildIndexButton = new System.Windows.Forms.Button();
+            this.rebuildIndexButton = new System.Windows.Forms.Button();
             this.tracklistButton = new System.Windows.Forms.Button();
             this.libraryGrid = new System.Windows.Forms.DataGridView();
             this.LibraryItemPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -446,7 +446,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 89.08297F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.91703F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 184F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 137F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 138F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -467,7 +467,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(200, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(199, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -478,7 +478,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(230, 3);
+            this.label6.Location = new System.Drawing.Point(229, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -489,7 +489,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(408, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(407, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -501,7 +501,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(53, 3);
+            this.label2.Location = new System.Drawing.Point(52, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -511,7 +511,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 23);
+            this.label5.Location = new System.Drawing.Point(19, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
             this.label5.TabIndex = 8;
@@ -521,7 +521,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(200, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(199, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -636,7 +636,7 @@ namespace Windar.TrayApp
             this.libraryPanel.BackColor = System.Drawing.SystemColors.Control;
             this.libraryPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.libraryPanel.Controls.Add(this.deleteIndexButton);
-            this.libraryPanel.Controls.Add(this.buildIndexButton);
+            this.libraryPanel.Controls.Add(this.rebuildIndexButton);
             this.libraryPanel.Controls.Add(this.tracklistButton);
             this.libraryPanel.Controls.Add(this.libraryGrid);
             this.libraryPanel.Controls.Add(this.libraryCancelButton);
@@ -659,16 +659,16 @@ namespace Windar.TrayApp
             this.deleteIndexButton.UseVisualStyleBackColor = true;
             this.deleteIndexButton.Click += new System.EventHandler(this.deleteIndexButton_Click);
             // 
-            // buildIndexButton
+            // rebuildIndexButton
             // 
-            this.buildIndexButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buildIndexButton.Location = new System.Drawing.Point(415, 337);
-            this.buildIndexButton.Name = "buildIndexButton";
-            this.buildIndexButton.Size = new System.Drawing.Size(80, 23);
-            this.buildIndexButton.TabIndex = 24;
-            this.buildIndexButton.Text = "Build Index";
-            this.buildIndexButton.UseVisualStyleBackColor = true;
-            this.buildIndexButton.Click += new System.EventHandler(this.buildIndexButton_Click);
+            this.rebuildIndexButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.rebuildIndexButton.Location = new System.Drawing.Point(415, 337);
+            this.rebuildIndexButton.Name = "rebuildIndexButton";
+            this.rebuildIndexButton.Size = new System.Drawing.Size(80, 23);
+            this.rebuildIndexButton.TabIndex = 24;
+            this.rebuildIndexButton.Text = "Rebuild Index";
+            this.rebuildIndexButton.UseVisualStyleBackColor = true;
+            this.rebuildIndexButton.Click += new System.EventHandler(this.rebuildIndexButton_Click);
             // 
             // tracklistButton
             // 
@@ -1470,6 +1470,6 @@ namespace Windar.TrayApp
         private System.Windows.Forms.Timer cellEndEditTimer;
         private System.Windows.Forms.Button tracklistButton;
         internal System.Windows.Forms.Button deleteIndexButton;
-        private System.Windows.Forms.Button buildIndexButton;
+        private System.Windows.Forms.Button rebuildIndexButton;
     }
 }

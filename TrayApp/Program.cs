@@ -564,7 +564,7 @@ namespace Windar.TrayApp
                 Indexing = false;
                 ShowTrayInfo("Scan completed.");
                 var d = new ScanCompletedCallback(MainForm.ScanCompleted);
-                MainForm.Invoke(d);
+                if (MainForm != null) MainForm.Invoke(d);
             }
         }
 

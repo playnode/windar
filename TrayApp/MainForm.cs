@@ -633,7 +633,7 @@ namespace Windar.TrayApp
                 if (result == DialogResult.Cancel) return false;
                 if (result == DialogResult.No) _optionsPage = null;
                 else if (_optionsPage is GeneralOptionsPage) SaveGeneralOptions();
-                else if (_optionsPage is LibraryOptionsPage) SaveAndReloadLibrarySettings();
+                else if (_optionsPage is LibraryOptionsPage) BuildLibrary();
                 ResetOptionsPagesButtons();
             }
             return true;
@@ -921,7 +921,7 @@ namespace Windar.TrayApp
             libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void SaveAndReloadLibrarySettings()
+        private void SaveLibrarySettings()
         {
             var options = (LibraryOptionsPage) _optionsPage;
 
@@ -952,12 +952,16 @@ namespace Windar.TrayApp
             }
 
             Program.Instance.SaveConfiguration();
+        }
 
+        private void ReloadLibrarySettings()
+        {
             // Attempt to reload the configuration files.
             // Don't continue to apply changes dialog if load fails.
             if (!Program.Instance.LoadConfiguration()) return;
 
             // Reload options.
+            LibraryOptionsPage options;
             _optionsPage = options = new LibraryOptionsPage();
             _optionsPage.Load();
 
@@ -984,7 +988,7 @@ namespace Windar.TrayApp
             libraryCancelButton.Enabled = false;
             tracklistButton.Enabled = false;
             deleteIndexButton.Enabled = false;
-            buildIndexButton.Enabled = false;
+            rebuildIndexButton.Enabled = false;
         }
 
         private void UpdateLibraryControls()
@@ -992,19 +996,17 @@ namespace Windar.TrayApp
             if (_optionsPage == null || !(_optionsPage is LibraryOptionsPage)) return;
             var options = (LibraryOptionsPage) _optionsPage;
 
-            var indexing = Program.Instance.Indexing;
-            var savedPaths = options.SavedScanPathCount;
-            var gridRows = libraryGrid.Rows.Count;
-
             // Save and cancel buttons.
             librarySaveButton.Enabled = options.Changed;
             libraryCancelButton.Enabled = options.Changed;
 
             // Context menu.
+            var indexing = Program.Instance.Indexing;
             libraryContextMenu.Enabled = !indexing;
 
             // Re-index, tracklist and delete index buttons.
-            buildIndexButton.Enabled = !indexing && (savedPaths > 0 || gridRows > 0);
+            var savedPaths = options.SavedScanPathCount;
+            rebuildIndexButton.Enabled = !indexing && savedPaths > 0;
             tracklistButton.Enabled = !indexing && savedPaths > 0;
             deleteIndexButton.Enabled = !indexing && savedPaths > 0;
         }
@@ -1034,6 +1036,18 @@ namespace Windar.TrayApp
         {
             var path = SelectScanPath();
             if (string.IsNullOrEmpty(path)) return;
+
+            // Ensure the path isn't already in the list.
+            foreach (var obj in libraryGrid.Rows)
+            {
+                var row = (DataGridViewRow) obj;
+                var value = (string) row.Cells[0].Value;
+                if (path == value)
+                {
+                    row.Selected = true;
+                    return;
+                }
+            }
 
             libraryGrid.Rows.Add(GetNewScanPathRow(path));
             ((LibraryOptionsPage) _optionsPage).ScanPathsToAdd = true;
@@ -1075,8 +1089,7 @@ namespace Windar.TrayApp
 
         private void librarySaveButton_Click(object sender, EventArgs e)
         {
-            SaveAndReloadLibrarySettings();
-            UpdateLibraryControls();
+            BuildLibrary();
         }
 
         private void libraryCancelButton_Click(object sender, EventArgs e)
@@ -1111,7 +1124,8 @@ namespace Windar.TrayApp
             var options = (LibraryOptionsPage) _optionsPage;
             foreach (var path in options.ScanPaths) options.RemoveScanPath(path);
 
-            SaveAndReloadLibrarySettings();
+            SaveLibrarySettings();
+            ReloadLibrarySettings();
             UpdateLibraryControls();
 
             Program.ShowInfoDialog("Index deleted.");
@@ -1129,11 +1143,13 @@ namespace Windar.TrayApp
             Program.Instance.Daemon.Start();
         }
 
-        private void buildIndexButton_Click(object sender, EventArgs e)
+        private void rebuildIndexButton_Click(object sender, EventArgs e)
         {
-            DisableLibraryControls();
-            Application.DoEvents();
+            BuildLibrary();
+        }
 
+        private void BuildLibrary()
+        {
             var options = (LibraryOptionsPage) _optionsPage;
             if (options.ScanPathsRemoved)
             {
@@ -1142,27 +1158,37 @@ namespace Windar.TrayApp
                 msg.Append("Do you wish to continue?");
                 if (!Program.ShowYesNoDialog(msg.ToString())) return;
 
+                DisableLibraryControls();
                 DeleteIndexFiles();
-                SaveAndReloadLibrarySettings();
+                SaveLibrarySettings();
 
                 // Queue the folders to be re-scanned.
                 foreach (var path in options.ScanPaths)
                     Program.Instance.AddScanPath(path);
+
+                ReloadLibrarySettings();
             }
             else
             {
+                DisableLibraryControls();
+
                 // Queue the new folders to be scanned.
                 foreach (var obj in libraryGrid.Rows)
                 {
                     var row = (DataGridViewRow) obj;
                     if (row.Tag != null) continue;
                     var value = (string) row.Cells[0].Value;
+
+                    // Deselect
+                    libraryGrid.CurrentCell = null;
+                    if (libraryGrid.Rows.Count <= 0) return;
+                    libraryGrid.Rows[0].Selected = false;
+
                     Program.Instance.AddScanPath(value);
                 }
-
-                SaveAndReloadLibrarySettings();
+                SaveLibrarySettings();
+                ReloadLibrarySettings();
             }
-
             UpdateLibraryControls();
         }
 
