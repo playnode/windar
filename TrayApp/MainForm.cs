@@ -34,6 +34,8 @@ namespace Windar.TrayApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
+        internal delegate void ShowTracklistCallback(string text, int n);
+
         [DllImport("wininet.dll", SetLastError = true)]
         private static extern long DeleteUrlCacheEntry(string lpszUrlName);
 
@@ -275,7 +277,8 @@ namespace Windar.TrayApp
         private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             var url = e.Url.ToString();
-            if (Log.IsDebugEnabled) Log.Debug("Navigating to " + url);
+            if (Log.IsDebugEnabled && url != "about:blank")
+                Log.Debug("Navigating to " + url);
 
             // Make sure the page isn't from the cache!
             DeleteUrlCacheEntry(url);
@@ -404,7 +407,10 @@ namespace Windar.TrayApp
 
             if (_exiting) return;
 
-            if (!Program.Instance.Daemon.Started) Program.Shutdown();
+            if (!Program.Instance.Daemon.Started)
+            {
+                Program.Shutdown();
+            }
             else
             {
                 e.Cancel = true;
@@ -633,7 +639,7 @@ namespace Windar.TrayApp
                 if (result == DialogResult.Cancel) return false;
                 if (result == DialogResult.No) _optionsPage = null;
                 else if (_optionsPage is GeneralOptionsPage) SaveGeneralOptions();
-                else if (_optionsPage is LibraryOptionsPage) BuildLibrary();
+                else if (_optionsPage is LibraryOptionsPage) BuildLibrary(false);
                 ResetOptionsPagesButtons();
             }
             return true;
@@ -1091,7 +1097,7 @@ namespace Windar.TrayApp
 
         private void librarySaveButton_Click(object sender, EventArgs e)
         {
-            BuildLibrary();
+            BuildLibrary(false);
         }
 
         private void libraryCancelButton_Click(object sender, EventArgs e)
@@ -1147,13 +1153,13 @@ namespace Windar.TrayApp
 
         private void rebuildIndexButton_Click(object sender, EventArgs e)
         {
-            BuildLibrary();
+            BuildLibrary(true);
         }
 
-        private void BuildLibrary()
+        private void BuildLibrary(bool alwaysRebuild)
         {
             var options = (LibraryOptionsPage) _optionsPage;
-            if (options.ScanPathsRemoved)
+            if (options.ScanPathsRemoved || alwaysRebuild)
             {
                 var msg = new StringBuilder();
                 msg.Append("Playdar will need to be restarted.").Append(Environment.NewLine);
@@ -1220,10 +1226,12 @@ namespace Windar.TrayApp
 
         private void tracklistButton_Click(object sender, EventArgs e)
         {
-            ShowTrackListDialog();
+            Program.Instance.WaitingDialog.Do = ShowTracklist;
+            Program.Instance.WaitingDialog.StatusLabel.Text = "Getting tracklist...";
+            Program.Instance.WaitingDialog.ShowDialog();
         }
 
-        private static void ShowTrackListDialog()
+        private static void ShowTracklist()
         {
             var build = new StringBuilder();
             var lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
@@ -1270,9 +1278,17 @@ namespace Windar.TrayApp
                 n++;
             }
 
+            Program.Instance.WaitingDialog.Stop();
+            var d = new ShowTracklistCallback(ShowTracklistOutput);
+            var args = new object[] { build.ToString().Trim(), n };
+            Program.Instance.MainForm.Invoke(d, args);
+        }
+
+        private static void ShowTracklistOutput(string text, int n)
+        {
             var dialog = new OutputDisplay
             {
-                TextBox = { Text = build.ToString().Trim() },
+                TextBox = { Text = text },
                 Text = n == 1 ? "Track List (1 track)" : "Track List (" + n + " tracks)"
             };
 

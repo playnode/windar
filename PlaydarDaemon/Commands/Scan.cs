@@ -46,7 +46,8 @@ namespace Windar.PlaydarDaemon.Commands
             cmd.Append(" -noinput");
             cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
-            cmd.Append(" -extra playdar@localhost \"scan\" \"").Append(ScanPath).Append("\"");
+            cmd.Append(" -extra playdar@localhost \"scan\" \"");
+            cmd.Append(ScanPath).Append("\"");
 
             Runner.RunCommand(cmd.ToString());
         }

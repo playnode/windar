@@ -36,6 +36,8 @@ namespace Windar.TrayApp
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
+        internal delegate void ScanCompletedCallback();
+
         internal static Program Instance { get; private set; }
 
         internal string PlaydarDaemon
@@ -69,8 +71,6 @@ namespace Windar.TrayApp
         // NOTE: Config set to null on config load exception.
         internal ConfigGroup Config { get; private set; }
 
-        internal delegate void ScanCompletedCallback();
-
         #region Win32 API
 
         [DllImport("user32.dll")]
@@ -96,11 +96,16 @@ namespace Windar.TrayApp
                 if (notCurrentlyShown)
                 {
                     if (Log.IsInfoEnabled) Log.Info("Starting.");
+
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
+                    
                     Instance = new Program();
+
+                    // Register shutdown/logout handler.
                     _controlHandler += ControlHandler;
                     SetConsoleCtrlHandler(_controlHandler, true);
+
 #if DEBUG
                     Instance.Run();
 #else
@@ -113,7 +118,10 @@ namespace Windar.TrayApp
                         if (Log.IsErrorEnabled) Log.Error("Exception in Main", ex);
                     }
 #endif
+
+                    // Unregister shutdown/logout handler.
                     SetConsoleCtrlHandler(_controlHandler, false);
+
                     if (Log.IsInfoEnabled) Log.Info("Finished.");
                 }
                 else
@@ -132,7 +140,9 @@ namespace Windar.TrayApp
         private Program()
         {
             Instance = this;
+
             SetupShutdownFileWatcher();
+            
             Config = new ConfigGroup();
             Paths = new WindarPaths(Application.StartupPath);
             Daemon = new DaemonController(Paths);
@@ -158,7 +168,10 @@ namespace Windar.TrayApp
             PluginHost.Load();
             Daemon.Start();
 
-            if (Properties.Settings.Default.MainFormVisible) MainForm.EnsureVisible();
+            if (Properties.Settings.Default.MainFormVisible)
+            {
+                MainForm.EnsureVisible();
+            }
             else
             {
                 // Need to call the EnsureVisible method to ensure
@@ -177,12 +190,8 @@ namespace Windar.TrayApp
 
         internal static void Shutdown()
         {
-            Shutdown(false);
-        }
-
-        internal static void Shutdown(bool cancelSave)
-        {
             if (Log.IsInfoEnabled) Log.Info("Shutting down.");
+
             if (Instance.PluginHost != null)
             {
                 try
@@ -194,6 +203,7 @@ namespace Windar.TrayApp
                     if (Log.IsErrorEnabled) Log.Error("PluginHost shutdown exception.", ex);
                 }
             }
+
             if (Instance.Daemon != null)
             {
                 try
@@ -205,17 +215,7 @@ namespace Windar.TrayApp
                     if (Log.IsErrorEnabled) Log.Error("Daemon shutdown exception.", ex);
                 }
             }
-            if (Instance.MainForm != null)
-            {
-                try
-                {
-                    Instance.MainForm.Exit();
-                }
-                catch (Exception ex)
-                {
-                    if (Log.IsErrorEnabled) Log.Error("MainForm shutdown exception.", ex);
-                }
-            }
+
             if (Instance.Tray != null)
             {
                 try
@@ -229,7 +229,20 @@ namespace Windar.TrayApp
                     if (Log.IsErrorEnabled) Log.Error("Tray shutdown exception.", ex);
                 }
             }
-            Application.Exit();
+            
+            if (Instance.WaitingDialog != null)
+                Instance.WaitingDialog.Stop();
+            
+            if (Instance.MainForm == null) return;
+
+            try
+            {
+                Instance.MainForm.Exit();
+            }
+            catch (Exception ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("MainForm shutdown exception.", ex);
+            }
         }
 
         #region So far unsuccessful attempt to get file-system shutdown/log-off events.
@@ -262,9 +275,10 @@ namespace Windar.TrayApp
                 case ControlEventType.CtrlCloseEvent:
                 case ControlEventType.CtrlLogoffEvent:
                 case ControlEventType.CtrlShutdownEvent:
+
                     // Return true to show that the event was handled.
+                    Shutdown();
                     result = true;
-                    Shutdown(false);
                     break;
             }
             return result;
@@ -321,6 +335,7 @@ namespace Windar.TrayApp
         {
             string errMsg = null;
             if (Log.IsErrorEnabled) Log.Error(msg, ex);
+
             if (ex != null && ex.Message != null) errMsg = ex.Message;
             var msgBuild = new StringBuilder();
             if (errMsg != null)
@@ -330,13 +345,17 @@ namespace Windar.TrayApp
                     msgBuild.Append('.');
                 msgBuild.Append(' ');
             }
+            
             msgBuild.Append("Quit program?");
+            
             var result = MessageBox.Show(msgBuild.ToString(),
                                          msg, 
                                          MessageBoxButtons.YesNo, 
                                          MessageBoxIcon.Exclamation,
                                          MessageBoxDefaultButton.Button2);
+            
             if (result != DialogResult.Yes) return;
+            
             if (MessageBox.Show("Are you sure?", "Confirm quit program", 
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 Shutdown();

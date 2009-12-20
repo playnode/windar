@@ -33,14 +33,20 @@ namespace Windar.TrayApp
             InitializeComponent();
         }
 
+        private void SetRun(bool run)
+        {
+            _run = run;
+            Program.Instance.Tray.ToggleMainFormOptions(!_run);
+        }
+
         public void Stop()
         {
-            _run = false;
+            SetRun(false);
         }
 
         private void WaitingDialog_Shown(object sender, System.EventArgs e)
         {
-            _run = true;
+            SetRun(true);
             if (Do != null) backgroundWorker.RunWorkerAsync();
             while (_run)
             {
@@ -58,7 +64,7 @@ namespace Windar.TrayApp
 
         private void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            _run = false;
+            SetRun(false);
         }
     }
 }

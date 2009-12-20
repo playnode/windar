@@ -118,6 +118,14 @@ namespace Windar.TrayApp
 
         #endregion
 
+        internal void ToggleMainFormOptions(bool enable)
+        {
+            _aboutMenuItem.Visible = enable;
+            _daemonMenuItem.Visible = enable;
+            _scanfilesMenuItem.Visible = enable;
+            _restartMenuItem.Visible = enable;
+        }
+
         #region Menu option click handlers.
 
         #region Playdar controller commands.

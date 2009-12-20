@@ -89,7 +89,7 @@ namespace Windar.PlaydarDaemon
             cmd.PlaydarStartFailed += StartCmd_PlaydarStartFailed;
             cmd.RunAsync();
             Started = true;
-            System.Threading.Thread.Sleep(250);
+            System.Threading.Thread.Sleep(500);
         }
 
         public void Stop()
@@ -97,7 +97,7 @@ namespace Windar.PlaydarDaemon
             Cmd<Stop>.Create().Run();
             Started = false;
             PlaydarStopped(this, new EventArgs());
-            System.Threading.Thread.Sleep(250);
+            System.Threading.Thread.Sleep(1000);
         }
 
         public void Restart()
