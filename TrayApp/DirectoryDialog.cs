@@ -94,7 +94,8 @@ namespace Windar.TrayApp
             {
                 // BFFM_INITIALIZED = 1
                 // BFFM_SETSELECTIONW = 0x400 + 103;
-                SendMessage(hWnd, 1127, new IntPtr(1), InitialPath);
+                if (!string.IsNullOrEmpty(InitialPath))
+                    SendMessage(hWnd, 1127, new IntPtr(1), InitialPath);
             }
             return 0;
         }

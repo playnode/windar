@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <log4net>
   <appender name="RollingFileAppender" type="log4net.Appender.RollingFileAppender">
-    <param name="File" value="${APPDATA}\Windar\windar-test.log"/>
+    <param name="File" value="${APPDATA}\Windar2\windar-test.log"/>
     <param name="AppendToFile" value="true"/>
     <param name="MaxSizeRollBackups" value="10"/>
     <param name="MaximumFileSize" value="4096KB"/>

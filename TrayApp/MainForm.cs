@@ -1360,40 +1360,19 @@ namespace Windar.TrayApp
         private string SelectScanPath(string initialFolder)
         {
             string result = null;
-            const string description = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library.";
-            try
+            var dialog = new DirectoryDialog
             {
-                var dialog = new DirectoryDialog
-                {
-                    BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
-                    Title = description
-                };
-                
-                if (!string.IsNullOrEmpty(initialFolder)) 
-                    dialog.InitialPath = initialFolder;
-                
-                _inDirectoryDialog = true;
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                    result = dialog.Selected;
-                _inDirectoryDialog = false;
-            }
-            catch (AccessViolationException ex)
-            {
-                if (Log.IsErrorEnabled) Log.Error("DirectoryDialog. " + ex.Message);
+                BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
+                Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
+            };
 
-                // NOTE: Exception thrown on XP, related to P/Invoke.
-                // Fall back on .NET alternative.
-                var dialog = new FolderBrowserDialog
-                                 {
-                                     Description = description,
-                                     ShowNewFolderButton = false
-                                 };
+            if (!string.IsNullOrEmpty(initialFolder))
+                dialog.InitialPath = initialFolder;
 
-                _inDirectoryDialog = true;
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                    result = dialog.SelectedPath;
-                _inDirectoryDialog = false;
-            }
+            _inDirectoryDialog = true;
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+                result = dialog.Selected;
+            _inDirectoryDialog = false;
             return result;
         }
 
