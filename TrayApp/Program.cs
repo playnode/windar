@@ -58,6 +58,7 @@ namespace Windar.TrayApp
         internal PluginHost PluginHost { get; private set; }
         internal Queue<string> ScanQueue { get; private set; }
         internal bool Indexing { get; private set; }
+        internal WaitingDialog WaitingDialog { get; private set; }
 
         internal class ConfigGroup
         {
@@ -139,6 +140,7 @@ namespace Windar.TrayApp
             MainForm = new MainForm();
             Tray = new Tray();
             PluginHost = new PluginHost();
+            WaitingDialog = new WaitingDialog();
 
             // Register command event handlers.
             Daemon.ScanCompleted += ScanCompleted;
@@ -535,7 +537,6 @@ namespace Windar.TrayApp
             ScanQueue.Enqueue(path);
             if (Indexing) return;
             Indexing = true;
-            ShowTrayInfo("Scan started.");
             Daemon.Scan(ScanQueue.Dequeue());
         }
 

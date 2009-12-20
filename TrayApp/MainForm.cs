@@ -989,6 +989,8 @@ namespace Windar.TrayApp
             tracklistButton.Enabled = false;
             deleteIndexButton.Enabled = false;
             rebuildIndexButton.Enabled = false;
+
+            Application.DoEvents();
         }
 
         private void UpdateLibraryControls()
@@ -1117,8 +1119,10 @@ namespace Windar.TrayApp
             DisableLibraryControls();
             Application.DoEvents();
 
-            // Delete the actual index files.
-            DeleteIndexFiles();
+            // Show waiting dialog while deleting index files.
+            Program.Instance.WaitingDialog.Do = DeleteLibraryIndexFiles;
+            Program.Instance.WaitingDialog.StatusLabel.Text = "Deleting index files...";
+            Program.Instance.WaitingDialog.ShowDialog();
 
             // Delete each path from options.
             var options = (LibraryOptionsPage) _optionsPage;
@@ -1127,11 +1131,9 @@ namespace Windar.TrayApp
             SaveLibrarySettings();
             ReloadLibrarySettings();
             UpdateLibraryControls();
-
-            Program.ShowInfoDialog("Index deleted.");
         }
 
-        private static void DeleteIndexFiles()
+        private static void DeleteLibraryIndexFiles()
         {
             Program.Instance.Daemon.Stop();
             var libraryFilename = Program.Instance.Paths.PlaydarDataPath + @"\library.db";
@@ -1159,20 +1161,32 @@ namespace Windar.TrayApp
                 if (!Program.ShowYesNoDialog(msg.ToString())) return;
 
                 DisableLibraryControls();
-                DeleteIndexFiles();
+
+                // Show waiting dialog while deleting index files.
+                Program.Instance.WaitingDialog.Do = DeleteLibraryIndexFiles;
+                Program.Instance.WaitingDialog.StatusLabel.Text = "Deleting index files...";
+                Program.Instance.WaitingDialog.ShowDialog();
+                
                 SaveLibrarySettings();
 
                 // Queue the folders to be re-scanned.
+                Program.Instance.ShowTrayInfo("Scan started.");
                 foreach (var path in options.ScanPaths)
                     Program.Instance.AddScanPath(path);
 
                 ReloadLibrarySettings();
+
+                // Show waiting dialog while scanning.
+                Program.Instance.WaitingDialog.Do = null;
+                Program.Instance.WaitingDialog.StatusLabel.Text = "Scanning...";
+                Program.Instance.WaitingDialog.ShowDialog();
             }
             else
             {
                 DisableLibraryControls();
 
                 // Queue the new folders to be scanned.
+                Program.Instance.ShowTrayInfo("Scan started.");
                 foreach (var obj in libraryGrid.Rows)
                 {
                     var row = (DataGridViewRow) obj;
@@ -1186,6 +1200,12 @@ namespace Windar.TrayApp
 
                     Program.Instance.AddScanPath(value);
                 }
+
+                // Show waiting dialog while scanning.
+                Program.Instance.WaitingDialog.Do = null;
+                Program.Instance.WaitingDialog.StatusLabel.Text = "Scanning...";
+                Program.Instance.WaitingDialog.ShowDialog();
+
                 SaveLibrarySettings();
                 ReloadLibrarySettings();
             }
@@ -1194,8 +1214,8 @@ namespace Windar.TrayApp
 
         internal void ScanCompleted()
         {
+            Program.Instance.WaitingDialog.Stop();
             UpdateLibraryControls();
-            Program.ShowInfoDialog("Indexing has completed.");
         }
 
         private void tracklistButton_Click(object sender, EventArgs e)
