@@ -1,4 +1,5 @@
 .DS_Store
+*~
 _ReSharper.*
 *.resharper.user
 *.csproj.user
@@ -15,6 +16,7 @@ Installer/Temp
 Installer/Utils/erlini/bin
 Installer/Utils/erlini/obj
 Installer/windar-*.exe
+Installer/build.log
 bin
 obj
 
