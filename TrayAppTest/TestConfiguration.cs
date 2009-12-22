@@ -24,8 +24,8 @@ using System.IO;
 using System.Reflection;
 using log4net;
 using NUnit.Framework;
+using Playnode.ErlangTerms.Parser;
 using Windar.TrayApp.Configuration;
-using Windar.TrayApp.Configuration.Parser;
 
 namespace Windar.TrayApp
 {

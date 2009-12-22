@@ -20,7 +20,7 @@
  ************************************************************************/
 
 using System.Collections.Generic;
-using Windar.TrayApp.Configuration.Parser;
+using Playnode.ErlangTerms.Parser;
 
 namespace Windar.TrayApp.Configuration
 {
@@ -53,7 +53,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _name = new NamedString("name", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_name);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -77,7 +77,7 @@ namespace Windar.TrayApp.Configuration
             {
                 _scripts = new NamedList("scripts", new ListToken());
                 Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(new AddedComment());
                 Document.Tokens.Add(_scripts);
                 Document.Tokens.Add(new TermEndToken());
             }
@@ -106,7 +106,7 @@ namespace Windar.TrayApp.Configuration
             */
 
             Document.Tokens.Add(new WhitespaceToken("\n\n"));
-            Document.Tokens.Add(new WindarAddedComment());
+            Document.Tokens.Add(new AddedComment());
             var list = new ListToken();
 
             // Port
@@ -222,7 +222,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _crossdomain = new NamedBoolean("crossdomain", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_crossdomain);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -246,7 +246,7 @@ namespace Windar.TrayApp.Configuration
             {
                 _blacklist = new NamedList("modules_blacklist", new ListToken());
                 Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(new AddedComment());
                 Document.Tokens.Add(_blacklist);
                 Document.Tokens.Add(new TermEndToken());
             }
@@ -278,7 +278,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _explain = new NamedBoolean("explain", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_explain);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -304,7 +304,7 @@ namespace Windar.TrayApp.Configuration
                 if (_libdbdir == null)
                 {
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     _libdbdir = new TupleToken();
                     var tuple = new TupleToken();
                     tuple.Tokens.Add(new AtomToken("library"));
@@ -367,7 +367,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _authdbdir = new NamedString("authdbdir", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_authdbdir);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -392,7 +392,7 @@ namespace Windar.TrayApp.Configuration
             {
                 _scanpaths = new NamedList("scan_paths", new ListToken());
                 Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(new AddedComment());
                 Document.Tokens.Add(_scanpaths);
                 Document.Tokens.Add(new TermEndToken());
             }

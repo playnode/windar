@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using log4net;
-using Windar.TrayApp.Configuration.Parser;
+using Playnode.ErlangTerms.Parser;
 
 namespace Windar.TrayApp.Configuration
 {
@@ -56,7 +56,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _listen = new NamedBoolean("listen", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_listen);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -80,7 +80,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _port = new NamedInteger("port", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_port);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -104,7 +104,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _share = new NamedBoolean("share", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_share);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -186,7 +186,7 @@ namespace Windar.TrayApp.Configuration
             {
                 _peers = new NamedList("peers", new ListToken());
                 Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                Document.Tokens.Add(new WindarAddedComment());
+                Document.Tokens.Add(new AddedComment());
                 Document.Tokens.Add(_peers);
                 Document.Tokens.Add(new TermEndToken());
             }
@@ -208,7 +208,7 @@ namespace Windar.TrayApp.Configuration
                 }
                 if (n > 0) _peers.List.Tokens.Insert(_peers.List.Tokens.Count - 1, new CommaToken());
                 _peers.List.Tokens.Add(new WhitespaceToken("\n"));
-                _peers.List.Tokens.Add(new WindarAddedComment());
+                _peers.List.Tokens.Add(new AddedComment());
                 tuple = new TupleToken();
                 tuple.Tokens.Add(new StringToken(host));
                 tuple.Tokens.Add(new CommaToken());
@@ -277,7 +277,7 @@ namespace Windar.TrayApp.Configuration
                         // Remove previous Windar comment (if applicable).
                         if (previousTokens.Count > 0
                             && previousTokens.Peek() is CommentToken
-                            && ((CommentToken) previousTokens.Peek()).Text.StartsWith(WindarAddedComment.WindarCommentBegin))
+                            && ((CommentToken) previousTokens.Peek()).Text.StartsWith(AddedComment.AddedCommentBegin))
                         {
                             _peers.List.Tokens.Remove(previousTokens.Pop());
 
@@ -344,7 +344,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _fwd = new NamedBoolean("fwd", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_fwd);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -368,7 +368,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _fwdDelay = new NamedInteger("fwd_delay", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_fwdDelay);
                     Document.Tokens.Add(new TermEndToken());
                 }
@@ -392,7 +392,7 @@ namespace Windar.TrayApp.Configuration
                 {
                     _rewriteIdentity = new NamedBoolean("rewrite_identity", value);
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
-                    Document.Tokens.Add(new WindarAddedComment());
+                    Document.Tokens.Add(new AddedComment());
                     Document.Tokens.Add(_rewriteIdentity);
                     Document.Tokens.Add(new TermEndToken());
                 }
