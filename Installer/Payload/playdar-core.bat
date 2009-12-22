@@ -1,12 +1,12 @@
 @ECHO OFF
 
 SET PLAYDAR_HOME=%~dp0
-SET PLAYDAR_ETC=%AppData%\Windar\etc
+SET PLAYDAR_ETC=%AppData%\Windar2\etc
 
-IF NOT EXIST "%AppData%\Windar" MKDIR "%AppData%\Windar"
-IF NOT EXIST "%AppData%\Windar\etc" MKDIR "%AppData%\Windar\etc"
-IF NOT EXIST "%AppData%\Windar\etc\playdar.conf" COPY "%PLAYDAR_HOME%etc\playdar.conf" %PLAYDAR_ETC%
-IF NOT EXIST "%AppData%\Windar\etc\playdartcp.conf" COPY "%PLAYDAR_HOME%etc\playdartcp.conf" %PLAYDAR_ETC%
+IF NOT EXIST "%AppData%\Windar2" MKDIR "%AppData%\Windar2"
+IF NOT EXIST "%AppData%\Windar2\etc" MKDIR "%AppData%\Windar2\etc"
+IF NOT EXIST "%AppData%\Windar2\etc\playdar.conf" COPY "%PLAYDAR_HOME%etc\playdar.conf" %PLAYDAR_ETC%
+IF NOT EXIST "%AppData%\Windar2\etc\playdartcp.conf" COPY "%PLAYDAR_HOME%etc\playdartcp.conf" %PLAYDAR_ETC%
 
 CD %PLAYDAR_HOME%
 
