@@ -4,3 +4,9 @@
 [submodule "Libraries/ErlangTerms"]
 	path = Libraries/ErlangTerms
 	url = git://github.com/stever/erlangterms.git
+[submodule "Installer/Packages/Playdar"]
+	path = Installer/Packages/Playdar
+	url = git://github.com/stever/playdar-core.git
+[submodule "Installer/Packages/Erlang"]
+	path = Installer/Packages/Erlang
+	url = git://github.com/erlang/otp.git
