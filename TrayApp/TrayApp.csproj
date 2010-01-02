@@ -39,10 +39,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Playnode.ErlangTerms, Version=1.0.0.3, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Playnode.ErlangTerms.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -138,6 +134,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\ErlangTerms\Parser\ErlangTermsParser.csproj">
+      <Project>{AB7B80E9-B922-4162-818F-748635B1B0A3}</Project>
+      <Name>ErlangTermsParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\PlaydarDaemon\PlaydarDaemon.csproj">
       <Project>{E5218BD7-EF33-49A9-BC01-B6AE21956E43}</Project>

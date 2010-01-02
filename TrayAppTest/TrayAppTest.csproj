@@ -36,10 +36,6 @@
       <HintPath>..\Libraries\log4net.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
-    <Reference Include="Playnode.ErlangTerms, Version=1.0.0.12, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Playnode.ErlangTerms.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -56,6 +52,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\ErlangTerms\Parser\ErlangTermsParser.csproj">
+      <Project>{AB7B80E9-B922-4162-818F-748635B1B0A3}</Project>
+      <Name>ErlangTermsParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\TrayApp\TrayApp.csproj">
       <Project>{3F225E13-27D4-4082-AEE9-600E1F4CDFDE}</Project>
