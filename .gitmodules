@@ -1,0 +1,6 @@
+[submodule "Libraries/BuildTasks"]
+	path = Libraries/BuildTasks
+	url = /Users/Steve/Documents/Projects/GitHub/stever/vs-build-task
+[submodule "Libraries/ErlangTerms"]
+	path = Libraries/ErlangTerms
+	url = /Users/Steve/Documents/Projects/GitHub/stever/erlangterms
