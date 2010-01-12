@@ -372,6 +372,7 @@ Section "Windar Tray Application" SEC_WINDAR
    SetOutPath "$INSTDIR"
 
    ;Windar application components:
+   File Temp\Playnode.ErlangTerms.dll
    File Temp\Windar.exe
    File Temp\Windar.Common.dll
    File Temp\Windar.PlaydarDaemon.dll
@@ -456,6 +457,13 @@ SectionEnd
 
 SectionGroup "Additional Playdar Resolvers"
 
+${MementoSection} "AOL Music Index" SEC_AOL_RESOLVER
+   SectionIn 2
+   DetailPrint "Installing resolver for the AOL Music Index."
+   SetOutPath "$INSTDIR\playdar\playdar_modules"
+   File /r Payload\playdar_modules\aolmusic
+${MementoSectionEnd}
+
 ${MementoSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
    SectionIn 2
    DetailPrint "Installing resolver for Magnatune."
@@ -463,11 +471,11 @@ ${MementoSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
    File /r Payload\playdar_modules\magnatune
 ${MementoSectionEnd}
 
-${MementoSection} "AOL Music Index" SEC_AOL_RESOLVER
+${MementoSection} "Napster" SEC_NAPSTER_RESOLVER
    SectionIn 2
-   DetailPrint "Installing resolver for the AOL Music Index."
-   SetOutPath "$INSTDIR\playdar\playdar_modules"
-   File /r Payload\playdar_modules\aolmusic
+   DetailPrint "Installing resolver for Napster."
+   SetOutPath "$INSTDIR\playdar\contrib"
+   File /r Payload\playdar_scripts\napster
 ${MementoSectionEnd}
 
 SectionGroupEnd
@@ -521,22 +529,29 @@ ${MementoSectionDone}
 ;Installer section descriptions
 ;--------------------------------
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Windows tray application for Playdar service."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYDAR} "Playdar core and minimum Erlang components."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolves free content from Magnatune."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves web content in the AOL Music Index."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Napster resolver script."
+
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
 !endif
+
 !ifdef OPTION_SECTION_SC_DESKTOP
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DESKTOP} "Desktop shortcut for Windar."
 !endif
+
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_QUICK_LAUNCH} "Quick Launch shortcut for Windar."
 !endif
+
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_STARTUP_FOLDER} "Startup folder shortcut to start Windar on login."
 !endif
+
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Section -post
@@ -556,7 +571,7 @@ Section -post
    !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
       DetailPrint "Writing Release Notes"
       SetOutPath "$INSTDIR"
-      File /oname=README.txt ..\README
+      File /oname=README.txt ..\README.md
       IfFileExists "$SMPROGRAMS\Windar" 0 +2
          CreateShortCut "$SMPROGRAMS\Windar\README.lnk" "$INSTDIR\README.txt"
    !endif
