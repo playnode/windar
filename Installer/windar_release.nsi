@@ -471,6 +471,13 @@ ${MementoSection} "AOL Music Index" SEC_AOL_RESOLVER
    File /r Payload\playdar_modules\aolmusic
 ${MementoSectionEnd}
 
+${MementoSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
+   SectionIn 2
+   DetailPrint "Installing resolver for Audiofarm."
+   SetOutPath "$INSTDIR\playdar\contrib"
+   File /r Payload\playdar_scripts\audiofarm
+${MementoSectionEnd}
+
 ${MementoSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
    SectionIn 2
    DetailPrint "Installing resolver for The Echo Nest."

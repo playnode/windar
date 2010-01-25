@@ -478,6 +478,13 @@ ${MementoSection} "AOL Music Index" SEC_AOL_RESOLVER
    File /r Payload\playdar_modules\aolmusic
 ${MementoSectionEnd}
 
+${MementoSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
+   SectionIn 2
+   DetailPrint "Installing resolver for Audiofarm."
+   SetOutPath "$INSTDIR\playdar\contrib"
+   File /r Payload\playdar_scripts\audiofarm
+${MementoSectionEnd}
+
 ${MementoSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
    SectionIn 2
    DetailPrint "Installing resolver for The Echo Nest."
@@ -574,14 +581,15 @@ ${MementoSectionDone}
 
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Windows tray application for Playdar service."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYDAR} "Playdar core and minimum Erlang components."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
+#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves web content in the AOL Music Index."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Jamendo resolver module."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Magnatune resolver module."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "MP3tunes locker resolver module."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Napster resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SOUNDCLOUD_RESOLVER} "SoundCloud resolver script."
+#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SOUNDCLOUD_RESOLVER} "SoundCloud resolver script."
 
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
