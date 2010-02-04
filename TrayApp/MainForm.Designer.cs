@@ -52,7 +52,7 @@ namespace Windar.TrayApp
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.mainformBorderPanel = new System.Windows.Forms.Panel();
-            this.MainTabControl = new System.Windows.Forms.TabControl();
+            this.mainTabControl = new System.Windows.Forms.TabControl();
             this.aboutTabPage = new System.Windows.Forms.TabPage();
             this.versionLabel = new System.Windows.Forms.Label();
             this.aboutCenterPanel = new System.Windows.Forms.Panel();
@@ -134,14 +134,14 @@ namespace Windar.TrayApp
             this.removePropMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playdarTabPage = new System.Windows.Forms.TabPage();
             this.daemonSplitPanel = new System.Windows.Forms.SplitContainer();
-            this.RefreshButton = new System.Windows.Forms.Button();
-            this.RestartDaemonButton = new System.Windows.Forms.Button();
-            this.BackButton = new System.Windows.Forms.Button();
-            this.HomeButton = new System.Windows.Forms.Button();
-            this.StopDaemonButton = new System.Windows.Forms.Button();
-            this.StartDaemonButton = new System.Windows.Forms.Button();
+            this.refreshButton = new System.Windows.Forms.Button();
+            this.restartDaemonButton = new System.Windows.Forms.Button();
+            this.backButton = new System.Windows.Forms.Button();
+            this.homeButton = new System.Windows.Forms.Button();
+            this.stopDaemonButton = new System.Windows.Forms.Button();
+            this.startDaemonButton = new System.Windows.Forms.Button();
             this.playdarBorderPanel = new System.Windows.Forms.Panel();
-            this.PlaydarBrowser = new System.Windows.Forms.WebBrowser();
+            this.playdarBrowser = new System.Windows.Forms.WebBrowser();
             this.logTabPage = new System.Windows.Forms.TabPage();
             this.logSplitPanel = new System.Windows.Forms.SplitContainer();
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
@@ -149,7 +149,7 @@ namespace Windar.TrayApp
             this.logBox = new Windar.TrayApp.LogTextBox();
             this.cellEndEditTimer = new System.Windows.Forms.Timer(this.components);
             this.mainformBorderPanel.SuspendLayout();
-            this.MainTabControl.SuspendLayout();
+            this.mainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
             this.aboutCenterPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).BeginInit();
@@ -194,7 +194,7 @@ namespace Windar.TrayApp
             // 
             // mainformBorderPanel
             // 
-            this.mainformBorderPanel.Controls.Add(this.MainTabControl);
+            this.mainformBorderPanel.Controls.Add(this.mainTabControl);
             this.mainformBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainformBorderPanel.Location = new System.Drawing.Point(0, 0);
             this.mainformBorderPanel.Name = "mainformBorderPanel";
@@ -202,23 +202,23 @@ namespace Windar.TrayApp
             this.mainformBorderPanel.Size = new System.Drawing.Size(624, 442);
             this.mainformBorderPanel.TabIndex = 6;
             // 
-            // MainTabControl
+            // mainTabControl
             // 
-            this.MainTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.MainTabControl.Controls.Add(this.aboutTabPage);
-            this.MainTabControl.Controls.Add(this.optionsTabPage);
-            this.MainTabControl.Controls.Add(this.playdarTabPage);
-            this.MainTabControl.Controls.Add(this.logTabPage);
-            this.MainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainTabControl.HotTrack = true;
-            this.MainTabControl.Location = new System.Drawing.Point(4, 6);
-            this.MainTabControl.Margin = new System.Windows.Forms.Padding(0);
-            this.MainTabControl.Name = "MainTabControl";
-            this.MainTabControl.SelectedIndex = 0;
-            this.MainTabControl.Size = new System.Drawing.Size(616, 432);
-            this.MainTabControl.TabIndex = 1;
-            this.MainTabControl.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.MainTabControl_Deselecting);
-            this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_SelectedIndexChanged);
+            this.mainTabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.mainTabControl.Controls.Add(this.aboutTabPage);
+            this.mainTabControl.Controls.Add(this.optionsTabPage);
+            this.mainTabControl.Controls.Add(this.playdarTabPage);
+            this.mainTabControl.Controls.Add(this.logTabPage);
+            this.mainTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainTabControl.HotTrack = true;
+            this.mainTabControl.Location = new System.Drawing.Point(4, 6);
+            this.mainTabControl.Margin = new System.Windows.Forms.Padding(0);
+            this.mainTabControl.Name = "mainTabControl";
+            this.mainTabControl.SelectedIndex = 0;
+            this.mainTabControl.Size = new System.Drawing.Size(616, 432);
+            this.mainTabControl.TabIndex = 1;
+            this.mainTabControl.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.MainTabControl_Deselecting);
+            this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_SelectedIndexChanged);
             // 
             // aboutTabPage
             // 
@@ -449,7 +449,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 89.08297F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.91703F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 184F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 138F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 139F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -470,7 +470,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(199, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(198, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 2;
@@ -481,7 +481,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(229, 3);
+            this.label6.Location = new System.Drawing.Point(228, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 10;
@@ -492,7 +492,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(407, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(406, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 11;
@@ -504,7 +504,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(52, 3);
+            this.label2.Location = new System.Drawing.Point(51, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
@@ -514,7 +514,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(19, 23);
+            this.label5.Location = new System.Drawing.Point(18, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
             this.label5.TabIndex = 8;
@@ -524,7 +524,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(199, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(198, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 9;
@@ -1128,12 +1128,12 @@ namespace Windar.TrayApp
             // 
             // daemonSplitPanel.Panel1
             // 
-            this.daemonSplitPanel.Panel1.Controls.Add(this.RefreshButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.RestartDaemonButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.BackButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.HomeButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.StopDaemonButton);
-            this.daemonSplitPanel.Panel1.Controls.Add(this.StartDaemonButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.refreshButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.restartDaemonButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.backButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.homeButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.stopDaemonButton);
+            this.daemonSplitPanel.Panel1.Controls.Add(this.startDaemonButton);
             // 
             // daemonSplitPanel.Panel2
             // 
@@ -1142,97 +1142,97 @@ namespace Windar.TrayApp
             this.daemonSplitPanel.SplitterDistance = 25;
             this.daemonSplitPanel.TabIndex = 2;
             // 
-            // RefreshButton
+            // refreshButton
             // 
-            this.RefreshButton.Location = new System.Drawing.Point(134, 0);
-            this.RefreshButton.Name = "RefreshButton";
-            this.RefreshButton.Size = new System.Drawing.Size(60, 23);
-            this.RefreshButton.TabIndex = 6;
-            this.RefreshButton.Text = "Refresh";
-            this.RefreshButton.UseVisualStyleBackColor = true;
-            this.RefreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            this.refreshButton.Location = new System.Drawing.Point(134, 0);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(60, 23);
+            this.refreshButton.TabIndex = 6;
+            this.refreshButton.Text = "Refresh";
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
-            // RestartDaemonButton
+            // restartDaemonButton
             // 
-            this.RestartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.RestartDaemonButton.Location = new System.Drawing.Point(546, 0);
-            this.RestartDaemonButton.Name = "RestartDaemonButton";
-            this.RestartDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.RestartDaemonButton.TabIndex = 5;
-            this.RestartDaemonButton.Text = "Restart";
-            this.RestartDaemonButton.UseVisualStyleBackColor = true;
-            this.RestartDaemonButton.Click += new System.EventHandler(this.restartButton_Click);
+            this.restartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.restartDaemonButton.Location = new System.Drawing.Point(546, 0);
+            this.restartDaemonButton.Name = "restartDaemonButton";
+            this.restartDaemonButton.Size = new System.Drawing.Size(60, 23);
+            this.restartDaemonButton.TabIndex = 5;
+            this.restartDaemonButton.Text = "Restart";
+            this.restartDaemonButton.UseVisualStyleBackColor = true;
+            this.restartDaemonButton.Click += new System.EventHandler(this.restartButton_Click);
             // 
-            // BackButton
+            // backButton
             // 
-            this.BackButton.Enabled = false;
-            this.BackButton.Location = new System.Drawing.Point(68, 0);
-            this.BackButton.Name = "BackButton";
-            this.BackButton.Size = new System.Drawing.Size(60, 23);
-            this.BackButton.TabIndex = 4;
-            this.BackButton.Text = "Back";
-            this.BackButton.UseVisualStyleBackColor = true;
-            this.BackButton.Click += new System.EventHandler(this.backButton_Click);
+            this.backButton.Enabled = false;
+            this.backButton.Location = new System.Drawing.Point(68, 0);
+            this.backButton.Name = "backButton";
+            this.backButton.Size = new System.Drawing.Size(60, 23);
+            this.backButton.TabIndex = 4;
+            this.backButton.Text = "Back";
+            this.backButton.UseVisualStyleBackColor = true;
+            this.backButton.Click += new System.EventHandler(this.backButton_Click);
             // 
-            // HomeButton
+            // homeButton
             // 
-            this.HomeButton.Enabled = false;
-            this.HomeButton.Location = new System.Drawing.Point(2, 0);
-            this.HomeButton.Name = "HomeButton";
-            this.HomeButton.Size = new System.Drawing.Size(60, 23);
-            this.HomeButton.TabIndex = 3;
-            this.HomeButton.Text = "Home";
-            this.HomeButton.UseVisualStyleBackColor = true;
-            this.HomeButton.Click += new System.EventHandler(this.homeButton_Click);
+            this.homeButton.Enabled = false;
+            this.homeButton.Location = new System.Drawing.Point(2, 0);
+            this.homeButton.Name = "homeButton";
+            this.homeButton.Size = new System.Drawing.Size(60, 23);
+            this.homeButton.TabIndex = 3;
+            this.homeButton.Text = "Home";
+            this.homeButton.UseVisualStyleBackColor = true;
+            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
             // 
-            // StopDaemonButton
+            // stopDaemonButton
             // 
-            this.StopDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.StopDaemonButton.Location = new System.Drawing.Point(480, 0);
-            this.StopDaemonButton.Name = "StopDaemonButton";
-            this.StopDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.StopDaemonButton.TabIndex = 2;
-            this.StopDaemonButton.Text = "Stop";
-            this.StopDaemonButton.UseVisualStyleBackColor = true;
-            this.StopDaemonButton.Click += new System.EventHandler(this.stopDaemonButton_Click);
+            this.stopDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.stopDaemonButton.Location = new System.Drawing.Point(480, 0);
+            this.stopDaemonButton.Name = "stopDaemonButton";
+            this.stopDaemonButton.Size = new System.Drawing.Size(60, 23);
+            this.stopDaemonButton.TabIndex = 2;
+            this.stopDaemonButton.Text = "Stop";
+            this.stopDaemonButton.UseVisualStyleBackColor = true;
+            this.stopDaemonButton.Click += new System.EventHandler(this.stopDaemonButton_Click);
             // 
-            // StartDaemonButton
+            // startDaemonButton
             // 
-            this.StartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.StartDaemonButton.Enabled = false;
-            this.StartDaemonButton.Location = new System.Drawing.Point(414, 0);
-            this.StartDaemonButton.Name = "StartDaemonButton";
-            this.StartDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.StartDaemonButton.TabIndex = 1;
-            this.StartDaemonButton.Text = "Start";
-            this.StartDaemonButton.UseVisualStyleBackColor = true;
-            this.StartDaemonButton.Click += new System.EventHandler(this.startDaemonButton_Click);
+            this.startDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.startDaemonButton.Enabled = false;
+            this.startDaemonButton.Location = new System.Drawing.Point(414, 0);
+            this.startDaemonButton.Name = "startDaemonButton";
+            this.startDaemonButton.Size = new System.Drawing.Size(60, 23);
+            this.startDaemonButton.TabIndex = 1;
+            this.startDaemonButton.Text = "Start";
+            this.startDaemonButton.UseVisualStyleBackColor = true;
+            this.startDaemonButton.Click += new System.EventHandler(this.startDaemonButton_Click);
             // 
             // playdarBorderPanel
             // 
             this.playdarBorderPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.playdarBorderPanel.Controls.Add(this.PlaydarBrowser);
+            this.playdarBorderPanel.Controls.Add(this.playdarBrowser);
             this.playdarBorderPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.playdarBorderPanel.Location = new System.Drawing.Point(0, 0);
             this.playdarBorderPanel.Name = "playdarBorderPanel";
             this.playdarBorderPanel.Size = new System.Drawing.Size(608, 374);
             this.playdarBorderPanel.TabIndex = 1;
             // 
-            // PlaydarBrowser
+            // playdarBrowser
             // 
-            this.PlaydarBrowser.AllowWebBrowserDrop = false;
-            this.PlaydarBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PlaydarBrowser.IsWebBrowserContextMenuEnabled = false;
-            this.PlaydarBrowser.Location = new System.Drawing.Point(0, 0);
-            this.PlaydarBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.PlaydarBrowser.Name = "PlaydarBrowser";
-            this.PlaydarBrowser.ScriptErrorsSuppressed = true;
-            this.PlaydarBrowser.Size = new System.Drawing.Size(604, 370);
-            this.PlaydarBrowser.TabIndex = 0;
-            this.PlaydarBrowser.WebBrowserShortcutsEnabled = false;
-            this.PlaydarBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.playdarBrowser_Navigating);
-            this.PlaydarBrowser.NewWindow += new System.ComponentModel.CancelEventHandler(this.playdarBrowser_NewWindow);
-            this.PlaydarBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.playdarBrowser_DocumentCompleted);
+            this.playdarBrowser.AllowWebBrowserDrop = false;
+            this.playdarBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.playdarBrowser.IsWebBrowserContextMenuEnabled = false;
+            this.playdarBrowser.Location = new System.Drawing.Point(0, 0);
+            this.playdarBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.playdarBrowser.Name = "playdarBrowser";
+            this.playdarBrowser.ScriptErrorsSuppressed = true;
+            this.playdarBrowser.Size = new System.Drawing.Size(604, 370);
+            this.playdarBrowser.TabIndex = 0;
+            this.playdarBrowser.WebBrowserShortcutsEnabled = false;
+            this.playdarBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.playdarBrowser_Navigating);
+            this.playdarBrowser.NewWindow += new System.ComponentModel.CancelEventHandler(this.playdarBrowser_NewWindow);
+            this.playdarBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.playdarBrowser_DocumentCompleted);
             // 
             // logTabPage
             // 
@@ -1325,7 +1325,7 @@ namespace Windar.TrayApp
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.mainformBorderPanel.ResumeLayout(false);
-            this.MainTabControl.ResumeLayout(false);
+            this.mainTabControl.ResumeLayout(false);
             this.aboutTabPage.ResumeLayout(false);
             this.aboutTabPage.PerformLayout();
             this.aboutCenterPanel.ResumeLayout(false);
@@ -1392,12 +1392,11 @@ namespace Windar.TrayApp
         System.Windows.Forms.SplitContainer daemonSplitPanel;
         System.Windows.Forms.SplitContainer logSplitPanel;
         System.Windows.Forms.CheckBox followTailCheckBox;
-        internal System.Windows.Forms.Button StopDaemonButton;
-        internal System.Windows.Forms.Button StartDaemonButton;
-        internal System.Windows.Forms.Button RestartDaemonButton;
-        internal System.Windows.Forms.Button BackButton;
-        internal System.Windows.Forms.Button HomeButton;
-        System.Windows.Forms.TabControl optionsTabControl;
+        internal System.Windows.Forms.Button stopDaemonButton;
+        internal System.Windows.Forms.Button startDaemonButton;
+        internal System.Windows.Forms.Button restartDaemonButton;
+        internal System.Windows.Forms.Button backButton;
+        internal System.Windows.Forms.Button homeButton;
         System.Windows.Forms.Panel generalOptionsPanel;
         System.Windows.Forms.GroupBox aboutGroupBox;
         System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -1430,13 +1429,13 @@ namespace Windar.TrayApp
         System.Windows.Forms.Panel pluginsPanel;
         System.Windows.Forms.Button pluginsCancelButton;
         System.Windows.Forms.Button pluginsSaveButton;
-        internal System.Windows.Forms.TabControl MainTabControl;
-        internal System.Windows.Forms.WebBrowser PlaydarBrowser;
+        internal System.Windows.Forms.TabControl mainTabControl;
+        internal System.Windows.Forms.WebBrowser playdarBrowser;
         System.Windows.Forms.TabPage generalOptionsTabPage;
         System.Windows.Forms.TextBox nodeNameTextBox;
         System.Windows.Forms.PictureBox pictureBox1;
         System.Windows.Forms.Label label7;
-        internal System.Windows.Forms.Button RefreshButton;
+        internal System.Windows.Forms.Button refreshButton;
         System.Windows.Forms.DataGridView modsGrid;
         System.Windows.Forms.TabPage libraryTabPage;
         System.Windows.Forms.Panel libraryPanel;
@@ -1474,5 +1473,6 @@ namespace Windar.TrayApp
         System.Windows.Forms.Button tracklistButton;
         internal System.Windows.Forms.Button deleteIndexButton;
         System.Windows.Forms.Button rebuildIndexButton;
+        internal System.Windows.Forms.TabControl optionsTabControl;
     }
 }

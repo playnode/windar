@@ -110,10 +110,25 @@ namespace Windar.TrayApp
         {
             var tab = new TabPage {Text = title};
             tab.Controls.Add(control);
-            Program.Instance.MainForm.MainTabControl.Controls.Add(tab);
+            Program.Instance.MainForm.mainTabControl.Controls.Add(tab);
 
             //TODO: Keep the log tab at the end.
-            var tabs = Program.Instance.MainForm.MainTabControl.TabPages;
+            var tabs = Program.Instance.MainForm.mainTabControl.TabPages;
+            foreach (var page in tabs)
+            {
+                var tabPage = (TabPage) page;
+                if (tabPage.Name != "logTabPage") continue;
+                tabs.Remove(tabPage);
+                tabs.Add(tabPage);
+            }
+        }
+
+        public void AddConfigurationPage(UserControl control, string title)
+        {
+            var tab = new TabPage { Text = title };
+            tab.Controls.Add(control);
+            Program.Instance.MainForm.optionsTabControl.Controls.Add(tab);
+            var tabs = Program.Instance.MainForm.mainTabControl.TabPages;
             foreach (var page in tabs)
             {
                 var tabPage = (TabPage) page;

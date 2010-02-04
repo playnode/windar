@@ -514,42 +514,42 @@ namespace Windar.TrayApp
         internal void StartDaemon()
         {
             Instance.Daemon.Start();
-            Instance.MainForm.StartDaemonButton.Enabled = false;
-            Instance.MainForm.StopDaemonButton.Enabled = true;
-            Instance.MainForm.RestartDaemonButton.Enabled = true;
+            Instance.MainForm.startDaemonButton.Enabled = false;
+            Instance.MainForm.stopDaemonButton.Enabled = true;
+            Instance.MainForm.restartDaemonButton.Enabled = true;
             Instance.MainForm.LoadPlaydarHomepage();
-            Instance.MainForm.RefreshButton.Enabled = true;
+            Instance.MainForm.refreshButton.Enabled = true;
         }
 
         internal void StopDaemon()
         {
             Instance.Daemon.Stop();
-            Instance.MainForm.StartDaemonButton.Enabled = true;
-            Instance.MainForm.StopDaemonButton.Enabled = false;
-            Instance.MainForm.RestartDaemonButton.Enabled = false;
+            Instance.MainForm.startDaemonButton.Enabled = true;
+            Instance.MainForm.stopDaemonButton.Enabled = false;
+            Instance.MainForm.restartDaemonButton.Enabled = false;
             Instance.MainForm.ShowDaemonPage();
-            Instance.MainForm.HomeButton.Enabled = false;
-            Instance.MainForm.BackButton.Enabled = false;
-            Instance.MainForm.RefreshButton.Enabled = false;
+            Instance.MainForm.homeButton.Enabled = false;
+            Instance.MainForm.backButton.Enabled = false;
+            Instance.MainForm.refreshButton.Enabled = false;
         }
 
         internal void RestartDaemon()
         {
             if (!Instance.Daemon.Started) return;
             Instance.MainForm.ShowDaemonPage("Restarting", false);
-            Instance.MainForm.StartDaemonButton.Enabled = false;
-            Instance.MainForm.StopDaemonButton.Enabled = false;
-            Instance.MainForm.RestartDaemonButton.Enabled = false;
-            Instance.MainForm.HomeButton.Enabled = false;
-            Instance.MainForm.BackButton.Enabled = false;
-            Instance.MainForm.RefreshButton.Enabled = false;
+            Instance.MainForm.startDaemonButton.Enabled = false;
+            Instance.MainForm.stopDaemonButton.Enabled = false;
+            Instance.MainForm.restartDaemonButton.Enabled = false;
+            Instance.MainForm.homeButton.Enabled = false;
+            Instance.MainForm.backButton.Enabled = false;
+            Instance.MainForm.refreshButton.Enabled = false;
             Instance.Daemon.Restart();
             if (!Instance.Daemon.Started) return;
-            Instance.MainForm.PlaydarBrowser.Navigate(PlaydarDaemon);
-            Instance.MainForm.RefreshButton.Enabled = true;
-            Instance.MainForm.StartDaemonButton.Enabled = false;
-            Instance.MainForm.StopDaemonButton.Enabled = true;
-            Instance.MainForm.RestartDaemonButton.Enabled = true;
+            Instance.MainForm.playdarBrowser.Navigate(PlaydarDaemon);
+            Instance.MainForm.refreshButton.Enabled = true;
+            Instance.MainForm.startDaemonButton.Enabled = false;
+            Instance.MainForm.stopDaemonButton.Enabled = true;
+            Instance.MainForm.restartDaemonButton.Enabled = true;
         }
 
         #endregion

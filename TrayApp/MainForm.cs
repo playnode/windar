@@ -121,17 +121,17 @@ namespace Windar.TrayApp
         public void GoToAboutPage()
         {
             if (InModalDialog()) return;
-            if (MainTabControl.SelectedTab != aboutTabPage)
+            if (mainTabControl.SelectedTab != aboutTabPage)
             {
                 if (!Program.Instance.MainForm.Visible)
                 {
                     Program.Instance.MainForm.Opacity = 0;
-                    MainTabControl.SelectTab(aboutTabPage);
+                    mainTabControl.SelectTab(aboutTabPage);
                     Program.Instance.MainForm.Opacity = 1;
                 }
                 else
                 {
-                    MainTabControl.SelectTab(aboutTabPage);
+                    mainTabControl.SelectTab(aboutTabPage);
                 }
             }
             Program.Instance.MainForm.EnsureVisible();
@@ -140,17 +140,17 @@ namespace Windar.TrayApp
         public void GoToPlaydarHomePage()
         {
             if (InModalDialog()) return;
-            if (MainTabControl.SelectedTab != playdarTabPage)
+            if (mainTabControl.SelectedTab != playdarTabPage)
             {
                 if (!Program.Instance.MainForm.Visible)
                 {
                     Program.Instance.MainForm.Opacity = 0;
-                    MainTabControl.SelectTab(playdarTabPage);
+                    mainTabControl.SelectTab(playdarTabPage);
                     Program.Instance.MainForm.Opacity = 1;
                 }
                 else
                 {
-                    MainTabControl.SelectTab(playdarTabPage);
+                    mainTabControl.SelectTab(playdarTabPage);
                 }
             }
             Program.Instance.MainForm.EnsureVisible();
@@ -160,17 +160,17 @@ namespace Windar.TrayApp
         public void GoToAddScanFolder()
         {
             if (InModalDialog()) return;
-            if (MainTabControl.SelectedTab != optionsTabPage)
+            if (mainTabControl.SelectedTab != optionsTabPage)
             {
                 if (!Program.Instance.MainForm.Visible)
                 {
                     Program.Instance.MainForm.Opacity = 0;
-                    MainTabControl.SelectTab(optionsTabPage);
+                    mainTabControl.SelectTab(optionsTabPage);
                     Program.Instance.MainForm.Opacity = 1;
                 }
                 else
                 {
-                    MainTabControl.SelectTab(optionsTabPage);
+                    mainTabControl.SelectTab(optionsTabPage);
                 }
             }
             if (optionsTabControl.SelectedTab != libraryTabPage)
@@ -197,11 +197,11 @@ namespace Windar.TrayApp
 
         internal void LoadPlaydarHomepage()
         {
-            if (PlaydarBrowser.Document == null
-                || PlaydarBrowser.Document.Url == null
-                || !PlaydarBrowser.Document.Url.Equals(Program.Instance.PlaydarDaemon))
+            if (playdarBrowser.Document == null
+                || playdarBrowser.Document.Url == null
+                || !playdarBrowser.Document.Url.Equals(Program.Instance.PlaydarDaemon))
             {
-                PlaydarBrowser.Navigate(Program.Instance.PlaydarDaemon);
+                playdarBrowser.Navigate(Program.Instance.PlaydarDaemon);
             }
         }
 
@@ -213,7 +213,7 @@ namespace Windar.TrayApp
         internal void ShowDaemonPage(string text, bool newPage)
         {
             if (string.IsNullOrEmpty(text)) text = "&nbsp;";
-            PlaydarBrowser.Stop();
+            playdarBrowser.Stop();
             var html = new StringBuilder();
             html.Append("<html>").Append(Environment.NewLine);
             html.Append("<head>").Append(Environment.NewLine);
@@ -226,14 +226,14 @@ namespace Windar.TrayApp
             html.Append("\">").Append(Environment.NewLine);
             html.Append(text).Append(Environment.NewLine);
             html.Append("</body></html>");
-            if (PlaydarBrowser.Document != null) 
+            if (playdarBrowser.Document != null) 
             {
-                PlaydarBrowser.Document.OpenNew(!newPage);
-                PlaydarBrowser.Document.Write(html.ToString());
+                playdarBrowser.Document.OpenNew(!newPage);
+                playdarBrowser.Document.Write(html.ToString());
             }
             else
             {
-                PlaydarBrowser.DocumentText = html.ToString();
+                playdarBrowser.DocumentText = html.ToString();
             }
         }
 
@@ -264,13 +264,13 @@ namespace Windar.TrayApp
         {
             if (Program.Instance.Daemon.Started)
             {
-                PlaydarBrowser.GoBack();
+                playdarBrowser.GoBack();
             }
         }
 
         void refreshButton_Click(object sender, EventArgs e)
         {
-            if (Program.Instance.Daemon.Started) PlaydarBrowser.Refresh();
+            if (Program.Instance.Daemon.Started) playdarBrowser.Refresh();
         }
 
         void playdarLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -293,14 +293,14 @@ namespace Windar.TrayApp
             // Handle some expected pages.
             if (url.Equals(Program.Instance.PlaydarDaemon))
             {
-                HomeButton.Enabled = false;
-                BackButton.Enabled = false;
+                homeButton.Enabled = false;
+                backButton.Enabled = false;
                 return;
             }
             if (url.StartsWith(Program.Instance.PlaydarDaemon))
             {
-                HomeButton.Enabled = true;
-                BackButton.Enabled = true;
+                homeButton.Enabled = true;
+                backButton.Enabled = true;
                 return;
             }
             if (url.StartsWith("res://ieframe.dll/navcancl.htm"))
@@ -325,7 +325,7 @@ namespace Windar.TrayApp
             e.Cancel = true;
             if (!_lastLink.StartsWith(Program.Instance.PlaydarDaemon))
             {
-                PlaydarBrowser.Navigate(_lastLink);
+                playdarBrowser.Navigate(_lastLink);
             }
             else
             {
@@ -335,8 +335,8 @@ namespace Windar.TrayApp
 
         void PlaydarBrowserLinkClicked(object sender, EventArgs e)
         {
-            if (PlaydarBrowser.Document == null) return;
-            var link = PlaydarBrowser.Document.ActiveElement;
+            if (playdarBrowser.Document == null) return;
+            var link = playdarBrowser.Document.ActiveElement;
             if (link == null) return;
             _lastLink = link.GetAttribute("href");
         }
@@ -349,35 +349,35 @@ namespace Windar.TrayApp
             {
                 var msg = new StringBuilder();
                 msg.Append("Document completed. URL = \"").Append(url).Append('"');
-                if (PlaydarBrowser.Document != null)
+                if (playdarBrowser.Document != null)
                 {
                     msg.Append(", Title = ");
-                    msg.Append(PlaydarBrowser.Document.Title);
+                    msg.Append(playdarBrowser.Document.Title);
                 }
                 Log.Debug(msg.ToString());
             }
 
-            RefreshButton.Enabled = true;
+            refreshButton.Enabled = true;
             if (url.Equals(Program.Instance.PlaydarDaemon))
             {
-                BackButton.Enabled = HomeButton.Enabled = false;
+                backButton.Enabled = homeButton.Enabled = false;
             }
             else
             {
-                BackButton.Enabled = PlaydarBrowser.CanGoBack;
-                HomeButton.Enabled = true;
+                backButton.Enabled = playdarBrowser.CanGoBack;
+                homeButton.Enabled = true;
             }
 
-            if (PlaydarBrowser.Document == null) return;
+            if (playdarBrowser.Document == null) return;
 
-            if (PlaydarBrowser.Document.Title == "Internet Explorer cannot display the webpage")
+            if (playdarBrowser.Document.Title == "Internet Explorer cannot display the webpage")
             {
-                RefreshButton.Enabled = false;
+                refreshButton.Enabled = false;
                 if (url.Equals(Program.Instance.PlaydarDaemon))
                 {
-                    StartDaemonButton.Enabled = true;
-                    RestartDaemonButton.Enabled = false;
-                    StopDaemonButton.Enabled = false;
+                    startDaemonButton.Enabled = true;
+                    restartDaemonButton.Enabled = false;
+                    stopDaemonButton.Enabled = false;
                     ShowDaemonPage("Playdar service not running.", false);
                 }
                 else
@@ -388,7 +388,7 @@ namespace Windar.TrayApp
             }
 
             // Attach click event handler to all javascript links too.
-            var links = PlaydarBrowser.Document.Links;
+            var links = playdarBrowser.Document.Links;
             foreach (HtmlElement var in links)
             {
                 var.AttachEventHandler("onclick", PlaydarBrowserLinkClicked);
@@ -408,7 +408,7 @@ namespace Windar.TrayApp
 
         void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MainTabControl.SelectedTab == optionsTabPage
+            if (mainTabControl.SelectedTab == optionsTabPage
                 && Program.Instance.Config != null
                 && (e.Cancel = !ApplyOptionsOrCancel())) return;
 
@@ -422,7 +422,7 @@ namespace Windar.TrayApp
             {
                 e.Cancel = true;
                 Hide();
-                MainTabControl.SelectTab(aboutTabPage);
+                mainTabControl.SelectTab(aboutTabPage);
                 Properties.Settings.Default.MainFormVisible = false;
                 Properties.Settings.Default.Save();
             }
@@ -511,7 +511,7 @@ namespace Windar.TrayApp
 
         void MainForm_ResizeEnd(object sender, EventArgs e)
         {
-            if (MainTabControl.SelectedTab == logTabPage
+            if (mainTabControl.SelectedTab == logTabPage
                 && logTabPage != null
                 && Size != _oldSize
                 && logBox != null) logBox.ScrollToEnd();
@@ -522,7 +522,7 @@ namespace Windar.TrayApp
         void MainForm_Resize(object sender, EventArgs e)
         {
             if (_resizing) return;
-            if (MainTabControl.SelectedTab == logTabPage
+            if (mainTabControl.SelectedTab == logTabPage
                 && logTabPage != null)
             {
                 if (logBox != null)
@@ -555,10 +555,10 @@ namespace Windar.TrayApp
         void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Remember last selected tab.
-            _lastSelectedTab = MainTabControl.SelectedTab;
+            _lastSelectedTab = mainTabControl.SelectedTab;
 
             // Check the new selected tab.
-            if (MainTabControl.SelectedTab == logTabPage
+            if (mainTabControl.SelectedTab == logTabPage
                 && logTabPage != null)
             {
                 if (logBox != null)
@@ -578,11 +578,11 @@ namespace Windar.TrayApp
             else
             {
                 if (logBox != null) logBox.Updating = false;
-                if (MainTabControl.SelectedTab == playdarTabPage)
+                if (mainTabControl.SelectedTab == playdarTabPage)
                 {
                     GoToPlaydarHomePage();
                 }
-                if (MainTabControl.SelectedTab == optionsTabPage)
+                if (mainTabControl.SelectedTab == optionsTabPage)
                 {
                     // Attempt to reload the configuration here.
                     // If it fails the program will be shutdown.

@@ -26,5 +26,6 @@ namespace Windar.PluginAPI
     public interface IPluginHost
     {
         void AddTabPage(UserControl control, string title);
+        void AddConfigurationPage(UserControl control, string title);
     }
 }
