@@ -27,22 +27,22 @@ namespace Windar.TrayApp.Configuration
     class GeneralOptionsPage : IOptionsPage
     {
         // Change flags.
-        private bool _autostartChanged;
-        private bool _nodeNameChanged;
-        private bool _portChanged;
-        private bool _allowIncomingChanged;
-        private bool _forwardQueriesChanged;
+        bool _autostartChanged;
+        bool _nodeNameChanged;
+        bool _portChanged;
+        bool _allowIncomingChanged;
+        bool _forwardQueriesChanged;
 
         // Original values.
-        private bool _origAutoStart;
-        private string _origNodeName;
-        private int _origPort;
-        private bool _origAllowIncoming;
-        private bool _origForwardQueries;
+        bool _origAutoStart;
+        string _origNodeName;
+        int _origPort;
+        bool _origAllowIncoming;
+        bool _origForwardQueries;
 
         // Changed list items handled differently.
         // Not checking each and every value here.
-        private bool _peersChanged;
+        bool _peersChanged;
 
         public bool NewPeersToAdd { get; set; }
         public bool PeerValueChanged { get; set; }

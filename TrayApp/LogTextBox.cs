@@ -32,7 +32,7 @@ namespace Windar.TrayApp
 {
     public partial class LogTextBox : RichTextBox
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         #region Win32 API
         #pragma warning disable 649
@@ -42,15 +42,15 @@ namespace Windar.TrayApp
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetScrollInfo(IntPtr hWnd, int scrollDirection, ref ScrollInfo si);
+        static extern bool GetScrollInfo(IntPtr hWnd, int scrollDirection, ref ScrollInfo si);
 
         [DllImport("user32.dll")]
-        private static extern int SetScrollInfo(IntPtr hWnd, int scrollDirection, [In] ref ScrollInfo si, bool redraw);
+        static extern int SetScrollInfo(IntPtr hWnd, int scrollDirection, [In] ref ScrollInfo si, bool redraw);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-        private struct ScrollInfo
+        struct ScrollInfo
         {
             public uint Size;
             public uint Mask;
@@ -61,7 +61,7 @@ namespace Windar.TrayApp
             public int TrackPos;
         }
 
-        private enum ScrollInfoMask
+        enum ScrollInfoMask
         {
             Range = 0x1,
             Page = 0x2,
@@ -71,7 +71,7 @@ namespace Windar.TrayApp
             All = Range + Page + Pos + TrackPos
         }
 
-        private enum ScrollBarDirection
+        enum ScrollBarDirection
         {
             Horizontal = 0,
             Vertical = 1,
@@ -79,19 +79,19 @@ namespace Windar.TrayApp
             Both = 3
         }
 
-        private const int VerticalScroll = 277;
-        private const int LineUp = 0;
-        private const int LineDown = 1;
-        private const int ThumbPosition = 4;
-        private const int Thumbtrack = 5;
-        private const int ScrollTop = 6;
-        private const int ScrolBottom = 7;
-        private const int EndScroll = 8;
+        const int VerticalScroll = 277;
+        const int LineUp = 0;
+        const int LineDown = 1;
+        const int ThumbPosition = 4;
+        const int Thumbtrack = 5;
+        const int ScrollTop = 6;
+        const int ScrolBottom = 7;
+        const int EndScroll = 8;
 
-        private const int SetRedraw = 0x000B;
-        private const int User = 0x400;
-        private const int GetEventMask = (User + 59);
-        private const int SetEventMask = (User + 69);
+        const int SetRedraw = 0x000B;
+        const int User = 0x400;
+        const int GetEventMask = (User + 59);
+        const int SetEventMask = (User + 69);
 
         // ReSharper restore UnaccessedField.Local
         // ReSharper restore UnusedMember.Local
@@ -99,18 +99,18 @@ namespace Windar.TrayApp
         #pragma warning restore 169
         #endregion
 
-        private const int MaxBufferSize = 1024 * 128; // 128K
+        const int MaxBufferSize = 1024 * 128; // 128K
 
-        private readonly MemoryAppender _memoryAppender;
+        readonly MemoryAppender _memoryAppender;
 
         public bool Updating { get; set; }
         public bool FollowTail { get; set; }
 
-        private Timer _timer;
-        private string _buffer;
-        private bool _bufferChanged;
-        private int _linesRemoved;
-        private int _lineHeight;
+        Timer _timer;
+        string _buffer;
+        bool _bufferChanged;
+        int _linesRemoved;
+        int _lineHeight;
 
         public LogTextBox()
         {
@@ -132,7 +132,7 @@ namespace Windar.TrayApp
             logBoxContextMenu.Items["clearMenuItem"].Click += ClearContextMenuItem_Click;
         }
 
-        private int HorizontalScrollPosition
+        int HorizontalScrollPosition
         {
             get
             {
@@ -175,7 +175,7 @@ namespace Windar.TrayApp
             SetText(_buffer, _linesRemoved, _lineHeight);
         }
 
-        private void UpdateOutputBuffer()
+        void UpdateOutputBuffer()
         {
             var sb = new StringBuilder();
             try
@@ -233,7 +233,7 @@ namespace Windar.TrayApp
             _buffer = sb.ToString();
         }
 
-        private static int TrimBuffer(StringBuilder sb, int size)
+        static int TrimBuffer(StringBuilder sb, int size)
         {
             // Trim from the beginning of the buffer to match size.
             var d1 = sb.ToString().Substring(0, sb.Length - size);
@@ -310,7 +310,7 @@ namespace Windar.TrayApp
             SetText(_buffer, _linesRemoved, _lineHeight);
         }
 
-        private void SetText(string text, int linesRemoved, int lineHeight)
+        void SetText(string text, int linesRemoved, int lineHeight)
         {
             var followTail = FollowTail;
             if (string.IsNullOrEmpty(text)) return;
@@ -352,12 +352,12 @@ namespace Windar.TrayApp
             }
         }
 
-        private void RichTextBoxPlus_VScroll(object sender, EventArgs e)
+        void RichTextBoxPlus_VScroll(object sender, EventArgs e)
         {
             FollowTail = ScrollAtEnd;
         }
 
-        private void LogBoxTimer_Tick(object sender, EventArgs e)
+        void LogBoxTimer_Tick(object sender, EventArgs e)
         {
             UpdateOutputBuffer();
             if (!Updating || !_bufferChanged) return;
@@ -368,13 +368,13 @@ namespace Windar.TrayApp
             _linesRemoved = 0;
         }
 
-        private void CopyContextMenuItem_Click(object sender, EventArgs e)
+        void CopyContextMenuItem_Click(object sender, EventArgs e)
         {
             if (SelectedText.Length > 0) Clipboard.SetText(SelectedText);
             else Clipboard.SetText(Text);
         }
 
-        private void ClearContextMenuItem_Click(object sender, EventArgs e)
+        void ClearContextMenuItem_Click(object sender, EventArgs e)
         {
             _buffer = null;
             Clear();

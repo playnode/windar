@@ -28,11 +28,11 @@ namespace Windar.Common
 {
     public abstract class Cmd<T> where T : new()
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        protected CmdRunner Runner { get; private set; }
+        protected CmdRunner Runner { get; set; }
 
-        protected bool Done { get; private set; }
+        protected bool Done { get; set; }
 
         protected Cmd()
         {

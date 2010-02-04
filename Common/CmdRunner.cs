@@ -30,7 +30,7 @@ namespace Windar.Common
 {
     public class CmdRunner
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         #region Delegates and events.
 
@@ -50,10 +50,10 @@ namespace Windar.Common
 
         #endregion
 
-        private Thread _stdOutThread;
-        private Thread _stdErrThread;
+        Thread _stdOutThread;
+        Thread _stdErrThread;
 
-        public Process Process { get; private set; }
+        public Process Process { get; set; }
         public bool SkipLogInfoOutput { get; set; }
 
         public CmdRunner()
@@ -141,7 +141,7 @@ namespace Windar.Common
             Process = null;
         }
 
-        private void ReadStandardOutput()
+        void ReadStandardOutput()
         {
             try
             {
@@ -185,7 +185,7 @@ namespace Windar.Common
             if (Log.IsDebugEnabled) Log.Debug("Command completed.");            
         }
 
-        private void ReadStandardError()
+        void ReadStandardError()
         {
             try
             {
@@ -210,7 +210,7 @@ namespace Windar.Common
             }
         }
 
-        private void StopStandardOutputThread()
+        void StopStandardOutputThread()
         {
             // Try to abort the standard output reader.
             if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
@@ -232,7 +232,7 @@ namespace Windar.Common
             _stdOutThread = null;
         }
 
-        private void StopStandardErrorThread()
+        void StopStandardErrorThread()
         {
             // Try to abort the standard error reader.
             if (_stdErrThread == null || !_stdErrThread.IsAlive) return;

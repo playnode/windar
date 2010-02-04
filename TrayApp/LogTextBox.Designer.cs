@@ -26,7 +26,7 @@ namespace Windar.TrayApp
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -47,7 +47,7 @@ namespace Windar.TrayApp
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
             this.logBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -92,8 +92,8 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private System.Windows.Forms.ContextMenuStrip logBoxContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem copyMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearMenuItem;
+        System.Windows.Forms.ContextMenuStrip logBoxContextMenu;
+        System.Windows.Forms.ToolStripMenuItem copyMenuItem;
+        System.Windows.Forms.ToolStripMenuItem clearMenuItem;
     }
 }

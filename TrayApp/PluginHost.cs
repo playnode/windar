@@ -33,9 +33,9 @@ namespace Windar.TrayApp
 {
     class PluginHost : IPluginHost
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public List<IPlugin> Plugins { get; private set; }
+        public List<IPlugin> Plugins { get; set; }
 
         #region Init
 

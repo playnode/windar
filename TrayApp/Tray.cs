@@ -31,25 +31,25 @@ namespace Windar.TrayApp
 {
     partial class Tray : Form
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         // Notification tray icon.
-        internal NotifyIcon NotifyIcon { get; private set; }
+        internal NotifyIcon NotifyIcon { get; set; }
 
         // Tray menu.
-        private readonly ContextMenu _trayMenu;
-        private readonly MenuItem _aboutMenuItem;
-        private readonly MenuItem _updateMenuItem;
-        private readonly MenuItem _daemonMenuItem;
-        private readonly MenuItem _playlickMenuItem;
-        private readonly MenuItem _playgrubMenuItem;
-        private readonly MenuItem _modeDemosMenuItem;
-        private readonly MenuItem _balloonsMenuItem;
-        private readonly MenuItem _scanfilesMenuItem;
-        private readonly MenuItem _numfilesMenuItem;
-        private readonly MenuItem _pingMenuItem;
-        private readonly MenuItem _shutdownMenuItem;
-        private readonly MenuItem _restartMenuItem;
+        readonly ContextMenu _trayMenu;
+        readonly MenuItem _aboutMenuItem;
+        readonly MenuItem _updateMenuItem;
+        readonly MenuItem _daemonMenuItem;
+        readonly MenuItem _playlickMenuItem;
+        readonly MenuItem _playgrubMenuItem;
+        readonly MenuItem _modeDemosMenuItem;
+        readonly MenuItem _balloonsMenuItem;
+        readonly MenuItem _scanfilesMenuItem;
+        readonly MenuItem _numfilesMenuItem;
+        readonly MenuItem _pingMenuItem;
+        readonly MenuItem _shutdownMenuItem;
+        readonly MenuItem _restartMenuItem;
 
         #region Init
 
@@ -133,22 +133,22 @@ namespace Windar.TrayApp
 
         #region Playdar controller commands.
 
-        private static void Shutdown(object sender, EventArgs e)
+        static void Shutdown(object sender, EventArgs e)
         {
             Program.Shutdown();
         }
 
-        private static void Restart(object sender, EventArgs e)
+        static void Restart(object sender, EventArgs e)
         {
             Program.Instance.RestartDaemon();
         }
 
-        private static void Ping(object sender, EventArgs e)
+        static void Ping(object sender, EventArgs e)
         {
             Program.ShowInfoDialog(Program.Instance.Daemon.Ping());
         }
 
-        private static void NumFiles(object sender, EventArgs e)
+        static void NumFiles(object sender, EventArgs e)
         {
             string result;
             try
@@ -168,24 +168,24 @@ namespace Windar.TrayApp
 
         #region Dialogs
 
-        private static void ShowAbout(object sender, EventArgs e)
+        static void ShowAbout(object sender, EventArgs e)
         {
             Program.Instance.MainForm.GoToAboutPage();
         }
 
-        private static void ShowDaemonInfo(object sender, EventArgs e)
+        static void ShowDaemonInfo(object sender, EventArgs e)
         {
             Program.Instance.MainForm.GoToPlaydarHomePage();
         }
 
-        private static void ShowScanSelect(object sender, EventArgs e)
+        static void ShowScanSelect(object sender, EventArgs e)
         {
             Program.Instance.MainForm.GoToAddScanFolder();
         }
 
         #endregion
 
-        private static void CheckForUpdates(object sender, EventArgs e)
+        static void CheckForUpdates(object sender, EventArgs e)
         {
             try
             {
@@ -232,7 +232,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private void ToggleShowBalloons(object sender, EventArgs e)
+        void ToggleShowBalloons(object sender, EventArgs e)
         {
             Properties.Settings.Default.ShowBalloons = !Properties.Settings.Default.ShowBalloons;
             Properties.Settings.Default.Save();
@@ -241,17 +241,17 @@ namespace Windar.TrayApp
 
         #region Web links
 
-        private static void OpenPlaylickWebsite(object sender, EventArgs e)
+        static void OpenPlaylickWebsite(object sender, EventArgs e)
         {
             Process.Start("http://www.playlick.com/");
         }
 
-        private static void OpenPlaygrub(object sender, EventArgs e)
+        static void OpenPlaygrub(object sender, EventArgs e)
         {
             Process.Start("http://playgrub.com/");
         }
 
-        private static void OpenMoreDemos(object sender, EventArgs e)
+        static void OpenMoreDemos(object sender, EventArgs e)
         {
             Process.Start("http://www.playdar.org/demos/");
         }
@@ -262,13 +262,13 @@ namespace Windar.TrayApp
 
         #region Tray icon mouse clicks.
 
-        private static void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        static void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (!Program.Instance.MainForm.Visible) Program.Instance.MainForm.GoToAboutPage();
             else Program.Instance.MainForm.EnsureVisible();
         }
 
-        private static void TrayIcon_MouseClick(object sender, MouseEventArgs e)
+        static void TrayIcon_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && Program.Instance.MainForm.Visible)
                 Program.Instance.MainForm.EnsureVisible();
@@ -283,7 +283,7 @@ namespace Windar.TrayApp
         /// </summary>
         /// <param name="version">Version as split string.</param>
         /// <returns>Version as integer value.</returns>
-        private static int ConvertVersionString(string[] version)
+        static int ConvertVersionString(string[] version)
         {
             var strBuild = new StringBuilder();
             strBuild.Append(version[0].PadLeft(2, '0')); // Major

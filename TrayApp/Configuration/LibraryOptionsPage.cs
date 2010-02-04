@@ -25,13 +25,13 @@ namespace Windar.TrayApp.Configuration
 {
     class LibraryOptionsPage : IOptionsPage
     {
-        private List<string> _scanPaths;
-        private bool _scanPathsChanged;
+        List<string> _scanPaths;
+        bool _scanPathsChanged;
 
-        public int SavedScanPathCount { get; private set; }
+        public int SavedScanPathCount { get; set; }
         public bool ScanPathValueChanged { get; set; }
         public bool ScanPathsToAdd { get; set; }
-        public bool ScanPathsRemoved { get; private set; }
+        public bool ScanPathsRemoved { get; set; }
 
         public void Load()
         {

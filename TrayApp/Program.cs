@@ -37,11 +37,11 @@ namespace Windar.TrayApp
 {
     class Program
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         internal delegate void ScanCompletedCallback();
 
-        internal static Program Instance { get; private set; }
+        internal static Program Instance { get; set; }
 
         internal string PlaydarDaemon
         {
@@ -56,14 +56,14 @@ namespace Windar.TrayApp
             }
         }
 
-        internal WindarPaths Paths { get; private set; }
-        internal MainForm MainForm { get; private set; }
-        internal DaemonController Daemon { get; private set; }
-        internal Tray Tray { get; private set; }
-        internal PluginHost PluginHost { get; private set; }
-        internal Queue<string> ScanQueue { get; private set; }
-        internal bool Indexing { get; private set; }
-        internal WaitingDialog WaitingDialog { get; private set; }
+        internal WindarPaths Paths { get; set; }
+        internal MainForm MainForm { get; set; }
+        internal DaemonController Daemon { get; set; }
+        internal Tray Tray { get; set; }
+        internal PluginHost PluginHost { get; set; }
+        internal Queue<string> ScanQueue { get; set; }
+        internal bool Indexing { get; set; }
+        internal WaitingDialog WaitingDialog { get; set; }
 
         internal class ConfigGroup
         {
@@ -72,13 +72,13 @@ namespace Windar.TrayApp
         }
 
         // NOTE: Config set to null on config load exception.
-        internal ConfigGroup Config { get; private set; }
+        internal ConfigGroup Config { get; set; }
 
         #region Win32 API
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        static extern bool SetForegroundWindow(IntPtr hWnd);
 
         #endregion
 
@@ -140,7 +140,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private Program()
+        Program()
         {
             Instance = this;
 
@@ -162,7 +162,7 @@ namespace Windar.TrayApp
             Daemon.PlaydarStartFailed += PlaydarStartFailed;
         }
 
-        private void Run()
+        void Run()
         {
             // Attempt to load the config files.
             if (!LoadConfiguration()) return;
@@ -250,7 +250,7 @@ namespace Windar.TrayApp
 
         #region So far unsuccessful attempt to get file-system shutdown/log-off events.
 
-        private enum ControlEventType
+        enum ControlEventType
         {
             CtrlCEvent = 0,
             CtrlBreakEvent = 1,
@@ -260,13 +260,13 @@ namespace Windar.TrayApp
         }
 
         [DllImport("kernel32", SetLastError = true)]
-        private static extern bool SetConsoleCtrlHandler(HandlerDelegate handlerRoutine, bool add);
+        static extern bool SetConsoleCtrlHandler(HandlerDelegate handlerRoutine, bool add);
 
-        private delegate bool HandlerDelegate(ControlEventType dwControlType);
+        delegate bool HandlerDelegate(ControlEventType dwControlType);
 
-        private static HandlerDelegate _controlHandler;
+        static HandlerDelegate _controlHandler;
 
-        private static bool ControlHandler(ControlEventType controlEvent)
+        static bool ControlHandler(ControlEventType controlEvent)
         {
             // TODO: Either get this method to work, replace or delete it.
             if (Log.IsDebugEnabled) Log.Debug("Control event (" + controlEvent + ')');
@@ -291,7 +291,7 @@ namespace Windar.TrayApp
 
         #region Uninstaller shutdown file-watcher.
 
-        private static void SetupShutdownFileWatcher()
+        static void SetupShutdownFileWatcher()
         {
             // Create a new FileSystemWatcher and set its properties.
             var watcher = new FileSystemWatcher
@@ -312,7 +312,7 @@ namespace Windar.TrayApp
             watcher.EnableRaisingEvents = true;
         }
 
-        private static void ShutdownFile_OnChanged(object source, FileSystemEventArgs e)
+        static void ShutdownFile_OnChanged(object source, FileSystemEventArgs e)
         {
             if (Log.IsInfoEnabled) Log.Info("Shutdown initiated by the file-system event.");
             Shutdown();
@@ -334,7 +334,7 @@ namespace Windar.TrayApp
             HandleUnhandledException("Windar Thread Exception", e.Exception);
         }
 
-        private static void HandleUnhandledException(string msg, Exception ex)
+        static void HandleUnhandledException(string msg, Exception ex)
         {
             string errMsg = null;
             if (Log.IsErrorEnabled) Log.Error(msg, ex);
@@ -564,22 +564,22 @@ namespace Windar.TrayApp
 
         #region Daemon event handlers.
 
-        private void PlaydarStopped(object sender, EventArgs e)
+        void PlaydarStopped(object sender, EventArgs e)
         {
             ShowTrayInfo("Playdar stopped.");
         }
 
-        private void PlaydarStarted(object sender, EventArgs e)
+        void PlaydarStarted(object sender, EventArgs e)
         {
             ShowTrayInfo("Playdar started.");
         }
 
-        private void PlaydarStartFailed(object sender, EventArgs e)
+        void PlaydarStartFailed(object sender, EventArgs e)
         {
             ShowTrayInfo("Playdar failed to start!");
         }
 
-        private void ScanCompleted(object sender, EventArgs e)
+        void ScanCompleted(object sender, EventArgs e)
         {
             if (ScanQueue.Count > 0) Daemon.Scan(ScanQueue.Dequeue());
             else
@@ -654,7 +654,7 @@ namespace Windar.TrayApp
             return result;
         }
 
-        private void CheckConfig()
+        void CheckConfig()
         {
             var path = Paths.PlaydarDataPath;
             path = path.Replace('\\', '/');

@@ -25,8 +25,8 @@ namespace Windar.Common
 {
     public abstract class ShortCmd<T> : Cmd<T> where T : new()
     {
-        private readonly StringBuilder _stdOutput;
-        private readonly StringBuilder _stdErr;
+        readonly StringBuilder _stdOutput;
+        readonly StringBuilder _stdErr;
 
         #region Properties
 

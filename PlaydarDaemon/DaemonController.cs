@@ -29,7 +29,7 @@ namespace Windar.PlaydarDaemon
 {
     public class DaemonController
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         #region Delegates and events.
 
@@ -47,11 +47,11 @@ namespace Windar.PlaydarDaemon
 
         #region Properties
 
-        internal static DaemonController Instance { get; private set; }
+        internal static DaemonController Instance { get; set; }
 
-        internal WindarPaths Paths { get; private set; }
+        internal WindarPaths Paths { get; set; }
 
-        public bool Started { get; private set; }
+        public bool Started { get; set; }
 
         public int NumFiles
         {
@@ -136,19 +136,19 @@ namespace Windar.PlaydarDaemon
 
         #region Command event handlers.
 
-        private void StartCmd_PlaydarStarted(object sender, EventArgs e)
+        void StartCmd_PlaydarStarted(object sender, EventArgs e)
         {
             Started = true;
             PlaydarStarted(this, e);
         }
 
-        private void StartCmd_PlaydarStartFailed(object sender, EventArgs e)
+        void StartCmd_PlaydarStartFailed(object sender, EventArgs e)
         {
             Started = false;
             PlaydarStartFailed(this, e);
         }
 
-        private void ScanCmd_ScanCompleted(object sender, EventArgs e)
+        void ScanCmd_ScanCompleted(object sender, EventArgs e)
         {
             ScanCompleted(this, e);
         }

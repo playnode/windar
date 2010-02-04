@@ -26,7 +26,7 @@ namespace Windar.TrayApp
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -47,7 +47,7 @@ namespace Windar.TrayApp
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
@@ -1377,102 +1377,102 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private System.Windows.Forms.Panel mainformBorderPanel;
-        private System.Windows.Forms.TabPage aboutTabPage;
-        private System.Windows.Forms.Label versionLabel;
-        private System.Windows.Forms.Panel aboutCenterPanel;
-        private System.Windows.Forms.LinkLabel playdarLink;
-        private System.Windows.Forms.PictureBox playdarLogo;
-        private System.Windows.Forms.TabPage optionsTabPage;
-        private System.Windows.Forms.TabPage playdarTabPage;
-        private System.Windows.Forms.Panel playdarBorderPanel;
-        private System.Windows.Forms.TabPage logTabPage;
-        private LogTextBox logBox;
-        private System.Windows.Forms.Panel logBoxPanel;
-        private System.Windows.Forms.SplitContainer daemonSplitPanel;
-        private System.Windows.Forms.SplitContainer logSplitPanel;
-        private System.Windows.Forms.CheckBox followTailCheckBox;
+        System.Windows.Forms.Panel mainformBorderPanel;
+        System.Windows.Forms.TabPage aboutTabPage;
+        System.Windows.Forms.Label versionLabel;
+        System.Windows.Forms.Panel aboutCenterPanel;
+        System.Windows.Forms.LinkLabel playdarLink;
+        System.Windows.Forms.PictureBox playdarLogo;
+        System.Windows.Forms.TabPage optionsTabPage;
+        System.Windows.Forms.TabPage playdarTabPage;
+        System.Windows.Forms.Panel playdarBorderPanel;
+        System.Windows.Forms.TabPage logTabPage;
+        LogTextBox logBox;
+        System.Windows.Forms.Panel logBoxPanel;
+        System.Windows.Forms.SplitContainer daemonSplitPanel;
+        System.Windows.Forms.SplitContainer logSplitPanel;
+        System.Windows.Forms.CheckBox followTailCheckBox;
         internal System.Windows.Forms.Button StopDaemonButton;
         internal System.Windows.Forms.Button StartDaemonButton;
         internal System.Windows.Forms.Button RestartDaemonButton;
         internal System.Windows.Forms.Button BackButton;
         internal System.Windows.Forms.Button HomeButton;
-        private System.Windows.Forms.TabControl optionsTabControl;
-        private System.Windows.Forms.Panel generalOptionsPanel;
-        private System.Windows.Forms.GroupBox aboutGroupBox;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox portTextBox;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.CheckBox forwardCheckBox;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.CheckBox allowIncomingCheckBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox peersGroupBox;
-        private System.Windows.Forms.DataGridView peersGrid;
-        private System.Windows.Forms.TabPage propsTabPage;
-        private System.Windows.Forms.Panel propsPanel;
-        private System.Windows.Forms.DataGridView propsGrid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PropertyName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PropertyValue;
-        private System.Windows.Forms.Button generalOptionsCancelButton;
-        private System.Windows.Forms.Button generalOptionsSaveButton;
-        private System.Windows.Forms.Button propsCancelButton;
-        private System.Windows.Forms.Button propsSaveButton;
-        private System.Windows.Forms.TabPage modsTabPage;
-        private System.Windows.Forms.Panel modsPanel;
-        private System.Windows.Forms.Button modsCancelButton;
-        private System.Windows.Forms.Button modsSaveButton;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox autostartCheckBox;
-        private System.Windows.Forms.TabPage pluginsTabPage;
-        private System.Windows.Forms.Panel pluginsPanel;
-        private System.Windows.Forms.Button pluginsCancelButton;
-        private System.Windows.Forms.Button pluginsSaveButton;
+        System.Windows.Forms.TabControl optionsTabControl;
+        System.Windows.Forms.Panel generalOptionsPanel;
+        System.Windows.Forms.GroupBox aboutGroupBox;
+        System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        System.Windows.Forms.Label label1;
+        System.Windows.Forms.Label label3;
+        System.Windows.Forms.TextBox portTextBox;
+        System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        System.Windows.Forms.CheckBox forwardCheckBox;
+        System.Windows.Forms.Label label5;
+        System.Windows.Forms.CheckBox allowIncomingCheckBox;
+        System.Windows.Forms.Label label2;
+        System.Windows.Forms.GroupBox peersGroupBox;
+        System.Windows.Forms.DataGridView peersGrid;
+        System.Windows.Forms.TabPage propsTabPage;
+        System.Windows.Forms.Panel propsPanel;
+        System.Windows.Forms.DataGridView propsGrid;
+        System.Windows.Forms.DataGridViewTextBoxColumn PropertyName;
+        System.Windows.Forms.DataGridViewTextBoxColumn PropertyValue;
+        System.Windows.Forms.Button generalOptionsCancelButton;
+        System.Windows.Forms.Button generalOptionsSaveButton;
+        System.Windows.Forms.Button propsCancelButton;
+        System.Windows.Forms.Button propsSaveButton;
+        System.Windows.Forms.TabPage modsTabPage;
+        System.Windows.Forms.Panel modsPanel;
+        System.Windows.Forms.Button modsCancelButton;
+        System.Windows.Forms.Button modsSaveButton;
+        System.Windows.Forms.Label label6;
+        System.Windows.Forms.CheckBox autostartCheckBox;
+        System.Windows.Forms.TabPage pluginsTabPage;
+        System.Windows.Forms.Panel pluginsPanel;
+        System.Windows.Forms.Button pluginsCancelButton;
+        System.Windows.Forms.Button pluginsSaveButton;
         internal System.Windows.Forms.TabControl MainTabControl;
         internal System.Windows.Forms.WebBrowser PlaydarBrowser;
-        private System.Windows.Forms.TabPage generalOptionsTabPage;
-        private System.Windows.Forms.TextBox nodeNameTextBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label7;
+        System.Windows.Forms.TabPage generalOptionsTabPage;
+        System.Windows.Forms.TextBox nodeNameTextBox;
+        System.Windows.Forms.PictureBox pictureBox1;
+        System.Windows.Forms.Label label7;
         internal System.Windows.Forms.Button RefreshButton;
-        private System.Windows.Forms.DataGridView modsGrid;
-        private System.Windows.Forms.TabPage libraryTabPage;
-        private System.Windows.Forms.Panel libraryPanel;
-        private System.Windows.Forms.DataGridView libraryGrid;
-        private System.Windows.Forms.Button libraryCancelButton;
-        private System.Windows.Forms.Button librarySaveButton;
-        private System.Windows.Forms.DataGridView pluginsGrid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LibraryItemPath;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ModuleName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ModuleWeight;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ModuleTargetTime;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn ModuleLocalOnly;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn ModuleEnabled;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PluginName;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn PluginEnabled;
-        private System.Windows.Forms.ContextMenuStrip peersContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem addPeerMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removePeerMenuItem;
-        private System.Windows.Forms.ContextMenuStrip libraryContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem addLibPathMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeLibPathMenuItem;
-        private System.Windows.Forms.ContextMenuStrip modsContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem addModMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removeModMenuItem;
-        private System.Windows.Forms.ContextMenuStrip pluginsContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem addPluginMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removePluginMenuItem;
-        private System.Windows.Forms.ContextMenuStrip propsContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem addPropMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem removePropMenuItem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn peerAddress;
-        private System.Windows.Forms.DataGridViewTextBoxColumn peerPort;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn peerShare;
-        private System.Windows.Forms.Timer cellEndEditTimer;
-        private System.Windows.Forms.Button tracklistButton;
+        System.Windows.Forms.DataGridView modsGrid;
+        System.Windows.Forms.TabPage libraryTabPage;
+        System.Windows.Forms.Panel libraryPanel;
+        System.Windows.Forms.DataGridView libraryGrid;
+        System.Windows.Forms.Button libraryCancelButton;
+        System.Windows.Forms.Button librarySaveButton;
+        System.Windows.Forms.DataGridView pluginsGrid;
+        System.Windows.Forms.DataGridViewTextBoxColumn LibraryItemPath;
+        System.Windows.Forms.DataGridViewTextBoxColumn ModuleName;
+        System.Windows.Forms.DataGridViewTextBoxColumn ModuleWeight;
+        System.Windows.Forms.DataGridViewTextBoxColumn ModuleTargetTime;
+        System.Windows.Forms.DataGridViewCheckBoxColumn ModuleLocalOnly;
+        System.Windows.Forms.DataGridViewCheckBoxColumn ModuleEnabled;
+        System.Windows.Forms.DataGridViewTextBoxColumn PluginName;
+        System.Windows.Forms.DataGridViewCheckBoxColumn PluginEnabled;
+        System.Windows.Forms.ContextMenuStrip peersContextMenu;
+        System.Windows.Forms.ToolStripMenuItem addPeerMenuItem;
+        System.Windows.Forms.ToolStripMenuItem removePeerMenuItem;
+        System.Windows.Forms.ContextMenuStrip libraryContextMenu;
+        System.Windows.Forms.ToolStripMenuItem addLibPathMenuItem;
+        System.Windows.Forms.ToolStripMenuItem removeLibPathMenuItem;
+        System.Windows.Forms.ContextMenuStrip modsContextMenu;
+        System.Windows.Forms.ToolStripMenuItem addModMenuItem;
+        System.Windows.Forms.ToolStripMenuItem removeModMenuItem;
+        System.Windows.Forms.ContextMenuStrip pluginsContextMenu;
+        System.Windows.Forms.ToolStripMenuItem addPluginMenuItem;
+        System.Windows.Forms.ToolStripMenuItem removePluginMenuItem;
+        System.Windows.Forms.ContextMenuStrip propsContextMenu;
+        System.Windows.Forms.ToolStripMenuItem addPropMenuItem;
+        System.Windows.Forms.ToolStripMenuItem removePropMenuItem;
+        System.Windows.Forms.DataGridViewTextBoxColumn peerAddress;
+        System.Windows.Forms.DataGridViewTextBoxColumn peerPort;
+        System.Windows.Forms.DataGridViewCheckBoxColumn peerShare;
+        System.Windows.Forms.Timer cellEndEditTimer;
+        System.Windows.Forms.Button tracklistButton;
         internal System.Windows.Forms.Button deleteIndexButton;
-        private System.Windows.Forms.Button rebuildIndexButton;
+        System.Windows.Forms.Button rebuildIndexButton;
     }
 }

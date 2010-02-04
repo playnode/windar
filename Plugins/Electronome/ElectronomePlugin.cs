@@ -27,12 +27,12 @@ namespace Windar.PlayerPlugin
 {
     public class ElectronomePlugin : IPlugin
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         #region Properties
 
-        public IPluginHost Host { private get; set; }
-        public Electronome Electronome { get; private set; }
+        public IPluginHost Host { get; set; }
+        public Electronome Electronome { get; set; }
 
         public string Name
         {

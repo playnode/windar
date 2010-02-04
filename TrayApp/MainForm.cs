@@ -35,22 +35,22 @@ namespace Windar.TrayApp
 {
     partial class MainForm : Form
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         internal delegate void ShowTracklistCallback(string text, int n);
 
         [DllImport("wininet.dll", SetLastError = true)]
-        private static extern long DeleteUrlCacheEntry(string lpszUrlName);
+        static extern long DeleteUrlCacheEntry(string lpszUrlName);
 
-        private bool _exiting;
-        private bool _resizing;
-        private bool _inDirectoryDialog;
-        private string _lastLink;
-        private TabPage _lastSelectedTab;
-        private FormWindowState _lastWindowState;
-        private Size _oldSize;
-        private IOptionsPage _optionsPage;
-        private int _navLoopCount;
+        bool _exiting;
+        bool _resizing;
+        bool _inDirectoryDialog;
+        string _lastLink;
+        TabPage _lastSelectedTab;
+        FormWindowState _lastWindowState;
+        Size _oldSize;
+        IOptionsPage _optionsPage;
+        int _navLoopCount;
 
         #region Init
 
@@ -59,7 +59,7 @@ namespace Windar.TrayApp
             InitializeComponent();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        void MainForm_Load(object sender, EventArgs e)
         {
             // Version info for the About page.
             var info = new StringBuilder();
@@ -88,7 +88,7 @@ namespace Windar.TrayApp
             LoadPlaydarHomepage();
         }
 
-        private void RichTextBoxPlus_VScroll(object sender, EventArgs e)
+        void RichTextBoxPlus_VScroll(object sender, EventArgs e)
         {
             if (logBox != null)
             {
@@ -237,22 +237,22 @@ namespace Windar.TrayApp
             }
         }
 
-        private void startDaemonButton_Click(object sender, EventArgs e)
+        void startDaemonButton_Click(object sender, EventArgs e)
         {
             Program.Instance.StartDaemon();
         }
 
-        private void stopDaemonButton_Click(object sender, EventArgs e)
+        void stopDaemonButton_Click(object sender, EventArgs e)
         {
             Program.Instance.StopDaemon();
         }
 
-        private void restartButton_Click(object sender, EventArgs e)
+        void restartButton_Click(object sender, EventArgs e)
         {
             Program.Instance.RestartDaemon();
         }
 
-        private void homeButton_Click(object sender, EventArgs e)
+        void homeButton_Click(object sender, EventArgs e)
         {
             if (Program.Instance.Daemon.Started)
             {
@@ -260,7 +260,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private void backButton_Click(object sender, EventArgs e)
+        void backButton_Click(object sender, EventArgs e)
         {
             if (Program.Instance.Daemon.Started)
             {
@@ -268,17 +268,17 @@ namespace Windar.TrayApp
             }
         }
 
-        private void refreshButton_Click(object sender, EventArgs e)
+        void refreshButton_Click(object sender, EventArgs e)
         {
             if (Program.Instance.Daemon.Started) PlaydarBrowser.Refresh();
         }
 
-        private void playdarLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        void playdarLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.playdar.org/");
         }
 
-        private void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             var url = e.Url.ToString();
             if (Log.IsDebugEnabled) Log.Debug("Navigating to " + url);
@@ -320,7 +320,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private void playdarBrowser_NewWindow(object sender, CancelEventArgs e)
+        void playdarBrowser_NewWindow(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             if (!_lastLink.StartsWith(Program.Instance.PlaydarDaemon))
@@ -333,7 +333,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private void PlaydarBrowserLinkClicked(object sender, EventArgs e)
+        void PlaydarBrowserLinkClicked(object sender, EventArgs e)
         {
             if (PlaydarBrowser.Document == null) return;
             var link = PlaydarBrowser.Document.ActiveElement;
@@ -341,7 +341,7 @@ namespace Windar.TrayApp
             _lastLink = link.GetAttribute("href");
         }
 
-        private void playdarBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        void playdarBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             var url = e.Url.ToString();
 
@@ -397,7 +397,7 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private void followTailCheckBox_CheckedChanged(object sender, EventArgs e)
+        void followTailCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (logBox == null) return;
             logBox.FollowTail = followTailCheckBox.Checked;
@@ -406,7 +406,7 @@ namespace Windar.TrayApp
 
         #region Closing
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (MainTabControl.SelectedTab == optionsTabPage
                 && Program.Instance.Config != null
@@ -439,7 +439,7 @@ namespace Windar.TrayApp
 
         #region Window layout persistence.
 
-        private void PersistWindowLayout()
+        void PersistWindowLayout()
         {
             switch (WindowState)
             {
@@ -463,7 +463,7 @@ namespace Windar.TrayApp
             Properties.Settings.Default.Save();
         }
 
-        private void RestoreWindowLayout()
+        void RestoreWindowLayout()
         {
             // Window location.
             if (Properties.Settings.Default.MainFormWindowLocation == new Point(0, 0))
@@ -503,13 +503,13 @@ namespace Windar.TrayApp
 
         #region Window movement.
 
-        private void MainForm_ResizeBegin(object sender, EventArgs e)
+        void MainForm_ResizeBegin(object sender, EventArgs e)
         {
             _resizing = true;
             _oldSize = Size;
         }
 
-        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        void MainForm_ResizeEnd(object sender, EventArgs e)
         {
             if (MainTabControl.SelectedTab == logTabPage
                 && logTabPage != null
@@ -519,7 +519,7 @@ namespace Windar.TrayApp
             PersistWindowLayout();
         }
 
-        private void MainForm_Resize(object sender, EventArgs e)
+        void MainForm_Resize(object sender, EventArgs e)
         {
             if (_resizing) return;
             if (MainTabControl.SelectedTab == logTabPage
@@ -545,14 +545,14 @@ namespace Windar.TrayApp
 
         #region Tab control selection changes.
 
-        private void MainTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
+        void MainTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
         {
             if (_lastSelectedTab != optionsTabPage) return;
             if (Program.Instance.Config == null) e.Cancel = true;
             else e.Cancel = !ApplyOptionsOrCancel();
         }
 
-        private void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        void MainTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Remember last selected tab.
             _lastSelectedTab = MainTabControl.SelectedTab;
@@ -594,12 +594,12 @@ namespace Windar.TrayApp
             }
         }
 
-        private void optionsTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
+        void optionsTabControl_Deselecting(object sender, TabControlCancelEventArgs e)
         {
             e.Cancel = !ApplyOptionsOrCancel();
         }
 
-        private void optionsTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        void optionsTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (optionsTabControl.SelectedTab == generalOptionsTabPage)
             {
@@ -638,7 +638,7 @@ namespace Windar.TrayApp
         /// Check if changes. Require save or cancel changes.
         /// </summary>
         /// <returns>Returns true if ok to proceed, false otherwise.</returns>
-        private bool ApplyOptionsOrCancel()
+        bool ApplyOptionsOrCancel()
         {
             if (Visible && _optionsPage != null && _optionsPage.Changed)
             {
@@ -652,7 +652,7 @@ namespace Windar.TrayApp
             return true;
         }
 
-        private static void ShowApplyChangesDialog()
+        static void ShowApplyChangesDialog()
         {
             var msg = new StringBuilder();
             msg.Append("To apply changes you will also need to restart Playdar.");
@@ -660,13 +660,13 @@ namespace Windar.TrayApp
             if (Program.ShowYesNoDialog(msg.ToString())) Program.Instance.Daemon.Restart();
         }
 
-        private void ResetOptionsPagesButtons()
+        void ResetOptionsPagesButtons()
         {
             UpdateGeneralOptionsButtons();
             UpdateLibraryControls();
         }
 
-        private void cellEndEditTimer_Tick(object sender, EventArgs e)
+        void cellEndEditTimer_Tick(object sender, EventArgs e)
         {
             if (_optionsPage is GeneralOptionsPage) peersGrid.EndEdit();
             else if (_optionsPage is LibraryOptionsPage) libraryGrid.EndEdit();
@@ -678,7 +678,7 @@ namespace Windar.TrayApp
 
         #region General options.
 
-        private void InitialiseGeneralOptionsPage()
+        void InitialiseGeneralOptionsPage()
         {
             GeneralOptionsPage options;
             _optionsPage = options = new GeneralOptionsPage();
@@ -698,7 +698,7 @@ namespace Windar.TrayApp
             peersGrid.Rows[0].Selected = false;
         }
 
-        private void UpdateGeneralOptionsButtons()
+        void UpdateGeneralOptionsButtons()
         {
             var state = _optionsPage != null && _optionsPage is GeneralOptionsPage;
             state = state ? _optionsPage.Changed : false;
@@ -706,7 +706,7 @@ namespace Windar.TrayApp
             generalOptionsCancelButton.Enabled = state;
         }
 
-        private void SaveGeneralOptions()
+        void SaveGeneralOptions()
         {
             foreach (var obj in peersGrid.Rows)
             {
@@ -770,12 +770,12 @@ namespace Windar.TrayApp
             ShowApplyChangesDialog();
         }
 
-        private void generalOptionsSaveButton_Click(object sender, EventArgs e)
+        void generalOptionsSaveButton_Click(object sender, EventArgs e)
         {
             SaveGeneralOptions();
         }
 
-        private void generalOptionsCancelButton_Click(object sender, EventArgs e)
+        void generalOptionsCancelButton_Click(object sender, EventArgs e)
         {
             Program.Instance.LoadConfiguration();
             InitialiseGeneralOptionsPage();
@@ -785,31 +785,31 @@ namespace Windar.TrayApp
 
         #region Change handling.
 
-        private void allowIncomingCheckBox_CheckedChanged(object sender, EventArgs e)
+        void allowIncomingCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).AllowIncoming = allowIncomingCheckBox.Checked;
             UpdateGeneralOptionsButtons();
         }
 
-        private void autostartCheckBox_CheckedChanged(object sender, EventArgs e)
+        void autostartCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).AutoStart = autostartCheckBox.Checked;
             UpdateGeneralOptionsButtons();
         }
 
-        private void forwardCheckBox_CheckedChanged(object sender, EventArgs e)
+        void forwardCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).ForwardQueries = forwardCheckBox.Checked;
             UpdateGeneralOptionsButtons();
         }
 
-        private void nodeNameTextBox_TextChanged(object sender, EventArgs e)
+        void nodeNameTextBox_TextChanged(object sender, EventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).NodeName = nodeNameTextBox.Text;
             UpdateGeneralOptionsButtons();
         }
 
-        private void portTextBox_TextChanged(object sender, EventArgs e)
+        void portTextBox_TextChanged(object sender, EventArgs e)
         {
             try
             {
@@ -827,7 +827,7 @@ namespace Windar.TrayApp
 
         #region Peers
 
-        private static DataGridViewRow GetPeerListRow(PeerInfo peer)
+        static DataGridViewRow GetPeerListRow(PeerInfo peer)
         {
             var row = new DataGridViewRow();
             row.Cells.Add(new DataGridViewTextBoxCell { Value = peer.Host });
@@ -837,7 +837,7 @@ namespace Windar.TrayApp
             return row;
         }
 
-        private static DataGridViewRow GetPeerListRow()
+        static DataGridViewRow GetPeerListRow()
         {
             var row = new DataGridViewRow();
             row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
@@ -846,7 +846,7 @@ namespace Windar.TrayApp
             return row;
         }
 
-        private void addPeerMenuItem_Click(object sender, EventArgs e)
+        void addPeerMenuItem_Click(object sender, EventArgs e)
         {
             peersGrid.Rows.Add(GetPeerListRow());
             ((GeneralOptionsPage) _optionsPage).NewPeersToAdd = true;
@@ -858,7 +858,7 @@ namespace Windar.TrayApp
             peersGrid.BeginEdit(false);
         }
 
-        private void removePeerMenuItem_Click(object sender, EventArgs e)
+        void removePeerMenuItem_Click(object sender, EventArgs e)
         {
             foreach (var obj in peersGrid.SelectedRows)
             {
@@ -873,7 +873,7 @@ namespace Windar.TrayApp
             UpdateGeneralOptionsButtons();
         }
 
-        private void peersGrid_MouseClick(object sender, MouseEventArgs e)
+        void peersGrid_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
             if (peersGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
@@ -881,27 +881,27 @@ namespace Windar.TrayApp
             peersGrid.CurrentCell = null;
         }
 
-        private void peersGrid_MouseDown(object sender, MouseEventArgs e)
+        void peersGrid_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right) return;
             peersContextMenu.Items["removePeerMenuItem"].Visible = peersGrid.SelectedRows.Count > 0;
         }
 
-        private void peersGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        void peersGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (peersGrid.Rows.Count <= 0 || peersGrid.Rows[e.RowIndex].Tag == null) return;
             ((GeneralOptionsPage) _optionsPage).PeerValueChanged = true;
             UpdateGeneralOptionsButtons();
         }
 
-        private void peersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        void peersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             var cell = peersGrid[e.ColumnIndex, e.RowIndex];
             if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
         }
 
-        private void peersGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        void peersGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             ((GeneralOptionsPage) _optionsPage).PeerValueChanged = true;
             UpdateGeneralOptionsButtons();
@@ -913,7 +913,7 @@ namespace Windar.TrayApp
 
         #region Local library.
 
-        private void InitialiseLibraryPage()
+        void InitialiseLibraryPage()
         {
             LibraryOptionsPage options;
             _optionsPage = options = new LibraryOptionsPage();
@@ -934,7 +934,7 @@ namespace Windar.TrayApp
             libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void SaveLibrarySettings()
+        void SaveLibrarySettings()
         {
             var options = (LibraryOptionsPage) _optionsPage;
 
@@ -967,7 +967,7 @@ namespace Windar.TrayApp
             Program.Instance.SaveConfiguration();
         }
 
-        private void ReloadLibrarySettings()
+        void ReloadLibrarySettings()
         {
             // Attempt to reload the configuration files.
             // Don't continue to apply changes dialog if load fails.
@@ -991,7 +991,7 @@ namespace Windar.TrayApp
             libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void DisableLibraryControls()
+        void DisableLibraryControls()
         {
             // Context menu.
             libraryContextMenu.Enabled = false;
@@ -1006,7 +1006,7 @@ namespace Windar.TrayApp
             Application.DoEvents();
         }
 
-        private void UpdateLibraryControls()
+        void UpdateLibraryControls()
         {
             if (_optionsPage == null || !(_optionsPage is LibraryOptionsPage)) return;
             var options = (LibraryOptionsPage) _optionsPage;
@@ -1026,7 +1026,7 @@ namespace Windar.TrayApp
             deleteIndexButton.Enabled = !indexing && savedPaths > 0;
         }
 
-        private static DataGridViewRow GetScanPathRow(string path)
+        static DataGridViewRow GetScanPathRow(string path)
         {
             var row = new DataGridViewRow();
             var str = WindarPaths.ToWindowsPath(path);
@@ -1035,19 +1035,19 @@ namespace Windar.TrayApp
             return row;
         }
 
-        private static DataGridViewRow GetNewScanPathRow(string path)
+        static DataGridViewRow GetNewScanPathRow(string path)
         {
             var row = new DataGridViewRow();
             row.Cells.Add(new DataGridViewTextBoxCell { Value = path });
             return row;
         }
 
-        private void addLibPathMenuItem_Click(object sender, EventArgs e)
+        void addLibPathMenuItem_Click(object sender, EventArgs e)
         {
             AddScanPath();
         }
 
-        private void AddScanPath()
+        void AddScanPath()
         {
             var path = SelectScanPath();
             if (string.IsNullOrEmpty(path)) return;
@@ -1078,7 +1078,7 @@ namespace Windar.TrayApp
             libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void removeLibPathMenuItem_Click(object sender, EventArgs e)
+        void removeLibPathMenuItem_Click(object sender, EventArgs e)
         {
             foreach (var obj in libraryGrid.SelectedRows)
             {
@@ -1102,12 +1102,12 @@ namespace Windar.TrayApp
             libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void librarySaveButton_Click(object sender, EventArgs e)
+        void librarySaveButton_Click(object sender, EventArgs e)
         {
             BuildLibrary(false);
         }
 
-        private void libraryCancelButton_Click(object sender, EventArgs e)
+        void libraryCancelButton_Click(object sender, EventArgs e)
         {
             Program.Instance.LoadConfiguration();
             InitialiseLibraryPage();
@@ -1121,7 +1121,7 @@ namespace Windar.TrayApp
             libraryGrid.Sort(libraryGrid.Columns[0], ListSortDirection.Ascending);
         }
 
-        private void deleteIndexButton_Click(object sender, EventArgs e)
+        void deleteIndexButton_Click(object sender, EventArgs e)
         {
             var msg = new StringBuilder();
             msg.Append("Are you sure you want to delete the current index?").Append(Environment.NewLine);
@@ -1146,7 +1146,7 @@ namespace Windar.TrayApp
             UpdateLibraryControls();
         }
 
-        private static void DeleteLibraryIndexFiles()
+        static void DeleteLibraryIndexFiles()
         {
             Program.Instance.Daemon.Stop();
             var libraryFilename = Program.Instance.Paths.PlaydarDataPath + @"\library.db";
@@ -1158,12 +1158,12 @@ namespace Windar.TrayApp
             Program.Instance.Daemon.Start();
         }
 
-        private void rebuildIndexButton_Click(object sender, EventArgs e)
+        void rebuildIndexButton_Click(object sender, EventArgs e)
         {
             BuildLibrary(true);
         }
 
-        private void BuildLibrary(bool alwaysRebuild)
+        void BuildLibrary(bool alwaysRebuild)
         {
             var options = (LibraryOptionsPage) _optionsPage;
             if (options.ScanPathsRemoved || alwaysRebuild)
@@ -1231,14 +1231,14 @@ namespace Windar.TrayApp
             UpdateLibraryControls();
         }
 
-        private void tracklistButton_Click(object sender, EventArgs e)
+        void tracklistButton_Click(object sender, EventArgs e)
         {
             Program.Instance.WaitingDialog.Do = ShowTracklist;
             Program.Instance.WaitingDialog.StatusLabel.Text = "Getting tracklist...";
             Program.Instance.WaitingDialog.ShowDialog();
         }
 
-        private static void ShowTracklist()
+        static void ShowTracklist()
         {
             var lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
             var build = new StringBuilder();
@@ -1301,7 +1301,7 @@ namespace Windar.TrayApp
             Program.Instance.MainForm.Invoke(d, args);
         }
 
-        private static void ShowTracklistOutput(string text, int n)
+        static void ShowTracklistOutput(string text, int n)
         {
             var dialog = new OutputDisplay
             {
@@ -1317,7 +1317,7 @@ namespace Windar.TrayApp
             dialog.ShowDialog();
         }
 
-        private void libraryGrid_MouseClick(object sender, MouseEventArgs e)
+        void libraryGrid_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
             if (libraryGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
@@ -1325,27 +1325,27 @@ namespace Windar.TrayApp
             libraryGrid.CurrentCell = null;
         }
 
-        private void libraryGrid_MouseDown(object sender, MouseEventArgs e)
+        void libraryGrid_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right) return;
             libraryContextMenu.Items["removeLibPathMenuItem"].Visible = libraryGrid.SelectedRows.Count > 0;
         }
 
-        private void libraryGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        void libraryGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (libraryGrid.Rows.Count <= 0 || libraryGrid.Rows[e.RowIndex].Tag == null) return;
             ((LibraryOptionsPage) _optionsPage).ScanPathValueChanged = true;
             UpdateLibraryControls();
         }
 
-        private void libraryGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        void libraryGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
             if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
         }
 
-        private void libraryGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        void libraryGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
             var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
@@ -1355,12 +1355,12 @@ namespace Windar.TrayApp
             if (!string.IsNullOrEmpty(path)) cell.Value = path;
         }
 
-        private string SelectScanPath()
+        string SelectScanPath()
         {
             return SelectScanPath(null);
         }
 
-        private string SelectScanPath(string initialFolder)
+        string SelectScanPath(string initialFolder)
         {
             string result = null;
             var dialog = new DirectoryDialog
@@ -1379,7 +1379,7 @@ namespace Windar.TrayApp
             return result;
         }
 
-        private void libraryGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        void libraryGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             ((LibraryOptionsPage) _optionsPage).ScanPathValueChanged = true;
             UpdateLibraryControls();
@@ -1389,34 +1389,34 @@ namespace Windar.TrayApp
 
         #region Resolvers
 
-        private void InitialiseModulesPage()
+        void InitialiseModulesPage()
         {
             PlaydarModulesPage options;
             _optionsPage = options = new PlaydarModulesPage();
             _optionsPage.Load();
         }
 
-        private void modsGrid_MouseDown(object sender, MouseEventArgs e)
+        void modsGrid_MouseDown(object sender, MouseEventArgs e)
         {
 
         }
 
-        private void modsGrid_MouseClick(object sender, MouseEventArgs e)
+        void modsGrid_MouseClick(object sender, MouseEventArgs e)
         {
 
         }
 
-        private void modsGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        void modsGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
 
         }
 
-        private void modsGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        void modsGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
 
         }
 
-        private void modsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        void modsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
 
         }
@@ -1425,14 +1425,14 @@ namespace Windar.TrayApp
 
         #region Plugins
 
-        private void InitialisePluginsPage()
+        void InitialisePluginsPage()
         {
             PluginsPage options;
             _optionsPage = options = new PluginsPage();
             _optionsPage.Load();
         }
 
-        private void pluginsGrid_MouseDown(object sender, MouseEventArgs e)
+        void pluginsGrid_MouseDown(object sender, MouseEventArgs e)
         {
 
         }
@@ -1441,14 +1441,14 @@ namespace Windar.TrayApp
 
         #region Plugin properties.
 
-        private void InitialisePluginsPropertiesPage()
+        void InitialisePluginsPropertiesPage()
         {
             PluginPropertiesPage options;
             _optionsPage = options = new PluginPropertiesPage();
             _optionsPage.Load();
         }
 
-        private void propsGrid_MouseDown(object sender, MouseEventArgs e)
+        void propsGrid_MouseDown(object sender, MouseEventArgs e)
         {
 
         }

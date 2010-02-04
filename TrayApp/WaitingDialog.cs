@@ -29,14 +29,14 @@ namespace Windar.TrayApp
         
         public DoMethod Do { get; set; }
 
-        private bool _run;
+        bool _run;
 
         public WaitingDialog()
         {
             InitializeComponent();
         }
 
-        private void SetRun(bool run)
+        void SetRun(bool run)
         {
             _run = run;
             Program.Instance.Tray.ToggleMainFormOptions(!_run);
@@ -47,7 +47,7 @@ namespace Windar.TrayApp
             SetRun(false);
         }
 
-        private void WaitingDialog_Shown(object sender, System.EventArgs e)
+        void WaitingDialog_Shown(object sender, System.EventArgs e)
         {
             SetRun(true);
             if (Do != null) backgroundWorker.RunWorkerAsync();
@@ -60,12 +60,12 @@ namespace Windar.TrayApp
             Close();
         }
 
-        private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             Do();
         }
 
-        private void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             SetRun(false);
         }

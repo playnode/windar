@@ -29,7 +29,7 @@ namespace Windar.ScrobblerPlugin
     {
         #region Properties
 
-        public IPluginHost Host { private get; set; }
+        public IPluginHost Host { get; set; }
 
         public string Name
         {

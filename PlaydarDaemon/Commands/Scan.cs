@@ -31,7 +31,7 @@ namespace Windar.PlaydarDaemon.Commands
 
         public event ScanCompletedHandler ScanCompleted;
 
-        private bool _firstRun;
+        bool _firstRun;
 
         public string ScanPath { get; set; }
 

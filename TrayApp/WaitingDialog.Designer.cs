@@ -26,7 +26,7 @@ namespace Windar.TrayApp
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -47,7 +47,7 @@ namespace Windar.TrayApp
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        void InitializeComponent()
         {
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.StatusLabel = new System.Windows.Forms.Label();
@@ -127,10 +127,10 @@ namespace Windar.TrayApp
 
         #endregion
 
-        private System.Windows.Forms.ProgressBar progressBar;
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
+        System.Windows.Forms.ProgressBar progressBar;
+        System.ComponentModel.BackgroundWorker backgroundWorker;
         internal System.Windows.Forms.Label StatusLabel;
-        private System.Windows.Forms.Panel borderPanel;
-        private System.Windows.Forms.Panel outerPanel;
+        System.Windows.Forms.Panel borderPanel;
+        System.Windows.Forms.Panel outerPanel;
     }
 }

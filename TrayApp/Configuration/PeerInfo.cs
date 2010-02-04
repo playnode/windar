@@ -25,13 +25,13 @@ namespace Windar.TrayApp.Configuration
 {
     public class PeerInfo
     {
-        private string _host;
-        private int _port;
-        private bool _share;
+        string _host;
+        int _port;
+        bool _share;
 
-        protected bool HostChanged { get; private set; }
-        protected bool PortChanged { get; private set; }
-        protected bool ShareChanged { get; private set; }
+        protected bool HostChanged { get; set; }
+        protected bool PortChanged { get; set; }
+        protected bool ShareChanged { get; set; }
 
         public string Host
         {

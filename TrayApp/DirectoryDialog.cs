@@ -40,16 +40,16 @@ namespace Windar.TrayApp
         #region Win32 API
 
         [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPStr)] string lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPStr)] string lParam);
 
         [DllImport("ole32", EntryPoint = "CoTaskMemFree", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        private static extern int CoTaskMemFree(IntPtr hMem);
+        static extern int CoTaskMemFree(IntPtr hMem);
 
         [DllImport("shell32", EntryPoint = "SHBrowseForFolder", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        private static extern IntPtr ShBrowseForFolder(ref BrowseInfo lpbi);
+        static extern IntPtr ShBrowseForFolder(ref BrowseInfo lpbi);
 
         [DllImport("shell32", EntryPoint = "SHGetPathFromIDList", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        private static extern int ShGetPathFromIdList(IntPtr pidList, StringBuilder lpBuffer);
+        static extern int ShGetPathFromIdList(IntPtr pidList, StringBuilder lpBuffer);
 
         #endregion
 
@@ -69,12 +69,12 @@ namespace Windar.TrayApp
 
         // Get more API constants from the following page:
         // http://www.pinvoke.net/default.aspx/shell32/ShBrowseForFolder.html
-        private const int BrowseDirs = 0x0001;
-        private const int BrowseComputers = 0x1000;
-        private const int BrowseFiles = 0x4000;
-        private const int BrowseNotBelowDomain = 0x0002;
-        private const int BrowseNoNewFolderButton = 0x0200;
-        private const int BrowseNoTranslate = 0x0400;
+        const int BrowseDirs = 0x0001;
+        const int BrowseComputers = 0x1000;
+        const int BrowseFiles = 0x4000;
+        const int BrowseNotBelowDomain = 0x0002;
+        const int BrowseNoNewFolderButton = 0x0200;
+        const int BrowseNoTranslate = 0x0400;
 
         public enum BrowseForTypes
         {
@@ -110,7 +110,7 @@ namespace Windar.TrayApp
         public BrowseForTypes BrowseFor { get; set; }
         public string InitialPath { get; set; }
         public string Title { get; set; }
-        public string Selected { get; private set; }
+        public string Selected { get; set; }
 
         #endregion
 

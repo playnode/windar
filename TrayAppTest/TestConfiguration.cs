@@ -34,9 +34,9 @@ namespace Windar.TrayApp
     {
         #region Test support code
 
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        private static string ProjectRootPath
+        static string ProjectRootPath
         {
             get
             {
@@ -48,7 +48,7 @@ namespace Windar.TrayApp
             }
         }
 
-        private static string TestConfigurationPath
+        static string TestConfigurationPath
         {
             get
             {

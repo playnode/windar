@@ -29,15 +29,15 @@ namespace Windar.TrayApp.Configuration
 {
     public class TcpConfigFile : ErlangTermsDocument
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        private NamedBoolean _listen;
-        private NamedInteger _port;
-        private NamedBoolean _share;
-        private NamedList _peers;
-        private NamedBoolean _fwd;
-        private NamedInteger _fwdDelay;
-        private NamedBoolean _rewriteIdentity;
+        NamedBoolean _listen;
+        NamedInteger _port;
+        NamedBoolean _share;
+        NamedList _peers;
+        NamedBoolean _fwd;
+        NamedInteger _fwdDelay;
+        NamedBoolean _rewriteIdentity;
 
         public bool Listen
         {
@@ -139,7 +139,7 @@ namespace Windar.TrayApp.Configuration
             return result;
         }
 
-        private TupleToken GetPeerInfoTuple(string host, int port)
+        TupleToken GetPeerInfoTuple(string host, int port)
         {
             TupleToken result = null;
             if (_peers == null) _peers = FindNamedList("peers");

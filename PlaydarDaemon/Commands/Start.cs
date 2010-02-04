@@ -35,13 +35,13 @@ namespace Windar.PlaydarDaemon.Commands
 
         #region State
 
-        private enum State
+        enum State
         {
             Initial,
             ApplicationInfo
         }
 
-        private State _state;
+        State _state;
 
         #endregion
 

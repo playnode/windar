@@ -26,15 +26,15 @@ namespace Windar.TrayApp.Configuration
 {
     public class MainConfigFile : ErlangTermsDocument
     {
-        private NamedString _name;
-        private NamedList _scripts;
-        private NamedList _web;
-        private NamedBoolean _crossdomain;
-        private NamedList _blacklist;
-        private NamedString _authdbdir;
-        private NamedBoolean _explain;
-        private TupleToken _libdbdir;
-        private NamedList _scanpaths;
+        NamedString _name;
+        NamedList _scripts;
+        NamedList _web;
+        NamedBoolean _crossdomain;
+        NamedList _blacklist;
+        NamedString _authdbdir;
+        NamedBoolean _explain;
+        TupleToken _libdbdir;
+        NamedList _scanpaths;
 
         public string Name
         {
@@ -94,7 +94,7 @@ namespace Windar.TrayApp.Configuration
 
         #region Web
 
-        private NamedList CreateWebConfigItem()
+        NamedList CreateWebConfigItem()
         {
             /*
             {web,[
@@ -323,7 +323,7 @@ namespace Windar.TrayApp.Configuration
             }
         }
 
-        private TupleToken FindLibraryDbDir()
+        TupleToken FindLibraryDbDir()
         {
             TupleToken result = null;
 
