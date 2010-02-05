@@ -25,7 +25,6 @@ namespace Windar.PluginAPI
     {
         IPluginHost Host { set; }
         string Name { get; }
-        string Description { get; }
         void Load();
         void Shutdown();
     }

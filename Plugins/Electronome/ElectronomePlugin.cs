@@ -19,20 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
-using System.Reflection;
-using log4net;
 using Windar.PluginAPI;
 
-namespace Windar.PlayerPlugin
+namespace Windar.ElectronomePlugin
 {
     public class ElectronomePlugin : IPlugin
     {
-        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        public IPluginHost Host { private get; set; }
 
-        #region Properties
-
-        public IPluginHost Host { get; set; }
-        public Electronome Electronome { get; set; }
+        readonly ElectronomeTabPage _tabPage;
 
         public string Name
         {
@@ -42,24 +37,14 @@ namespace Windar.PlayerPlugin
             }
         }
 
-        public string Description
-        {
-            get
-            {
-                return "Music discovery.";
-            }
-        }
-
-        #endregion
-
         public ElectronomePlugin()
         {
-            Electronome = new Electronome();
+            _tabPage = new ElectronomeTabPage();
         }
 
         public void Load()
         {
-            Host.AddTabPage(Electronome, Name);
+            Host.AddTabPage(_tabPage, Name);
         }
 
         public void Shutdown()

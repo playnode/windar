@@ -8,8 +8,8 @@
     <ProjectGuid>{EF8CDC39-DA2B-41D9-86DD-CB8A24326F20}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Napster</RootNamespace>
-    <AssemblyName>Napster</AssemblyName>
+    <RootNamespace>Windar.NapsterPlugin</RootNamespace>
+    <AssemblyName>Windar.NapsterPlugin</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,12 +31,40 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NapsterConfigForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NapsterConfigForm.Designer.cs">
+      <DependentUpon>NapsterConfigForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NapsterPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PluginAPI\PluginAPI.csproj">
+      <Project>{3202D3B8-DB45-4B99-A2DD-65A698E701B9}</Project>
+      <Name>PluginAPI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NapsterConfigForm.resx">
+      <DependentUpon>NapsterConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

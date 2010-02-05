@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScrobblerConfigForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScrobblerConfigForm.Designer.cs">
+      <DependentUpon>ScrobblerConfigForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScrobblerPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -54,6 +60,11 @@
       <Project>{3202D3B8-DB45-4B99-A2DD-65A698E701B9}</Project>
       <Name>PluginAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ScrobblerConfigForm.resx">
+      <DependentUpon>ScrobblerConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

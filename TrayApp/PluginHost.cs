@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -110,9 +111,10 @@ namespace Windar.TrayApp
         {
             var tab = new TabPage {Text = title};
             tab.Controls.Add(control);
+            control.Dock = DockStyle.Fill;
             Program.Instance.MainForm.mainTabControl.Controls.Add(tab);
 
-            //TODO: Keep the log tab at the end.
+            // Keep the log tab at the end.
             var tabs = Program.Instance.MainForm.mainTabControl.TabPages;
             foreach (var page in tabs)
             {
@@ -123,19 +125,14 @@ namespace Windar.TrayApp
             }
         }
 
-        public void AddConfigurationPage(UserControl control, string title)
+        public void AddConfigurationPage(ConfigTabContent control, string title)
         {
             var tab = new TabPage { Text = title };
             tab.Controls.Add(control);
+            tab.Padding = new Padding(3);
+            tab.BackColor = Color.White;
+            control.Dock = DockStyle.Fill;
             Program.Instance.MainForm.optionsTabControl.Controls.Add(tab);
-            var tabs = Program.Instance.MainForm.mainTabControl.TabPages;
-            foreach (var page in tabs)
-            {
-                var tabPage = (TabPage) page;
-                if (tabPage.Name != "logTabPage") continue;
-                tabs.Remove(tabPage);
-                tabs.Add(tabPage);
-            }
         }
     }
 }

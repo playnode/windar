@@ -19,16 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
-using System.Reflection;
-using log4net;
 using Windar.PluginAPI;
 
 namespace Windar.ScrobblerPlugin
 {
     public class ScrobblerPlugin : IPlugin
     {
-        #region Properties
-
         public IPluginHost Host { get; set; }
 
         public string Name
@@ -39,23 +35,11 @@ namespace Windar.ScrobblerPlugin
             }
         }
 
-        public string Description
-        {
-            get
-            {
-                return "Provides audio scrobbler support via a plugin.";
-            }
-        }
-
-        #endregion
-
         public void Load()
         {
-            //TODO: Add properties (username, password) to options window.
         }
 
         public void Shutdown()
-
         {
         }
     }
