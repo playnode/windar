@@ -25,9 +25,5 @@ namespace Windar.ElectronomePlugin
 {
     public partial class ElectronomeTabPage : UserControl
     {
-        public ElectronomeTabPage()
-        {
-            InitializeComponent();
-        }
     }
 }

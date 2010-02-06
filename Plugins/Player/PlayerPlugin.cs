@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
@@ -19,15 +19,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
-using System.Windows.Forms;
+using Windar.PluginAPI;
 
-namespace Windar.PluginAPI
+namespace Windar.PlayerPlugin
 {
-    public interface IPluginHost
+    public class PlayerPlugin : IPlugin
     {
-        string ProgramFilesPath { get; }
-        string PlaydarPath { get; }
-        void AddTabPage(UserControl control, string title);
-        void AddConfigurationPage(ConfigTabContent control, string title);
+        public IPluginHost Host { internal get; set; }
+
+        readonly PlayerTabPage _tabPage;
+
+        public string Name
+        {
+            get
+            {
+                return "Player";
+            }
+        }
+
+        public PlayerPlugin()
+        {
+            _tabPage = new PlayerTabPage(this);
+        }
+
+        public void Load()
+        {
+            Host.AddTabPage(_tabPage, Name);
+        }
+
+        public void Shutdown()
+        {
+            //TODO: Stop mplayer if playing!
+        }
     }
 }

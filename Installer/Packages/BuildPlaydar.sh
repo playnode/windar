@@ -17,6 +17,7 @@ mkdir -p ../../Payload/playdar_modules/magnatune/ebin
 cp -R playdar_modules/aolmusic/ebin ../../Payload/playdar_modules/aolmusic
 cp -R playdar_modules/jamendo/ebin ../../Payload/playdar_modules/jamendo
 cp -R playdar_modules/magnatune/ebin ../../Payload/playdar_modules/magnatune
+cp -R playdar_modules/audioscrobbler/ebin ../../Payload/playdar_modules/audioscrobbler
 rm -rf playdar_modules/aolmusic
 rm -rf playdar_modules/jamendo
 rm -rf playdar_modules/magnatune

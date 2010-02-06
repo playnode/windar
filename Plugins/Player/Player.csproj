@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D21C3808-464A-4A7C-AD9B-8AE07B78E40F}</ProjectGuid>
+    <ProjectGuid>{6D91F9D1-5C43-4495-B2A9-1C051AC7D6E5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Windar.MP3tunesPlugin</RootNamespace>
-    <AssemblyName>Windar.MP3tunesPlugin</AssemblyName>
+    <RootNamespace>Windar.PlayerPlugin</RootNamespace>
+    <AssemblyName>Windar.PlayerPlugin</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Net20, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Newtonsoft.Json.Net20.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -38,14 +46,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MP3tunesConfigForm.cs">
+    <Compile Include="Commands\Play.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="PlayerPlugin.cs" />
+    <Compile Include="PlayerTabPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MP3tunesConfigForm.Designer.cs">
-      <DependentUpon>MP3tunesConfigForm.cs</DependentUpon>
+    <Compile Include="PlayerTabPage.Designer.cs">
+      <DependentUpon>PlayerTabPage.cs</DependentUpon>
     </Compile>
-    <Compile Include="MP3tunesPlugin.cs" />
+    <Compile Include="PlayItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PlayerTabPage.resx">
+      <DependentUpon>PlayerTabPage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PluginAPI\PluginAPI.csproj">
+      <Project>{3202D3B8-DB45-4B99-A2DD-65A698E701B9}</Project>
+      <Name>PluginAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

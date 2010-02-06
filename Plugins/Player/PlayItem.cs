@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
@@ -19,15 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
-using System.Windows.Forms;
-
-namespace Windar.PluginAPI
+namespace Windar.PlayerPlugin
 {
-    public interface IPluginHost
+    class PlayItem
     {
-        string ProgramFilesPath { get; }
-        string PlaydarPath { get; }
-        void AddTabPage(UserControl control, string title);
-        void AddConfigurationPage(ConfigTabContent control, string title);
+        public string SId { get; set; }
+        public string Artist { get; set; }
+        public string Track { get; set; }
+        public string Album { get; set; }
+        public string MimeType { get; set; }
+        public float Score { get; set; }
+        public int Duration { get; set; }
+        public int Bitrate { get; set; }
+        public int Size { get; set; }
+        public string Source { get; set; }
     }
 }

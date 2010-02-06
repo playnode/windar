@@ -1057,11 +1057,9 @@ namespace Windar.TrayApp
             {
                 var row = (DataGridViewRow) obj;
                 var value = (string) row.Cells[0].Value;
-                if (path == value)
-                {
-                    row.Selected = true;
-                    return;
-                }
+                if (path != value) continue;
+                row.Selected = true;
+                return;
             }
 
             libraryGrid.Rows.Add(GetNewScanPathRow(path));

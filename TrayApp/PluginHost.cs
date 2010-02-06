@@ -38,6 +38,22 @@ namespace Windar.TrayApp
 
         public List<IPlugin> Plugins { get; set; }
 
+        public string PlaydarPath
+        {
+            get
+            {
+                return "http://localhost:60210/";
+            }
+        }
+
+        public string ProgramFilesPath
+        {
+            get
+            {
+                return Application.ExecutablePath;
+            }
+        }
+
         #region Init
 
         public void Load()

@@ -359,9 +359,10 @@ namespace Windar.TrayApp
             
             if (result != DialogResult.Yes) return;
             
-            if (MessageBox.Show("Are you sure?", "Confirm quit program", 
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                Shutdown();
+            //if (MessageBox.Show("Are you sure?", "Confirm quit program", 
+            //    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                
+            Shutdown();
         }
 
         #endregion

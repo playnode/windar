@@ -1,17 +1,16 @@
-using System.Reflection;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-[assembly: log4net.Config.XmlConfigurator]
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Windar")]
-[assembly: AssemblyDescription("Playdar for Windows")]
+[assembly: AssemblyTitle("Player")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Windar")]
-[assembly: AssemblyProduct("Windar")]
-[assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("Player")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("90f17cf4-f19b-4ac5-b1d4-6f140217119a")]
+[assembly: Guid("a54d0d7a-8c6d-409d-b713-0c36c739556f")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.3.156")]
-[assembly: AssemblyFileVersion("0.1.3.156")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

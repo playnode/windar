@@ -26,7 +26,7 @@ namespace Windar.Common
 {
     public class WindarPaths
     {
-        public string ApplicationPath { get; set; }
+        public string ApplicationPath { get; private set; }
 
         string _erlPath;
         string _erlCmd;

@@ -9,6 +9,7 @@ BuildTasks/bin
 BuildTasks/obj
 Installer/Payload/libeay32.dll
 Installer/Payload/minimerl
+Installer/Payload/mplayer
 Installer/Payload/playdar
 Installer/Payload/playdar_modules
 Installer/Payload/playdar_scripts

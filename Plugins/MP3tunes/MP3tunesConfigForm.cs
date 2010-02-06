@@ -21,7 +21,7 @@
 
 using System.Windows.Forms;
 
-namespace MP3tunes
+namespace Windar.MP3tunes
 {
     public partial class MP3tunesConfigForm : UserControl
     {
