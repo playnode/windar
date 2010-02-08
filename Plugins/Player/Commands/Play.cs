@@ -61,11 +61,12 @@ namespace Windar.PlayerPlugin.Commands
 
         protected void Resume(object sender, EventArgs e)
         {
-            Runner.Process.StandardInput.WriteLine("\n");
+            Runner.Process.StandardInput.WriteLine("\npause\n");
         }
 
         protected void Stop(object sender, EventArgs e)
         {
+            Runner.Process.StandardInput.WriteLine("\npause\n");
             Runner.Process.StandardInput.WriteLine("\nstop\n");
         }
 

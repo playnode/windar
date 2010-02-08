@@ -431,25 +431,27 @@ namespace Windar.PlayerPlugin
         void playButton_Click(object sender, EventArgs e)
         {
             var item = GetSelectedItem();
+            if (Log.IsDebugEnabled) Log.Debug("Player state = " + _player.State);
             switch (_player.State)
             {
                 case Player.PlayState.Initial:
                 case Player.PlayState.Stopped:
                     if (resultsGrid.Rows.Count > 0)
                     {
-                        _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
                         PlayItem(item);
+                        _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
                     }
                     break;
                 case Player.PlayState.Playing:
-                    _scrobber.Pause();
                     _player.Pause();
+                    _scrobber.Pause();
                     break;
                 case Player.PlayState.Paused:
-                    _scrobber.Resume();
                     _player.Resume();
+                    _scrobber.Resume();
                     break;
             }
+            if (Log.IsDebugEnabled) Log.Debug("Player state = " + _player.State);
         }
 
         private void stopButton_Click(object sender, EventArgs e)
