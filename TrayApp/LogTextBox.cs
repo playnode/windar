@@ -99,6 +99,8 @@ namespace Windar.TrayApp
         #pragma warning restore 169
         #endregion
 
+        const string CommandPrefix = "CMD.INF: [erl.exe] ";
+        const string ErrorCommandPrefix = "CMD.ERR: [erl.exe] ";
         const int MaxBufferSize = 1024 * 128; // 128K
 
         readonly MemoryAppender _memoryAppender;
@@ -185,18 +187,20 @@ namespace Windar.TrayApp
                 foreach (var logEvent in events)
                 {
                     var msg = logEvent.RenderedMessage;
-                    if (msg.StartsWith("CMD.INF: "))
+                    if (msg.StartsWith(CommandPrefix))
                     {
-                        var str = msg.Substring(9, msg.Length - 9).TrimEnd();
+                        var len = CommandPrefix.Length;
+                        var str = msg.Substring(len, msg.Length - len).TrimEnd();
                         if (str.Length > 0)
                         {
                             sb.Append(str);
                             sb.Append('\n');
                         }
                     }
-                    else if (msg.StartsWith("CMD.ERR: "))
+                    else if (msg.StartsWith(ErrorCommandPrefix))
                     {
-                        var str = msg.Substring(9, msg.Length - 9).TrimEnd();
+                        var len = ErrorCommandPrefix.Length;
+                        var str = msg.Substring(len, msg.Length - len).TrimEnd();
                         if (str.Length > 0)
                         {
                             sb.Append("ERROR! ").Append(str);

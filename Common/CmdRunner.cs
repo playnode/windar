@@ -53,6 +53,8 @@ namespace Windar.Common
         Thread _stdOutThread;
         Thread _stdErrThread;
 
+        string _cmdName;
+
         public Process Process { get; set; }
         public bool SkipLogInfoOutput { get; set; }
 
@@ -79,7 +81,8 @@ namespace Windar.Common
 
         public void RunCommand(string cmd)
         {
-            if (Log.IsInfoEnabled) Log.Info("Run command: " + cmd);
+            if (Log.IsInfoEnabled) Log.Info(string.Format("Run command: {0}", cmd));
+            _cmdName = GetCommandName(cmd);
 
             // If there is a command stll running, wait for standard out thread to finish.
             if (_stdOutThread != null)
@@ -109,6 +112,15 @@ namespace Windar.Common
             if (!Process.StartInfo.RedirectStandardError || _stdErrThread != null) return;
             _stdErrThread = new Thread(ReadStandardError) {IsBackground = true};
             _stdErrThread.Start();
+        }
+
+        static string GetCommandName(string cmd)
+        {
+            if (cmd[0] != '"') return cmd;
+            var result = cmd.Substring(1, cmd.Length - 1);
+            result = result.Substring(0, result.IndexOf('"'));
+            var pos = result.LastIndexOf('\\') + 1;
+            return result.Substring(pos, result.Length - pos);
         }
 
         public void Close()
@@ -147,15 +159,15 @@ namespace Windar.Common
             {
                 // Ignore line: "prompt IGNORE: "
                 var currentLine = Process.StandardOutput.ReadLine();
-                if (Log.IsDebugEnabled) Log.Debug("Ignoring line \"" + currentLine + '"');
+                if (Log.IsDebugEnabled) Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
 
                 // Ignoring blank line.
                 currentLine = Process.StandardOutput.ReadLine();
-                if (Log.IsDebugEnabled) Log.Debug("Ignoring line \"" + currentLine + '"');
+                if (Log.IsDebugEnabled) Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
 
                 // Ignoring blank line.
                 currentLine = Process.StandardOutput.ReadLine();
-                if (Log.IsDebugEnabled) Log.Debug("Ignoring line \"" + currentLine + '"');
+                if (Log.IsDebugEnabled) Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
 
                 // Build command output.
                 currentLine = Process.StandardOutput.ReadLine();
@@ -165,11 +177,11 @@ namespace Windar.Common
                     {
                         if (currentLine.Length > 0)
                         {
-                            if (!SkipLogInfoOutput && Log.IsDebugEnabled) Log.Debug("CMD.INF: " + currentLine);
+                            if (!SkipLogInfoOutput && Log.IsDebugEnabled) Log.Debug(string.Format("CMD.INF: [{0}] {1}", _cmdName, currentLine));
                             if (CommandOutput != null) CommandOutput(this, new CommandEventArgs(currentLine));
                         }
                     }
-                    else if (Log.IsDebugEnabled) Log.Debug("Ignoring line \"" + currentLine + '"');
+                    else if (Log.IsDebugEnabled) Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
                     currentLine = Process.StandardOutput.ReadLine();
                 }
             }
@@ -197,7 +209,7 @@ namespace Windar.Common
                     if (c != 10) line.Append((char) c);
                     else
                     {
-                        if (Log.IsDebugEnabled) Log.Debug("CMD.ERR: " + line);
+                        if (Log.IsDebugEnabled) Log.Debug(string.Format("CMD.ERR: [{0}] {1}", _cmdName, line));
                         if (CommandError != null) CommandError(this, new CommandEventArgs(line.ToString()));
                         line = new StringBuilder();
                     }

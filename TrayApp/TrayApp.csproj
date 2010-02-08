@@ -34,6 +34,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;VSTUDIO</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -161,13 +177,17 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>IF EXIST "$(TargetDir)minimerl" RMDIR /S /Q "$(TargetDir)minimerl"
+IF EXIST "$(TargetDir)mplayer" RMDIR /S /Q "$(TargetDir)mplayer"
 IF EXIST "$(TargetDir)playdar" RMDIR /S /Q "$(TargetDir)playdar"
 IF EXIST "$(TargetDir)\Napster" RMDIR /S /Q "$(TargetDir)\Napster"
 IF EXIST "$(TargetDir)\MP3tunes" RMDIR /S /Q "$(TargetDir)\MP3tunes"
 IF EXIST "$(TargetDir)\Player" RMDIR /S /Q "$(TargetDir)\Player"
 IF EXIST "$(TargetDir)\Scrobbler" RMDIR /S /Q "$(TargetDir)\Scrobbler"
 XCOPY /E "$(ProjectDir)..\Installer\Payload\minimerl" "$(TargetDir)minimerl\"
+XCOPY /E "$(ProjectDir)..\Installer\Payload\mplayer" "$(TargetDir)mplayer\"
 XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar" "$(TargetDir)playdar\"
+XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar_modules" "$(TargetDir)playdar\playdar_modules\"
+XCOPY /E "$(ProjectDir)..\Installer\Payload\playdar_scripts" "$(TargetDir)playdar\contrib\"
 XCOPY /E /Y "$(ProjectDir)..\Plugins\Napster\$(OutDir)*" "$(TargetDir)"
 XCOPY /E /Y "$(ProjectDir)..\Plugins\MP3tunes\$(OutDir)*" "$(TargetDir)"
 XCOPY /E /Y "$(ProjectDir)..\Plugins\Player\$(OutDir)*" "$(TargetDir)"

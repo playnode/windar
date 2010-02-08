@@ -21,8 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -35,58 +33,428 @@ namespace Windar.PlayerPlugin
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        readonly PlayerPlugin _plugin;
+        delegate void AddResultHandler(PlayItem item);
+        delegate void SetStatusHandler(string text);
+        delegate void IncrementRefreshTimerHandler();
+
         readonly Player _player;
+        readonly Scrobbler _scrobber;
+
+        internal PlayerPlugin Plugin { get; private set; }
+
+        string _qid;
+        int _pollCount;
+        int _maxPollCount;
+
+        class PlaydarResults
+        {
+            public int PollInterval { get; set; }
+            public int PollLimit { get; set; }
+            public bool Solved { get; set; }
+            public List<PlayItem> PlayItems { get; private set; }
+
+            public PlaydarResults()
+            {
+                PlayItems = new List<PlayItem>();
+            }
+        }
 
         internal PlayerTabPage(PlayerPlugin plugin)
         {
             InitializeComponent();
             EnablePlayControls(false);
-            _plugin = plugin;
-            _player = new Player();
+            Plugin = plugin;
+            _player = new Player(this);
+            _scrobber = new Scrobbler(this);
         }
 
-        #region Form event handlers
+        #region Form state handling
+
+        void ResetForm(bool resetQuery)
+        {
+            // Previous results.
+            resultsGrid.Rows.Clear();
+
+            // Status message.
+            SetStatus("");
+
+            // Player.
+            EnablePlayControls(false);
+            if (_player.State == Player.PlayState.Playing)
+                _player.Stop();
+
+            // Query form.
+            if (resetQuery)
+            {
+                artistTextbox.Text = "";
+                trackTextbox.Text = "";
+                albumTextbox.Text = "";
+            }
+            EnableQueryForm(true);
+        }
+
+        void EnableQueryForm(bool enable)
+        {
+            artistTextbox.Enabled = enable;
+            trackTextbox.Enabled = enable;
+            albumTextbox.Enabled = enable;
+            resolveButton.Enabled = enable;
+        }
+
+        void EnablePlayControls(bool enable)
+        {
+            playButton.Enabled = enable;
+            stopButton.Enabled = false;
+            volumeTrackbar.Enabled = enable;
+            positionTrackbar.Enabled = enable;
+        }
+
+        #endregion
+
+        void Resolve()
+        {
+            ResetForm(false);
+            EnableQueryForm(false);
+            _pollCount = 0;
+            _qid = GetQId(artistTextbox.Text, trackTextbox.Text, albumTextbox.Text);
+            resultsGrid.Focus();
+            if (_qid == null) SetStatus("Failed to get a QId!");
+            else
+            {
+                // Get the first results.
+                var results = GetResults(_qid);
+                foreach (var result in results.PlayItems) AddResult(result);
+
+                // Set a timer to get further results.
+                if (!results.Solved)
+                {
+                    queryTimer.Interval = results.PollInterval;
+                    _maxPollCount = results.PollLimit;
+                    queryTimer.Start();
+                }
+                else
+                {
+                    SetStatus("Solved.");
+                    if (resultsGrid.Rows.Count > 0) EnablePlayControls(true);
+                }
+
+                // Deselect the last row added.
+                resultsGrid.CurrentCell = null;
+                if (resultsGrid.Rows.Count > 0) resultsGrid.Rows[0].Selected = false;
+            }
+        }
+
+        void StopPlaying()
+        {
+            stopButton.Enabled = false;
+            _scrobber.Stop();
+            _player.Stop();
+            SetStatus("Stopped.");
+        }
+
+        string GetQId(string artistName, string trackTitle, string albumName)
+        {
+            string result = null;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=resolve");
+            url.Append("&artist=").Append(artistName);
+            url.Append("&album=").Append(albumName);
+            url.Append("&track=").Append(trackTitle);
+            if (Log.IsDebugEnabled) Log.Debug("GetQId " + url);
+
+            // Get and process result.
+            var response = PlayerPlugin.WGet(url.ToString());
+            if (response != null)
+            {
+                var json = JObject.Parse(response);
+                result = DeQuotify(json["qid"]);
+                if (Log.IsDebugEnabled) Log.Debug("GetQId result: " + result);
+            }
+
+            return result;
+        }
+
+        PlaydarResults GetResults(string qid)
+        {
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=get_results");
+            url.Append("&qid=").Append(qid);
+            if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
+
+            // Get and process result.
+            var results = new PlaydarResults();
+            var response = PlayerPlugin.WGet(url.ToString());
+            if (response != null)
+            {
+                var json = JObject.Parse(response);
+                results.Solved = ToBool(json["solved"]);
+                results.PollInterval = ToInt(json["poll_interval"]);
+                results.PollLimit = ToInt(json["poll_limit"]);
+                foreach (var result in json["results"].Children())
+                {
+                    var item = new PlayItem
+                    {
+                        SId = DeQuotify(result["sid"]),
+                        Artist = DeQuotify(result["artist"]),
+                        Track = DeQuotify(result["track"]),
+                        Album = DeQuotify(result["album"]),
+                        MimeType = DeQuotify(result["mimetype"]),
+                        Score = ToFloat(result["score"]),
+                        Duration = ToInt(result["duration"]),
+                        Bitrate = ToInt(result["bitrate"]),
+                        Size = ToInt(result["size"]),
+                        Source = DeQuotify(result["source"])
+                    };
+                    if (Log.IsDebugEnabled) Log.Debug("SId: " + item.SId);
+                    results.PlayItems.Add(item);
+                }
+            }
+
+            return results;
+        }
+
+        void PlayItem(PlayItem item)
+        {
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
+            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
+
+            // Update the status.
+            var str = new StringBuilder();
+            str.Append("Playing: ");
+            str.Append(item.Artist).Append(" - ");
+            str.Append(item.Track);
+            SetStatus(str.ToString());
+
+            // Play the music!
+            _player.Play(url.ToString());
+            
+            // Enable the stop button.
+            stopButton.Enabled = true;
+        }
+
+        PlayItem GetSelectedItem()
+        {
+            if (resultsGrid.SelectedRows.Count == 0 && resultsGrid.Rows.Count > 0)
+                resultsGrid.Rows[0].Selected = true;
+
+            return (PlayItem) resultsGrid.SelectedRows[0].Tag;
+        }
+
+        static DataGridViewRow GetResultsRow(PlayItem item)
+        {
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Artist });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Track });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Album });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Source });
+            row.Tag = item;
+            return row;
+        }
+
+        static string DeQuotify(JToken token)
+        {
+            if (token == null) return null;
+            var str = token.ToString();
+            var result = str;
+
+            if (str[0] == '"' && str[str.Length - 1] == '"')
+                result = str.Substring(1, str.Length - 2);
+
+            return result;
+        }
+
+        static float ToFloat(JToken token)
+        {
+            return token == null ?
+                0 : Convert.ToSingle(token.ToString());
+        }
+
+        static int ToInt(JToken token)
+        {
+            return token == null ?
+                0 : Convert.ToInt32(token.ToString());
+        }
+
+        static bool ToBool(JToken token)
+        {
+            return token == null ?
+                false : Convert.ToBoolean(token.ToString());
+        }
+
+        #region Invokable methods
+
+        void AddResult(PlayItem result)
+        {
+            if (!InvokeRequired) resultsGrid.Rows.Add(GetResultsRow(result));
+            else BeginInvoke(new AddResultHandler(AddResult), result);
+            if (resultsGrid.Rows.Count > 0) EnablePlayControls(true);
+        }
+
+        void SetStatus(string text)
+        {
+            if (!InvokeRequired) statusLabel.Text = text;
+            else BeginInvoke(new SetStatusHandler(SetStatus), text);
+        }
+
+        void IncrementRefreshTimer()
+        {
+            if (!InvokeRequired) _pollCount++;
+            else BeginInvoke(new IncrementRefreshTimerHandler(IncrementRefreshTimer));
+        }
+
+        #endregion
+
+        #region Event handlers
+
+        #region Text input boxes
+
+        private void artistTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (artistTextbox.Text == "" || trackTextbox.Text == "") return;
+            if (e.KeyCode == Keys.Enter) Resolve();
+        }
+
+        private void trackTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (artistTextbox.Text == "" || trackTextbox.Text == "") return;
+            if (e.KeyCode == Keys.Enter) Resolve();
+        }
+
+        private void albumTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (artistTextbox.Text == "" || trackTextbox.Text == "") return;
+            if (e.KeyCode == Keys.Enter) Resolve();
+        }
+
+        private void trackTextbox_Enter(object sender, EventArgs e)
+        {
+            trackTextbox.SelectAll();
+        }
+
+        private void artistTextbox_Enter(object sender, EventArgs e)
+        {
+            artistTextbox.SelectAll();
+        }
+
+        private void albumTextbox_Enter(object sender, EventArgs e)
+        {
+            albumTextbox.SelectAll();
+        }
+
+        #endregion
+
+        private void PlayerTabPage_Load(object sender, EventArgs e)
+        {
+            artistTextbox.Focus();
+        }
 
         void resolveButton_Click(object sender, EventArgs e)
         {
-            var qid = GetQId(artistTextbox.Text, trackTextbox.Text, albumTextbox.Text);
-            if (qid == null) return;
-            ResetForm();
-            System.Threading.Thread.Sleep(200);
-            var results = GetResults(qid);
-            if (results.Count == 0) return;
-            foreach (var result in results) resultsGrid.Rows.Add(GetResultsRow(result));
-            resultsGrid.CurrentCell = null;
-            if (resultsGrid.Rows.Count == 0) return;
-            resultsGrid.Rows[0].Selected = false;
-            EnablePlayControls(true);
+            Resolve();
         }
 
         void resetButton_Click(object sender, EventArgs e)
         {
-            ResetForm();
+            StopPlaying();
+            queryTimer.Stop();
+            ResetForm(true);
+        }
+
+        private void queryTimer_Tick(object sender, EventArgs e)
+        {
+            IncrementRefreshTimer();
+
+            // Stop the timer. Restart if required.
+            queryTimer.Stop();
+
+            // Get the first results.
+            var str = new StringBuilder();
+            str.Append("Refreshing results (");
+            str.Append(_pollCount).Append('/');
+            str.Append(_maxPollCount).Append(')');
+            SetStatus(str.ToString());
+            var results = GetResults(_qid);
+            foreach (var result in results.PlayItems)
+            {
+                // Don't add the new result if already listed.
+                var skip = false;
+                foreach (DataGridViewRow row in resultsGrid.Rows)
+                {
+                    if (!((PlayItem) row.Tag).SId.Equals(result.SId)) continue;
+                    skip = true;
+                    break;
+                }
+                if (!skip) AddResult(result);
+            }
+
+            // Set a timer to get further results.
+            if (!results.Solved && _pollCount <= _maxPollCount)
+            {
+                //queryTimer.Interval = results.PollInterval;
+                queryTimer.Start();
+            }
+            else {
+                if (results.Solved) SetStatus("Solved.");
+                else
+                {
+                    if (resultsGrid.Rows.Count > 0)
+                        SetStatus("Could not find an exact match for the query.");
+                    else
+                    {
+                        ResetForm(false);
+                        SetStatus("No results for the query found.");
+                    }
+                }
+                if (resultsGrid.Rows.Count > 0) 
+                    EnablePlayControls(true);
+            }
+
+            // Deselect the last row added.
+            resultsGrid.CurrentCell = null;
+            if (resultsGrid.Rows.Count > 0) 
+                resultsGrid.Rows[0].Selected = false;
+        }
+
+        private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (_player.State == Player.PlayState.Playing) return;
+            var item = GetSelectedItem();
+            _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
+            PlayItem(item);
         }
 
         void playButton_Click(object sender, EventArgs e)
         {
-            if (_player.Playing)
+            var item = GetSelectedItem();
+            switch (_player.State)
             {
-                _player.Pause();
-            }
-            else
-            {
-                var qid = GetQId(artistTextbox.Text, trackTextbox.Text, albumTextbox.Text);
-                if (qid == null) return;
-                System.Threading.Thread.Sleep(200);
-                var results = GetResults(qid);
-                if (results.Count > 0) PlaySelectedItem();
+                case Player.PlayState.Initial:
+                case Player.PlayState.Stopped:
+                    if (resultsGrid.Rows.Count > 0)
+                    {
+                        _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
+                        PlayItem(item);
+                    }
+                    break;
+                case Player.PlayState.Playing:
+                    _scrobber.Pause();
+                    _player.Pause();
+                    break;
+                case Player.PlayState.Paused:
+                    _scrobber.Resume();
+                    _player.Resume();
+                    break;
             }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            _player.Stop();
+            StopPlaying();
         }
 
         private void volumeTrackbar_Scroll(object sender, EventArgs e)
@@ -105,180 +473,6 @@ namespace Windar.PlayerPlugin
             if (resultsGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
             foreach (var obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
             resultsGrid.CurrentCell = null;
-        }
-
-        private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            PlaySelectedItem();
-        }
-
-        #endregion
-
-        #region Support functions
-
-        static DataGridViewRow GetResultsRow(PlayItem item)
-        {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Artist });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Track });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Album });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Source });
-            row.Tag = item;
-            return row;
-        }
-
-        void ResetForm()
-        {
-            EnablePlayControls(false);
-            statusLabel.Text = "";
-            artistTextbox.Text = "";
-            trackTextbox.Text = "";
-            albumTextbox.Text = "";
-            if (_player.Playing) _player.Stop();
-            resultsGrid.Rows.Clear();
-        }
-
-        void EnablePlayControls(bool enable)
-        {
-            playButton.Enabled = enable;
-            stopButton.Enabled = enable;
-            volumeTrackbar.Enabled = enable;
-            positionTrackbar.Enabled = enable;
-        }
-
-        void PlaySelectedItem()
-        {
-            // Get the selected PlayItem instance.
-            var item = GetSelectedItem();
-
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(_plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
-            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
-
-            // Update the status.
-            var str = new StringBuilder();
-            str.Append("Loading ").Append(url);
-            statusLabel.Text = str.ToString();
-
-            // Play the music!
-            _player.Play(url.ToString());
-        }
-
-        PlayItem GetSelectedItem()
-        {
-            return (PlayItem) resultsGrid.SelectedRows[0].Tag;
-        }
-
-        static string WGet(string url)
-        {
-            string result = null;
-
-            if (Log.IsDebugEnabled) Log.Debug("WGet " + url);
-            var request = (HttpWebRequest) WebRequest.Create(url);
-            request.Timeout = 10000; // 10 secs
-            request.UserAgent = "Windar";
-            try
-            {
-                var response = (HttpWebResponse) request.GetResponse();
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var enc = Encoding.GetEncoding(1252);
-                    var stream = new StreamReader(response.GetResponseStream(), enc);
-                    result = stream.ReadToEnd();
-                    response.Close();
-                    stream.Close();
-                    if (Log.IsDebugEnabled) Log.Debug("WGet result:\n" + result);
-                }
-            }
-            catch (WebException ex)
-            {
-                switch (((HttpWebResponse) ex.Response).StatusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        if (Log.IsErrorEnabled) Log.Error("404 Not Found");
-                        break; // Ignore.
-                    default:
-                        if (Log.IsErrorEnabled) Log.Error("Exception", ex);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
-            }
-            return result;
-        }
-
-        static string DeQuotify(string str)
-        {
-            var result = str;
-
-            if (str[0] == '"' && str[str.Length - 1] == '"')
-                result = str.Substring(1, str.Length - 2);
-
-            return result;
-        }
-
-        string GetQId(string artistName, string trackTitle, string albumName)
-        {
-            string result = null;
-
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(_plugin.Host.PlaydarPath).Append("api/?method=resolve");
-            url.Append("&artist=").Append(artistName);
-            url.Append("&album=").Append(albumName);
-            url.Append("&track=").Append(trackTitle);
-            if (Log.IsDebugEnabled) Log.Debug("GetQId " + url);
-
-            // Get and process result.
-            var response = WGet(url.ToString());
-            if (response != null)
-            {
-                var json = JObject.Parse(response);
-                result = DeQuotify(json["qid"].ToString());
-                if (Log.IsDebugEnabled) Log.Debug("GetQId result: " + result);
-            }
-
-            return result;
-        }
-
-        List<PlayItem> GetResults(string qid)
-        {
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(_plugin.Host.PlaydarPath).Append("api/?method=get_results");
-            url.Append("&qid=").Append(qid);
-            if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
-
-            // Get and process result.
-            var results = new List<PlayItem>();
-            var response = WGet(url.ToString());
-            if (response != null)
-            {
-                var json = JObject.Parse(response);
-                foreach (var result in json["results"].Children())
-                {
-                    var item = new PlayItem
-                                   {
-                                       SId = DeQuotify(result["sid"].ToString()),
-                                       Artist = DeQuotify(result["artist"].ToString()),
-                                       Track = DeQuotify(result["track"].ToString()),
-                                       Album = DeQuotify(result["album"].ToString()),
-                                       MimeType = DeQuotify(result["mimetype"].ToString()),
-                                       Score = Convert.ToSingle(result["score"].ToString()),
-                                       Duration = Convert.ToInt32(result["duration"].ToString()),
-                                       Bitrate = Convert.ToInt32(result["bitrate"].ToString()),
-                                       Size = Convert.ToInt32(result["size"].ToString()),
-                                       Source = DeQuotify(result["source"].ToString())
-                                   };
-                    if (Log.IsDebugEnabled) Log.Debug("SId: " + item.SId);
-                    results.Add(item);
-                }
-            }
-
-            return results;
         }
 
         #endregion

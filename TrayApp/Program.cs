@@ -48,7 +48,7 @@ namespace Windar.TrayApp
             get
             {
                 var result = new StringBuilder();
-                result.Append("http://localhost:");
+                result.Append("http://127.0.0.1:");
                 var port = 60211;
                 if (Config != null) port = Config.Main.WebPort;
                 result.Append(port).Append('/');

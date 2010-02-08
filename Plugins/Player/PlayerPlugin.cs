@@ -19,12 +19,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
+using System;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using log4net;
 using Windar.PluginAPI;
 
 namespace Windar.PlayerPlugin
 {
     public class PlayerPlugin : IPlugin
     {
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         public IPluginHost Host { internal get; set; }
 
         readonly PlayerTabPage _tabPage;
@@ -50,6 +58,53 @@ namespace Windar.PlayerPlugin
         public void Shutdown()
         {
             //TODO: Stop mplayer if playing!
+        }
+
+        internal static string WGet(string url)
+        {
+            string result = null;
+
+            if (Log.IsDebugEnabled) Log.Debug("WGet " + url);
+            var request = (HttpWebRequest) WebRequest.Create(url);
+            request.Timeout = 10000; // 10 secs
+            request.UserAgent = "Windar";
+            try
+            {
+                var response = (HttpWebResponse) request.GetResponse();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var enc = Encoding.GetEncoding(1252);
+                    var stream = new StreamReader(response.GetResponseStream(), enc);
+                    result = stream.ReadToEnd();
+                    response.Close();
+                    stream.Close();
+                    if (Log.IsDebugEnabled) Log.Debug("WGet result:\n" + result);
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response == null)
+                {
+                    if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                }
+                else
+                {
+                    switch (((HttpWebResponse) ex.Response).StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            if (Log.IsErrorEnabled) Log.Error("404 Not Found");
+                            break; // Ignore.
+                        default:
+                            if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+            }
+            return result;
         }
     }
 }

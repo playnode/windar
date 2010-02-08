@@ -34,8 +34,6 @@ namespace Windar.PlayerPlugin.Commands
         public string Filename { get; set; }
         public Player Player { get; set; }
 
-        bool _firstRun;
-
         public override void RunAsync()
         {
             if (Filename == null) throw new ApplicationException("Filename must be defined");
@@ -43,30 +41,38 @@ namespace Windar.PlayerPlugin.Commands
 
             Runner.CommandCompleted += Completed;
             Player.PausePlayer += Pause;
+            Player.ResumePlayer += Resume;
             Player.StopPlayer += Stop;
 
             var cmd = new StringBuilder();
-            cmd.Append("mplayer -slave -quiet ");
+            cmd.Append('"').Append(Player.Page.Plugin.Host.ProgramFilesPath);
+            cmd.Append(@"mplayer\").Append("mplayer.exe\" -slave -quiet ");
             cmd.Append(Filename);
+
+            //cmd.Append(" -cache 8192");
 
             Runner.RunCommand(cmd.ToString());
         }
 
         protected void Pause(object sender, EventArgs e)
         {
-            Runner.Process.StandardInput.WriteLine("pause\n");
+            Runner.Process.StandardInput.WriteLine("\npause\n");
+        }
+
+        protected void Resume(object sender, EventArgs e)
+        {
+            Runner.Process.StandardInput.WriteLine("\n");
         }
 
         protected void Stop(object sender, EventArgs e)
         {
-            Runner.Process.StandardInput.WriteLine("stop\n");
+            Runner.Process.StandardInput.WriteLine("\nstop\n");
         }
 
         protected void Completed(object sender, EventArgs e)
         {
-            //NOTE: This event first at start for some reason. Ignore first.
-            if (!_firstRun) _firstRun = true;
-            else PlayCompleted(this, new EventArgs());
+            if (PlayCompleted != null)
+                PlayCompleted(this, new EventArgs());
         }
     }
 }

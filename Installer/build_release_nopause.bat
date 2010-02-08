@@ -71,8 +71,12 @@ ECHO Windar application components:
 COPY Playnode.ErlangTerms.dll %BUILD_TEMP%
 COPY Windar.exe %BUILD_TEMP%
 COPY Windar.Common.dll %BUILD_TEMP%
+COPY Windar.NapsterPlugin.dll %BUILD_TEMP%
+COPY Windar.MP3tunesPlugin.dll %BUILD_TEMP%
 COPY Windar.PlaydarDaemon.dll %BUILD_TEMP%
+COPY Windar.PlayerPlugin.dll %BUILD_TEMP%
 COPY Windar.PluginAPI.dll %BUILD_TEMP%
+COPY Windar.ScrobblerPlugin.dll %BUILD_TEMP%
 @ECHO OFF
 
 ECHO.
@@ -80,6 +84,7 @@ ECHO ___________
 ECHO Other libs:
 @ECHO ON
 COPY log4net.dll %BUILD_TEMP%
+COPY Newtonsoft.Json.Net20.dll %BUILD_TEMP%
 @ECHO OFF
 
 ECHO.

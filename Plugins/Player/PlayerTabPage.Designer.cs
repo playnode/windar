@@ -49,6 +49,7 @@ namespace Windar.PlayerPlugin
         /// </summary>
         void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.artistLabel = new System.Windows.Forms.Label();
             this.trackLabel = new System.Windows.Forms.Label();
             this.albumLabel = new System.Windows.Forms.Label();
@@ -72,6 +73,7 @@ namespace Windar.PlayerPlugin
             this.label4 = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.statusGroupBox = new System.Windows.Forms.GroupBox();
+            this.queryTimer = new System.Windows.Forms.Timer(this.components);
             this.queryGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.resultsGrid)).BeginInit();
             this.resultsGroupBox.SuspendLayout();
@@ -146,24 +148,33 @@ namespace Windar.PlayerPlugin
             // 
             // albumTextbox
             // 
+            this.albumTextbox.AcceptsReturn = true;
             this.albumTextbox.Location = new System.Drawing.Point(282, 34);
             this.albumTextbox.Name = "albumTextbox";
             this.albumTextbox.Size = new System.Drawing.Size(130, 20);
             this.albumTextbox.TabIndex = 3;
+            this.albumTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.albumTextbox_KeyDown);
+            this.albumTextbox.Enter += new System.EventHandler(this.albumTextbox_Enter);
             // 
             // trackTextbox
             // 
+            this.trackTextbox.AcceptsReturn = true;
             this.trackTextbox.Location = new System.Drawing.Point(146, 34);
             this.trackTextbox.Name = "trackTextbox";
             this.trackTextbox.Size = new System.Drawing.Size(130, 20);
             this.trackTextbox.TabIndex = 2;
+            this.trackTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.trackTextbox_KeyDown);
+            this.trackTextbox.Enter += new System.EventHandler(this.trackTextbox_Enter);
             // 
             // artistTextbox
             // 
+            this.artistTextbox.AcceptsReturn = true;
             this.artistTextbox.Location = new System.Drawing.Point(10, 34);
             this.artistTextbox.Name = "artistTextbox";
             this.artistTextbox.Size = new System.Drawing.Size(130, 20);
             this.artistTextbox.TabIndex = 1;
+            this.artistTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.artistTextbox_KeyDown);
+            this.artistTextbox.Enter += new System.EventHandler(this.artistTextbox_Enter);
             // 
             // playButton
             // 
@@ -211,7 +222,7 @@ namespace Windar.PlayerPlugin
             this.resultsGrid.ReadOnly = true;
             this.resultsGrid.RowHeadersVisible = false;
             this.resultsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.resultsGrid.Size = new System.Drawing.Size(590, 219);
+            this.resultsGrid.Size = new System.Drawing.Size(582, 219);
             this.resultsGrid.StandardTab = true;
             this.resultsGrid.TabIndex = 27;
             this.resultsGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.resultsGrid_MouseClick);
@@ -253,7 +264,7 @@ namespace Windar.PlayerPlugin
             this.resultsGroupBox.Controls.Add(this.resultsGrid);
             this.resultsGroupBox.Location = new System.Drawing.Point(0, 74);
             this.resultsGroupBox.Name = "resultsGroupBox";
-            this.resultsGroupBox.Size = new System.Drawing.Size(608, 250);
+            this.resultsGroupBox.Size = new System.Drawing.Size(600, 250);
             this.resultsGroupBox.TabIndex = 28;
             this.resultsGroupBox.TabStop = false;
             this.resultsGroupBox.Text = "Results";
@@ -267,6 +278,7 @@ namespace Windar.PlayerPlugin
             this.volumeTrackbar.Size = new System.Drawing.Size(90, 23);
             this.volumeTrackbar.TabIndex = 29;
             this.volumeTrackbar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.volumeTrackbar.Value = 10;
             this.volumeTrackbar.Scroll += new System.EventHandler(this.volumeTrackbar_Scroll);
             // 
             // positionTrackbar
@@ -277,7 +289,7 @@ namespace Windar.PlayerPlugin
             this.positionTrackbar.Location = new System.Drawing.Point(297, 369);
             this.positionTrackbar.Maximum = 100;
             this.positionTrackbar.Name = "positionTrackbar";
-            this.positionTrackbar.Size = new System.Drawing.Size(311, 23);
+            this.positionTrackbar.Size = new System.Drawing.Size(303, 23);
             this.positionTrackbar.TabIndex = 30;
             this.positionTrackbar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.positionTrackbar.Scroll += new System.EventHandler(this.positionTrackbar_Scroll);
@@ -308,9 +320,8 @@ namespace Windar.PlayerPlugin
             this.statusLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.statusLabel.Location = new System.Drawing.Point(5, 15);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(85, 13);
+            this.statusLabel.Size = new System.Drawing.Size(0, 13);
             this.statusLabel.TabIndex = 33;
-            this.statusLabel.Text = "Load up a track.";
             // 
             // statusGroupBox
             // 
@@ -319,9 +330,14 @@ namespace Windar.PlayerPlugin
             this.statusGroupBox.Controls.Add(this.statusLabel);
             this.statusGroupBox.Location = new System.Drawing.Point(0, 325);
             this.statusGroupBox.Name = "statusGroupBox";
-            this.statusGroupBox.Size = new System.Drawing.Size(608, 38);
+            this.statusGroupBox.Size = new System.Drawing.Size(600, 38);
             this.statusGroupBox.TabIndex = 33;
             this.statusGroupBox.TabStop = false;
+            // 
+            // queryTimer
+            // 
+            this.queryTimer.Interval = 1000;
+            this.queryTimer.Tick += new System.EventHandler(this.queryTimer_Tick);
             // 
             // PlayerTabPage
             // 
@@ -337,7 +353,8 @@ namespace Windar.PlayerPlugin
             this.Controls.Add(this.playButton);
             this.Controls.Add(this.queryGroup);
             this.Name = "PlayerTabPage";
-            this.Size = new System.Drawing.Size(608, 392);
+            this.Size = new System.Drawing.Size(600, 392);
+            this.Load += new System.EventHandler(this.PlayerTabPage_Load);
             this.queryGroup.ResumeLayout(false);
             this.queryGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize) (this.resultsGrid)).EndInit();
@@ -364,10 +381,6 @@ namespace Windar.PlayerPlugin
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.DataGridView resultsGrid;
         private System.Windows.Forms.GroupBox resultsGroupBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ArtistName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TrackName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AlbumName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Source;
         private System.Windows.Forms.TrackBar volumeTrackbar;
         private System.Windows.Forms.TrackBar positionTrackbar;
         private System.Windows.Forms.Label volLabel;
@@ -376,6 +389,11 @@ namespace Windar.PlayerPlugin
         private System.Windows.Forms.Button resetButton;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.GroupBox statusGroupBox;
+        private System.Windows.Forms.Timer queryTimer;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ArtistName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TrackName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn AlbumName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Source;
 
     }
 }

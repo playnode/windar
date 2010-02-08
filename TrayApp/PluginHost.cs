@@ -42,7 +42,7 @@ namespace Windar.TrayApp
         {
             get
             {
-                return "http://localhost:60210/";
+                return "http://127.0.0.1:60210/";
             }
         }
 
@@ -50,7 +50,8 @@ namespace Windar.TrayApp
         {
             get
             {
-                return Application.ExecutablePath;
+                return Application.ExecutablePath.Substring(0, 
+                    Application.ExecutablePath.LastIndexOf('\\') + 1);
             }
         }
 

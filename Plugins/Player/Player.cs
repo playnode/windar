@@ -27,29 +27,62 @@ namespace Windar.PlayerPlugin
     class Player
     {
         public delegate void PauseHandler(object sender, EventArgs e);
+        public delegate void ResumeHandler(object sender, EventArgs e);
         public delegate void StopHandler(object sender, EventArgs e);
 
         public event PauseHandler PausePlayer;
+        public event ResumeHandler ResumePlayer;
         public event StopHandler StopPlayer;
 
-        public bool Playing { get; private set; }
+        public enum PlayState
+        {
+            Initial,
+            Playing,
+            Paused,
+            Stopped
+        }
+
+        public PlayState State { get; private set; }
+
+        private Play _cmd;
+
+        internal PlayerTabPage Page { get; private set; }
+
+        public Player(PlayerTabPage page)
+        {
+            Page = page;
+            State = PlayState.Initial;
+        }
 
         public void Play(string filename)
         {
-            var cmd = new Play {Filename = filename, Player = this};
-            cmd.RunAsync();
-            Playing = true;
+            if (State == PlayState.Initial || State == PlayState.Stopped)
+            {
+                _cmd = new Play { Filename = filename, Player = this };
+                _cmd.RunAsync();
+            }
+            State = PlayState.Playing;
         }
 
         public void Pause()
         {
             PausePlayer(this, new EventArgs());
+            State = PlayState.Paused;
+        }
+
+        public void Resume()
+        {
+            ResumePlayer(this, new EventArgs());
+            State = PlayState.Playing;
         }
 
         public void Stop()
         {
             StopPlayer(this, new EventArgs());
-            Playing = false;
+            State = PlayState.Stopped;
+
+            // NOTE: The following command isn't working yet.
+            if (_cmd != null) _cmd.ControlC();
         }
     }
 }
