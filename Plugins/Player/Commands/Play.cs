@@ -57,17 +57,21 @@ namespace Windar.PlayerPlugin.Commands
         protected void Pause(object sender, EventArgs e)
         {
             Runner.Process.StandardInput.WriteLine("\npause\n");
+            Runner.Process.StandardInput.Flush();
         }
 
         protected void Resume(object sender, EventArgs e)
         {
             Runner.Process.StandardInput.WriteLine("\npause\n");
+            Runner.Process.StandardInput.Flush();
         }
 
         protected void Stop(object sender, EventArgs e)
         {
             Runner.Process.StandardInput.WriteLine("\npause\n");
+            Runner.Process.StandardInput.Flush();
             Runner.Process.StandardInput.WriteLine("\nstop\n");
+            Runner.Process.StandardInput.Flush();
         }
 
         protected void Completed(object sender, EventArgs e)

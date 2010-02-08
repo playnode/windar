@@ -181,7 +181,11 @@ namespace Windar.Common
                             if (CommandOutput != null) CommandOutput(this, new CommandEventArgs(currentLine));
                         }
                     }
-                    else if (Log.IsDebugEnabled) Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
+                    else if (Log.IsDebugEnabled)
+                    {
+                        if (string.IsNullOrEmpty(currentLine)) Log.Debug("Ignoring empty line.");
+                        else Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
+                    }
                     currentLine = Process.StandardOutput.ReadLine();
                 }
             }
