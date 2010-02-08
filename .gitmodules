@@ -10,3 +10,6 @@
 [submodule "Installer/Packages/Erlang"]
 	path = Installer/Packages/Erlang
 	url = git://github.com/erlang/otp.git
+[submodule "Libraries/Json.NET"]
+	path = Libraries/Json.NET
+	url = http://github.com/stever/json.net.git
