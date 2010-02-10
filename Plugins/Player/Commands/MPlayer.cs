@@ -27,6 +27,11 @@ using Windar.Common;
 
 namespace Windar.PlayerPlugin.Commands
 {
+    /// <summary>
+    /// Uses the slave mode in MPlayer to provide the player.
+    /// http://www.mplayerhq.hu/DOCS/tech/slave.txt
+    /// http://www.mplayerhq.hu/DOCS/man/en/mplayer.1.txt
+    /// </summary>
     class MPlayer : AsyncCmd<MPlayer>
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
