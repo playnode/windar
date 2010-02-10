@@ -62,7 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Play.cs" />
+    <Compile Include="Commands\MPlayer.cs" />
+    <Compile Include="PlaydarResults.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerPlugin.cs" />
     <Compile Include="PlayerTabPage.cs">

@@ -33,31 +33,11 @@ namespace Windar.PlayerPlugin
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public IPluginHost Host { internal get; set; }
-
         readonly PlayerTabPage _tabPage;
-
-        public string Name
-        {
-            get
-            {
-                return "Player";
-            }
-        }
 
         public PlayerPlugin()
         {
             _tabPage = new PlayerTabPage(this);
-        }
-
-        public void Load()
-        {
-            Host.AddTabPage(_tabPage, Name);
-        }
-
-        public void Shutdown()
-        {
-            //TODO: Stop mplayer if playing!
         }
 
         internal static string WGet(string url)
@@ -106,5 +86,29 @@ namespace Windar.PlayerPlugin
             }
             return result;
         }
+
+        #region IPlugin implementation
+
+        public IPluginHost Host { internal get; set; }
+
+        public string Name
+        {
+            get
+            {
+                return "Player";
+            }
+        }
+
+        public void Load()
+        {
+            Host.AddTabPage(_tabPage, Name);
+        }
+
+        public void Shutdown()
+        {
+            //TODO: Stop mplayer if playing!
+        }
+
+        #endregion
     }
 }

@@ -19,26 +19,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
-using System;
 using System.Reflection;
 using log4net;
 using Windar.PlayerPlugin.Commands;
 
 namespace Windar.PlayerPlugin
 {
+    /// <summary>
+    /// This class uses a MPlayer command class for each track to be played.
+    /// </summary>
     class Player
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public delegate void PauseHandler(object sender, EventArgs e);
-        public delegate void ResumeHandler(object sender, EventArgs e);
-        public delegate void StopHandler(object sender, EventArgs e);
-
-        public event PauseHandler PausePlayer;
-        public event ResumeHandler ResumePlayer;
-        public event StopHandler StopPlayer;
-
-        public enum PlayState
+        public enum State
         {
             Initial,
             Playing,
@@ -46,51 +40,87 @@ namespace Windar.PlayerPlugin
             Stopped
         }
 
-        public PlayState State { get; private set; }
+        public PlayerTabPage Page { get; private set; }
+        public State PlayerState { get; private set; }
 
-        private Play _cmd;
-
-        internal PlayerTabPage Page { get; private set; }
+        private MPlayer _cmd;
 
         public Player(PlayerTabPage page)
         {
             Page = page;
-            State = PlayState.Initial;
+            PlayerState = State.Initial;
         }
 
-        public void Play(string filename)
+        public void Play(PlayItem item, string filename)
         {
-            if (State == PlayState.Initial || State == PlayState.Stopped)
+            if (PlayerState == State.Initial || PlayerState == State.Stopped)
             {
-                _cmd = new Play { Filename = filename, Player = this };
+                _cmd = new MPlayer(item, filename, this);
                 _cmd.RunAsync();
+                PlayerState = State.Playing;
             }
-            State = PlayState.Playing;
-            if (Log.IsDebugEnabled) Log.Debug("Player state = " + State);
+            else
+            {
+                if (Log.IsWarnEnabled) 
+                    Log.Warn("Invalid state change. Not starting or stopped.");
+            }
+            if (Log.IsDebugEnabled) 
+                Log.Debug("Player state = " + PlayerState);
         }
 
         public void Pause()
         {
-            PausePlayer(this, new EventArgs());
-            State = PlayState.Paused;
-            if (Log.IsDebugEnabled) Log.Debug("Player state = " + State);
+            if (PlayerState != State.Playing)
+            {
+                if (Log.IsWarnEnabled) 
+                    Log.Warn("Not playing.");
+            }
+            else
+            {
+                _cmd.Pause();
+                PlayerState = State.Paused;
+            }
+            if (Log.IsDebugEnabled) 
+                Log.Debug("Player state = " + PlayerState);
         }
 
         public void Resume()
         {
-            ResumePlayer(this, new EventArgs());
-            State = PlayState.Playing;
-            if (Log.IsDebugEnabled) Log.Debug("Player state = " + State);
+            if (PlayerState != State.Paused)
+            {
+                if (Log.IsWarnEnabled) 
+                    Log.Warn("Invalid state change. Not paused.");
+            }
+            else
+            {
+                _cmd.Resume();
+                PlayerState = State.Playing;
+            }
+            if (Log.IsDebugEnabled)
+                Log.Debug("Player state = " + PlayerState);
         }
 
         public void Stop()
         {
-            StopPlayer(this, new EventArgs());
-            State = PlayState.Stopped;
-            if (Log.IsDebugEnabled) Log.Debug("Player state = " + State);
-
-            // NOTE: The following command isn't working yet.
-            if (_cmd != null) _cmd.ControlC();
+            switch (PlayerState)
+            {
+                case State.Paused:
+                case State.Playing:
+                    _cmd.Stop();
+                    _cmd = null;
+                    PlayerState = State.Stopped;
+                    break;
+                case State.Stopped:
+                    if (Log.IsWarnEnabled)
+                        Log.Warn("Invalid state change. Already stopped.");
+                    break;
+                default:
+                    if (Log.IsWarnEnabled) 
+                        Log.Warn("Invalid state change. Not playing or paused.");
+                    break;
+            }
+            if (Log.IsDebugEnabled)
+                Log.Debug("Player state = " + PlayerState);
         }
     }
 }

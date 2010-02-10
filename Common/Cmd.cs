@@ -58,11 +58,5 @@ namespace Windar.Common
         {
             Done = true;
         }
-
-        public void ControlC()
-        {
-            Runner.Process.StandardInput.Write(0x03);
-            Runner.Process.StandardInput.Flush();
-        }
     }
 }

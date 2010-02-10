@@ -53,7 +53,7 @@ namespace Windar.Common
         Thread _stdOutThread;
         Thread _stdErrThread;
 
-        string _cmdName;
+        string _currCmdName;
 
         public Process Process { get; set; }
         public bool SkipLogInfoOutput { get; set; }
@@ -82,7 +82,6 @@ namespace Windar.Common
         public void RunCommand(string cmd)
         {
             if (Log.IsInfoEnabled) Log.Info(string.Format("Run command: {0}", cmd));
-            _cmdName = GetCommandName(cmd);
 
             // If there is a command stll running, wait for standard out thread to finish.
             if (_stdOutThread != null)
@@ -93,6 +92,7 @@ namespace Windar.Common
             }
 
             if (Log.IsInfoEnabled) Log.Info("Running command.");
+            _currCmdName = GetCommandName(cmd);
 
             // Write commands to StandardInput.
             Process.StandardInput.WriteLine("prompt IGNORE: ");
@@ -177,7 +177,7 @@ namespace Windar.Common
                     {
                         if (currentLine.Length > 0)
                         {
-                            if (!SkipLogInfoOutput && Log.IsDebugEnabled) Log.Debug(string.Format("CMD.INF: [{0}] {1}", _cmdName, currentLine));
+                            if (!SkipLogInfoOutput && Log.IsDebugEnabled) Log.Debug(string.Format("CMD.INF: [{0}] {1}", _currCmdName, currentLine));
                             if (CommandOutput != null) CommandOutput(this, new CommandEventArgs(currentLine));
                         }
                     }
@@ -213,7 +213,7 @@ namespace Windar.Common
                     if (c != 10) line.Append((char) c);
                     else
                     {
-                        if (Log.IsDebugEnabled) Log.Debug(string.Format("CMD.ERR: [{0}] {1}", _cmdName, line));
+                        if (Log.IsDebugEnabled) Log.Debug(string.Format("CMD.ERR: [{0}] {1}", _currCmdName, line));
                         if (CommandError != null) CommandError(this, new CommandEventArgs(line.ToString()));
                         line = new StringBuilder();
                     }

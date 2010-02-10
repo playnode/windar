@@ -20,7 +20,6 @@
  ************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -36,6 +35,8 @@ namespace Windar.PlayerPlugin
         delegate void AddResultHandler(PlayItem item);
         delegate void SetStatusHandler(string text);
         delegate void IncrementRefreshTimerHandler();
+        delegate void StoppedHandler();
+        delegate void StateChangedHandler();
 
         readonly Player _player;
         readonly Scrobbler _scrobber;
@@ -46,268 +47,16 @@ namespace Windar.PlayerPlugin
         int _pollCount;
         int _maxPollCount;
 
-        class PlaydarResults
-        {
-            public int PollInterval { get; set; }
-            public int PollLimit { get; set; }
-            public bool Solved { get; set; }
-            public List<PlayItem> PlayItems { get; private set; }
-
-            public PlaydarResults()
-            {
-                PlayItems = new List<PlayItem>();
-            }
-        }
-
         internal PlayerTabPage(PlayerPlugin plugin)
         {
             InitializeComponent();
-            EnablePlayControls(false);
+            playButton.Enabled = false;
+            stopButton.Enabled = false;
+            positionTrackbar.Enabled = false;
             Plugin = plugin;
             _player = new Player(this);
             _scrobber = new Scrobbler(this);
         }
-
-        #region Form state handling
-
-        void ResetForm(bool resetQuery)
-        {
-            // Previous results.
-            resultsGrid.Rows.Clear();
-
-            // Status message.
-            SetStatus("");
-
-            // Player.
-            EnablePlayControls(false);
-            if (_player.State == Player.PlayState.Playing)
-                _player.Stop();
-
-            // Query form.
-            if (resetQuery)
-            {
-                artistTextbox.Text = "";
-                trackTextbox.Text = "";
-                albumTextbox.Text = "";
-            }
-            EnableQueryForm(true);
-        }
-
-        void EnableQueryForm(bool enable)
-        {
-            artistTextbox.Enabled = enable;
-            trackTextbox.Enabled = enable;
-            albumTextbox.Enabled = enable;
-            resolveButton.Enabled = enable;
-        }
-
-        void EnablePlayControls(bool enable)
-        {
-            playButton.Enabled = enable;
-            stopButton.Enabled = false;
-            volumeTrackbar.Enabled = enable;
-            positionTrackbar.Enabled = enable;
-        }
-
-        #endregion
-
-        void Resolve()
-        {
-            ResetForm(false);
-            EnableQueryForm(false);
-            _pollCount = 0;
-            _qid = GetQId(artistTextbox.Text, trackTextbox.Text, albumTextbox.Text);
-            resultsGrid.Focus();
-            if (_qid == null) SetStatus("Failed to get a QId!");
-            else
-            {
-                // Get the first results.
-                var results = GetResults(_qid);
-                foreach (var result in results.PlayItems) AddResult(result);
-
-                // Set a timer to get further results.
-                if (!results.Solved)
-                {
-                    queryTimer.Interval = results.PollInterval;
-                    _maxPollCount = results.PollLimit;
-                    queryTimer.Start();
-                }
-                else
-                {
-                    SetStatus("Solved.");
-                    if (resultsGrid.Rows.Count > 0) EnablePlayControls(true);
-                }
-
-                // Deselect the last row added.
-                resultsGrid.CurrentCell = null;
-                if (resultsGrid.Rows.Count > 0) resultsGrid.Rows[0].Selected = false;
-            }
-        }
-
-        void StopPlaying()
-        {
-            stopButton.Enabled = false;
-            _scrobber.Stop();
-            _player.Stop();
-            SetStatus("Stopped.");
-        }
-
-        string GetQId(string artistName, string trackTitle, string albumName)
-        {
-            string result = null;
-
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=resolve");
-            url.Append("&artist=").Append(artistName);
-            url.Append("&album=").Append(albumName);
-            url.Append("&track=").Append(trackTitle);
-            if (Log.IsDebugEnabled) Log.Debug("GetQId " + url);
-
-            // Get and process result.
-            var response = PlayerPlugin.WGet(url.ToString());
-            if (response != null)
-            {
-                var json = JObject.Parse(response);
-                result = DeQuotify(json["qid"]);
-                if (Log.IsDebugEnabled) Log.Debug("GetQId result: " + result);
-            }
-
-            return result;
-        }
-
-        PlaydarResults GetResults(string qid)
-        {
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=get_results");
-            url.Append("&qid=").Append(qid);
-            if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
-
-            // Get and process result.
-            var results = new PlaydarResults();
-            var response = PlayerPlugin.WGet(url.ToString());
-            if (response != null)
-            {
-                var json = JObject.Parse(response);
-                results.Solved = ToBool(json["solved"]);
-                results.PollInterval = ToInt(json["poll_interval"]);
-                results.PollLimit = ToInt(json["poll_limit"]);
-                foreach (var result in json["results"].Children())
-                {
-                    var item = new PlayItem
-                    {
-                        SId = DeQuotify(result["sid"]),
-                        Artist = DeQuotify(result["artist"]),
-                        Track = DeQuotify(result["track"]),
-                        Album = DeQuotify(result["album"]),
-                        MimeType = DeQuotify(result["mimetype"]),
-                        Score = ToFloat(result["score"]),
-                        Duration = ToInt(result["duration"]),
-                        Bitrate = ToInt(result["bitrate"]),
-                        Size = ToInt(result["size"]),
-                        Source = DeQuotify(result["source"])
-                    };
-                    if (Log.IsDebugEnabled) Log.Debug("SId: " + item.SId);
-                    results.PlayItems.Add(item);
-                }
-            }
-
-            return results;
-        }
-
-        void PlayItem(PlayItem item)
-        {
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
-            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
-
-            // Update the status.
-            var str = new StringBuilder();
-            str.Append("Playing: ");
-            str.Append(item.Artist).Append(" - ");
-            str.Append(item.Track);
-            SetStatus(str.ToString());
-
-            // Play the music!
-            _player.Play(url.ToString());
-            
-            // Enable the stop button.
-            stopButton.Enabled = true;
-        }
-
-        PlayItem GetSelectedItem()
-        {
-            if (resultsGrid.SelectedRows.Count == 0 && resultsGrid.Rows.Count > 0)
-                resultsGrid.Rows[0].Selected = true;
-
-            return (PlayItem) resultsGrid.SelectedRows[0].Tag;
-        }
-
-        static DataGridViewRow GetResultsRow(PlayItem item)
-        {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Artist });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Track });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Album });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Source });
-            row.Tag = item;
-            return row;
-        }
-
-        static string DeQuotify(JToken token)
-        {
-            if (token == null) return null;
-            var str = token.ToString();
-            var result = str;
-
-            if (str[0] == '"' && str[str.Length - 1] == '"')
-                result = str.Substring(1, str.Length - 2);
-
-            return result;
-        }
-
-        static float ToFloat(JToken token)
-        {
-            return token == null ?
-                0 : Convert.ToSingle(token.ToString());
-        }
-
-        static int ToInt(JToken token)
-        {
-            return token == null ?
-                0 : Convert.ToInt32(token.ToString());
-        }
-
-        static bool ToBool(JToken token)
-        {
-            return token == null ?
-                false : Convert.ToBoolean(token.ToString());
-        }
-
-        #region Invokable methods
-
-        void AddResult(PlayItem result)
-        {
-            if (!InvokeRequired) resultsGrid.Rows.Add(GetResultsRow(result));
-            else BeginInvoke(new AddResultHandler(AddResult), result);
-            if (resultsGrid.Rows.Count > 0) EnablePlayControls(true);
-        }
-
-        void SetStatus(string text)
-        {
-            if (!InvokeRequired) statusLabel.Text = text;
-            else BeginInvoke(new SetStatusHandler(SetStatus), text);
-        }
-
-        void IncrementRefreshTimer()
-        {
-            if (!InvokeRequired) _pollCount++;
-            else BeginInvoke(new IncrementRefreshTimerHandler(IncrementRefreshTimer));
-        }
-
-        #endregion
 
         #region Event handlers
 
@@ -374,7 +123,7 @@ namespace Windar.PlayerPlugin
 
             // Get the first results.
             var str = new StringBuilder();
-            str.Append("Refreshing results (");
+            str.Append("Resolving (");
             str.Append(_pollCount).Append('/');
             str.Append(_maxPollCount).Append(')');
             SetStatus(str.ToString());
@@ -410,8 +159,8 @@ namespace Windar.PlayerPlugin
                         SetStatus("No results for the query found.");
                     }
                 }
-                if (resultsGrid.Rows.Count > 0) 
-                    EnablePlayControls(true);
+                if (resultsGrid.Rows.Count > 0)
+                    playButton.Enabled = true;
             }
 
             // Deselect the last row added.
@@ -422,7 +171,7 @@ namespace Windar.PlayerPlugin
 
         private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (_player.State == Player.PlayState.Playing) return;
+            if (_player.PlayerState == Player.State.Playing || _player.PlayerState == Player.State.Paused) return;
             var item = GetSelectedItem();
             _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
             PlayItem(item);
@@ -431,27 +180,40 @@ namespace Windar.PlayerPlugin
         void playButton_Click(object sender, EventArgs e)
         {
             var item = GetSelectedItem();
-            if (Log.IsDebugEnabled) Log.Debug("Player state = " + _player.State);
-            switch (_player.State)
+            if (Log.IsDebugEnabled) 
+                Log.Debug("Player state = " + _player.PlayerState);
+            switch (_player.PlayerState)
             {
-                case Player.PlayState.Initial:
-                case Player.PlayState.Stopped:
+                case Player.State.Initial:
+                case Player.State.Stopped:
                     if (resultsGrid.Rows.Count > 0)
                     {
                         PlayItem(item);
                         _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
                     }
                     break;
-                case Player.PlayState.Playing:
+                case Player.State.Playing:
                     _player.Pause();
                     _scrobber.Pause();
+                    _player.Page.SetStatus("Paused.");
                     break;
-                case Player.PlayState.Paused:
+                case Player.State.Paused:
                     _player.Resume();
                     _scrobber.Resume();
+                    {
+                        var str = new StringBuilder();
+                        str.Append("Playing: ");
+                        str.Append(item.Artist).Append(" - ");
+                        str.Append(item.Track).Append(" - ");
+                        str.Append(item.Album).Append(" - ");
+                        str.Append(item.Source);
+                        _player.Page.SetStatus(str.ToString());
+                    }
+
                     break;
             }
-            if (Log.IsDebugEnabled) Log.Debug("Player state = " + _player.State);
+            if (Log.IsDebugEnabled) 
+                Log.Debug("Player state = " + _player.PlayerState);
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -475,6 +237,285 @@ namespace Windar.PlayerPlugin
             if (resultsGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
             foreach (var obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
             resultsGrid.CurrentCell = null;
+        }
+
+        #endregion
+
+        #region Playdar methods
+
+        void Resolve()
+        {
+            ResetForm(false);
+            EnableQueryForm(false);
+            _pollCount = 0;
+            _qid = GetQId(artistTextbox.Text, trackTextbox.Text, albumTextbox.Text);
+            resultsGrid.Focus();
+            if (_qid == null) SetStatus("Failed to get a QId!");
+            else
+            {
+                // Get the first results.
+                var results = GetResults(_qid);
+                foreach (var result in results.PlayItems)
+                    AddResult(result);
+
+                // Set a timer to get further results.
+                if (!results.Solved)
+                {
+                    queryTimer.Interval = results.PollInterval;
+                    _maxPollCount = results.PollLimit;
+                    queryTimer.Start();
+                }
+                else
+                {
+                    SetStatus("Solved.");
+                    if (resultsGrid.Rows.Count > 0) 
+                        playButton.Enabled = true;
+                }
+
+                // Deselect the last row added.
+                resultsGrid.CurrentCell = null;
+                if (resultsGrid.Rows.Count > 0) 
+                    resultsGrid.Rows[0].Selected = false;
+            }
+        }
+
+        string GetQId(string artistName, string trackTitle, string albumName)
+        {
+            string result = null;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=resolve");
+            url.Append("&artist=").Append(artistName);
+            url.Append("&album=").Append(albumName);
+            url.Append("&track=").Append(trackTitle);
+            if (Log.IsDebugEnabled) Log.Debug("GetQId " + url);
+
+            // Get and process result.
+            var response = PlayerPlugin.WGet(url.ToString());
+            if (response != null)
+            {
+                var json = JObject.Parse(response);
+                result = DeQuotify(json["qid"]);
+                if (Log.IsDebugEnabled) Log.Debug("GetQId result: " + result);
+            }
+
+            return result;
+        }
+
+        PlaydarResults GetResults(string qid)
+        {
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=get_results");
+            url.Append("&qid=").Append(qid);
+            if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
+
+            // Get and process result.
+            var results = new PlaydarResults();
+            var response = PlayerPlugin.WGet(url.ToString());
+            if (response != null)
+            {
+                var json = JObject.Parse(response);
+                results.Solved = ToBool(json["solved"]);
+                results.PollInterval = ToInt(json["poll_interval"]);
+                results.PollLimit = ToInt(json["poll_limit"]);
+                foreach (var result in json["results"].Children())
+                {
+                    var item = new PlayItem
+                    {
+                        SId = DeQuotify(result["sid"]),
+                        Artist = DeQuotify(result["artist"]),
+                        Track = DeQuotify(result["track"]),
+                        Album = DeQuotify(result["album"]),
+                        MimeType = DeQuotify(result["mimetype"]),
+                        Score = ToFloat(result["score"]),
+                        Duration = ToInt(result["duration"]),
+                        Bitrate = ToInt(result["bitrate"]),
+                        Size = ToInt(result["size"]),
+                        Source = DeQuotify(result["source"])
+                    };
+                    if (Log.IsDebugEnabled) Log.Debug("SId: " + item.SId);
+                    results.PlayItems.Add(item);
+                }
+            }
+
+            return results;
+        }
+
+        #endregion
+
+        #region JSON conversions
+
+        static string DeQuotify(JToken token)
+        {
+            if (token == null) return null;
+            var str = token.ToString();
+            var result = str;
+
+            if (str[0] == '"' && str[str.Length - 1] == '"')
+                result = str.Substring(1, str.Length - 2);
+
+            return result;
+        }
+
+        static float ToFloat(JToken token)
+        {
+            return token == null ?
+                0 : Convert.ToSingle(token.ToString());
+        }
+
+        static int ToInt(JToken token)
+        {
+            return token == null ?
+                0 : Convert.ToInt32(token.ToString());
+        }
+
+        static bool ToBool(JToken token)
+        {
+            return token == null ?
+                false : Convert.ToBoolean(token.ToString());
+        }
+
+        #endregion
+
+        #region Form state handling
+
+        void ResetForm(bool resetQuery)
+        {
+            // Previous results.
+            resultsGrid.Rows.Clear();
+
+            // Status message.
+            SetStatus("");
+
+            // Player.
+            if (_player.PlayerState == Player.State.Playing)
+                _player.Stop();
+            DisablePlayControls();
+
+            // Query form.
+            if (resetQuery)
+            {
+                artistTextbox.Text = "";
+                trackTextbox.Text = "";
+                albumTextbox.Text = "";
+            }
+            EnableQueryForm(true);
+        }
+
+        void EnableQueryForm(bool enable)
+        {
+            artistTextbox.Enabled = enable;
+            trackTextbox.Enabled = enable;
+            albumTextbox.Enabled = enable;
+            resolveButton.Enabled = enable;
+        }
+
+        void DisablePlayControls()
+        {
+            playButton.Enabled = false;
+            stopButton.Enabled = false;
+            positionTrackbar.Enabled = false;
+        }
+
+        #endregion
+
+        #region Misc.
+
+        void PlayItem(PlayItem item)
+        {
+            // Disable controls. Controls re-activated on mplayer state change.
+            DisablePlayControls();
+            resetButton.Enabled = false;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
+            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
+
+            // Play the music!
+            _player.Page.SetStatus("Requesting stream via Playdar.");
+            _player.Play(item, url.ToString());
+        }
+
+        PlayItem GetSelectedItem()
+        {
+            if (resultsGrid.SelectedRows.Count == 0 && resultsGrid.Rows.Count > 0)
+                resultsGrid.Rows[0].Selected = true;
+
+            return (PlayItem) resultsGrid.SelectedRows[0].Tag;
+        }
+
+        static DataGridViewRow GetResultsRow(PlayItem item)
+        {
+            var row = new DataGridViewRow();
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Artist });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Track });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Album });
+            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Source });
+            row.Tag = item;
+            return row;
+        }
+
+        #endregion
+
+        #region Invokable methods
+
+        void AddResult(PlayItem result)
+        {
+            if (!InvokeRequired) resultsGrid.Rows.Add(GetResultsRow(result));
+            else BeginInvoke(new AddResultHandler(AddResult), result);
+            if (resultsGrid.Rows.Count > 0) playButton.Enabled = true;
+        }
+
+        internal void SetStatus(string text)
+        {
+            if (!InvokeRequired) statusLabel.Text = text;
+            else BeginInvoke(new SetStatusHandler(SetStatus), text);
+        }
+
+        void IncrementRefreshTimer()
+        {
+            if (!InvokeRequired) _pollCount++;
+            else BeginInvoke(new IncrementRefreshTimerHandler(IncrementRefreshTimer));
+        }
+
+        internal void StopPlaying()
+        {
+            if (InvokeRequired)
+                BeginInvoke(new StoppedHandler(StopPlaying));
+            else
+            {
+                DisablePlayControls();
+                _scrobber.Stop();
+                _player.Stop();
+                SetStatus("Stopped.");
+            }
+        }
+
+        internal void StateChanged()
+        {
+            if (InvokeRequired)
+                BeginInvoke(new StateChangedHandler(StateChanged));
+            else
+            {
+                switch (_player.PlayerState)
+                {
+                    case Player.State.Playing:
+                        resetButton.Enabled = false;
+                        playButton.Enabled = true;
+                        stopButton.Enabled = true;
+                        positionTrackbar.Enabled = true;
+                        break;
+                    case Player.State.Stopped:
+                        resetButton.Enabled = true;
+                        playButton.Enabled = true;
+                        stopButton.Enabled = false;
+                        positionTrackbar.Enabled = false;
+                        break;
+                }
+            }
         }
 
         #endregion
