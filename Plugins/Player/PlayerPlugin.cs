@@ -87,6 +87,18 @@ namespace Windar.PlayerPlugin
             return result;
         }
 
+        internal static string GetPlayingMessage(PlayItem item)
+        {
+            var str = new StringBuilder();
+            str.Append("Playing: ");
+            str.Append(item.Artist).Append(" - ");
+            str.Append(item.Track);
+            if (!string.IsNullOrEmpty(item.Album))
+                str.Append("   ///   ").Append(item.Album);
+            str.Append("   ///   ").Append(item.Source);
+            return str.ToString();
+        }
+
         #region IPlugin implementation
 
         public IPluginHost Host { internal get; set; }
@@ -106,7 +118,8 @@ namespace Windar.PlayerPlugin
 
         public void Shutdown()
         {
-            //TODO: Stop mplayer if playing!
+            // Stop mplayer if playing!
+            _tabPage.Player.Stop();
         }
 
         #endregion

@@ -20,13 +20,17 @@
  ************************************************************************/
 
 using System;
+using System.Reflection;
 using System.Text;
+using log4net;
 using Windar.Common;
 
 namespace Windar.PlaydarDaemon.Commands
 {
     class Start : AsyncCmd<Start>
     {
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+
         public delegate void PlaydarStartedHandler(object sender, EventArgs e);
         public delegate void PlaydarStartFailedHandler(object sender, EventArgs e);
 
@@ -71,6 +75,14 @@ namespace Windar.PlaydarDaemon.Commands
 
         protected void StartCmd_CommandOutput(object sender, CmdRunner.CommandEventArgs e)
         {
+            var currentLine = e.Text;
+            if (!currentLine.StartsWith("IGNORE: "))
+            {
+                if (currentLine.Length > 0)
+                {
+                    if (Log.IsDebugEnabled) Log.Debug(string.Format("CMD.INF: [erl.exe] {0}", currentLine));
+                }
+            }
             switch (_state)
             {
                 case State.Initial:

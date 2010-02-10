@@ -74,6 +74,7 @@ namespace Windar.PlayerPlugin
             this.statusLabel = new System.Windows.Forms.Label();
             this.statusGroupBox = new System.Windows.Forms.GroupBox();
             this.queryTimer = new System.Windows.Forms.Timer(this.components);
+            this.progressTimer = new System.Windows.Forms.Timer(this.components);
             this.queryGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.resultsGrid)).BeginInit();
             this.resultsGroupBox.SuspendLayout();
@@ -274,11 +275,12 @@ namespace Windar.PlayerPlugin
             this.volumeTrackbar.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.volumeTrackbar.AutoSize = false;
             this.volumeTrackbar.Location = new System.Drawing.Point(167, 369);
+            this.volumeTrackbar.Maximum = 100;
             this.volumeTrackbar.Name = "volumeTrackbar";
             this.volumeTrackbar.Size = new System.Drawing.Size(90, 23);
             this.volumeTrackbar.TabIndex = 29;
             this.volumeTrackbar.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.volumeTrackbar.Value = 10;
+            this.volumeTrackbar.Value = 100;
             this.volumeTrackbar.Scroll += new System.EventHandler(this.volumeTrackbar_Scroll);
             // 
             // positionTrackbar
@@ -339,6 +341,11 @@ namespace Windar.PlayerPlugin
             this.queryTimer.Interval = 1000;
             this.queryTimer.Tick += new System.EventHandler(this.queryTimer_Tick);
             // 
+            // progressTimer
+            // 
+            this.progressTimer.Interval = 250;
+            this.progressTimer.Tick += new System.EventHandler(this.progressTimer_Tick);
+            // 
             // PlayerTabPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -394,6 +401,7 @@ namespace Windar.PlayerPlugin
         private System.Windows.Forms.DataGridViewTextBoxColumn TrackName;
         private System.Windows.Forms.DataGridViewTextBoxColumn AlbumName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Source;
+        private System.Windows.Forms.Timer progressTimer;
 
     }
 }

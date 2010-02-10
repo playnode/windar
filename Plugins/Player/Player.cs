@@ -40,10 +40,34 @@ namespace Windar.PlayerPlugin
             Stopped
         }
 
+        MPlayer _cmd;
+        int _volume = 100;
+
         public PlayerTabPage Page { get; private set; }
         public State PlayerState { get; private set; }
 
-        private MPlayer _cmd;
+        public int Volume
+        {
+            get
+            {
+                return _volume;
+            }
+            set
+            {
+                _volume = value;
+                if (_cmd != null) 
+                    _cmd.ChangeVolume(_volume);
+            }
+        }
+
+        public int Progress
+        {
+            get
+            {
+                _cmd.RequestProgress();
+                return _cmd.Progress;
+            }
+        }
 
         public Player(PlayerTabPage page)
         {
@@ -55,7 +79,7 @@ namespace Windar.PlayerPlugin
         {
             if (PlayerState == State.Initial || PlayerState == State.Stopped)
             {
-                _cmd = new MPlayer(item, filename, this);
+                _cmd = new MPlayer(item, filename, this) {Volume = _volume};
                 _cmd.RunAsync();
                 PlayerState = State.Playing;
             }
@@ -121,6 +145,11 @@ namespace Windar.PlayerPlugin
             }
             if (Log.IsDebugEnabled)
                 Log.Debug("Player state = " + PlayerState);
+        }
+
+        internal void Stopped()
+        {
+            PlayerState = State.Stopped;
         }
     }
 }

@@ -38,10 +38,10 @@ namespace Windar.PlayerPlugin
         delegate void StoppedHandler();
         delegate void StateChangedHandler();
 
-        readonly Player _player;
         readonly Scrobbler _scrobber;
 
         internal PlayerPlugin Plugin { get; private set; }
+        internal Player Player { get; private set; }
 
         string _qid;
         int _pollCount;
@@ -54,7 +54,7 @@ namespace Windar.PlayerPlugin
             stopButton.Enabled = false;
             positionTrackbar.Enabled = false;
             Plugin = plugin;
-            _player = new Player(this);
+            Player = new Player(this);
             _scrobber = new Scrobbler(this);
         }
 
@@ -171,7 +171,7 @@ namespace Windar.PlayerPlugin
 
         private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (_player.PlayerState == Player.State.Playing || _player.PlayerState == Player.State.Paused) return;
+            if (Player.PlayerState == Player.State.Playing || Player.PlayerState == Player.State.Paused) return;
             var item = GetSelectedItem();
             _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
             PlayItem(item);
@@ -181,8 +181,8 @@ namespace Windar.PlayerPlugin
         {
             var item = GetSelectedItem();
             if (Log.IsDebugEnabled) 
-                Log.Debug("Player state = " + _player.PlayerState);
-            switch (_player.PlayerState)
+                Log.Debug("Player state = " + Player.PlayerState);
+            switch (Player.PlayerState)
             {
                 case Player.State.Initial:
                 case Player.State.Stopped:
@@ -193,27 +193,18 @@ namespace Windar.PlayerPlugin
                     }
                     break;
                 case Player.State.Playing:
-                    _player.Pause();
+                    Player.Pause();
                     _scrobber.Pause();
-                    _player.Page.SetStatus("Paused.");
+                    Player.Page.SetStatus("Paused.");
                     break;
                 case Player.State.Paused:
-                    _player.Resume();
+                    Player.Resume();
                     _scrobber.Resume();
-                    {
-                        var str = new StringBuilder();
-                        str.Append("Playing: ");
-                        str.Append(item.Artist).Append(" - ");
-                        str.Append(item.Track).Append(" - ");
-                        str.Append(item.Album).Append(" - ");
-                        str.Append(item.Source);
-                        _player.Page.SetStatus(str.ToString());
-                    }
-
+                    Player.Page.SetStatus(PlayerPlugin.GetPlayingMessage(item));
                     break;
             }
             if (Log.IsDebugEnabled) 
-                Log.Debug("Player state = " + _player.PlayerState);
+                Log.Debug("Player state = " + Player.PlayerState);
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -223,12 +214,12 @@ namespace Windar.PlayerPlugin
 
         private void volumeTrackbar_Scroll(object sender, EventArgs e)
         {
-
+            Player.Volume = volumeTrackbar.Value;
         }
 
         private void positionTrackbar_Scroll(object sender, EventArgs e)
         {
-
+            //TODO: Track position control currently disabled. Just used to show progress.
         }
 
         private void resultsGrid_MouseClick(object sender, MouseEventArgs e)
@@ -237,6 +228,20 @@ namespace Windar.PlayerPlugin
             if (resultsGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
             foreach (var obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
             resultsGrid.CurrentCell = null;
+        }
+
+        private void progressTimer_Tick(object sender, EventArgs e)
+        {
+            if (Player.PlayerState == Player.State.Playing)
+            {
+                positionTrackbar.Value = Player.Progress;
+            }
+            else
+            {
+                if (Log.IsWarnEnabled)
+                    Log.Warn("Stopping progress timer.");
+                progressTimer.Stop();
+            }
         }
 
         #endregion
@@ -390,8 +395,8 @@ namespace Windar.PlayerPlugin
             SetStatus("");
 
             // Player.
-            if (_player.PlayerState == Player.State.Playing)
-                _player.Stop();
+            if (Player.PlayerState == Player.State.Playing)
+                Player.Stop();
             DisablePlayControls();
 
             // Query form.
@@ -414,6 +419,7 @@ namespace Windar.PlayerPlugin
 
         void DisablePlayControls()
         {
+            if (Log.IsDebugEnabled) Log.Debug("DisablePlayControls");
             playButton.Enabled = false;
             stopButton.Enabled = false;
             positionTrackbar.Enabled = false;
@@ -435,8 +441,8 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
 
             // Play the music!
-            _player.Page.SetStatus("Requesting stream via Playdar.");
-            _player.Play(item, url.ToString());
+            Player.Page.SetStatus("Requesting audio stream.");
+            Player.Play(item, url.ToString());
         }
 
         PlayItem GetSelectedItem()
@@ -489,30 +495,47 @@ namespace Windar.PlayerPlugin
             {
                 DisablePlayControls();
                 _scrobber.Stop();
-                _player.Stop();
+                Player.Stop();
+                SetStatus("Stopped.");
+            }
+        }
+
+        internal void Stopped()
+        {
+            if (InvokeRequired)
+                BeginInvoke(new StoppedHandler(Stopped));
+            else
+            {
+                DisablePlayControls();
+                _scrobber.Stop();
+                Player.Stopped();
                 SetStatus("Stopped.");
             }
         }
 
         internal void StateChanged()
         {
+            Application.DoEvents();
+            if (Log.IsDebugEnabled) Log.Debug("StateChanged: " + Player.PlayerState);
             if (InvokeRequired)
                 BeginInvoke(new StateChangedHandler(StateChanged));
             else
             {
-                switch (_player.PlayerState)
+                switch (Player.PlayerState)
                 {
                     case Player.State.Playing:
                         resetButton.Enabled = false;
                         playButton.Enabled = true;
                         stopButton.Enabled = true;
-                        positionTrackbar.Enabled = true;
+                        positionTrackbar.Enabled = false; //true;
+                        progressTimer.Start();
                         break;
                     case Player.State.Stopped:
                         resetButton.Enabled = true;
                         playButton.Enabled = true;
                         stopButton.Enabled = false;
                         positionTrackbar.Enabled = false;
+                        progressTimer.Stop();
                         break;
                 }
             }

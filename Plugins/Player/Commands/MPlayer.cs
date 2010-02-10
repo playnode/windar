@@ -48,6 +48,21 @@ namespace Windar.PlayerPlugin.Commands
         readonly Player _player;
 
         State _state;
+        int _volume;
+
+        public int Progress { get; private set; }
+
+        public int Volume
+        {
+            get
+            {
+                return _volume;
+            }
+            set
+            {
+                _volume = value;
+            }
+        }
 
         public MPlayer()
         {
@@ -56,6 +71,7 @@ namespace Windar.PlayerPlugin.Commands
 
         public MPlayer(PlayItem item, string filename, Player player)
         {
+            _volume = 100;
             _filename = filename;
             _item = item;
             _player = player;
@@ -70,8 +86,11 @@ namespace Windar.PlayerPlugin.Commands
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(_player.Page.Plugin.Host.ProgramFilesPath);
-            cmd.Append(@"mplayer\").Append("mplayer.exe\" -slave -quiet ");
-            cmd.Append(_filename);
+            cmd.Append(@"mplayer\").Append("mplayer.exe\"");
+            cmd.Append(" -slave");
+            cmd.Append(" -quiet");
+            cmd.Append(" -volume ").Append(_volume);
+            cmd.Append(' ').Append(_filename);
 
             Runner.RunCommand(cmd.ToString());
             _state = State.Running;
@@ -127,6 +146,42 @@ namespace Windar.PlayerPlugin.Commands
                 Log.Debug("Player state = " + _state);
         }
 
+        public void ChangeVolume(int volume)
+        {
+            switch (_state)
+            {
+                case State.Playing:
+                case State.Paused:
+                case State.Caching:
+                    var str = new StringBuilder();
+                    str.Append("\nvolume ").Append(volume).Append(" 1\n");
+                    Runner.Process.StandardInput.WriteLine(str.ToString());
+                    Runner.Process.StandardInput.Flush();
+                    break;
+                default:
+                    if (Log.IsWarnEnabled)
+                        Log.Warn("Change volume with unsupported state = " + _state);
+                    break;
+            }
+        }
+
+        public void RequestProgress()
+        {
+            switch (_state)
+            {
+                case State.Playing:
+                case State.Paused:
+                case State.Caching:
+                    Runner.Process.StandardInput.WriteLine("\nget_percent_pos\n");
+                    Runner.Process.StandardInput.Flush();
+                    break;
+                default:
+                    if (Log.IsWarnEnabled)
+                        Log.Warn("Position request with unsupported state = " + _state);
+                    break;
+            }
+        }
+
         protected void CommandCompleted(object sender, EventArgs e)
         {
             _state = State.Ended;
@@ -142,22 +197,19 @@ namespace Windar.PlayerPlugin.Commands
             else if (e.Text.Length == 20 && e.Text.Equals("Starting playback..."))
             {
                 _state = State.Playing;
-
-                // Update the status.
-                var str = new StringBuilder();
-                str.Append("Playing: ");
-                str.Append(_item.Artist).Append(" - ");
-                str.Append(_item.Track).Append(" - ");
-                str.Append(_item.Album).Append(" - ");
-                str.Append(_item.Source);
-                _player.Page.SetStatus(str.ToString());
+                _player.Page.SetStatus(PlayerPlugin.GetPlayingMessage(_item));
                 _player.Page.StateChanged();
             }
             else if (e.Text.Length == 24 && e.Text.Equals("Exiting... (End of file)"))
             {
                 _state = State.Stopped;
-                _player.Page.StopPlaying();
+                _player.Page.Stopped();
                 _player.Page.StateChanged();
+            }
+            else if (e.Text.Length >= 21 && e.Text.Substring(0, 21).Equals("ANS_PERCENT_POSITION="))
+            {
+                Progress = Convert.ToInt32(e.Text.Substring(21));
+                if (Log.IsDebugEnabled) Log.Debug("Progress = " + Progress);
             }
         }
 
@@ -168,7 +220,7 @@ namespace Windar.PlayerPlugin.Commands
 
             _state = State.Error;
             if (e.Text.Length == 16 && e.Text.Equals("Failed, exiting."))
-                _player.Page.SetStatus("Failed");
+                _player.Page.SetStatus("Failed. Play cancelled.");
             else
                 _player.Page.SetStatus("Error: " + e.Text);
         }
