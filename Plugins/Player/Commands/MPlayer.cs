@@ -36,7 +36,7 @@ namespace Windar.PlayerPlugin.Commands
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        enum State
+        public enum State
         {
             Initial,
             Running,
@@ -50,22 +50,38 @@ namespace Windar.PlayerPlugin.Commands
 
         readonly string _filename;
         readonly PlayItem _item;
-        readonly Player _player;
+        private readonly PlayerTabPage _page;
 
-        State _state;
+        public State PlayerState;
+
         int _volume;
+        int _progress;
 
-        public int Progress { get; private set; }
-
-        public int Volume
+        public int Progress
         {
             get
             {
-                return _volume;
+                RequestProgress();
+                return _progress;
             }
+        }
+
+        public int Volume
+        {
             set
             {
                 _volume = value;
+                switch (PlayerState)
+                {
+                    case State.Playing:
+                    case State.Paused:
+                    case State.Caching:
+                        var str = new StringBuilder();
+                        str.Append("\nvolume ").Append(_volume).Append(" 1\n");
+                        Runner.Process.StandardInput.WriteLine(str.ToString());
+                        Runner.Process.StandardInput.Flush();
+                        break;
+                }
             }
         }
 
@@ -74,13 +90,13 @@ namespace Windar.PlayerPlugin.Commands
             
         }
 
-        public MPlayer(PlayItem item, string filename, Player player)
+        public MPlayer(PlayItem item, string filename, PlayerTabPage page)
         {
             _volume = 100;
             _filename = filename;
             _item = item;
-            _player = player;
-            _state = State.Initial;
+            _page = page;
+            PlayerState = State.Initial;
         }
 
         public override void RunAsync()
@@ -90,7 +106,7 @@ namespace Windar.PlayerPlugin.Commands
             Runner.CommandError += CommandError;
 
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(_player.Page.Plugin.Host.ProgramFilesPath);
+            cmd.Append('"').Append(_page.Plugin.Host.ProgramFilesPath);
             cmd.Append(@"mplayer\").Append("mplayer.exe\"");
             cmd.Append(" -slave");
             cmd.Append(" -quiet");
@@ -98,12 +114,12 @@ namespace Windar.PlayerPlugin.Commands
             cmd.Append(' ').Append(_filename);
 
             Runner.RunCommand(cmd.ToString());
-            _state = State.Running;
+            PlayerState = State.Running;
         }
 
         public void Pause()
         {
-            if (_state != State.Playing)
+            if (PlayerState != State.Playing)
             {
                 if (Log.IsWarnEnabled) 
                     Log.Warn("Invalid state change. Not playing.");
@@ -112,15 +128,15 @@ namespace Windar.PlayerPlugin.Commands
             {
                 Runner.Process.StandardInput.WriteLine("\npause\n");
                 Runner.Process.StandardInput.Flush();
-                _state = State.Paused;
+                PlayerState = State.Paused;
             }
             if (Log.IsDebugEnabled)
-                Log.Debug("Player state = " + _state);
+                Log.Debug("Player state = " + PlayerState);
         }
 
         public void Resume()
         {
-            if (_state != State.Paused)
+            if (PlayerState != State.Paused)
             {
                 if (Log.IsWarnEnabled) 
                     Log.Warn("Invalid state change. Not paused.");
@@ -129,15 +145,15 @@ namespace Windar.PlayerPlugin.Commands
             {
                 Runner.Process.StandardInput.WriteLine("\npause\n");
                 Runner.Process.StandardInput.Flush();
-                _state = State.Playing;
+                PlayerState = State.Playing;
             }
             if (Log.IsDebugEnabled)
-                Log.Debug("Player state = " + _state);
+                Log.Debug("Player state = " + PlayerState);
         }
 
         public void Stop()
         {
-            if (_state == State.Stopped)
+            if (PlayerState == State.Stopped)
             {
                 if (Log.IsWarnEnabled) Log.Warn("Invalid state change. Already stopped.");
             }
@@ -145,34 +161,15 @@ namespace Windar.PlayerPlugin.Commands
             {
                 Runner.Process.StandardInput.WriteLine("\nstop\n");
                 Runner.Process.StandardInput.Flush();
-                _state = State.Stopped;
+                PlayerState = State.Stopped;
             }
             if (Log.IsDebugEnabled)
-                Log.Debug("Player state = " + _state);
-        }
-
-        public void ChangeVolume(int volume)
-        {
-            switch (_state)
-            {
-                case State.Playing:
-                case State.Paused:
-                case State.Caching:
-                    var str = new StringBuilder();
-                    str.Append("\nvolume ").Append(volume).Append(" 1\n");
-                    Runner.Process.StandardInput.WriteLine(str.ToString());
-                    Runner.Process.StandardInput.Flush();
-                    break;
-                default:
-                    if (Log.IsWarnEnabled)
-                        Log.Warn("Change volume with unsupported state = " + _state);
-                    break;
-            }
+                Log.Debug("Player state = " + PlayerState);
         }
 
         public void RequestProgress()
         {
-            switch (_state)
+            switch (PlayerState)
             {
                 case State.Playing:
                 case State.Paused:
@@ -182,52 +179,56 @@ namespace Windar.PlayerPlugin.Commands
                     break;
                 default:
                     if (Log.IsWarnEnabled)
-                        Log.Warn("Position request with unsupported state = " + _state);
+                        Log.Warn("Position request with unsupported state = " + PlayerState);
                     break;
             }
         }
 
         protected void CommandCompleted(object sender, EventArgs e)
         {
-            _state = State.Ended;
+            PlayerState = State.Ended;
         }
 
         protected void CommandOutput(object sender, CmdRunner.CommandEventArgs e)
         {
+            if (Log.IsDebugEnabled) Log.Debug(e.Text);
             if (e.Text.Length > 11 && e.Text.Substring(0, 11).Equals("Cache fill:"))
             {
-                _state = State.Caching;
-                _player.Page.SetStatus(e.Text);
+                _page.SetStatus(e.Text);
+                PlayerState = State.Caching;
+                _page.StateChanged();
             }
             else if (e.Text.Length == 20 && e.Text.Equals("Starting playback..."))
             {
-                _state = State.Playing;
-                _player.Page.SetStatus(PlayerPlugin.GetPlayingMessage(_item));
-                _player.Page.StateChanged();
+                _page.SetStatus(PlayerPlugin.GetPlayingMessage(_item));
+                PlayerState = State.Playing;
+                _page.StateChanged();
             }
             else if (e.Text.Length == 24 && e.Text.Equals("Exiting... (End of file)"))
             {
-                _state = State.Stopped;
-                _player.Page.Stopped();
-                _player.Page.StateChanged();
+                _page.Stopped();
+                PlayerState = State.Stopped;
+                _page.StateChanged();
             }
             else if (e.Text.Length >= 21 && e.Text.Substring(0, 21).Equals("ANS_PERCENT_POSITION="))
             {
-                Progress = Convert.ToInt32(e.Text.Substring(21));
-                if (Log.IsDebugEnabled) Log.Debug("Progress = " + Progress);
+                _progress = Convert.ToInt32(e.Text.Substring(21));
+                if (Log.IsDebugEnabled) Log.Debug("Progress = " + _progress);
             }
         }
 
         protected void CommandError(object sender, CmdRunner.CommandEventArgs e)
         {
-            // Ignore errors if player is stopped.
-            if (_state == State.Stopped) return;
+            if (Log.IsErrorEnabled) Log.Error(e.Text);
 
-            _state = State.Error;
+            // Ignore errors if player is stopped.
+            if (PlayerState == State.Stopped) return;
+
+            PlayerState = State.Error;
             if (e.Text.Length == 16 && e.Text.Equals("Failed, exiting."))
-                _player.Page.SetStatus("Failed. Play cancelled.");
+                _page.SetStatus("Failed. Play cancelled.");
             else
-                _player.Page.SetStatus("Error: " + e.Text);
+                _page.SetStatus("Error: " + e.Text);
         }
     }
 }

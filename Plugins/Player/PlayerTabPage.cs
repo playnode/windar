@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 using Newtonsoft.Json.Linq;
+using Windar.PlayerPlugin.Commands;
 
 namespace Windar.PlayerPlugin
 {
@@ -41,7 +42,7 @@ namespace Windar.PlayerPlugin
         readonly Scrobbler _scrobber;
 
         internal PlayerPlugin Plugin { get; private set; }
-        internal Player Player { get; private set; }
+        internal MPlayer Player { get; private set; }
 
         string _qid;
         int _pollCount;
@@ -54,7 +55,7 @@ namespace Windar.PlayerPlugin
             stopButton.Enabled = false;
             positionTrackbar.Enabled = false;
             Plugin = plugin;
-            Player = new Player(this);
+            Player = null;
             _scrobber = new Scrobbler(this);
         }
 
@@ -169,9 +170,26 @@ namespace Windar.PlayerPlugin
                 resultsGrid.Rows[0].Selected = false;
         }
 
+        void PlayItem(PlayItem item)
+        {
+            // Disable controls. Controls re-activated on mplayer state change.
+            DisablePlayControls();
+            resetButton.Enabled = false;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
+            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
+
+            // Play the music!
+            SetStatus("Requesting audio stream.");
+            Player = new MPlayer(item, url.ToString(), this) { Volume = volumeTrackbar.Value };
+            Player.RunAsync();
+        }
+
         private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (Player.PlayerState == Player.State.Playing || Player.PlayerState == Player.State.Paused) return;
+            if (Player != null && (Player.PlayerState == MPlayer.State.Playing || Player.PlayerState == MPlayer.State.Paused)) return;
             var item = GetSelectedItem();
             _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
             PlayItem(item);
@@ -180,31 +198,35 @@ namespace Windar.PlayerPlugin
         void playButton_Click(object sender, EventArgs e)
         {
             var item = GetSelectedItem();
-            if (Log.IsDebugEnabled) 
-                Log.Debug("Player state = " + Player.PlayerState);
-            switch (Player.PlayerState)
+            
+            if (Player == null)
             {
-                case Player.State.Initial:
-                case Player.State.Stopped:
-                    if (resultsGrid.Rows.Count > 0)
-                    {
-                        PlayItem(item);
-                        _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
-                    }
-                    break;
-                case Player.State.Playing:
-                    Player.Pause();
-                    _scrobber.Pause();
-                    Player.Page.SetStatus("Paused.");
-                    break;
-                case Player.State.Paused:
-                    Player.Resume();
-                    _scrobber.Resume();
-                    Player.Page.SetStatus(PlayerPlugin.GetPlayingMessage(item));
-                    break;
+                if (resultsGrid.Rows.Count > 0)
+                {
+                    PlayItem(item);
+                    _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
+                }
             }
-            if (Log.IsDebugEnabled) 
-                Log.Debug("Player state = " + Player.PlayerState);
+            else
+            {
+                if (Log.IsDebugEnabled)
+                    Log.Debug("Player state = " + Player.PlayerState);
+
+                switch (Player.PlayerState)
+                {
+                    case MPlayer.State.Playing:
+                        Player.Pause();
+                        _scrobber.Pause();
+                        SetStatus("Paused.");
+                        break;
+
+                    case MPlayer.State.Paused:
+                        Player.Resume();
+                        _scrobber.Resume();
+                        SetStatus(PlayerPlugin.GetPlayingMessage(item));
+                        break;
+                }
+            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -214,25 +236,25 @@ namespace Windar.PlayerPlugin
 
         private void volumeTrackbar_Scroll(object sender, EventArgs e)
         {
-            Player.Volume = volumeTrackbar.Value;
+            if (Player != null)
+                Player.Volume = volumeTrackbar.Value;
         }
 
         private void positionTrackbar_Scroll(object sender, EventArgs e)
         {
-            //TODO: Track position control currently disabled. Just used to show progress.
+            //TODO: Change track position.
         }
 
         private void resultsGrid_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
             if (resultsGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
-            foreach (var obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
-            resultsGrid.CurrentCell = null;
+            DeselectRows();
         }
 
         private void progressTimer_Tick(object sender, EventArgs e)
         {
-            if (Player.PlayerState == Player.State.Playing)
+            if (Player != null && Player.PlayerState == MPlayer.State.Playing)
             {
                 positionTrackbar.Value = Player.Progress;
             }
@@ -395,7 +417,7 @@ namespace Windar.PlayerPlugin
             SetStatus("");
 
             // Player.
-            if (Player.PlayerState == Player.State.Playing)
+            if (Player != null && Player.PlayerState == MPlayer.State.Playing)
                 Player.Stop();
             DisablePlayControls();
 
@@ -427,23 +449,7 @@ namespace Windar.PlayerPlugin
 
         #endregion
 
-        #region Misc.
-
-        void PlayItem(PlayItem item)
-        {
-            // Disable controls. Controls re-activated on mplayer state change.
-            DisablePlayControls();
-            resetButton.Enabled = false;
-
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
-            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
-
-            // Play the music!
-            Player.Page.SetStatus("Requesting audio stream.");
-            Player.Play(item, url.ToString());
-        }
+        #region Playlist
 
         PlayItem GetSelectedItem()
         {
@@ -462,6 +468,12 @@ namespace Windar.PlayerPlugin
             row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Source });
             row.Tag = item;
             return row;
+        }
+
+        void DeselectRows()
+        {
+            foreach (var obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
+            resultsGrid.CurrentCell = null;
         }
 
         #endregion
@@ -495,8 +507,10 @@ namespace Windar.PlayerPlugin
             {
                 DisablePlayControls();
                 _scrobber.Stop();
-                Player.Stop();
+                if (Player != null) Player.Stop();
+                Player = null;
                 SetStatus("Stopped.");
+                DeselectRows();
             }
         }
 
@@ -508,7 +522,6 @@ namespace Windar.PlayerPlugin
             {
                 DisablePlayControls();
                 _scrobber.Stop();
-                Player.Stopped();
                 SetStatus("Stopped.");
             }
         }
@@ -516,27 +529,41 @@ namespace Windar.PlayerPlugin
         internal void StateChanged()
         {
             Application.DoEvents();
-            if (Log.IsDebugEnabled) Log.Debug("StateChanged: " + Player.PlayerState);
             if (InvokeRequired)
                 BeginInvoke(new StateChangedHandler(StateChanged));
             else
             {
-                switch (Player.PlayerState)
+                if (Player == null || Player.PlayerState == MPlayer.State.Stopped
+                    || Player.PlayerState == MPlayer.State.Ended)
                 {
-                    case Player.State.Playing:
-                        resetButton.Enabled = false;
-                        playButton.Enabled = true;
-                        stopButton.Enabled = true;
-                        positionTrackbar.Enabled = false; //true;
-                        progressTimer.Start();
-                        break;
-                    case Player.State.Stopped:
-                        resetButton.Enabled = true;
-                        playButton.Enabled = true;
-                        stopButton.Enabled = false;
-                        positionTrackbar.Enabled = false;
-                        progressTimer.Stop();
-                        break;
+                    resetButton.Enabled = true;
+                    playButton.Enabled = true;
+                    stopButton.Enabled = false;
+                    positionTrackbar.Enabled = false;
+                    progressTimer.Stop();
+                }
+                else
+                {
+                    switch (Player.PlayerState)
+                    {
+                        case MPlayer.State.Initial:
+                        case MPlayer.State.Running:
+                        case MPlayer.State.Caching:
+                        case MPlayer.State.Error:
+                            resetButton.Enabled = false;
+                            playButton.Enabled = false;
+                            stopButton.Enabled = false;
+                            positionTrackbar.Enabled = false;
+                            break;
+                        default:
+                            resetButton.Enabled = false;
+                            playButton.Enabled = true;
+                            stopButton.Enabled = true;
+                            positionTrackbar.Enabled = false; //true;
+                            progressTimer.Start();
+                            Player.Volume = volumeTrackbar.Value;
+                            break;
+                    }
                 }
             }
         }

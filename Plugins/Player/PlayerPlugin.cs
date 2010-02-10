@@ -107,7 +107,7 @@ namespace Windar.PlayerPlugin
         {
             get
             {
-                return "Player";
+                return "Test";
             }
         }
 
@@ -119,7 +119,8 @@ namespace Windar.PlayerPlugin
         public void Shutdown()
         {
             // Stop mplayer if playing!
-            _tabPage.Player.Stop();
+            if (_tabPage.Player != null)
+                _tabPage.Player.Stop();
         }
 
         #endregion
