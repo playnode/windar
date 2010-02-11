@@ -343,7 +343,7 @@ namespace Windar.PlayerPlugin
             // 
             // progressTimer
             // 
-            this.progressTimer.Interval = 250;
+            this.progressTimer.Interval = 2000;
             this.progressTimer.Tick += new System.EventHandler(this.progressTimer_Tick);
             // 
             // PlayerTabPage

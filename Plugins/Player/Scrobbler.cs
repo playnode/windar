@@ -29,11 +29,21 @@ namespace Windar.PlayerPlugin
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
+        enum State
+        {
+            Initial,
+            Resumed,
+            Paused,
+            Stopped
+        }
+
         readonly PlayerTabPage _page;
+        State _state;
 
         public Scrobbler(PlayerTabPage page)
         {
             _page = page;
+            _state = State.Initial;
         }
 
         string BaseUrl()
@@ -58,6 +68,7 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble start: {0}", url));
             var response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
+            _state = State.Initial;
         }
 
         public void Resume()
@@ -69,6 +80,7 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble resume: {0}", url));
             var response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
+            _state = State.Resumed;
         }
 
         public void Pause()
@@ -80,10 +92,12 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble pause: {0}", url));
             var response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
+            _state = State.Paused;
         }
 
         public void Stop()
         {
+            if (_state == State.Stopped) return;
             var str = new StringBuilder();
             str.Append(BaseUrl());
             str.Append("stop");
@@ -91,6 +105,7 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble stop: {0}", url));
             var response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
+            _state = State.Stopped;
         }
     }
 }

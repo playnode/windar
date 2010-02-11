@@ -35,9 +35,9 @@ namespace Windar.PlayerPlugin
 
         delegate void AddResultHandler(PlayItem item);
         delegate void SetStatusHandler(string text);
-        delegate void IncrementRefreshTimerHandler();
-        delegate void StoppedHandler();
-        delegate void StateChangedHandler();
+        delegate void IncrementPollCountHandler();
+        delegate void StopPlayingHandler();
+        delegate void StateChangedHandler(MPlayer.State to, string msg);
 
         readonly Scrobbler _scrobber;
 
@@ -113,11 +113,12 @@ namespace Windar.PlayerPlugin
             StopPlaying();
             queryTimer.Stop();
             ResetForm(true);
+            artistTextbox.Focus();
         }
 
         private void queryTimer_Tick(object sender, EventArgs e)
         {
-            IncrementRefreshTimer();
+            IncrementPollCount();
 
             // Stop the timer. Restart if required.
             queryTimer.Stop();
@@ -168,23 +169,6 @@ namespace Windar.PlayerPlugin
             resultsGrid.CurrentCell = null;
             if (resultsGrid.Rows.Count > 0) 
                 resultsGrid.Rows[0].Selected = false;
-        }
-
-        void PlayItem(PlayItem item)
-        {
-            // Disable controls. Controls re-activated on mplayer state change.
-            DisablePlayControls();
-            resetButton.Enabled = false;
-
-            // Build the request URL.
-            var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
-            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
-
-            // Play the music!
-            SetStatus("Requesting audio stream.");
-            Player = new MPlayer(item, url.ToString(), this) { Volume = volumeTrackbar.Value };
-            Player.RunAsync();
         }
 
         private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -419,7 +403,7 @@ namespace Windar.PlayerPlugin
             // Player.
             if (Player != null && Player.PlayerState == MPlayer.State.Playing)
                 Player.Stop();
-            DisablePlayControls();
+            EnablePlayControls(false);
 
             // Query form.
             if (resetQuery)
@@ -439,17 +423,33 @@ namespace Windar.PlayerPlugin
             resolveButton.Enabled = enable;
         }
 
-        void DisablePlayControls()
+        void EnablePlayControls(bool enable)
         {
-            if (Log.IsDebugEnabled) Log.Debug("DisablePlayControls");
-            playButton.Enabled = false;
-            stopButton.Enabled = false;
+            playButton.Enabled = enable;
+            stopButton.Enabled = enable;
             positionTrackbar.Enabled = false;
         }
 
         #endregion
 
         #region Playlist
+
+        void PlayItem(PlayItem item)
+        {
+            // Disable controls. Controls re-activated on mplayer state change.
+            EnablePlayControls(false);
+            resetButton.Enabled = false;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
+            if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
+
+            // Play the music!
+            SetStatus("Requesting audio stream.");
+            Player = new MPlayer(item, url.ToString(), this) { Volume = volumeTrackbar.Value };
+            Player.RunAsync();
+        }
 
         PlayItem GetSelectedItem()
         {
@@ -480,32 +480,15 @@ namespace Windar.PlayerPlugin
 
         #region Invokable methods
 
-        void AddResult(PlayItem result)
-        {
-            if (!InvokeRequired) resultsGrid.Rows.Add(GetResultsRow(result));
-            else BeginInvoke(new AddResultHandler(AddResult), result);
-            if (resultsGrid.Rows.Count > 0) playButton.Enabled = true;
-        }
-
-        internal void SetStatus(string text)
-        {
-            if (!InvokeRequired) statusLabel.Text = text;
-            else BeginInvoke(new SetStatusHandler(SetStatus), text);
-        }
-
-        void IncrementRefreshTimer()
-        {
-            if (!InvokeRequired) _pollCount++;
-            else BeginInvoke(new IncrementRefreshTimerHandler(IncrementRefreshTimer));
-        }
-
         internal void StopPlaying()
         {
+            Application.DoEvents();
             if (InvokeRequired)
-                BeginInvoke(new StoppedHandler(StopPlaying));
+                BeginInvoke(new StopPlayingHandler(StopPlaying));
             else
             {
-                DisablePlayControls();
+                progressTimer.Stop();
+                EnablePlayControls(false);
                 _scrobber.Stop();
                 if (Player != null) Player.Stop();
                 Player = null;
@@ -514,58 +497,87 @@ namespace Windar.PlayerPlugin
             }
         }
 
-        internal void Stopped()
-        {
-            if (InvokeRequired)
-                BeginInvoke(new StoppedHandler(Stopped));
-            else
-            {
-                DisablePlayControls();
-                _scrobber.Stop();
-                SetStatus("Stopped.");
-            }
-        }
-
-        internal void StateChanged()
+        /// <summary>
+        /// This method is only used by the MPlayer class instance.
+        /// </summary>
+        /// <param name="to">The new state of the MPlayer instance.</param>
+        /// <param name="msg">A status message associated with the new state.</param>
+        internal void StateChanged(MPlayer.State to, string msg)
         {
             Application.DoEvents();
             if (InvokeRequired)
-                BeginInvoke(new StateChangedHandler(StateChanged));
+                BeginInvoke(new StateChangedHandler(StateChanged), new object[] {to, msg});
             else
             {
-                if (Player == null || Player.PlayerState == MPlayer.State.Stopped
-                    || Player.PlayerState == MPlayer.State.Ended)
+                if (Log.IsInfoEnabled) Log.Info("Changing state to: " + to);
+                switch (to)
                 {
-                    resetButton.Enabled = true;
-                    playButton.Enabled = true;
-                    stopButton.Enabled = false;
-                    positionTrackbar.Enabled = false;
-                    progressTimer.Stop();
+                    case MPlayer.State.Initial:
+                    case MPlayer.State.Running:
+                    case MPlayer.State.Caching:
+                        EnablePlayControls(false);
+                        resetButton.Enabled = false;
+                        break;
+                    case MPlayer.State.Playing:
+                        progressTimer.Start();
+                        EnablePlayControls(true);
+                        resetButton.Enabled = false;
+                        break;
+                    case MPlayer.State.Paused:
+                        progressTimer.Stop();
+                        EnablePlayControls(true);
+                        resetButton.Enabled = false;
+                        break;
+                    case MPlayer.State.Stopped:
+                        progressTimer.Stop();
+                        EnablePlayControls(false);
+                        resetButton.Enabled = true;
+                        playButton.Enabled = true;
+                        _scrobber.Stop();
+                        msg = "Stopped.";
+                        break;
+                    case MPlayer.State.Ended:
+                        progressTimer.Stop();
+                        EnablePlayControls(false);
+                        resetButton.Enabled = true;
+                        playButton.Enabled = true;
+                        _scrobber.Stop();
+                        positionTrackbar.Value = 100;
+                        msg = "Finished.";
+                        break;
+                    case MPlayer.State.Error:
+                        StopPlaying();
+                        EnablePlayControls(false);
+                        break;
+                    default:
+                        if (Log.IsWarnEnabled)
+                            Log.Warn("Unexpected state " + Player.PlayerState);
+                        break;
                 }
-                else
-                {
-                    switch (Player.PlayerState)
-                    {
-                        case MPlayer.State.Initial:
-                        case MPlayer.State.Running:
-                        case MPlayer.State.Caching:
-                        case MPlayer.State.Error:
-                            resetButton.Enabled = false;
-                            playButton.Enabled = false;
-                            stopButton.Enabled = false;
-                            positionTrackbar.Enabled = false;
-                            break;
-                        default:
-                            resetButton.Enabled = false;
-                            playButton.Enabled = true;
-                            stopButton.Enabled = true;
-                            positionTrackbar.Enabled = false; //true;
-                            progressTimer.Start();
-                            Player.Volume = volumeTrackbar.Value;
-                            break;
-                    }
-                }
+                if (msg != null) SetStatus(msg);
             }
+        }
+
+        void SetStatus(string text)
+        {
+            Application.DoEvents();
+            if (!InvokeRequired) statusLabel.Text = text;
+            else BeginInvoke(new SetStatusHandler(SetStatus), text);
+        }
+
+        void IncrementPollCount()
+        {
+            Application.DoEvents();
+            if (!InvokeRequired) _pollCount++;
+            else BeginInvoke(new IncrementPollCountHandler(IncrementPollCount));
+        }
+
+        void AddResult(PlayItem result)
+        {
+            Application.DoEvents();
+            if (!InvokeRequired) resultsGrid.Rows.Add(GetResultsRow(result));
+            else BeginInvoke(new AddResultHandler(AddResult), result);
+            if (resultsGrid.Rows.Count > 0) playButton.Enabled = true;
         }
 
         #endregion
