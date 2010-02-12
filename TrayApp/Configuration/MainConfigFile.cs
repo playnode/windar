@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using Playnode.ErlangTerms.Parser;
+using Windar.Common;
 
 namespace Windar.TrayApp.Configuration
 {
@@ -35,6 +36,8 @@ namespace Windar.TrayApp.Configuration
         NamedBoolean _explain;
         TupleToken _libdbdir;
         NamedList _scanpaths;
+        TupleToken _asUsername;
+        TupleToken _asPassword;
 
         public string Name
         {
@@ -403,6 +406,153 @@ namespace Windar.TrayApp.Configuration
         {
             if (_scanpaths == null) _scanpaths = FindNamedList("scan_paths");
             if (_scanpaths != null) _scanpaths.RemoveStringsListItem(path);
+        }
+
+        #endregion
+
+        #region Scrobbler credentials
+
+        public Credentials ScrobblerCredentials
+        {
+            get
+            {
+                return new Credentials(AudioScrobblerUsername, AudioScrobblerPassword);
+            }
+            set
+            {
+                AudioScrobblerUsername = value.Username;
+                AudioScrobblerPassword = value.Password;
+            }
+        }
+
+        public string AudioScrobblerUsername
+        {
+            get
+            {
+                string result = null;
+                if (_asUsername == null) _asUsername = FindAudioScrobblerUsername();
+                if (_asUsername != null)
+                {
+                    var valueTokens = _asUsername.GetValueTokens();
+                    result = ((StringToken) valueTokens[1]).Text;
+                }
+                return result;
+            }
+            set
+            {
+                if (_asUsername == null) _asUsername = FindAudioScrobblerUsername();
+                if (_asUsername == null)
+                {
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new AddedComment());
+                    _asUsername = new TupleToken();
+                    var tuple = new TupleToken();
+                    tuple.Tokens.Add(new AtomToken("as"));
+                    tuple.Tokens.Add(new CommaToken());
+                    tuple.Tokens.Add(new WhitespaceToken(" "));
+                    tuple.Tokens.Add(new AtomToken("username"));
+                    _asUsername.Tokens.Add(tuple);
+                    _asUsername.Tokens.Add(new CommaToken());
+                    _asUsername.Tokens.Add(new WhitespaceToken(" "));
+                    _asUsername.Tokens.Add(new StringToken(value));
+                    Document.Tokens.Add(_asUsername);
+                    Document.Tokens.Add(new TermEndToken());
+                }
+                var valueTokens = _asUsername.GetValueTokens();
+                ((StringToken) valueTokens[1]).Text = value;
+            }
+        }
+
+        TupleToken FindAudioScrobblerUsername()
+        {
+            TupleToken result = null;
+
+            // Search through all the tuples at the top-level of file.
+            foreach (var token in Document.GetTupleTokens())
+            {
+                // Only interested in a tuple with a tuple as a first item.
+                var valueTokens = token.GetValueTokens();
+                if (!(valueTokens[0] is TupleToken)) continue;
+
+                // Check the tuple names expected: {library, dbdir}
+                var tuple = (TupleToken) valueTokens[0];
+                var values = tuple.GetValueTokens();
+                if (!(values[0] is AtomToken) || ((AtomToken) values[0]).Text != "as" ||
+                    !(values[1] is AtomToken) || ((AtomToken) values[1]).Text != "username") continue;
+
+                // Ensure it has the expected StringToken type.
+                if (valueTokens[1] is StringToken)
+                {
+                    // Found result.
+                    result = token;
+                }
+            }
+            return result;
+        }
+
+        public string AudioScrobblerPassword
+        {
+            get
+            {
+                string result = null;
+                if (_asPassword == null) _asPassword = FindAudioScrobblerPassword();
+                if (_asPassword != null)
+                {
+                    var valueTokens = _asPassword.GetValueTokens();
+                    result = ((StringToken) valueTokens[1]).Text;
+                }
+                return result;
+            }
+            set
+            {
+                if (_asPassword == null) _asPassword = FindAudioScrobblerPassword();
+                if (_asPassword == null)
+                {
+                    Document.Tokens.Add(new WhitespaceToken("\n\n"));
+                    Document.Tokens.Add(new AddedComment());
+                    _asPassword = new TupleToken();
+                    var tuple = new TupleToken();
+                    tuple.Tokens.Add(new AtomToken("as"));
+                    tuple.Tokens.Add(new CommaToken());
+                    tuple.Tokens.Add(new WhitespaceToken(" "));
+                    tuple.Tokens.Add(new AtomToken("password"));
+                    _asPassword.Tokens.Add(tuple);
+                    _asPassword.Tokens.Add(new CommaToken());
+                    _asPassword.Tokens.Add(new WhitespaceToken(" "));
+                    _asPassword.Tokens.Add(new StringToken(value));
+                    Document.Tokens.Add(_asPassword);
+                    Document.Tokens.Add(new TermEndToken());
+                }
+                var valueTokens = _asPassword.GetValueTokens();
+                ((StringToken) valueTokens[1]).Text = value;
+            }
+        }
+
+        TupleToken FindAudioScrobblerPassword()
+        {
+            TupleToken result = null;
+
+            // Search through all the tuples at the top-level of file.
+            foreach (var token in Document.GetTupleTokens())
+            {
+                // Only interested in a tuple with a tuple as a first item.
+                var valueTokens = token.GetValueTokens();
+                if (!(valueTokens[0] is TupleToken)) continue;
+
+                // Check the tuple names expected: {library, dbdir}
+                var tuple = (TupleToken) valueTokens[0];
+                var values = tuple.GetValueTokens();
+                if (!(values[0] is AtomToken) || ((AtomToken) values[0]).Text != "as" ||
+                    !(values[1] is AtomToken) || ((AtomToken) values[1]).Text != "password") continue;
+
+                // Ensure it has the expected StringToken type.
+                if (valueTokens[1] is StringToken)
+                {
+                    // Found result.
+                    result = token;
+                }
+            }
+            return result;
         }
 
         #endregion

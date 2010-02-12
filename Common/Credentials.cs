@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
@@ -19,17 +19,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
-using System.Windows.Forms;
-using Windar.Common;
-
-namespace Windar.PluginAPI
+namespace Windar.Common
 {
-    public interface IPluginHost
+    public class Credentials
     {
-        WindarPaths Paths { get; }
-        Credentials ScrobblerCredentials { get; set; }
-        void AddTabPage(UserControl control, string title);
-        void AddConfigurationPage(ConfigTabContent control, string title);
-        void ApplyChangesRequiresDaemonRestart();
+        public string Username { get; set; }
+        public string Password { get; set; }
+
+        public Credentials(string username, string password)
+        {
+            Username = username;
+            Password = password;
+        }
     }
 }

@@ -20,6 +20,7 @@
  ************************************************************************/
 
 using System.Windows.Forms;
+using Windar.Common;
 using Windar.PluginAPI;
 
 namespace Windar.ScrobblerPlugin
@@ -29,31 +30,27 @@ namespace Windar.ScrobblerPlugin
         public IConfigFormContainer FormContainer { get; set; }
 
         readonly ScrobblerPlugin _plugin;
-
-        string _origUsername;
-        string _origPassword;
+        
+        Credentials _creds;
 
         public ScrobblerConfigForm(ScrobblerPlugin plugin)
         {
             InitializeComponent();
             _plugin = plugin;
-
-            //TODO: Load existing configuration.
-            _origPassword = "";
-            _origUsername = "";
         }
 
         void ScrobblerConfigForm_Load(object sender, System.EventArgs e)
         {
-
+            _creds = _plugin.Host.ScrobblerCredentials;
+            usernameTextbox.Text = _creds.Username;
+            passwordTextbox.Text = _creds.Password;
         }
 
         public void Save()
         {
-            //TODO: Save config.
-
-            _origUsername = usernameTextbox.Text;
-            _origPassword = passwordTextbox.Text;
+            _creds.Username = usernameTextbox.Text;
+            _creds.Password = passwordTextbox.Text;
+            _plugin.Host.ScrobblerCredentials = _creds;
 
             FormContainer.Changed = false;
 
@@ -62,20 +59,20 @@ namespace Windar.ScrobblerPlugin
 
         public void Cancel()
         {
-            usernameTextbox.Text = _origUsername;
-            passwordTextbox.Text = _origPassword;
+            usernameTextbox.Text = _creds.Username;
+            passwordTextbox.Text = _creds.Password;
         }
 
         void usernameTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
-                FormContainer.Changed = !usernameTextbox.Text.Equals(_origUsername);
+                FormContainer.Changed = !usernameTextbox.Text.Equals(_creds.Username);
         }
 
         void passwordTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
-                FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);
+                FormContainer.Changed = !passwordTextbox.Text.Equals(_creds.Password);
         }
 
         bool Completed()
@@ -85,8 +82,8 @@ namespace Windar.ScrobblerPlugin
 
         bool Changed()
         {
-            return !usernameTextbox.Text.Equals(_origUsername)
-                   || !passwordTextbox.Text.Equals(_origPassword);
+            return !usernameTextbox.Text.Equals(_creds.Username)
+                   || !passwordTextbox.Text.Equals(_creds.Password);
         }
 
         private void usernameTextbox_KeyDown(object sender, KeyEventArgs e)

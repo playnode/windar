@@ -38,8 +38,20 @@ namespace Windar.TrayApp
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         public List<IPlugin> Plugins { get; set; }
-
         public WindarPaths Paths { get; set; }
+
+        public Credentials ScrobblerCredentials
+        {
+            get
+            {
+                return Program.Instance.Config.Main.ScrobblerCredentials;
+            }
+            set
+            {
+                Program.Instance.Config.Main.ScrobblerCredentials = value;
+                Program.Instance.Config.Main.Save();
+            }
+        }
 
         public PluginHost(WindarPaths paths)
         {
