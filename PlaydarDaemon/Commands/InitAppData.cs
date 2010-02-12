@@ -30,13 +30,13 @@ namespace Windar.PlaydarDaemon.Commands
         {
             Runner.SkipLogInfoOutput = false;
 
-            // Path to %AppData%\Windar2
+            // Path to %AppData%\Windar3
             var cmd = new StringBuilder();
             cmd.Append("IF NOT EXIST \"").Append(DaemonController.Instance.Paths.WindarAppData).Append("\" ");
             cmd.Append("MKDIR \"").Append(DaemonController.Instance.Paths.WindarAppData).Append("\\\"");
             Runner.RunCommand(cmd.ToString());
 
-            // Path to %AppData%\Windar2\etc
+            // Path to %AppData%\Windar3\etc
             cmd = new StringBuilder();
             cmd.Append("IF NOT EXIST \"").Append(DaemonController.Instance.Paths.WindarAppData).Append("\\etc\" ");
             cmd.Append("MKDIR \"").Append(DaemonController.Instance.Paths.WindarAppData).Append("\\etc\\\"");

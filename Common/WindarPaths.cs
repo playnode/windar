@@ -91,7 +91,7 @@ namespace Windar.Common
                 {
                     var str = new StringBuilder();
                     str.Append(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-                    str.Append(@"\Windar2");
+                    str.Append(@"\Windar3");
                     _playdarDataPath = str.ToString();
                 }
                 return _playdarDataPath;

@@ -101,7 +101,7 @@ namespace Windar.TrayApp
 
                 // Change authdbdir.
                 Log.Info("Current authdbdir = " + config.AuthDbDir);
-                config.AuthDbDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Windar2\";
+                config.AuthDbDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Windar3\";
 
                 // Change explain.
                 Log.Info("Current explain = " + config.Explain);
