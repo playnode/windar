@@ -56,12 +56,12 @@ namespace Windar.PluginAPI
             InitializeComponent();
         }
 
-        private void configSaveButton_Click(object sender, System.EventArgs e)
+        void configSaveButton_Click(object sender, System.EventArgs e)
         {
             _form.Save();
         }
 
-        private void configCancelButton_Click(object sender, System.EventArgs e)
+        void configCancelButton_Click(object sender, System.EventArgs e)
         {
             _form.Cancel();
         }

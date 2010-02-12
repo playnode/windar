@@ -28,7 +28,7 @@ namespace Windar.NapsterPlugin
 {
     public partial class NapsterConfigForm : UserControl, IConfigForm
     {
-        public IConfigFormContainer FormContainer { private get; set; }
+        public IConfigFormContainer FormContainer { get; set; }
 
         readonly NapsterPlugin _plugin;
 
@@ -90,7 +90,7 @@ namespace Windar.NapsterPlugin
             _origUsername = "";
         }
 
-        private void NapsterConfigForm_Load(object sender, System.EventArgs e)
+        void NapsterConfigForm_Load(object sender, System.EventArgs e)
         {
             usernameTextbox.Text = _origUsername;
             passwordTextbox.Text = _origPassword;
@@ -124,19 +124,19 @@ namespace Windar.NapsterPlugin
             passwordTextbox.Text = _origPassword;
         }
 
-        private void username_TextChanged(object sender, System.EventArgs e)
+        void username_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !usernameTextbox.Text.Equals(_origUsername);
         }
 
-        private void password_TextChanged(object sender, System.EventArgs e)
+        void password_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);
         }
 
-        private void napsterLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        void napsterLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.napster.com/");
         }

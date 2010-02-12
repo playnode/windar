@@ -26,7 +26,7 @@ namespace Windar.NapsterPlugin
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -47,7 +47,7 @@ namespace Windar.NapsterPlugin
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        void InitializeComponent()
         {
             this.passwordLabel = new System.Windows.Forms.Label();
             this.usernameLabel = new System.Windows.Forms.Label();
@@ -134,12 +134,12 @@ namespace Windar.NapsterPlugin
 
         #endregion
 
-        private System.Windows.Forms.Label passwordLabel;
-        private System.Windows.Forms.Label usernameLabel;
-        private System.Windows.Forms.TextBox passwordTextbox;
-        private System.Windows.Forms.TextBox usernameTextbox;
-        private System.Windows.Forms.LinkLabel napsterLink;
-        private System.Windows.Forms.Label napsterNote;
+        System.Windows.Forms.Label passwordLabel;
+        System.Windows.Forms.Label usernameLabel;
+        System.Windows.Forms.TextBox passwordTextbox;
+        System.Windows.Forms.TextBox usernameTextbox;
+        System.Windows.Forms.LinkLabel napsterLink;
+        System.Windows.Forms.Label napsterNote;
 
     }
 }

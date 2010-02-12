@@ -39,7 +39,7 @@ namespace Windar.TrayApp
 
         public List<IPlugin> Plugins { get; set; }
 
-        public WindarPaths Paths { get; private set; }
+        public WindarPaths Paths { get; set; }
 
         public PluginHost(WindarPaths paths)
         {

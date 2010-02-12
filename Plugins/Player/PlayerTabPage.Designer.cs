@@ -377,31 +377,31 @@ namespace Windar.PlayerPlugin
 
         #endregion
 
-        private System.Windows.Forms.Label artistLabel;
-        private System.Windows.Forms.Label trackLabel;
-        private System.Windows.Forms.Label albumLabel;
-        private System.Windows.Forms.GroupBox queryGroup;
-        private System.Windows.Forms.TextBox albumTextbox;
-        private System.Windows.Forms.TextBox trackTextbox;
-        private System.Windows.Forms.TextBox artistTextbox;
-        private System.Windows.Forms.Button playButton;
-        private System.Windows.Forms.Button stopButton;
-        private System.Windows.Forms.DataGridView resultsGrid;
-        private System.Windows.Forms.GroupBox resultsGroupBox;
-        private System.Windows.Forms.TrackBar volumeTrackbar;
-        private System.Windows.Forms.TrackBar positionTrackbar;
-        private System.Windows.Forms.Label volLabel;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button resolveButton;
-        private System.Windows.Forms.Button resetButton;
-        private System.Windows.Forms.Label statusLabel;
-        private System.Windows.Forms.GroupBox statusGroupBox;
-        private System.Windows.Forms.Timer queryTimer;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ArtistName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TrackName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn AlbumName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Source;
-        private System.Windows.Forms.Timer progressTimer;
+        System.Windows.Forms.Label artistLabel;
+        System.Windows.Forms.Label trackLabel;
+        System.Windows.Forms.Label albumLabel;
+        System.Windows.Forms.GroupBox queryGroup;
+        System.Windows.Forms.TextBox albumTextbox;
+        System.Windows.Forms.TextBox trackTextbox;
+        System.Windows.Forms.TextBox artistTextbox;
+        System.Windows.Forms.Button playButton;
+        System.Windows.Forms.Button stopButton;
+        System.Windows.Forms.DataGridView resultsGrid;
+        System.Windows.Forms.GroupBox resultsGroupBox;
+        System.Windows.Forms.TrackBar volumeTrackbar;
+        System.Windows.Forms.TrackBar positionTrackbar;
+        System.Windows.Forms.Label volLabel;
+        System.Windows.Forms.Label label4;
+        System.Windows.Forms.Button resolveButton;
+        System.Windows.Forms.Button resetButton;
+        System.Windows.Forms.Label statusLabel;
+        System.Windows.Forms.GroupBox statusGroupBox;
+        System.Windows.Forms.Timer queryTimer;
+        System.Windows.Forms.DataGridViewTextBoxColumn ArtistName;
+        System.Windows.Forms.DataGridViewTextBoxColumn TrackName;
+        System.Windows.Forms.DataGridViewTextBoxColumn AlbumName;
+        System.Windows.Forms.DataGridViewTextBoxColumn Source;
+        System.Windows.Forms.Timer progressTimer;
 
     }
 }

@@ -70,7 +70,7 @@ namespace Windar.PlayerPlugin.Commands
 
         readonly string _filename;
         readonly PlayItem _item;
-        private readonly PlayerTabPage _page;
+        readonly PlayerTabPage _page;
 
         #region Progress & volume properties.
 

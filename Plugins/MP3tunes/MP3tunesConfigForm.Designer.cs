@@ -26,7 +26,7 @@ namespace Windar.MP3tunes
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -47,7 +47,7 @@ namespace Windar.MP3tunes
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        void InitializeComponent()
         {
             this.passwordLabel = new System.Windows.Forms.Label();
             this.usernameLabel = new System.Windows.Forms.Label();
@@ -181,15 +181,15 @@ namespace Windar.MP3tunes
 
         #endregion
 
-        private System.Windows.Forms.Label passwordLabel;
-        private System.Windows.Forms.Label usernameLabel;
-        private System.Windows.Forms.TextBox passwordTextbox;
-        private System.Windows.Forms.TextBox usernameTextbox;
-        private System.Windows.Forms.LinkLabel mp3tunesLink;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label tokenLabel;
-        private System.Windows.Forms.TextBox tokenTextbox;
-        private System.Windows.Forms.LinkLabel tokenLink;
-        private System.Windows.Forms.Label tokenInfo;
+        System.Windows.Forms.Label passwordLabel;
+        System.Windows.Forms.Label usernameLabel;
+        System.Windows.Forms.TextBox passwordTextbox;
+        System.Windows.Forms.TextBox usernameTextbox;
+        System.Windows.Forms.LinkLabel mp3tunesLink;
+        System.Windows.Forms.Label label3;
+        System.Windows.Forms.Label tokenLabel;
+        System.Windows.Forms.TextBox tokenTextbox;
+        System.Windows.Forms.LinkLabel tokenLink;
+        System.Windows.Forms.Label tokenInfo;
     }
 }

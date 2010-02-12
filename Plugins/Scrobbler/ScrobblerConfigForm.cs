@@ -26,7 +26,7 @@ namespace Windar.ScrobblerPlugin
 {
     public partial class ScrobblerConfigForm : UserControl, IConfigForm
     {
-        public IConfigFormContainer FormContainer { private get; set; }
+        public IConfigFormContainer FormContainer { get; set; }
 
         readonly ScrobblerPlugin _plugin;
 
@@ -43,7 +43,7 @@ namespace Windar.ScrobblerPlugin
             _origUsername = "";
         }
 
-        private void ScrobblerConfigForm_Load(object sender, System.EventArgs e)
+        void ScrobblerConfigForm_Load(object sender, System.EventArgs e)
         {
 
         }
@@ -64,13 +64,13 @@ namespace Windar.ScrobblerPlugin
             passwordTextbox.Text = _origPassword;
         }
 
-        private void usernameTextbox_TextChanged(object sender, System.EventArgs e)
+        void usernameTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !usernameTextbox.Text.Equals(_origUsername);
         }
 
-        private void passwordTextbox_TextChanged(object sender, System.EventArgs e)
+        void passwordTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);

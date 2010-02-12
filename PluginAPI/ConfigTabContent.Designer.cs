@@ -26,7 +26,7 @@ namespace Windar.PluginAPI
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -47,7 +47,7 @@ namespace Windar.PluginAPI
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        void InitializeComponent()
         {
             this.configCancelButton = new System.Windows.Forms.Button();
             this.configSaveButton = new System.Windows.Forms.Button();
@@ -118,9 +118,9 @@ namespace Windar.PluginAPI
 
         #endregion
 
-        private System.Windows.Forms.Button configCancelButton;
-        private System.Windows.Forms.Button configSaveButton;
-        private System.Windows.Forms.Panel propsPanel;
-        private System.Windows.Forms.Panel configContentPanel;
+        System.Windows.Forms.Button configCancelButton;
+        System.Windows.Forms.Button configSaveButton;
+        System.Windows.Forms.Panel propsPanel;
+        System.Windows.Forms.Panel configContentPanel;
     }
 }

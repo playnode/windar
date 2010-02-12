@@ -41,8 +41,8 @@ namespace Windar.PlayerPlugin
 
         readonly Scrobbler _scrobber;
 
-        internal PlayerPlugin Plugin { get; private set; }
-        internal MPlayer Player { get; private set; }
+        internal PlayerPlugin Plugin { get; set; }
+        internal MPlayer Player { get; set; }
 
         string _qid;
         int _pollCount;
@@ -63,42 +63,42 @@ namespace Windar.PlayerPlugin
 
         #region Text input boxes
 
-        private void artistTextbox_KeyDown(object sender, KeyEventArgs e)
+        void artistTextbox_KeyDown(object sender, KeyEventArgs e)
         {
             if (artistTextbox.Text == "" || trackTextbox.Text == "") return;
             if (e.KeyCode == Keys.Enter) Resolve();
         }
 
-        private void trackTextbox_KeyDown(object sender, KeyEventArgs e)
+        void trackTextbox_KeyDown(object sender, KeyEventArgs e)
         {
             if (artistTextbox.Text == "" || trackTextbox.Text == "") return;
             if (e.KeyCode == Keys.Enter) Resolve();
         }
 
-        private void albumTextbox_KeyDown(object sender, KeyEventArgs e)
+        void albumTextbox_KeyDown(object sender, KeyEventArgs e)
         {
             if (artistTextbox.Text == "" || trackTextbox.Text == "") return;
             if (e.KeyCode == Keys.Enter) Resolve();
         }
 
-        private void trackTextbox_Enter(object sender, EventArgs e)
+        void trackTextbox_Enter(object sender, EventArgs e)
         {
             trackTextbox.SelectAll();
         }
 
-        private void artistTextbox_Enter(object sender, EventArgs e)
+        void artistTextbox_Enter(object sender, EventArgs e)
         {
             artistTextbox.SelectAll();
         }
 
-        private void albumTextbox_Enter(object sender, EventArgs e)
+        void albumTextbox_Enter(object sender, EventArgs e)
         {
             albumTextbox.SelectAll();
         }
 
         #endregion
 
-        private void PlayerTabPage_Load(object sender, EventArgs e)
+        void PlayerTabPage_Load(object sender, EventArgs e)
         {
             artistTextbox.Focus();
         }
@@ -116,7 +116,7 @@ namespace Windar.PlayerPlugin
             artistTextbox.Focus();
         }
 
-        private void queryTimer_Tick(object sender, EventArgs e)
+        void queryTimer_Tick(object sender, EventArgs e)
         {
             IncrementPollCount();
 
@@ -171,7 +171,7 @@ namespace Windar.PlayerPlugin
                 resultsGrid.Rows[0].Selected = false;
         }
 
-        private void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (Player != null && (Player.PlayerState == MPlayer.State.Playing || Player.PlayerState == MPlayer.State.Paused)) return;
             var item = GetSelectedItem();
@@ -213,30 +213,30 @@ namespace Windar.PlayerPlugin
             }
         }
 
-        private void stopButton_Click(object sender, EventArgs e)
+        void stopButton_Click(object sender, EventArgs e)
         {
             StopPlaying();
         }
 
-        private void volumeTrackbar_Scroll(object sender, EventArgs e)
+        void volumeTrackbar_Scroll(object sender, EventArgs e)
         {
             if (Player != null)
                 Player.Volume = volumeTrackbar.Value;
         }
 
-        private void positionTrackbar_Scroll(object sender, EventArgs e)
+        void positionTrackbar_Scroll(object sender, EventArgs e)
         {
             //TODO: Change track position.
         }
 
-        private void resultsGrid_MouseClick(object sender, MouseEventArgs e)
+        void resultsGrid_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
             if (resultsGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
             DeselectRows();
         }
 
-        private void progressTimer_Tick(object sender, EventArgs e)
+        void progressTimer_Tick(object sender, EventArgs e)
         {
             if (Player != null && Player.PlayerState == MPlayer.State.Playing)
             {

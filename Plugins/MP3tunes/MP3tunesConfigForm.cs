@@ -28,7 +28,7 @@ namespace Windar.MP3tunes
 {
     public partial class MP3tunesConfigForm : UserControl, IConfigForm
     {
-        public IConfigFormContainer FormContainer { private get; set; }
+        public IConfigFormContainer FormContainer { get; set; }
 
         readonly MP3tunesPlugin _plugin;
 
@@ -92,7 +92,7 @@ namespace Windar.MP3tunes
             _origToken = "";
         }
 
-        private void MP3tunesConfigForm_Load(object sender, System.EventArgs e)
+        void MP3tunesConfigForm_Load(object sender, System.EventArgs e)
         {
             usernameTextbox.Text = _origUsername;
             passwordTextbox.Text = _origPassword;
@@ -130,29 +130,29 @@ namespace Windar.MP3tunes
             tokenTextbox.Text = _origToken;
         }
 
-        private void tokensLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        void tokensLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.mp3tunes.com/partner/cb/tokens");
         }
 
-        private void mp3tunesLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        void mp3tunesLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.mp3tunes.com/");
         }
 
-        private void usernameTextbox_TextChanged(object sender, System.EventArgs e)
+        void usernameTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !usernameTextbox.Text.Equals(_origUsername);
         }
 
-        private void passwordTextbox_TextChanged(object sender, System.EventArgs e)
+        void passwordTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);
         }
 
-        private void tokenTextbox_TextChanged(object sender, System.EventArgs e)
+        void tokenTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
                 FormContainer.Changed = !tokenTextbox.Text.Equals(_origToken);

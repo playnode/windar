@@ -26,7 +26,7 @@ namespace Windar.Common
 {
     public class WindarPaths
     {
-        public string WindarProgramFiles { get; private set; }
+        public string WindarProgramFiles { get; set; }
 
         public WindarPaths(string appPath)
         {

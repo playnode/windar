@@ -28,7 +28,7 @@ namespace Windar.PlayerPlugin
         public int PollInterval { get; set; }
         public int PollLimit { get; set; }
         public bool Solved { get; set; }
-        public List<PlayItem> PlayItems { get; private set; }
+        public List<PlayItem> PlayItems { get; set; }
 
         public PlaydarResults()
         {
