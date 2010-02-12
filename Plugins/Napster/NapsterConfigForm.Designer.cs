@@ -60,34 +60,34 @@ namespace Windar.NapsterPlugin
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(4, 72);
+            this.passwordLabel.Location = new System.Drawing.Point(-3, 68);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.Size = new System.Drawing.Size(53, 13);
-            this.passwordLabel.TabIndex = 7;
+            this.passwordLabel.TabIndex = 5;
             this.passwordLabel.Text = "Password";
             // 
             // usernameLabel
             // 
             this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(4, 49);
+            this.usernameLabel.Location = new System.Drawing.Point(-3, 45);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(55, 13);
-            this.usernameLabel.TabIndex = 6;
+            this.usernameLabel.TabIndex = 3;
             this.usernameLabel.Text = "Username";
             // 
             // passwordTextbox
             // 
-            this.passwordTextbox.Location = new System.Drawing.Point(65, 69);
+            this.passwordTextbox.Location = new System.Drawing.Point(58, 65);
             this.passwordTextbox.MaxLength = 255;
             this.passwordTextbox.Name = "passwordTextbox";
             this.passwordTextbox.Size = new System.Drawing.Size(177, 20);
-            this.passwordTextbox.TabIndex = 5;
+            this.passwordTextbox.TabIndex = 6;
             this.passwordTextbox.UseSystemPasswordChar = true;
             this.passwordTextbox.TextChanged += new System.EventHandler(this.password_TextChanged);
             // 
             // usernameTextbox
             // 
-            this.usernameTextbox.Location = new System.Drawing.Point(65, 46);
+            this.usernameTextbox.Location = new System.Drawing.Point(58, 42);
             this.usernameTextbox.MaxLength = 255;
             this.usernameTextbox.Name = "usernameTextbox";
             this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
@@ -97,10 +97,10 @@ namespace Windar.NapsterPlugin
             // napsterLink
             // 
             this.napsterLink.AutoSize = true;
-            this.napsterLink.Location = new System.Drawing.Point(4, 17);
+            this.napsterLink.Location = new System.Drawing.Point(-3, 13);
             this.napsterLink.Name = "napsterLink";
             this.napsterLink.Size = new System.Drawing.Size(92, 13);
-            this.napsterLink.TabIndex = 14;
+            this.napsterLink.TabIndex = 2;
             this.napsterLink.TabStop = true;
             this.napsterLink.Text = "www.napster.com";
             this.napsterLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.napsterLink_LinkClicked);
@@ -108,10 +108,10 @@ namespace Windar.NapsterPlugin
             // napsterNote
             // 
             this.napsterNote.AutoSize = true;
-            this.napsterNote.Location = new System.Drawing.Point(4, 4);
+            this.napsterNote.Location = new System.Drawing.Point(-3, 0);
             this.napsterNote.Name = "napsterNote";
             this.napsterNote.Size = new System.Drawing.Size(446, 13);
-            this.napsterNote.TabIndex = 15;
+            this.napsterNote.TabIndex = 1;
             this.napsterNote.Text = "Resolve and stream tracks with a personal account on Napster. Requires a paid sub" +
                 "scription.";
             // 

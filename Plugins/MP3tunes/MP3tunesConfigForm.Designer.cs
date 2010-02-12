@@ -64,47 +64,47 @@ namespace Windar.MP3tunes
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(4, 72);
+            this.passwordLabel.Location = new System.Drawing.Point(-3, 68);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.Size = new System.Drawing.Size(53, 13);
-            this.passwordLabel.TabIndex = 11;
+            this.passwordLabel.TabIndex = 5;
             this.passwordLabel.Text = "Password";
             // 
             // usernameLabel
             // 
             this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(4, 49);
+            this.usernameLabel.Location = new System.Drawing.Point(-3, 45);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(55, 13);
-            this.usernameLabel.TabIndex = 10;
+            this.usernameLabel.TabIndex = 3;
             this.usernameLabel.Text = "Username";
             // 
             // passwordTextbox
             // 
-            this.passwordTextbox.Location = new System.Drawing.Point(65, 69);
+            this.passwordTextbox.Location = new System.Drawing.Point(58, 65);
             this.passwordTextbox.MaxLength = 255;
             this.passwordTextbox.Name = "passwordTextbox";
             this.passwordTextbox.Size = new System.Drawing.Size(177, 20);
-            this.passwordTextbox.TabIndex = 9;
+            this.passwordTextbox.TabIndex = 6;
             this.passwordTextbox.UseSystemPasswordChar = true;
             this.passwordTextbox.TextChanged += new System.EventHandler(this.passwordTextbox_TextChanged);
             // 
             // usernameTextbox
             // 
-            this.usernameTextbox.Location = new System.Drawing.Point(65, 46);
+            this.usernameTextbox.Location = new System.Drawing.Point(58, 42);
             this.usernameTextbox.MaxLength = 255;
             this.usernameTextbox.Name = "usernameTextbox";
             this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
-            this.usernameTextbox.TabIndex = 8;
+            this.usernameTextbox.TabIndex = 4;
             this.usernameTextbox.TextChanged += new System.EventHandler(this.usernameTextbox_TextChanged);
             // 
             // mp3tunesLink
             // 
             this.mp3tunesLink.AutoSize = true;
-            this.mp3tunesLink.Location = new System.Drawing.Point(4, 17);
+            this.mp3tunesLink.Location = new System.Drawing.Point(-3, 13);
             this.mp3tunesLink.Name = "mp3tunesLink";
             this.mp3tunesLink.Size = new System.Drawing.Size(103, 13);
-            this.mp3tunesLink.TabIndex = 13;
+            this.mp3tunesLink.TabIndex = 2;
             this.mp3tunesLink.TabStop = true;
             this.mp3tunesLink.Text = "www.mp3tunes.com";
             this.mp3tunesLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mp3tunesLink_LinkClicked);
@@ -112,40 +112,40 @@ namespace Windar.MP3tunes
             // mp3tunesAbout
             // 
             this.mp3tunesAbout.AutoSize = true;
-            this.mp3tunesAbout.Location = new System.Drawing.Point(4, 4);
+            this.mp3tunesAbout.Location = new System.Drawing.Point(-3, 0);
             this.mp3tunesAbout.Name = "mp3tunesAbout";
             this.mp3tunesAbout.Size = new System.Drawing.Size(434, 13);
-            this.mp3tunesAbout.TabIndex = 14;
+            this.mp3tunesAbout.TabIndex = 1;
             this.mp3tunesAbout.Text = "Resolve and stream tracks with a personal (free or paid) MP3tunes online storage " +
                 "account.";
             // 
             // tokenLabel
             // 
             this.tokenLabel.AutoSize = true;
-            this.tokenLabel.Location = new System.Drawing.Point(4, 95);
+            this.tokenLabel.Location = new System.Drawing.Point(-3, 91);
             this.tokenLabel.Name = "tokenLabel";
             this.tokenLabel.Size = new System.Drawing.Size(38, 13);
-            this.tokenLabel.TabIndex = 16;
+            this.tokenLabel.TabIndex = 7;
             this.tokenLabel.Text = "Token";
             this.tokenLabel.Visible = false;
             // 
             // tokenTextbox
             // 
-            this.tokenTextbox.Location = new System.Drawing.Point(65, 92);
+            this.tokenTextbox.Location = new System.Drawing.Point(58, 88);
             this.tokenTextbox.MaxLength = 10;
             this.tokenTextbox.Name = "tokenTextbox";
             this.tokenTextbox.Size = new System.Drawing.Size(177, 20);
-            this.tokenTextbox.TabIndex = 15;
+            this.tokenTextbox.TabIndex = 8;
             this.tokenTextbox.Visible = false;
             this.tokenTextbox.TextChanged += new System.EventHandler(this.tokenTextbox_TextChanged);
             // 
             // tokenLink
             // 
             this.tokenLink.AutoSize = true;
-            this.tokenLink.Location = new System.Drawing.Point(248, 108);
+            this.tokenLink.Location = new System.Drawing.Point(241, 104);
             this.tokenLink.Name = "tokenLink";
             this.tokenLink.Size = new System.Drawing.Size(195, 13);
-            this.tokenLink.TabIndex = 17;
+            this.tokenLink.TabIndex = 10;
             this.tokenLink.TabStop = true;
             this.tokenLink.Text = "www.mp3tunes.com/partner/cb/tokens";
             this.tokenLink.Visible = false;
@@ -154,10 +154,10 @@ namespace Windar.MP3tunes
             // tokenInfo
             // 
             this.tokenInfo.AutoSize = true;
-            this.tokenInfo.Location = new System.Drawing.Point(248, 95);
+            this.tokenInfo.Location = new System.Drawing.Point(241, 91);
             this.tokenInfo.Name = "tokenInfo";
             this.tokenInfo.Size = new System.Drawing.Size(256, 13);
-            this.tokenInfo.TabIndex = 18;
+            this.tokenInfo.TabIndex = 9;
             this.tokenInfo.Text = "The default partner token 9999999999 may be used.";
             this.tokenInfo.Visible = false;
             // 

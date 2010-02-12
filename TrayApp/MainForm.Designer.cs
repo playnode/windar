@@ -200,7 +200,7 @@ namespace Windar.TrayApp
             this.mainformBorderPanel.Name = "mainformBorderPanel";
             this.mainformBorderPanel.Padding = new System.Windows.Forms.Padding(4, 6, 4, 4);
             this.mainformBorderPanel.Size = new System.Drawing.Size(624, 442);
-            this.mainformBorderPanel.TabIndex = 6;
+            this.mainformBorderPanel.TabIndex = 1;
             // 
             // mainTabControl
             // 
@@ -216,7 +216,7 @@ namespace Windar.TrayApp
             this.mainTabControl.Name = "mainTabControl";
             this.mainTabControl.SelectedIndex = 0;
             this.mainTabControl.Size = new System.Drawing.Size(616, 432);
-            this.mainTabControl.TabIndex = 1;
+            this.mainTabControl.TabIndex = 2;
             this.mainTabControl.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.MainTabControl_Deselecting);
             this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_SelectedIndexChanged);
             // 
@@ -240,7 +240,7 @@ namespace Windar.TrayApp
             this.versionLabel.Location = new System.Drawing.Point(-1, 389);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(82, 13);
-            this.versionLabel.TabIndex = 4;
+            this.versionLabel.TabIndex = 6;
             this.versionLabel.Text = "Windar: Version";
             // 
             // aboutCenterPanel
@@ -253,7 +253,7 @@ namespace Windar.TrayApp
             this.aboutCenterPanel.Location = new System.Drawing.Point(13, 50);
             this.aboutCenterPanel.Name = "aboutCenterPanel";
             this.aboutCenterPanel.Size = new System.Drawing.Size(577, 274);
-            this.aboutCenterPanel.TabIndex = 4;
+            this.aboutCenterPanel.TabIndex = 3;
             // 
             // label7
             // 
@@ -262,7 +262,7 @@ namespace Windar.TrayApp
             this.label7.Location = new System.Drawing.Point(294, 136);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(177, 20);
-            this.label7.TabIndex = 5;
+            this.label7.TabIndex = 4;
             this.label7.Text = "Music Content Resolver";
             // 
             // pictureBox1
@@ -282,7 +282,7 @@ namespace Windar.TrayApp
             this.playdarLink.Location = new System.Drawing.Point(295, 159);
             this.playdarLink.Name = "playdarLink";
             this.playdarLink.Size = new System.Drawing.Size(117, 16);
-            this.playdarLink.TabIndex = 3;
+            this.playdarLink.TabIndex = 5;
             this.playdarLink.TabStop = true;
             this.playdarLink.Text = "www.playdar.org";
             this.playdarLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.playdarLink_LinkClicked);
@@ -320,7 +320,7 @@ namespace Windar.TrayApp
             this.optionsTabControl.Padding = new System.Drawing.Point(0, 0);
             this.optionsTabControl.SelectedIndex = 0;
             this.optionsTabControl.Size = new System.Drawing.Size(608, 403);
-            this.optionsTabControl.TabIndex = 17;
+            this.optionsTabControl.TabIndex = 7;
             this.optionsTabControl.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.optionsTabControl_Deselecting);
             this.optionsTabControl.SelectedIndexChanged += new System.EventHandler(this.optionsTabControl_SelectedIndexChanged);
             // 
@@ -357,7 +357,7 @@ namespace Windar.TrayApp
             this.generalOptionsCancelButton.Location = new System.Drawing.Point(75, 337);
             this.generalOptionsCancelButton.Name = "generalOptionsCancelButton";
             this.generalOptionsCancelButton.Size = new System.Drawing.Size(60, 23);
-            this.generalOptionsCancelButton.TabIndex = 17;
+            this.generalOptionsCancelButton.TabIndex = 23;
             this.generalOptionsCancelButton.Text = "Cancel";
             this.generalOptionsCancelButton.UseVisualStyleBackColor = true;
             this.generalOptionsCancelButton.Click += new System.EventHandler(this.generalOptionsCancelButton_Click);
@@ -369,7 +369,7 @@ namespace Windar.TrayApp
             this.generalOptionsSaveButton.Location = new System.Drawing.Point(9, 337);
             this.generalOptionsSaveButton.Name = "generalOptionsSaveButton";
             this.generalOptionsSaveButton.Size = new System.Drawing.Size(60, 23);
-            this.generalOptionsSaveButton.TabIndex = 16;
+            this.generalOptionsSaveButton.TabIndex = 22;
             this.generalOptionsSaveButton.Text = "Save";
             this.generalOptionsSaveButton.UseVisualStyleBackColor = true;
             this.generalOptionsSaveButton.Click += new System.EventHandler(this.generalOptionsSaveButton_Click);
@@ -383,7 +383,7 @@ namespace Windar.TrayApp
             this.aboutGroupBox.Location = new System.Drawing.Point(9, 9);
             this.aboutGroupBox.Name = "aboutGroupBox";
             this.aboutGroupBox.Size = new System.Drawing.Size(572, 117);
-            this.aboutGroupBox.TabIndex = 14;
+            this.aboutGroupBox.TabIndex = 8;
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "This Computer";
             // 
@@ -403,7 +403,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(325, 24);
-            this.tableLayoutPanel1.TabIndex = 12;
+            this.tableLayoutPanel1.TabIndex = 9;
             // 
             // label1
             // 
@@ -412,7 +412,7 @@ namespace Windar.TrayApp
             this.label1.Location = new System.Drawing.Point(31, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 10;
             this.label1.Text = "Node name";
             // 
             // nodeNameTextBox
@@ -421,7 +421,7 @@ namespace Windar.TrayApp
             this.nodeNameTextBox.Location = new System.Drawing.Point(99, 3);
             this.nodeNameTextBox.Name = "nodeNameTextBox";
             this.nodeNameTextBox.Size = new System.Drawing.Size(120, 20);
-            this.nodeNameTextBox.TabIndex = 0;
+            this.nodeNameTextBox.TabIndex = 11;
             this.nodeNameTextBox.TextChanged += new System.EventHandler(this.nodeNameTextBox_TextChanged);
             // 
             // label3
@@ -431,7 +431,7 @@ namespace Windar.TrayApp
             this.label3.Location = new System.Drawing.Point(236, 6);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(26, 13);
-            this.label3.TabIndex = 4;
+            this.label3.TabIndex = 12;
             this.label3.Text = "Port";
             // 
             // portTextBox
@@ -440,7 +440,7 @@ namespace Windar.TrayApp
             this.portTextBox.Location = new System.Drawing.Point(268, 3);
             this.portTextBox.Name = "portTextBox";
             this.portTextBox.Size = new System.Drawing.Size(50, 20);
-            this.portTextBox.TabIndex = 5;
+            this.portTextBox.TabIndex = 13;
             this.portTextBox.TextChanged += new System.EventHandler(this.portTextBox_TextChanged);
             // 
             // tableLayoutPanel2
@@ -449,7 +449,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 89.08297F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.91703F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 184F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 144F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 145F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -470,10 +470,10 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(194, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(193, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.allowIncomingCheckBox.TabIndex = 2;
+            this.allowIncomingCheckBox.TabIndex = 15;
             this.allowIncomingCheckBox.UseVisualStyleBackColor = true;
             this.allowIncomingCheckBox.CheckedChanged += new System.EventHandler(this.allowIncomingCheckBox_CheckedChanged);
             // 
@@ -481,10 +481,10 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(223, 3);
+            this.label6.Location = new System.Drawing.Point(222, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
-            this.label6.TabIndex = 10;
+            this.label6.TabIndex = 16;
             this.label6.Text = "Automatically start Windar on login:";
             this.label6.Visible = false;
             // 
@@ -492,10 +492,10 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(401, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(400, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.autostartCheckBox.TabIndex = 11;
+            this.autostartCheckBox.TabIndex = 17;
             this.autostartCheckBox.UseVisualStyleBackColor = true;
             this.autostartCheckBox.Visible = false;
             this.autostartCheckBox.CheckedChanged += new System.EventHandler(this.autostartCheckBox_CheckedChanged);
@@ -504,30 +504,30 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(47, 3);
+            this.label2.Location = new System.Drawing.Point(46, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
-            this.label2.TabIndex = 3;
+            this.label2.TabIndex = 14;
             this.label2.Text = "Allow incoming connections:";
             // 
             // label5
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(14, 23);
+            this.label5.Location = new System.Drawing.Point(13, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
-            this.label5.TabIndex = 8;
+            this.label5.TabIndex = 18;
             this.label5.Text = "Forward on queries to other nodes :";
             // 
             // forwardCheckBox
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(194, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(193, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.forwardCheckBox.TabIndex = 9;
+            this.forwardCheckBox.TabIndex = 19;
             this.forwardCheckBox.UseVisualStyleBackColor = true;
             this.forwardCheckBox.CheckedChanged += new System.EventHandler(this.forwardCheckBox_CheckedChanged);
             // 
@@ -541,7 +541,7 @@ namespace Windar.TrayApp
             this.peersGroupBox.Name = "peersGroupBox";
             this.peersGroupBox.Padding = new System.Windows.Forms.Padding(7, 4, 6, 7);
             this.peersGroupBox.Size = new System.Drawing.Size(572, 199);
-            this.peersGroupBox.TabIndex = 15;
+            this.peersGroupBox.TabIndex = 20;
             this.peersGroupBox.TabStop = false;
             this.peersGroupBox.Text = "Other Computers";
             // 
@@ -566,7 +566,7 @@ namespace Windar.TrayApp
             this.peersGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.peersGrid.Size = new System.Drawing.Size(559, 175);
             this.peersGrid.StandardTab = true;
-            this.peersGrid.TabIndex = 9;
+            this.peersGrid.TabIndex = 21;
             this.peersGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellValueChanged);
             this.peersGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.peersGrid_MouseDown);
             this.peersGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.peersGrid_CellMouseClick);
@@ -657,7 +657,7 @@ namespace Windar.TrayApp
             this.deleteIndexButton.Location = new System.Drawing.Point(329, 337);
             this.deleteIndexButton.Name = "deleteIndexButton";
             this.deleteIndexButton.Size = new System.Drawing.Size(80, 23);
-            this.deleteIndexButton.TabIndex = 25;
+            this.deleteIndexButton.TabIndex = 27;
             this.deleteIndexButton.Text = "Delete Index";
             this.deleteIndexButton.UseVisualStyleBackColor = true;
             this.deleteIndexButton.Click += new System.EventHandler(this.deleteIndexButton_Click);
@@ -668,7 +668,7 @@ namespace Windar.TrayApp
             this.rebuildIndexButton.Location = new System.Drawing.Point(415, 337);
             this.rebuildIndexButton.Name = "rebuildIndexButton";
             this.rebuildIndexButton.Size = new System.Drawing.Size(80, 23);
-            this.rebuildIndexButton.TabIndex = 24;
+            this.rebuildIndexButton.TabIndex = 28;
             this.rebuildIndexButton.Text = "Rebuild Index";
             this.rebuildIndexButton.UseVisualStyleBackColor = true;
             this.rebuildIndexButton.Click += new System.EventHandler(this.rebuildIndexButton_Click);
@@ -679,7 +679,7 @@ namespace Windar.TrayApp
             this.tracklistButton.Location = new System.Drawing.Point(501, 337);
             this.tracklistButton.Name = "tracklistButton";
             this.tracklistButton.Size = new System.Drawing.Size(80, 23);
-            this.tracklistButton.TabIndex = 23;
+            this.tracklistButton.TabIndex = 29;
             this.tracklistButton.Text = "Track List";
             this.tracklistButton.UseVisualStyleBackColor = true;
             this.tracklistButton.Click += new System.EventHandler(this.tracklistButton_Click);
@@ -707,7 +707,7 @@ namespace Windar.TrayApp
             this.libraryGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.libraryGrid.Size = new System.Drawing.Size(572, 318);
             this.libraryGrid.StandardTab = true;
-            this.libraryGrid.TabIndex = 22;
+            this.libraryGrid.TabIndex = 24;
             this.libraryGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellValueChanged);
             this.libraryGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseDown);
             this.libraryGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseClick);
@@ -750,7 +750,7 @@ namespace Windar.TrayApp
             this.libraryCancelButton.Location = new System.Drawing.Point(75, 337);
             this.libraryCancelButton.Name = "libraryCancelButton";
             this.libraryCancelButton.Size = new System.Drawing.Size(60, 23);
-            this.libraryCancelButton.TabIndex = 21;
+            this.libraryCancelButton.TabIndex = 26;
             this.libraryCancelButton.Text = "Cancel";
             this.libraryCancelButton.UseVisualStyleBackColor = true;
             this.libraryCancelButton.Click += new System.EventHandler(this.libraryCancelButton_Click);
@@ -762,7 +762,7 @@ namespace Windar.TrayApp
             this.librarySaveButton.Location = new System.Drawing.Point(9, 337);
             this.librarySaveButton.Name = "librarySaveButton";
             this.librarySaveButton.Size = new System.Drawing.Size(60, 23);
-            this.librarySaveButton.TabIndex = 20;
+            this.librarySaveButton.TabIndex = 25;
             this.librarySaveButton.Text = "Save";
             this.librarySaveButton.UseVisualStyleBackColor = true;
             this.librarySaveButton.Click += new System.EventHandler(this.librarySaveButton_Click);
@@ -819,7 +819,7 @@ namespace Windar.TrayApp
             this.modsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.modsGrid.Size = new System.Drawing.Size(572, 318);
             this.modsGrid.StandardTab = true;
-            this.modsGrid.TabIndex = 22;
+            this.modsGrid.TabIndex = 30;
             this.modsGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.modsGrid_CellValueChanged);
             this.modsGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.modsGrid_MouseDown);
             this.modsGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.modsGrid_CellMouseClick);
@@ -878,7 +878,7 @@ namespace Windar.TrayApp
             this.modsCancelButton.Location = new System.Drawing.Point(75, 337);
             this.modsCancelButton.Name = "modsCancelButton";
             this.modsCancelButton.Size = new System.Drawing.Size(60, 23);
-            this.modsCancelButton.TabIndex = 21;
+            this.modsCancelButton.TabIndex = 32;
             this.modsCancelButton.Text = "Cancel";
             this.modsCancelButton.UseVisualStyleBackColor = true;
             // 
@@ -889,7 +889,7 @@ namespace Windar.TrayApp
             this.modsSaveButton.Location = new System.Drawing.Point(9, 337);
             this.modsSaveButton.Name = "modsSaveButton";
             this.modsSaveButton.Size = new System.Drawing.Size(60, 23);
-            this.modsSaveButton.TabIndex = 20;
+            this.modsSaveButton.TabIndex = 31;
             this.modsSaveButton.Text = "Save";
             this.modsSaveButton.UseVisualStyleBackColor = true;
             // 
@@ -942,7 +942,7 @@ namespace Windar.TrayApp
             this.pluginsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.pluginsGrid.Size = new System.Drawing.Size(572, 318);
             this.pluginsGrid.StandardTab = true;
-            this.pluginsGrid.TabIndex = 26;
+            this.pluginsGrid.TabIndex = 33;
             this.pluginsGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pluginsGrid_MouseDown);
             // 
             // PluginName
@@ -986,7 +986,7 @@ namespace Windar.TrayApp
             this.pluginsCancelButton.Location = new System.Drawing.Point(75, 337);
             this.pluginsCancelButton.Name = "pluginsCancelButton";
             this.pluginsCancelButton.Size = new System.Drawing.Size(60, 23);
-            this.pluginsCancelButton.TabIndex = 25;
+            this.pluginsCancelButton.TabIndex = 35;
             this.pluginsCancelButton.Text = "Cancel";
             this.pluginsCancelButton.UseVisualStyleBackColor = true;
             // 
@@ -997,7 +997,7 @@ namespace Windar.TrayApp
             this.pluginsSaveButton.Location = new System.Drawing.Point(9, 337);
             this.pluginsSaveButton.Name = "pluginsSaveButton";
             this.pluginsSaveButton.Size = new System.Drawing.Size(60, 23);
-            this.pluginsSaveButton.TabIndex = 24;
+            this.pluginsSaveButton.TabIndex = 34;
             this.pluginsSaveButton.Text = "Save";
             this.pluginsSaveButton.UseVisualStyleBackColor = true;
             // 
@@ -1033,7 +1033,7 @@ namespace Windar.TrayApp
             this.propsCancelButton.Location = new System.Drawing.Point(75, 337);
             this.propsCancelButton.Name = "propsCancelButton";
             this.propsCancelButton.Size = new System.Drawing.Size(60, 23);
-            this.propsCancelButton.TabIndex = 19;
+            this.propsCancelButton.TabIndex = 38;
             this.propsCancelButton.Text = "Cancel";
             this.propsCancelButton.UseVisualStyleBackColor = true;
             // 
@@ -1044,7 +1044,7 @@ namespace Windar.TrayApp
             this.propsSaveButton.Location = new System.Drawing.Point(9, 337);
             this.propsSaveButton.Name = "propsSaveButton";
             this.propsSaveButton.Size = new System.Drawing.Size(60, 23);
-            this.propsSaveButton.TabIndex = 18;
+            this.propsSaveButton.TabIndex = 37;
             this.propsSaveButton.Text = "Save";
             this.propsSaveButton.UseVisualStyleBackColor = true;
             // 
@@ -1072,7 +1072,7 @@ namespace Windar.TrayApp
             this.propsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.propsGrid.Size = new System.Drawing.Size(572, 318);
             this.propsGrid.StandardTab = true;
-            this.propsGrid.TabIndex = 1;
+            this.propsGrid.TabIndex = 36;
             this.propsGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.propsGrid_MouseDown);
             // 
             // PropertyName
@@ -1147,7 +1147,7 @@ namespace Windar.TrayApp
             this.refreshButton.Location = new System.Drawing.Point(134, 0);
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(60, 23);
-            this.refreshButton.TabIndex = 6;
+            this.refreshButton.TabIndex = 41;
             this.refreshButton.Text = "Refresh";
             this.refreshButton.UseVisualStyleBackColor = true;
             this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
@@ -1158,7 +1158,7 @@ namespace Windar.TrayApp
             this.restartDaemonButton.Location = new System.Drawing.Point(546, 0);
             this.restartDaemonButton.Name = "restartDaemonButton";
             this.restartDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.restartDaemonButton.TabIndex = 5;
+            this.restartDaemonButton.TabIndex = 44;
             this.restartDaemonButton.Text = "Restart";
             this.restartDaemonButton.UseVisualStyleBackColor = true;
             this.restartDaemonButton.Click += new System.EventHandler(this.restartButton_Click);
@@ -1169,7 +1169,7 @@ namespace Windar.TrayApp
             this.backButton.Location = new System.Drawing.Point(68, 0);
             this.backButton.Name = "backButton";
             this.backButton.Size = new System.Drawing.Size(60, 23);
-            this.backButton.TabIndex = 4;
+            this.backButton.TabIndex = 40;
             this.backButton.Text = "Back";
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
@@ -1180,7 +1180,7 @@ namespace Windar.TrayApp
             this.homeButton.Location = new System.Drawing.Point(2, 0);
             this.homeButton.Name = "homeButton";
             this.homeButton.Size = new System.Drawing.Size(60, 23);
-            this.homeButton.TabIndex = 3;
+            this.homeButton.TabIndex = 39;
             this.homeButton.Text = "Home";
             this.homeButton.UseVisualStyleBackColor = true;
             this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
@@ -1191,7 +1191,7 @@ namespace Windar.TrayApp
             this.stopDaemonButton.Location = new System.Drawing.Point(480, 0);
             this.stopDaemonButton.Name = "stopDaemonButton";
             this.stopDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.stopDaemonButton.TabIndex = 2;
+            this.stopDaemonButton.TabIndex = 43;
             this.stopDaemonButton.Text = "Stop";
             this.stopDaemonButton.UseVisualStyleBackColor = true;
             this.stopDaemonButton.Click += new System.EventHandler(this.stopDaemonButton_Click);
@@ -1203,7 +1203,7 @@ namespace Windar.TrayApp
             this.startDaemonButton.Location = new System.Drawing.Point(414, 0);
             this.startDaemonButton.Name = "startDaemonButton";
             this.startDaemonButton.Size = new System.Drawing.Size(60, 23);
-            this.startDaemonButton.TabIndex = 1;
+            this.startDaemonButton.TabIndex = 42;
             this.startDaemonButton.Text = "Start";
             this.startDaemonButton.UseVisualStyleBackColor = true;
             this.startDaemonButton.Click += new System.EventHandler(this.startDaemonButton_Click);
@@ -1228,7 +1228,7 @@ namespace Windar.TrayApp
             this.playdarBrowser.Name = "playdarBrowser";
             this.playdarBrowser.ScriptErrorsSuppressed = true;
             this.playdarBrowser.Size = new System.Drawing.Size(604, 370);
-            this.playdarBrowser.TabIndex = 0;
+            this.playdarBrowser.TabIndex = 45;
             this.playdarBrowser.WebBrowserShortcutsEnabled = false;
             this.playdarBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.playdarBrowser_Navigating);
             this.playdarBrowser.NewWindow += new System.ComponentModel.CancelEventHandler(this.playdarBrowser_NewWindow);
@@ -1272,7 +1272,7 @@ namespace Windar.TrayApp
             this.followTailCheckBox.Location = new System.Drawing.Point(5, 4);
             this.followTailCheckBox.Name = "followTailCheckBox";
             this.followTailCheckBox.Size = new System.Drawing.Size(76, 17);
-            this.followTailCheckBox.TabIndex = 0;
+            this.followTailCheckBox.TabIndex = 46;
             this.followTailCheckBox.Text = "Follow Tail";
             this.followTailCheckBox.UseVisualStyleBackColor = true;
             this.followTailCheckBox.CheckedChanged += new System.EventHandler(this.followTailCheckBox_CheckedChanged);
@@ -1299,7 +1299,7 @@ namespace Windar.TrayApp
             this.logBox.ReadOnly = true;
             this.logBox.ShortcutsEnabled = false;
             this.logBox.Size = new System.Drawing.Size(604, 370);
-            this.logBox.TabIndex = 0;
+            this.logBox.TabIndex = 47;
             this.logBox.Text = "";
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;

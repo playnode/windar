@@ -60,57 +60,57 @@ namespace Windar.ScrobblerPlugin
             // scrobblerNote
             // 
             this.scrobblerNote.AutoSize = true;
-            this.scrobblerNote.Location = new System.Drawing.Point(4, 4);
+            this.scrobblerNote.Location = new System.Drawing.Point(-3, 0);
             this.scrobblerNote.Name = "scrobblerNote";
             this.scrobblerNote.Size = new System.Drawing.Size(267, 13);
-            this.scrobblerNote.TabIndex = 21;
+            this.scrobblerNote.TabIndex = 1;
             this.scrobblerNote.Text = "Scrobble your played tracks to your own Last.fm profile.";
             // 
             // scrobblerLink
             // 
             this.scrobblerLink.AutoSize = true;
-            this.scrobblerLink.Location = new System.Drawing.Point(4, 17);
+            this.scrobblerLink.Location = new System.Drawing.Point(-3, 13);
             this.scrobblerLink.Name = "scrobblerLink";
             this.scrobblerLink.Size = new System.Drawing.Size(64, 13);
-            this.scrobblerLink.TabIndex = 20;
+            this.scrobblerLink.TabIndex = 2;
             this.scrobblerLink.TabStop = true;
             this.scrobblerLink.Text = "www.last.fm";
             // 
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(4, 72);
+            this.passwordLabel.Location = new System.Drawing.Point(-3, 68);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.Size = new System.Drawing.Size(53, 13);
-            this.passwordLabel.TabIndex = 19;
+            this.passwordLabel.TabIndex = 5;
             this.passwordLabel.Text = "Password";
             // 
             // usernameLabel
             // 
             this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(4, 49);
+            this.usernameLabel.Location = new System.Drawing.Point(-3, 45);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(55, 13);
-            this.usernameLabel.TabIndex = 18;
+            this.usernameLabel.TabIndex = 3;
             this.usernameLabel.Text = "Username";
             // 
             // passwordTextbox
             // 
-            this.passwordTextbox.Location = new System.Drawing.Point(65, 69);
+            this.passwordTextbox.Location = new System.Drawing.Point(58, 65);
             this.passwordTextbox.MaxLength = 255;
             this.passwordTextbox.Name = "passwordTextbox";
             this.passwordTextbox.Size = new System.Drawing.Size(177, 20);
-            this.passwordTextbox.TabIndex = 17;
+            this.passwordTextbox.TabIndex = 6;
             this.passwordTextbox.UseSystemPasswordChar = true;
             this.passwordTextbox.TextChanged += new System.EventHandler(this.passwordTextbox_TextChanged);
             // 
             // usernameTextbox
             // 
-            this.usernameTextbox.Location = new System.Drawing.Point(65, 46);
+            this.usernameTextbox.Location = new System.Drawing.Point(58, 42);
             this.usernameTextbox.MaxLength = 255;
             this.usernameTextbox.Name = "usernameTextbox";
             this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
-            this.usernameTextbox.TabIndex = 16;
+            this.usernameTextbox.TabIndex = 4;
             this.usernameTextbox.TextChanged += new System.EventHandler(this.usernameTextbox_TextChanged);
             // 
             // ScrobblerConfigForm
