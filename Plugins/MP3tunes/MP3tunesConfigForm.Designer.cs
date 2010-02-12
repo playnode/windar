@@ -55,10 +55,6 @@ namespace Windar.MP3tunes
             this.usernameTextbox = new System.Windows.Forms.TextBox();
             this.mp3tunesLink = new System.Windows.Forms.LinkLabel();
             this.mp3tunesAbout = new System.Windows.Forms.Label();
-            this.tokenLabel = new System.Windows.Forms.Label();
-            this.tokenTextbox = new System.Windows.Forms.TextBox();
-            this.tokenLink = new System.Windows.Forms.LinkLabel();
-            this.tokenInfo = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // passwordLabel
@@ -88,6 +84,8 @@ namespace Windar.MP3tunes
             this.passwordTextbox.TabIndex = 6;
             this.passwordTextbox.UseSystemPasswordChar = true;
             this.passwordTextbox.TextChanged += new System.EventHandler(this.passwordTextbox_TextChanged);
+            this.passwordTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.passwordTextbox_KeyDown);
+            this.passwordTextbox.Enter += new System.EventHandler(this.passwordTextbox_Enter);
             // 
             // usernameTextbox
             // 
@@ -97,6 +95,8 @@ namespace Windar.MP3tunes
             this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
             this.usernameTextbox.TabIndex = 4;
             this.usernameTextbox.TextChanged += new System.EventHandler(this.usernameTextbox_TextChanged);
+            this.usernameTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.usernameTextbox_KeyDown);
+            this.usernameTextbox.Enter += new System.EventHandler(this.usernameTextbox_Enter);
             // 
             // mp3tunesLink
             // 
@@ -119,56 +119,10 @@ namespace Windar.MP3tunes
             this.mp3tunesAbout.Text = "Resolve and stream tracks with a personal (free or paid) MP3tunes online storage " +
                 "account.";
             // 
-            // tokenLabel
-            // 
-            this.tokenLabel.AutoSize = true;
-            this.tokenLabel.Location = new System.Drawing.Point(-3, 91);
-            this.tokenLabel.Name = "tokenLabel";
-            this.tokenLabel.Size = new System.Drawing.Size(38, 13);
-            this.tokenLabel.TabIndex = 7;
-            this.tokenLabel.Text = "Token";
-            this.tokenLabel.Visible = false;
-            // 
-            // tokenTextbox
-            // 
-            this.tokenTextbox.Location = new System.Drawing.Point(58, 88);
-            this.tokenTextbox.MaxLength = 10;
-            this.tokenTextbox.Name = "tokenTextbox";
-            this.tokenTextbox.Size = new System.Drawing.Size(177, 20);
-            this.tokenTextbox.TabIndex = 8;
-            this.tokenTextbox.Visible = false;
-            this.tokenTextbox.TextChanged += new System.EventHandler(this.tokenTextbox_TextChanged);
-            // 
-            // tokenLink
-            // 
-            this.tokenLink.AutoSize = true;
-            this.tokenLink.Location = new System.Drawing.Point(241, 104);
-            this.tokenLink.Name = "tokenLink";
-            this.tokenLink.Size = new System.Drawing.Size(195, 13);
-            this.tokenLink.TabIndex = 10;
-            this.tokenLink.TabStop = true;
-            this.tokenLink.Text = "www.mp3tunes.com/partner/cb/tokens";
-            this.tokenLink.Visible = false;
-            this.tokenLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.tokensLink_LinkClicked);
-            // 
-            // tokenInfo
-            // 
-            this.tokenInfo.AutoSize = true;
-            this.tokenInfo.Location = new System.Drawing.Point(241, 91);
-            this.tokenInfo.Name = "tokenInfo";
-            this.tokenInfo.Size = new System.Drawing.Size(256, 13);
-            this.tokenInfo.TabIndex = 9;
-            this.tokenInfo.Text = "The default partner token 9999999999 may be used.";
-            this.tokenInfo.Visible = false;
-            // 
             // MP3tunesConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tokenInfo);
-            this.Controls.Add(this.tokenLink);
-            this.Controls.Add(this.tokenLabel);
-            this.Controls.Add(this.tokenTextbox);
             this.Controls.Add(this.mp3tunesAbout);
             this.Controls.Add(this.mp3tunesLink);
             this.Controls.Add(this.passwordLabel);
@@ -191,9 +145,5 @@ namespace Windar.MP3tunes
         System.Windows.Forms.TextBox usernameTextbox;
         System.Windows.Forms.LinkLabel mp3tunesLink;
         System.Windows.Forms.Label mp3tunesAbout;
-        System.Windows.Forms.Label tokenLabel;
-        System.Windows.Forms.TextBox tokenTextbox;
-        System.Windows.Forms.LinkLabel tokenLink;
-        System.Windows.Forms.Label tokenInfo;
     }
 }

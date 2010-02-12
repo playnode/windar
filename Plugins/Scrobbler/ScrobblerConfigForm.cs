@@ -77,5 +77,36 @@ namespace Windar.ScrobblerPlugin
             if (FormContainer != null)
                 FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);
         }
+
+        bool Completed()
+        {
+            return usernameTextbox.Text != "" && passwordTextbox.Text != "";
+        }
+
+        bool Changed()
+        {
+            return !usernameTextbox.Text.Equals(_origUsername)
+                   || !passwordTextbox.Text.Equals(_origPassword);
+        }
+
+        private void usernameTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && Completed() && Changed()) Save();
+        }
+
+        private void passwordTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && Completed() && Changed()) Save();
+        }
+
+        private void usernameTextbox_Enter(object sender, System.EventArgs e)
+        {
+            usernameTextbox.SelectAll();
+        }
+
+        private void passwordTextbox_Enter(object sender, System.EventArgs e)
+        {
+            passwordTextbox.SelectAll();
+        }
     }
 }

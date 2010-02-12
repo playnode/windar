@@ -49,14 +49,14 @@ namespace Windar.MP3tunes
             {
                 _origUsername = _conf.Sections["mp3tunes"]["username"];
                 _origPassword = _conf.Sections["mp3tunes"]["password"];
-                _origPartnerToken = !_conf.Sections["mp3tunes"].ContainsKey("partner_token") 
-                    ? null : _conf.Sections["mp3tunes"]["partner_token"];
+                _origPartnerToken = !_conf.Sections["mp3tunes"].ContainsKey("partner_token")
+                    ? "" : _conf.Sections["mp3tunes"]["partner_token"];
             }
             else
             {
-                _origUsername = null;
-                _origPassword = null;
-                _origPartnerToken = null;
+                _origUsername = "";
+                _origPassword = "";
+                _origPartnerToken = "";
             }
         }
 
@@ -65,7 +65,6 @@ namespace Windar.MP3tunes
             if (!string.IsNullOrEmpty(_origUsername)) usernameTextbox.Text = _origUsername;
             if (!string.IsNullOrEmpty(_origPassword)) passwordTextbox.Text = _origPassword;
             if (string.IsNullOrEmpty(_origPartnerToken)) _origPartnerToken = "4894673879"; // "9999999999";
-            tokenTextbox.Text = _origPartnerToken;
         }
 
         public void Save()
@@ -74,13 +73,11 @@ namespace Windar.MP3tunes
                 _conf.Sections.Add("mp3tunes", new Dictionary<string, string>());
             _conf.Sections["mp3tunes"]["username"] = usernameTextbox.Text;
             _conf.Sections["mp3tunes"]["password"] = passwordTextbox.Text;
-            _conf.Sections["mp3tunes"]["partner_token"] = tokenTextbox.Text;
             _conf.Save();
 
             // Reset the original values to the new saved values.
             _origUsername = usernameTextbox.Text;
             _origPassword = passwordTextbox.Text;
-            _origPartnerToken = tokenTextbox.Text;
 
             FormContainer.Changed = false;
 
@@ -91,12 +88,6 @@ namespace Windar.MP3tunes
         {
             usernameTextbox.Text = !string.IsNullOrEmpty(_origUsername) ? _origUsername : "";
             passwordTextbox.Text = !string.IsNullOrEmpty(_origPassword) ? _origPassword : "";
-            tokenTextbox.Text = !string.IsNullOrEmpty(_origPartnerToken) ? _origPartnerToken : "";
-        }
-
-        void tokensLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://www.mp3tunes.com/partner/cb/tokens");
         }
 
         void mp3tunesLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -116,10 +107,35 @@ namespace Windar.MP3tunes
                 FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);
         }
 
-        void tokenTextbox_TextChanged(object sender, System.EventArgs e)
+        bool Completed()
         {
-            if (FormContainer != null)
-                FormContainer.Changed = !tokenTextbox.Text.Equals(_origPartnerToken);
+            return usernameTextbox.Text != "" && passwordTextbox.Text != "";
+        }
+
+        bool Changed()
+        {
+            return !usernameTextbox.Text.Equals(_origUsername)
+                   || !passwordTextbox.Text.Equals(_origPassword);
+        }
+
+        private void usernameTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && Completed() && Changed()) Save();
+        }
+
+        private void passwordTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && Completed() && Changed()) Save();
+        }
+
+        private void usernameTextbox_Enter(object sender, System.EventArgs e)
+        {
+            usernameTextbox.SelectAll();
+        }
+
+        private void passwordTextbox_Enter(object sender, System.EventArgs e)
+        {
+            passwordTextbox.SelectAll();
         }
     }
 }

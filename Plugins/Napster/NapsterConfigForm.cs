@@ -49,14 +49,14 @@ namespace Windar.NapsterPlugin
             {
                 _origUsername = _conf.Sections["napster"]["username"];
                 _origPassword = _conf.Sections["napster"]["password"];
-                _deviceid = !_conf.Sections["napster"].ContainsKey("deviceid") 
-                    ? null : _conf.Sections["napster"]["deviceid"];
+                _deviceid = !_conf.Sections["napster"].ContainsKey("deviceid")
+                    ? "" : _conf.Sections["napster"]["deviceid"];
             }
             else
             {
-                _origUsername = null;
-                _origPassword = null;
-                _deviceid = null;
+                _origUsername = "";
+                _origPassword = "";
+                _deviceid = "";
             }
         }
 
@@ -105,6 +105,37 @@ namespace Windar.NapsterPlugin
         void napsterLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.napster.com/");
+        }
+
+        bool Completed()
+        {
+            return usernameTextbox.Text != "" && passwordTextbox.Text != "";
+        }
+
+        bool Changed()
+        {
+            return !usernameTextbox.Text.Equals(_origUsername)
+                   || !passwordTextbox.Text.Equals(_origPassword);
+        }
+
+        private void usernameTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && Completed() && Changed()) Save();
+        }
+
+        private void passwordTextbox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && Completed() && Changed()) Save();
+        }
+
+        private void usernameTextbox_Enter(object sender, System.EventArgs e)
+        {
+            usernameTextbox.SelectAll();
+        }
+
+        private void passwordTextbox_Enter(object sender, System.EventArgs e)
+        {
+            passwordTextbox.SelectAll();
         }
     }
 }

@@ -103,6 +103,8 @@ namespace Windar.ScrobblerPlugin
             this.passwordTextbox.TabIndex = 6;
             this.passwordTextbox.UseSystemPasswordChar = true;
             this.passwordTextbox.TextChanged += new System.EventHandler(this.passwordTextbox_TextChanged);
+            this.passwordTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.passwordTextbox_KeyDown);
+            this.passwordTextbox.Enter += new System.EventHandler(this.passwordTextbox_Enter);
             // 
             // usernameTextbox
             // 
@@ -112,6 +114,8 @@ namespace Windar.ScrobblerPlugin
             this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
             this.usernameTextbox.TabIndex = 4;
             this.usernameTextbox.TextChanged += new System.EventHandler(this.usernameTextbox_TextChanged);
+            this.usernameTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.usernameTextbox_KeyDown);
+            this.usernameTextbox.Enter += new System.EventHandler(this.usernameTextbox_Enter);
             // 
             // ScrobblerConfigForm
             // 
