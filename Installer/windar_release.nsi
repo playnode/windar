@@ -455,6 +455,50 @@ Section "Playdar Core" SEC_PLAYDAR
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
 SectionEnd
 
+!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
+   ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
+      SectionIn 1 2
+      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
+      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
+!endif
+
+SectionGroup "Additional shortcuts"
+
+!ifdef OPTION_SECTION_SC_START_MENU
+   ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
+      SectionIn 1 2
+
+      DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
+
+      RMDir /r "$SMPROGRAMS\Windar"
+      CreateDirectory "$SMPROGRAMS\Windar"
+      CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
+      CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
+      CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_DESKTOP
+   ${MementoUnselectedSection} "Desktop Shortcut" SEC_DESKTOP
+      SectionIn 2
+      DetailPrint "Creating Desktop Shortcuts"
+      CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_QUICK_LAUNCH
+   ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
+      SectionIn 1 2
+      DetailPrint "Creating Quick Launch Shortcut"
+      CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
+!endif
+
+SectionGroupEnd
+
 ${MementoSection} "Player" SEC_PLAYER
    SectionIn 1 2
    DetailPrint "Installing MPlayer and the Player plugin for Windar."
@@ -544,50 +588,6 @@ ${MementoSectionEnd}
 
 SectionGroupEnd
 
-SectionGroup "Shortcuts"
-
-!ifdef OPTION_SECTION_SC_START_MENU
-   ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
-      SectionIn 1 2
-
-      DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
-
-      RMDir /r "$SMPROGRAMS\Windar"
-      CreateDirectory "$SMPROGRAMS\Windar"
-      CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
-      CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
-      CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
-   ${MementoSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
-      SectionIn 1 2
-      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
-      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_DESKTOP
-   ${MementoUnselectedSection} "Desktop Shortcut" SEC_DESKTOP
-      SectionIn 2
-      DetailPrint "Creating Desktop Shortcuts"
-      CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_QUICK_LAUNCH
-   ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
-      SectionIn 1 2
-      DetailPrint "Creating Quick Launch Shortcut"
-      CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
-
-SectionGroupEnd
-
 ${MementoSectionDone}
 
 ;Installer section descriptions
@@ -600,12 +600,12 @@ ${MementoSectionDone}
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves web content in the AOL Music Index."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Jamendo resolver module."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Magnatune resolver module."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "MP3tunes locker resolver module."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Napster resolver script."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Requires a paid account."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SOUNDCLOUD_RESOLVER} "SoundCloud resolver script."
 
 !ifdef OPTION_SECTION_SC_START_MENU

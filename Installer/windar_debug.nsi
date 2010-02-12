@@ -462,6 +462,50 @@ Section "Playdar Core" SEC_PLAYDAR
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
 SectionEnd
 
+!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
+   ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
+      SectionIn 1 2
+      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
+      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
+!endif
+
+SectionGroup "Additional shortcuts"
+
+!ifdef OPTION_SECTION_SC_START_MENU
+   ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
+      SectionIn 1 2
+
+      DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
+
+      RMDir /r "$SMPROGRAMS\Windar"
+      CreateDirectory "$SMPROGRAMS\Windar"
+      CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
+      CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
+      CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_DESKTOP
+   ${MementoUnselectedSection} "Desktop Shortcut" SEC_DESKTOP
+      SectionIn 2
+      DetailPrint "Creating Desktop Shortcuts"
+      CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_QUICK_LAUNCH
+   ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
+      SectionIn 1 2
+      DetailPrint "Creating Quick Launch Shortcut"
+      CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
+   ${MementoSectionEnd}
+!endif
+
+SectionGroupEnd
+
 ${MementoSection} "Player" SEC_PLAYER
    SectionIn 1 2
    DetailPrint "Installing MPlayer and the Player plugin for Windar."
@@ -552,50 +596,6 @@ ${MementoSectionEnd}
 #   SetOutPath "$INSTDIR\playdar\contrib"
 #   File /r Payload\playdar_scripts\soundcloud
 #${MementoSectionEnd}
-
-SectionGroupEnd
-
-SectionGroup "Shortcuts"
-
-!ifdef OPTION_SECTION_SC_START_MENU
-   ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
-      SectionIn 1 2
-
-      DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
-
-      RMDir /r "$SMPROGRAMS\Windar"
-      CreateDirectory "$SMPROGRAMS\Windar"
-      CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
-      CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
-      CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
-   ${MementoSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
-      SectionIn 1 2
-      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
-      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_DESKTOP
-   ${MementoUnselectedSection} "Desktop Shortcut" SEC_DESKTOP
-      SectionIn 2
-      DetailPrint "Creating Desktop Shortcuts"
-      CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_SECTION_SC_QUICK_LAUNCH
-   ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
-      SectionIn 1 2
-      DetailPrint "Creating Quick Launch Shortcut"
-      CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
-   ${MementoSectionEnd}
-!endif
 
 SectionGroupEnd
 
