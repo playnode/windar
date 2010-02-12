@@ -54,7 +54,7 @@ namespace Windar.MP3tunes
             this.passwordTextbox = new System.Windows.Forms.TextBox();
             this.usernameTextbox = new System.Windows.Forms.TextBox();
             this.mp3tunesLink = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
+            this.mp3tunesAbout = new System.Windows.Forms.Label();
             this.tokenLabel = new System.Windows.Forms.Label();
             this.tokenTextbox = new System.Windows.Forms.TextBox();
             this.tokenLink = new System.Windows.Forms.LinkLabel();
@@ -109,15 +109,15 @@ namespace Windar.MP3tunes
             this.mp3tunesLink.Text = "www.mp3tunes.com";
             this.mp3tunesLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mp3tunesLink_LinkClicked);
             // 
-            // label3
+            // mp3tunesAbout
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 4);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(466, 13);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "Resolve and stream tracks with MP3tunes. Requires a free or paid account with dev" +
-                "eloper token.";
+            this.mp3tunesAbout.AutoSize = true;
+            this.mp3tunesAbout.Location = new System.Drawing.Point(4, 4);
+            this.mp3tunesAbout.Name = "mp3tunesAbout";
+            this.mp3tunesAbout.Size = new System.Drawing.Size(434, 13);
+            this.mp3tunesAbout.TabIndex = 14;
+            this.mp3tunesAbout.Text = "Resolve and stream tracks with a personal (free or paid) MP3tunes online storage " +
+                "account.";
             // 
             // tokenLabel
             // 
@@ -127,6 +127,7 @@ namespace Windar.MP3tunes
             this.tokenLabel.Size = new System.Drawing.Size(38, 13);
             this.tokenLabel.TabIndex = 16;
             this.tokenLabel.Text = "Token";
+            this.tokenLabel.Visible = false;
             // 
             // tokenTextbox
             // 
@@ -135,6 +136,7 @@ namespace Windar.MP3tunes
             this.tokenTextbox.Name = "tokenTextbox";
             this.tokenTextbox.Size = new System.Drawing.Size(177, 20);
             this.tokenTextbox.TabIndex = 15;
+            this.tokenTextbox.Visible = false;
             this.tokenTextbox.TextChanged += new System.EventHandler(this.tokenTextbox_TextChanged);
             // 
             // tokenLink
@@ -146,6 +148,7 @@ namespace Windar.MP3tunes
             this.tokenLink.TabIndex = 17;
             this.tokenLink.TabStop = true;
             this.tokenLink.Text = "www.mp3tunes.com/partner/cb/tokens";
+            this.tokenLink.Visible = false;
             this.tokenLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.tokensLink_LinkClicked);
             // 
             // tokenInfo
@@ -156,6 +159,7 @@ namespace Windar.MP3tunes
             this.tokenInfo.Size = new System.Drawing.Size(256, 13);
             this.tokenInfo.TabIndex = 18;
             this.tokenInfo.Text = "The default partner token 9999999999 may be used.";
+            this.tokenInfo.Visible = false;
             // 
             // MP3tunesConfigForm
             // 
@@ -165,7 +169,7 @@ namespace Windar.MP3tunes
             this.Controls.Add(this.tokenLink);
             this.Controls.Add(this.tokenLabel);
             this.Controls.Add(this.tokenTextbox);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.mp3tunesAbout);
             this.Controls.Add(this.mp3tunesLink);
             this.Controls.Add(this.passwordLabel);
             this.Controls.Add(this.usernameLabel);
@@ -186,7 +190,7 @@ namespace Windar.MP3tunes
         System.Windows.Forms.TextBox passwordTextbox;
         System.Windows.Forms.TextBox usernameTextbox;
         System.Windows.Forms.LinkLabel mp3tunesLink;
-        System.Windows.Forms.Label label3;
+        System.Windows.Forms.Label mp3tunesAbout;
         System.Windows.Forms.Label tokenLabel;
         System.Windows.Forms.TextBox tokenTextbox;
         System.Windows.Forms.LinkLabel tokenLink;

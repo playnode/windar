@@ -19,9 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
+using Windar.Common;
 using Windar.PluginAPI;
 
 namespace Windar.MP3tunes
@@ -31,103 +32,64 @@ namespace Windar.MP3tunes
         public IConfigFormContainer FormContainer { get; set; }
 
         readonly MP3tunesPlugin _plugin;
-
+        readonly SimplePropertiesFile _conf;
         string _origUsername;
         string _origPassword;
-        string _origToken;
-
-        #region Configuration filename.
-
-        string _configFilename;
-        string ConfigFilename
-        {
-            get
-            {
-                return _configFilename ??
-                    (_configFilename = _plugin.Host.Paths.PlaydarEtcPath + @"\mp3tunes.conf");
-            }
-        }
-
-        #endregion
+        string _origPartnerToken;
 
         public MP3tunesConfigForm(MP3tunesPlugin plugin)
         {
             InitializeComponent();
             _plugin = plugin;
-            var newFile = false;
 
-            // Check if the configuration file already exists.
-            if (File.Exists(ConfigFilename))
+            // Set the original values.
+            var filename = _plugin.Host.Paths.PlaydarEtcPath + @"\mp3tunes.conf";
+            _conf = new SimplePropertiesFile(filename);
+            if (File.Exists(filename))
             {
-                // Load config from file.
-                var streamReader = new StreamReader(ConfigFilename);
-                var line1 = streamReader.ReadLine();
-                if (!line1.Equals("[mp3tunes]")) newFile = true;
-                else
-                {
-                    var line2 = streamReader.ReadLine();
-                    if (!line2.StartsWith("username=")) newFile = true;
-                    else
-                    {
-                        var line3 = streamReader.ReadLine();
-                        if (!line3.StartsWith("password=")) newFile = true;
-                        else
-                        {
-                            var line4 = streamReader.ReadLine();
-                            if (!line4.StartsWith("partner_token=")) newFile = true;
-                            else
-                            {
-                                _origUsername = line2.Substring(9, line2.Length - 9);
-                                _origPassword = line3.Substring(9, line3.Length - 9);
-                                _origToken = line4.Substring(14, line4.Length - 14);
-                            }
-                        }
-                    }
-                }
-                streamReader.Close();
+                _origUsername = _conf.Sections["mp3tunes"]["username"];
+                _origPassword = _conf.Sections["mp3tunes"]["password"];
+                _origPartnerToken = !_conf.Sections["mp3tunes"].ContainsKey("partner_token") 
+                    ? null : _conf.Sections["mp3tunes"]["partner_token"];
             }
-            if (!newFile) return;
-            _origPassword = "";
-            _origUsername = "";
-            _origToken = "";
+            else
+            {
+                _origUsername = null;
+                _origPassword = null;
+                _origPartnerToken = null;
+            }
         }
 
         void MP3tunesConfigForm_Load(object sender, System.EventArgs e)
         {
-            usernameTextbox.Text = _origUsername;
-            passwordTextbox.Text = _origPassword;
-            if (string.IsNullOrEmpty(_origToken)) _origToken = "9999999999";
-            tokenTextbox.Text = _origToken;
+            if (!string.IsNullOrEmpty(_origUsername)) usernameTextbox.Text = _origUsername;
+            if (!string.IsNullOrEmpty(_origPassword)) passwordTextbox.Text = _origPassword;
+            if (string.IsNullOrEmpty(_origPartnerToken)) _origPartnerToken = "4894673879"; // "9999999999";
+            tokenTextbox.Text = _origPartnerToken;
         }
 
         public void Save()
         {
-            var str = new StringBuilder();
-            str.Append("[mp3tunes]\n");
-            str.Append("username=").Append(usernameTextbox.Text).Append("\n");
-            str.Append("password=").Append(passwordTextbox.Text).Append("\n");
-            str.Append("partner_token=").Append(tokenTextbox.Text).Append("\n");
+            if (!_conf.Sections.ContainsKey("mp3tunes") || _conf.Sections["mp3tunes"] == null)
+                _conf.Sections.Add("mp3tunes", new Dictionary<string, string>());
+            _conf.Sections["mp3tunes"]["username"] = usernameTextbox.Text;
+            _conf.Sections["mp3tunes"]["password"] = passwordTextbox.Text;
+            _conf.Sections["mp3tunes"]["partner_token"] = tokenTextbox.Text;
+            _conf.Save();
 
-            // Write the configuration file.
-            if (File.Exists(ConfigFilename)) File.Delete(ConfigFilename);
-            var file = new FileStream(ConfigFilename, FileMode.Create, FileAccess.Write);
-            var sw = new StreamWriter(file);
-            sw.Write(str.ToString());
-            sw.Close();
-            file.Close();
-
+            // Reset the original values to the new saved values.
             _origUsername = usernameTextbox.Text;
             _origPassword = passwordTextbox.Text;
-            _origToken = tokenTextbox.Text;
+            _origPartnerToken = tokenTextbox.Text;
 
             FormContainer.Changed = false;
         }
 
         public void Cancel()
         {
-            usernameTextbox.Text = _origUsername;
-            passwordTextbox.Text = _origPassword;
-            tokenTextbox.Text = _origToken;
+            usernameTextbox.Text = !string.IsNullOrEmpty(_origUsername) ? _origUsername : "";
+            passwordTextbox.Text = !string.IsNullOrEmpty(_origPassword) ? _origPassword : "";
+            tokenTextbox.Text = !string.IsNullOrEmpty(_origPartnerToken) ? _origPartnerToken : "";
         }
 
         void tokensLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -155,7 +117,7 @@ namespace Windar.MP3tunes
         void tokenTextbox_TextChanged(object sender, System.EventArgs e)
         {
             if (FormContainer != null)
-                FormContainer.Changed = !tokenTextbox.Text.Equals(_origToken);
+                FormContainer.Changed = !tokenTextbox.Text.Equals(_origPartnerToken);
         }
     }
 }

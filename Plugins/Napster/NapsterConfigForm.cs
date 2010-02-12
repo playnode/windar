@@ -19,9 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
+using Windar.Common;
 using Windar.PluginAPI;
 
 namespace Windar.NapsterPlugin
@@ -31,87 +32,50 @@ namespace Windar.NapsterPlugin
         public IConfigFormContainer FormContainer { get; set; }
 
         readonly NapsterPlugin _plugin;
-
+        readonly SimplePropertiesFile _conf;
+        readonly string _deviceid;
         string _origUsername;
         string _origPassword;
-
-        readonly string _deviceId;
-
-        #region Configuration filename.
-
-        string _configFilename;
-        string ConfigFilename
-        {
-            get
-            {
-                return _configFilename ??
-                    (_configFilename = _plugin.Host.Paths.PlaydarEtcPath + @"\napster.conf");
-            }
-        }
-
-        #endregion
 
         public NapsterConfigForm(NapsterPlugin plugin)
         {
             InitializeComponent();
             _plugin = plugin;
-            var newFile = false;
 
-            // Check if the configuration file already exists.
-            if (File.Exists(ConfigFilename))
+            // Set the original values.
+            var filename = _plugin.Host.Paths.PlaydarEtcPath + @"\napster.conf";
+            _conf = new SimplePropertiesFile(filename);
+            if (File.Exists(filename))
             {
-                // Load config from file.
-                var streamReader = new StreamReader(ConfigFilename);
-                var line1 = streamReader.ReadLine();
-                if (!line1.Equals("[napster]")) newFile = true;
-                else
-                {
-                    var line2 = streamReader.ReadLine();
-                    if (!line2.StartsWith("username = ")) newFile = true;
-                    else
-                    {
-                        var line3 = streamReader.ReadLine();
-                        if (!line3.StartsWith("password = ")) newFile = true;
-                        else
-                        {
-                            _origUsername = line2.Substring(11, line2.Length - 11);
-                            _origPassword = line3.Substring(11, line3.Length - 11);
-                        }
-
-                        var line4 = streamReader.ReadLine();
-                        if (line4.StartsWith("deviceid = "))
-                            _deviceId = line4.Substring(11, line4.Length - 11);
-                    }
-                }
-                streamReader.Close();
+                _origUsername = _conf.Sections["napster"]["username"];
+                _origPassword = _conf.Sections["napster"]["password"];
+                _deviceid = !_conf.Sections["napster"].ContainsKey("deviceid") 
+                    ? null : _conf.Sections["napster"]["deviceid"];
             }
-            if (!newFile) return;
-            _origPassword = "";
-            _origUsername = "";
+            else
+            {
+                _origUsername = null;
+                _origPassword = null;
+                _deviceid = null;
+            }
         }
 
         void NapsterConfigForm_Load(object sender, System.EventArgs e)
         {
-            usernameTextbox.Text = _origUsername;
-            passwordTextbox.Text = _origPassword;
+            if (!string.IsNullOrEmpty(_origUsername)) usernameTextbox.Text = _origUsername;
+            if (!string.IsNullOrEmpty(_origPassword)) passwordTextbox.Text = _origPassword;
         }
 
         public void Save()
         {
-            var str = new StringBuilder();
-            str.Append("[napster]\n");
-            str.Append("username = ").Append(usernameTextbox.Text).Append("\n");
-            str.Append("password = ").Append(passwordTextbox.Text).Append("\n");
-            str.Append("deviceid = ").Append(_deviceId).Append("\n");
+            if (!_conf.Sections.ContainsKey("napster") || _conf.Sections["napster"] == null)
+                _conf.Sections.Add("napster", new Dictionary<string, string>());
+            _conf.Sections["napster"]["username"] = usernameTextbox.Text;
+            _conf.Sections["napster"]["password"] = passwordTextbox.Text;
+            _conf.Sections["napster"]["deviceid"] = _deviceid;
+            _conf.Save();
 
-            // Write the configuration file.
-            if (File.Exists(ConfigFilename)) File.Delete(ConfigFilename);
-            var file = new FileStream(ConfigFilename, FileMode.Create, FileAccess.Write);
-            var sw = new StreamWriter(file);
-            sw.Write(str.ToString());
-            sw.Close();
-            file.Close();
-
+            // Reset the original values to the new saved values.
             _origUsername = usernameTextbox.Text;
             _origPassword = passwordTextbox.Text;
 
@@ -120,8 +84,8 @@ namespace Windar.NapsterPlugin
 
         public void Cancel()
         {
-            usernameTextbox.Text = _origUsername;
-            passwordTextbox.Text = _origPassword;
+            usernameTextbox.Text = !string.IsNullOrEmpty(_origUsername) ? _origUsername : "";
+            passwordTextbox.Text = !string.IsNullOrEmpty(_origPassword) ? _origPassword : "";
         }
 
         void username_TextChanged(object sender, System.EventArgs e)
