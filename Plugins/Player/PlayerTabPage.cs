@@ -39,7 +39,7 @@ namespace Windar.PlayerPlugin
         delegate void StopPlayingHandler();
         delegate void StateChangedHandler(MPlayer.State to, string msg);
 
-        readonly Scrobbler _scrobber;
+        Scrobbler _scrobber;
 
         internal PlayerPlugin Plugin { get; set; }
         internal MPlayer Player { get; set; }
@@ -56,7 +56,7 @@ namespace Windar.PlayerPlugin
             positionTrackbar.Enabled = false;
             Plugin = plugin;
             Player = null;
-            _scrobber = new Scrobbler(this);
+            _scrobber = null;
         }
 
         #region Event handlers
@@ -100,6 +100,7 @@ namespace Windar.PlayerPlugin
 
         void PlayerTabPage_Load(object sender, EventArgs e)
         {
+            if (CanScrobble()) _scrobber = new Scrobbler(this);
             artistTextbox.Focus();
         }
 
@@ -175,7 +176,8 @@ namespace Windar.PlayerPlugin
         {
             if (Player != null && (Player.PlayerState == MPlayer.State.Playing || Player.PlayerState == MPlayer.State.Paused)) return;
             var item = GetSelectedItem();
-            _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
+            if (_scrobber != null)
+                _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
             PlayItem(item);
         }
 
@@ -188,7 +190,8 @@ namespace Windar.PlayerPlugin
                 if (resultsGrid.Rows.Count > 0)
                 {
                     PlayItem(item);
-                    _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
+                    if (_scrobber != null) 
+                        _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
                 }
             }
             else
@@ -200,13 +203,15 @@ namespace Windar.PlayerPlugin
                 {
                     case MPlayer.State.Playing:
                         Player.Pause();
-                        _scrobber.Pause();
+                        if (_scrobber != null) 
+                            _scrobber.Pause();
                         SetStatus("Paused.");
                         break;
 
                     case MPlayer.State.Paused:
                         Player.Resume();
-                        _scrobber.Resume();
+                        if (_scrobber != null) 
+                            _scrobber.Resume();
                         SetStatus(PlayerPlugin.GetPlayingMessage(item));
                         break;
                 }
@@ -253,6 +258,25 @@ namespace Windar.PlayerPlugin
         #endregion
 
         #region Playdar methods
+
+        bool CanScrobble()
+        {
+            var result = false;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("api/?method=stat");
+
+            // Get and process result.
+            var response = PlayerPlugin.WGet(url.ToString());
+            if (response != null)
+            {
+                var json = JObject.Parse(response);
+                result = json["capabilities"]["audioscrobblerx"] != null;
+            }
+
+            return result;
+        }
 
         void Resolve()
         {
@@ -489,7 +513,8 @@ namespace Windar.PlayerPlugin
             {
                 progressTimer.Stop();
                 EnablePlayControls(false);
-                _scrobber.Stop();
+                if (_scrobber != null) 
+                    _scrobber.Stop();
                 if (Player != null) Player.Stop();
                 Player = null;
                 SetStatus("Stopped.");
@@ -533,7 +558,8 @@ namespace Windar.PlayerPlugin
                         EnablePlayControls(false);
                         resetButton.Enabled = true;
                         playButton.Enabled = true;
-                        _scrobber.Stop();
+                        if (_scrobber != null) 
+                            _scrobber.Stop();
                         msg = "Stopped.";
                         break;
                     case MPlayer.State.Ended:
@@ -541,7 +567,8 @@ namespace Windar.PlayerPlugin
                         EnablePlayControls(false);
                         resetButton.Enabled = true;
                         playButton.Enabled = true;
-                        _scrobber.Stop();
+                        if (_scrobber != null) 
+                            _scrobber.Stop();
                         positionTrackbar.Value = 100;
                         msg = "Finished.";
                         break;

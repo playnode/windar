@@ -61,7 +61,8 @@ namespace Windar.PlayerPlugin.Commands
 
         void ChangeState(State to, string msg)
         {
-            if (Log.IsDebugEnabled) Log.Debug("Changing state to " + to);
+            if (Log.IsDebugEnabled && to != PlayerState) 
+                Log.Debug("Changing state to " + to);
             PlayerState = to;
             _page.StateChanged(to, msg);
         }
@@ -260,9 +261,8 @@ namespace Windar.PlayerPlugin.Commands
                     break;
             }
 
-            if (!Log.IsErrorEnabled) return;
-            if (ignore) Log.Error("Ignoring error: " + e.Text);
-            else Log.Error(e.Text);
+            if (ignore && Log.IsDebugEnabled) Log.Debug("Ignoring error: " + e.Text);
+            else if (!ignore && Log.IsErrorEnabled) Log.Error(e.Text);
         }
 
         protected void CommandCompleted(object sender, EventArgs e)
