@@ -148,7 +148,7 @@ namespace Windar.PlayerPlugin.Commands
             Runner.CommandError += CommandError;
 
             var cmd = new StringBuilder();
-            cmd.Append('"').Append(_page.Plugin.Host.ProgramFilesPath);
+            cmd.Append('"').Append(_page.Plugin.Host.Paths.WindarProgramFiles).Append('\\');
             cmd.Append(@"mplayer\").Append("mplayer.exe\"");
             cmd.Append(" -slave");
             cmd.Append(" -quiet");

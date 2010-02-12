@@ -19,9 +19,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ************************************************************************/
 
+using Windar.PluginAPI;
+
 namespace Windar.MP3tunes
 {
-    class MP3tunesPlugin
+    public class MP3tunesPlugin : IPlugin
     {
+        public IPluginHost Host { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                return "MP3tunes";
+            }
+        }
+
+        public void Load()
+        {
+            Host.AddConfigurationPage(new ConfigTabContent(new MP3tunesConfigForm(this)), Name);
+        }
+
+        public void Shutdown()
+        {
+        }
     }
 }

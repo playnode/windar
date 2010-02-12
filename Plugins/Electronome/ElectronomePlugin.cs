@@ -25,7 +25,7 @@ namespace Windar.ElectronomePlugin
 {
     public class ElectronomePlugin : IPlugin
     {
-        public IPluginHost Host { private get; set; }
+        public IPluginHost Host { get; set; }
 
         readonly ElectronomeTabPage _tabPage;
 

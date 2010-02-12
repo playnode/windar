@@ -49,56 +49,83 @@ namespace Windar.ScrobblerPlugin
         /// </summary>
         private void InitializeComponent()
         {
-            this.username = new System.Windows.Forms.TextBox();
-            this.password = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.scrobblerNote = new System.Windows.Forms.Label();
+            this.scrobblerLink = new System.Windows.Forms.LinkLabel();
+            this.passwordLabel = new System.Windows.Forms.Label();
+            this.usernameLabel = new System.Windows.Forms.Label();
+            this.passwordTextbox = new System.Windows.Forms.TextBox();
+            this.usernameTextbox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // username
+            // scrobblerNote
             // 
-            this.username.Location = new System.Drawing.Point(80, 16);
-            this.username.MaxLength = 255;
-            this.username.Name = "username";
-            this.username.Size = new System.Drawing.Size(177, 20);
-            this.username.TabIndex = 0;
+            this.scrobblerNote.AutoSize = true;
+            this.scrobblerNote.Location = new System.Drawing.Point(4, 4);
+            this.scrobblerNote.Name = "scrobblerNote";
+            this.scrobblerNote.Size = new System.Drawing.Size(267, 13);
+            this.scrobblerNote.TabIndex = 21;
+            this.scrobblerNote.Text = "Scrobble your played tracks to your own Last.fm profile.";
             // 
-            // password
+            // scrobblerLink
             // 
-            this.password.Location = new System.Drawing.Point(80, 39);
-            this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(177, 20);
-            this.password.TabIndex = 1;
-            this.password.UseSystemPasswordChar = true;
+            this.scrobblerLink.AutoSize = true;
+            this.scrobblerLink.Location = new System.Drawing.Point(4, 17);
+            this.scrobblerLink.Name = "scrobblerLink";
+            this.scrobblerLink.Size = new System.Drawing.Size(64, 13);
+            this.scrobblerLink.TabIndex = 20;
+            this.scrobblerLink.TabStop = true;
+            this.scrobblerLink.Text = "www.last.fm";
             // 
-            // label1
+            // passwordLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Username";
+            this.passwordLabel.AutoSize = true;
+            this.passwordLabel.Location = new System.Drawing.Point(4, 72);
+            this.passwordLabel.Name = "passwordLabel";
+            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
+            this.passwordLabel.TabIndex = 19;
+            this.passwordLabel.Text = "Password";
             // 
-            // label2
+            // usernameLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 42);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Password";
+            this.usernameLabel.AutoSize = true;
+            this.usernameLabel.Location = new System.Drawing.Point(4, 49);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.Size = new System.Drawing.Size(55, 13);
+            this.usernameLabel.TabIndex = 18;
+            this.usernameLabel.Text = "Username";
+            // 
+            // passwordTextbox
+            // 
+            this.passwordTextbox.Location = new System.Drawing.Point(65, 69);
+            this.passwordTextbox.MaxLength = 255;
+            this.passwordTextbox.Name = "passwordTextbox";
+            this.passwordTextbox.Size = new System.Drawing.Size(177, 20);
+            this.passwordTextbox.TabIndex = 17;
+            this.passwordTextbox.UseSystemPasswordChar = true;
+            this.passwordTextbox.TextChanged += new System.EventHandler(this.passwordTextbox_TextChanged);
+            // 
+            // usernameTextbox
+            // 
+            this.usernameTextbox.Location = new System.Drawing.Point(65, 46);
+            this.usernameTextbox.MaxLength = 255;
+            this.usernameTextbox.Name = "usernameTextbox";
+            this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
+            this.usernameTextbox.TabIndex = 16;
+            this.usernameTextbox.TextChanged += new System.EventHandler(this.usernameTextbox_TextChanged);
             // 
             // ScrobblerConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.password);
-            this.Controls.Add(this.username);
+            this.Controls.Add(this.scrobblerNote);
+            this.Controls.Add(this.scrobblerLink);
+            this.Controls.Add(this.passwordLabel);
+            this.Controls.Add(this.usernameLabel);
+            this.Controls.Add(this.passwordTextbox);
+            this.Controls.Add(this.usernameTextbox);
             this.Name = "ScrobblerConfigForm";
-            this.Size = new System.Drawing.Size(284, 79);
+            this.Size = new System.Drawing.Size(600, 392);
+            this.Load += new System.EventHandler(this.ScrobblerConfigForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -106,9 +133,12 @@ namespace Windar.ScrobblerPlugin
 
         #endregion
 
-        private System.Windows.Forms.TextBox username;
-        private System.Windows.Forms.TextBox password;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label scrobblerNote;
+        private System.Windows.Forms.LinkLabel scrobblerLink;
+        private System.Windows.Forms.Label passwordLabel;
+        private System.Windows.Forms.Label usernameLabel;
+        private System.Windows.Forms.TextBox passwordTextbox;
+        private System.Windows.Forms.TextBox usernameTextbox;
+
     }
 }

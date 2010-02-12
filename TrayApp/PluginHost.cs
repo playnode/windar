@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
+using Windar.Common;
 using Windar.PluginAPI;
 
 namespace Windar.TrayApp
@@ -38,24 +39,12 @@ namespace Windar.TrayApp
 
         public List<IPlugin> Plugins { get; set; }
 
-        public string PlaydarPath
-        {
-            get
-            {
-                return "http://127.0.0.1:60210/";
-            }
-        }
+        public WindarPaths Paths { get; private set; }
 
-        public string ProgramFilesPath
+        public PluginHost(WindarPaths paths)
         {
-            get
-            {
-                return Application.ExecutablePath.Substring(0, 
-                    Application.ExecutablePath.LastIndexOf('\\') + 1);
-            }
+            Paths = paths;
         }
-
-        #region Init
 
         public void Load()
         {
@@ -78,11 +67,15 @@ namespace Windar.TrayApp
 
         public List<T> GetPlugins<T>(string path)
         {
+            if (Log.IsInfoEnabled) Log.Info("Loading plugins.");
+            if (Log.IsDebugEnabled) Log.Debug("Plugins path = " + path);
             var files = Directory.GetFiles(path, "*Plugin.dll");
+            if (Log.IsDebugEnabled) Log.Debug("Plugin count = " + files.Length);
             var list = new List<T>();
             foreach (var file in files)
             {
                 var assembly = Assembly.LoadFile(file);
+                if (Log.IsDebugEnabled) Log.Debug("Loaded assembly = " + file);
                 foreach (var type in assembly.GetTypes())
                 {
                     if (!type.IsClass || type.IsNotPublic) continue;
@@ -90,6 +83,7 @@ namespace Windar.TrayApp
                     try
                     {
                         list.Add((T) Activator.CreateInstance(type));
+                        if (Log.IsInfoEnabled) Log.Info("Loaded " + type.Name);
                     }
                     catch (ReflectionTypeLoadException ex)
                     {
@@ -98,22 +92,19 @@ namespace Windar.TrayApp
                             var sb = new StringBuilder();
                             sb.Append("Loader Exception");
                             foreach (var e in ex.LoaderExceptions)
-                            {
                                 sb.Append('\n').Append(e.Message);
-                            }
                             Log.Error(sb.ToString());
                         }
                     }
                     catch (Exception ex)
                     {
-                        if (Log.IsErrorEnabled) Log.Error("Exception when reading plugins.", ex);
+                        if (Log.IsErrorEnabled)
+                            Log.Error("Exception when reading plugins.", ex);
                     }
                 }
             }
             return list;
         }
-
-        #endregion
 
         public void Shutdown()
         {

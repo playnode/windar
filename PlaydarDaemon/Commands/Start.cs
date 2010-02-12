@@ -58,14 +58,14 @@ namespace Windar.PlaydarDaemon.Commands
 
         public override void RunAsync()
         {
-            Runner.RunCommand("CD " + DaemonController.Instance.Paths.PlaydarPath);
-            Runner.RunCommand("SET PLAYDAR_ETC=" + DaemonController.Instance.Paths.PlaydarDataPath + @"\etc");
+            Runner.RunCommand("CD " + DaemonController.Instance.Paths.PlaydarProgramPath);
+            Runner.RunCommand("SET PLAYDAR_ETC=" + DaemonController.Instance.Paths.WindarAppData + @"\etc");
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname playdar@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarProgramPath).Append("\\ebin\"");
             cmd.Append(" -boot start_sasl");
             cmd.Append(" -s reloader");
             cmd.Append(" -s playdar");

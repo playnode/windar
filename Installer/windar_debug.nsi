@@ -611,12 +611,12 @@ ${MementoSectionDone}
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves web content in the AOL Music Index."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Jamendo resolver module."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Magnatune resolver module."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "MP3tunes locker resolver module."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Napster resolver script."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Requires a paid account."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SOUNDCLOUD_RESOLVER} "SoundCloud resolver script."
 
 !ifdef OPTION_SECTION_SC_START_MENU

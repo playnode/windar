@@ -40,6 +40,32 @@ namespace Windar.PlayerPlugin
             _tabPage = new PlayerTabPage(this);
         }
 
+        #region IPlugin implementation
+
+        public IPluginHost Host { get; set; }
+
+        public string Name
+        {
+            get
+            {
+                return "Test";
+            }
+        }
+
+        public void Load()
+        {
+            Host.AddTabPage(_tabPage, Name);
+        }
+
+        public void Shutdown()
+        {
+            // Stop mplayer if playing!
+            if (_tabPage.Player != null)
+                _tabPage.Player.Stop();
+        }
+
+        #endregion
+
         internal static string WGet(string url)
         {
             string result = null;
@@ -98,31 +124,5 @@ namespace Windar.PlayerPlugin
             str.Append("   ///   ").Append(item.Source);
             return str.ToString();
         }
-
-        #region IPlugin implementation
-
-        public IPluginHost Host { internal get; set; }
-
-        public string Name
-        {
-            get
-            {
-                return "Test";
-            }
-        }
-
-        public void Load()
-        {
-            Host.AddTabPage(_tabPage, Name);
-        }
-
-        public void Shutdown()
-        {
-            // Stop mplayer if playing!
-            if (_tabPage.Player != null)
-                _tabPage.Player.Stop();
-        }
-
-        #endregion
     }
 }

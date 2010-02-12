@@ -37,6 +37,7 @@ namespace Windar.ScrobblerPlugin
 
         public void Load()
         {
+            Host.AddConfigurationPage(new ConfigTabContent(new ScrobblerConfigForm(this)), Name);
         }
 
         public void Shutdown()

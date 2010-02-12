@@ -49,59 +49,84 @@ namespace Windar.NapsterPlugin
         /// </summary>
         private void InitializeComponent()
         {
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.password = new System.Windows.Forms.TextBox();
-            this.username = new System.Windows.Forms.TextBox();
+            this.passwordLabel = new System.Windows.Forms.Label();
+            this.usernameLabel = new System.Windows.Forms.Label();
+            this.passwordTextbox = new System.Windows.Forms.TextBox();
+            this.usernameTextbox = new System.Windows.Forms.TextBox();
+            this.napsterLink = new System.Windows.Forms.LinkLabel();
+            this.napsterNote = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // label2
+            // passwordLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 42);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Password";
+            this.passwordLabel.AutoSize = true;
+            this.passwordLabel.Location = new System.Drawing.Point(4, 72);
+            this.passwordLabel.Name = "passwordLabel";
+            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
+            this.passwordLabel.TabIndex = 7;
+            this.passwordLabel.Text = "Password";
             // 
-            // label1
+            // usernameLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Username";
+            this.usernameLabel.AutoSize = true;
+            this.usernameLabel.Location = new System.Drawing.Point(4, 49);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.Size = new System.Drawing.Size(55, 13);
+            this.usernameLabel.TabIndex = 6;
+            this.usernameLabel.Text = "Username";
             // 
-            // password
+            // passwordTextbox
             // 
-            this.password.Location = new System.Drawing.Point(80, 39);
-            this.password.MaxLength = 255;
-            this.password.Name = "password";
-            this.password.Size = new System.Drawing.Size(177, 20);
-            this.password.TabIndex = 5;
-            this.password.UseSystemPasswordChar = true;
-            this.password.TextChanged += new System.EventHandler(this.password_TextChanged);
+            this.passwordTextbox.Location = new System.Drawing.Point(65, 69);
+            this.passwordTextbox.MaxLength = 255;
+            this.passwordTextbox.Name = "passwordTextbox";
+            this.passwordTextbox.Size = new System.Drawing.Size(177, 20);
+            this.passwordTextbox.TabIndex = 5;
+            this.passwordTextbox.UseSystemPasswordChar = true;
+            this.passwordTextbox.TextChanged += new System.EventHandler(this.password_TextChanged);
             // 
-            // username
+            // usernameTextbox
             // 
-            this.username.Location = new System.Drawing.Point(80, 16);
-            this.username.MaxLength = 255;
-            this.username.Name = "username";
-            this.username.Size = new System.Drawing.Size(177, 20);
-            this.username.TabIndex = 4;
-            this.username.TextChanged += new System.EventHandler(this.username_TextChanged);
+            this.usernameTextbox.Location = new System.Drawing.Point(65, 46);
+            this.usernameTextbox.MaxLength = 255;
+            this.usernameTextbox.Name = "usernameTextbox";
+            this.usernameTextbox.Size = new System.Drawing.Size(177, 20);
+            this.usernameTextbox.TabIndex = 4;
+            this.usernameTextbox.TextChanged += new System.EventHandler(this.username_TextChanged);
+            // 
+            // napsterLink
+            // 
+            this.napsterLink.AutoSize = true;
+            this.napsterLink.Location = new System.Drawing.Point(4, 17);
+            this.napsterLink.Name = "napsterLink";
+            this.napsterLink.Size = new System.Drawing.Size(92, 13);
+            this.napsterLink.TabIndex = 14;
+            this.napsterLink.TabStop = true;
+            this.napsterLink.Text = "www.napster.com";
+            this.napsterLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.napsterLink_LinkClicked);
+            // 
+            // napsterNote
+            // 
+            this.napsterNote.AutoSize = true;
+            this.napsterNote.Location = new System.Drawing.Point(4, 4);
+            this.napsterNote.Name = "napsterNote";
+            this.napsterNote.Size = new System.Drawing.Size(320, 13);
+            this.napsterNote.TabIndex = 15;
+            this.napsterNote.Text = "Resolve and stream tracks with Napster. Requires a paid account.";
             // 
             // NapsterConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.password);
-            this.Controls.Add(this.username);
+            this.Controls.Add(this.napsterNote);
+            this.Controls.Add(this.napsterLink);
+            this.Controls.Add(this.passwordLabel);
+            this.Controls.Add(this.usernameLabel);
+            this.Controls.Add(this.passwordTextbox);
+            this.Controls.Add(this.usernameTextbox);
             this.Name = "NapsterConfigForm";
-            this.Size = new System.Drawing.Size(284, 78);
+            this.Size = new System.Drawing.Size(600, 392);
+            this.Load += new System.EventHandler(this.NapsterConfigForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,10 +134,12 @@ namespace Windar.NapsterPlugin
 
         #endregion
 
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox password;
-        private System.Windows.Forms.TextBox username;
+        private System.Windows.Forms.Label passwordLabel;
+        private System.Windows.Forms.Label usernameLabel;
+        private System.Windows.Forms.TextBox passwordTextbox;
+        private System.Windows.Forms.TextBox usernameTextbox;
+        private System.Windows.Forms.LinkLabel napsterLink;
+        private System.Windows.Forms.Label napsterNote;
 
     }
 }

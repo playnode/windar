@@ -621,13 +621,6 @@ namespace Windar.TrayApp
             {
                 InitialisePluginsPropertiesPage();
             }
-            else
-            {
-                if (Log.IsWarnEnabled)
-                {
-                    Log.Warn("Unexpected config tab, " + optionsTabControl.SelectedTab.Name);
-                }
-            }
         }
 
         #endregion
@@ -1147,8 +1140,8 @@ namespace Windar.TrayApp
         static void DeleteLibraryIndexFiles()
         {
             Program.Instance.Daemon.Stop();
-            var libraryFilename = Program.Instance.Paths.PlaydarDataPath + @"\library.db";
-            var libraryIndexFilename = Program.Instance.Paths.PlaydarDataPath + @"\library_index.db";
+            var libraryFilename = Program.Instance.Paths.WindarAppData + @"\library.db";
+            var libraryIndexFilename = Program.Instance.Paths.WindarAppData + @"\library_index.db";
             var libraryFileInfo = new FileInfo(libraryFilename);
             var libraryIndexFileInfo = new FileInfo(libraryIndexFilename);
             if (libraryFileInfo.Exists) libraryFileInfo.Delete();

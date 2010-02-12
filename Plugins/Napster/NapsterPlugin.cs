@@ -25,7 +25,7 @@ namespace Windar.NapsterPlugin
 {
     public class NapsterPlugin : IPlugin
     {
-        public IPluginHost Host { private get; set; }
+        public IPluginHost Host { get; set; }
 
         public string Name
         {
@@ -37,7 +37,7 @@ namespace Windar.NapsterPlugin
 
         public void Load()
         {
-            Host.AddConfigurationPage(new ConfigTabContent(new NapsterConfigForm()), Name);
+            Host.AddConfigurationPage(new ConfigTabContent(new NapsterConfigForm(this)), Name);
         }
 
         public void Shutdown()

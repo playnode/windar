@@ -28,19 +28,52 @@ namespace Windar.ScrobblerPlugin
     {
         public IConfigFormContainer FormContainer { private get; set; }
 
-        public ScrobblerConfigForm()
+        readonly ScrobblerPlugin _plugin;
+
+        string _origUsername;
+        string _origPassword;
+
+        public ScrobblerConfigForm(ScrobblerPlugin plugin)
         {
             InitializeComponent();
+            _plugin = plugin;
+
+            //TODO: Load existing configuration.
+            _origPassword = "";
+            _origUsername = "";
+        }
+
+        private void ScrobblerConfigForm_Load(object sender, System.EventArgs e)
+        {
+
         }
 
         public void Save()
         {
+            //TODO: Save config.
 
+            _origUsername = usernameTextbox.Text;
+            _origPassword = passwordTextbox.Text;
+
+            FormContainer.Changed = false;
         }
 
         public void Cancel()
         {
+            usernameTextbox.Text = _origUsername;
+            passwordTextbox.Text = _origPassword;
+        }
 
+        private void usernameTextbox_TextChanged(object sender, System.EventArgs e)
+        {
+            if (FormContainer != null)
+                FormContainer.Changed = !usernameTextbox.Text.Equals(_origUsername);
+        }
+
+        private void passwordTextbox_TextChanged(object sender, System.EventArgs e)
+        {
+            if (FormContainer != null)
+                FormContainer.Changed = !passwordTextbox.Text.Equals(_origPassword);
         }
     }
 }

@@ -152,7 +152,7 @@ namespace Windar.TrayApp
             ScanQueue = new Queue<string>();
             MainForm = new MainForm();
             Tray = new Tray();
-            PluginHost = new PluginHost();
+            PluginHost = new PluginHost(Paths);
             WaitingDialog = new WaitingDialog();
 
             // Register command event handlers.
@@ -616,7 +616,7 @@ namespace Windar.TrayApp
             try
             {
                 // Determine file paths.
-                var path = Paths.PlaydarDataPath;
+                var path = Paths.WindarAppData;
                 var main = new FileInfo(path + @"\etc\playdar.conf");
                 var peer = new FileInfo(path + @"\etc\playdartcp.conf");
 
@@ -657,7 +657,7 @@ namespace Windar.TrayApp
 
         void CheckConfig()
         {
-            var path = Paths.PlaydarDataPath;
+            var path = Paths.WindarAppData;
             path = path.Replace('\\', '/');
             var update = (Config.Main.LibraryDbDir != path)
                 || (Config.Main.AuthDbDir != path);

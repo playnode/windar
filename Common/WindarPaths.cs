@@ -26,43 +26,64 @@ namespace Windar.Common
 {
     public class WindarPaths
     {
-        public string ApplicationPath { get; private set; }
-
-        string _erlPath;
-        string _erlCmd;
-        string _playdarPath;
-        string _playdarDataPath;
+        public string WindarProgramFiles { get; private set; }
 
         public WindarPaths(string appPath)
         {
-            ApplicationPath = appPath;
+            WindarProgramFiles = appPath;
         }
 
+        public string LocalPlaydarURL
+        {
+            get
+            {
+                //TODO: Get the configured URL from config.
+                return "http://127.0.0.1:60210/";
+            }
+        }
+
+        string _erlPath;
         public string ErlPath
         {
             get
             {
-                return _erlPath ?? (_erlPath = ApplicationPath + @"\minimerl");
+                return _erlPath ?? 
+                    (_erlPath = WindarProgramFiles + @"\minimerl");
             }
         }
 
+        string _erlCmd;
         public string ErlCmd
         {
             get
             {
-                return _erlCmd ?? (_erlCmd = ErlPath + @"\bin\erl.exe");
+                return _erlCmd ?? 
+                    (_erlCmd = ErlPath + @"\bin\erl.exe");
             }
         }
 
-        public string PlaydarPath
+        string _playdarPath;
+        public string PlaydarProgramPath
         {
             get
             {
-                return _playdarPath ?? (_playdarPath = ApplicationPath + @"\playdar");
+                return _playdarPath ?? 
+                    (_playdarPath = WindarProgramFiles + @"\playdar");
             }
         }
 
-        public string PlaydarDataPath
+        string _playdarEtcPath;
+        public string PlaydarEtcPath
+        {
+            get
+            {
+                return _playdarEtcPath ??
+                    (_playdarEtcPath = WindarAppData + @"\etc");
+            }
+        }
+
+        string _playdarDataPath;
+        public string WindarAppData
         {
             get
             {
@@ -77,6 +98,8 @@ namespace Windar.Common
             }
         }
 
+        #region Conversion methods.
+
         public static string ToWindowsPath(string path)
         {
             return path.Replace('/', '\\');
@@ -86,5 +109,7 @@ namespace Windar.Common
         {
             return path.Replace('\\', '/');
         }
+
+        #endregion
     }
 }

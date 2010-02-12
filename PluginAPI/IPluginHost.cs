@@ -20,13 +20,13 @@
  ************************************************************************/
 
 using System.Windows.Forms;
+using Windar.Common;
 
 namespace Windar.PluginAPI
 {
     public interface IPluginHost
     {
-        string ProgramFilesPath { get; }
-        string PlaydarPath { get; }
+        WindarPaths Paths { get; }
         void AddTabPage(UserControl control, string title);
         void AddConfigurationPage(ConfigTabContent control, string title);
     }

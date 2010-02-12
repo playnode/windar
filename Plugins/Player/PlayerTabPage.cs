@@ -296,7 +296,7 @@ namespace Windar.PlayerPlugin
 
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=resolve");
+            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("api/?method=resolve");
             url.Append("&artist=").Append(artistName);
             url.Append("&album=").Append(albumName);
             url.Append("&track=").Append(trackTitle);
@@ -318,7 +318,7 @@ namespace Windar.PlayerPlugin
         {
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("api/?method=get_results");
+            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("api/?method=get_results");
             url.Append("&qid=").Append(qid);
             if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
 
@@ -442,7 +442,7 @@ namespace Windar.PlayerPlugin
 
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.PlaydarPath).Append("sid/").Append(item.SId);
+            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("sid/").Append(item.SId);
             if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
 
             // Play the music!
@@ -548,6 +548,7 @@ namespace Windar.PlayerPlugin
                     case MPlayer.State.Error:
                         StopPlaying();
                         EnablePlayControls(false);
+                        resetButton.Enabled = false;
                         break;
                     default:
                         if (Log.IsWarnEnabled)

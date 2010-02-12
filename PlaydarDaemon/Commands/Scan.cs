@@ -41,13 +41,13 @@ namespace Windar.PlaydarDaemon.Commands
 
             Runner.CommandCompleted += Completed;
 
-            Runner.RunCommand(@"CD " + DaemonController.Instance.Paths.PlaydarDataPath);
+            Runner.RunCommand(@"CD " + DaemonController.Instance.Paths.WindarAppData);
 
             var cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname playdar-scan@localhost");
             cmd.Append(" -noinput");
-            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarPath).Append("\\ebin\"");
+            cmd.Append(" -pa \"").Append(DaemonController.Instance.Paths.PlaydarProgramPath).Append("\\ebin\"");
             cmd.Append(" -s playdar_ctl");
             cmd.Append(" -extra playdar@localhost \"scan\" \"");
             cmd.Append(ScanPath).Append("\"");
