@@ -80,6 +80,8 @@ namespace Windar.NapsterPlugin
             _origPassword = passwordTextbox.Text;
 
             FormContainer.Changed = false;
+
+            _plugin.Host.ApplyChangesRequiresDaemonRestart();
         }
 
         public void Cancel()

@@ -396,6 +396,14 @@ namespace Windar.TrayApp
             MessageBox.Show(msg, "Windar Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        internal static void ShowApplyChangesDialog()
+        {
+            var msg = new StringBuilder();
+            msg.Append("To apply changes you will also need to restart Playdar.");
+            msg.Append(Environment.NewLine).Append("Do you want to restart Playdar now?");
+            if (ShowYesNoDialog(msg.ToString())) Instance.Daemon.Restart();
+        }
+
         #endregion
 
         #region Tray notifications.

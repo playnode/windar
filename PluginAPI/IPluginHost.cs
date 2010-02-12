@@ -29,5 +29,6 @@ namespace Windar.PluginAPI
         WindarPaths Paths { get; }
         void AddTabPage(UserControl control, string title);
         void AddConfigurationPage(ConfigTabContent control, string title);
+        void ApplyChangesRequiresDaemonRestart();
     }
 }

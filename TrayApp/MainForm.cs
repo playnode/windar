@@ -588,7 +588,7 @@ namespace Windar.TrayApp
                     // If it fails the program will be shutdown.
                     if (!Program.Instance.LoadConfiguration()) return;
 
-                    optionsTabControl.SelectTab(generalOptionsTabPage);
+                    optionsTabControl.SelectTab(libraryTabPage);
                     InitialiseGeneralOptionsPage();
                 }
             }
@@ -643,14 +643,6 @@ namespace Windar.TrayApp
                 ResetOptionsPagesButtons();
             }
             return true;
-        }
-
-        static void ShowApplyChangesDialog()
-        {
-            var msg = new StringBuilder();
-            msg.Append("To apply changes you will also need to restart Playdar.");
-            msg.Append(Environment.NewLine).Append("Do you want to restart Playdar now?");
-            if (Program.ShowYesNoDialog(msg.ToString())) Program.Instance.Daemon.Restart();
         }
 
         void ResetOptionsPagesButtons()
@@ -760,7 +752,7 @@ namespace Windar.TrayApp
 
             InitialiseGeneralOptionsPage();
             UpdateGeneralOptionsButtons();
-            ShowApplyChangesDialog();
+            Program.ShowApplyChangesDialog();
         }
 
         void generalOptionsSaveButton_Click(object sender, EventArgs e)

@@ -142,5 +142,10 @@ namespace Windar.TrayApp
             control.Dock = DockStyle.Fill;
             Program.Instance.MainForm.optionsTabControl.Controls.Add(tab);
         }
+
+        public void ApplyChangesRequiresDaemonRestart()
+        {
+            Program.ShowApplyChangesDialog();
+        }
     }
 }

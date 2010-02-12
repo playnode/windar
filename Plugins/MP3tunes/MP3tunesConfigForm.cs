@@ -83,6 +83,8 @@ namespace Windar.MP3tunes
             _origPartnerToken = tokenTextbox.Text;
 
             FormContainer.Changed = false;
+
+            _plugin.Host.ApplyChangesRequiresDaemonRestart();
         }
 
         public void Cancel()
