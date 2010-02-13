@@ -589,7 +589,7 @@ namespace Windar.TrayApp
                     if (!Program.Instance.LoadConfiguration()) return;
 
                     optionsTabControl.SelectTab(libraryTabPage);
-                    InitialiseGeneralOptionsPage();
+                    InitialiseLibraryPage();
                 }
             }
         }
