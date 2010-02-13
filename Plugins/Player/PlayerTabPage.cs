@@ -272,7 +272,7 @@ namespace Windar.PlayerPlugin
             if (response != null)
             {
                 var json = JObject.Parse(response);
-                result = json["capabilities"]["audioscrobblerx"] != null;
+                result = json["capabilities"]["audioscrobbler"] != null;
             }
 
             return result;

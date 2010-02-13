@@ -3,6 +3,14 @@ Windar
 Windar is an GPL-licensed package for Playdar installation on Windows.
 For more information see: http://www.windar.org/
 
+0.1.3 Release Notes
+-------------------
+A new user data folder is created in each release to avoid complications.
+The previous data can be recovered from the path "%AppData%\Windar2".
+An automated upgrade feature will be developed later. In the meantime
+most users should find it acceptable to re-index their library and start
+with a fresh copy of the default configuration files.
+
 Playdar
 =======
 Playdar is a music content resolver, written in Erlang, MIT licensed.

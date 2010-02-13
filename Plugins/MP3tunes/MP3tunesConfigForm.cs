@@ -35,7 +35,7 @@ namespace Windar.MP3tunes
         readonly SimplePropertiesFile _conf;
         string _origUsername;
         string _origPassword;
-        string _origPartnerToken;
+        string _partnerToken;
 
         public MP3tunesConfigForm(MP3tunesPlugin plugin)
         {
@@ -49,14 +49,14 @@ namespace Windar.MP3tunes
             {
                 _origUsername = _conf.Sections["mp3tunes"]["username"];
                 _origPassword = _conf.Sections["mp3tunes"]["password"];
-                _origPartnerToken = !_conf.Sections["mp3tunes"].ContainsKey("partner_token")
+                _partnerToken = !_conf.Sections["mp3tunes"].ContainsKey("partner_token")
                     ? "" : _conf.Sections["mp3tunes"]["partner_token"];
             }
             else
             {
                 _origUsername = "";
                 _origPassword = "";
-                _origPartnerToken = "";
+                _partnerToken = "";
             }
         }
 
@@ -64,7 +64,7 @@ namespace Windar.MP3tunes
         {
             if (!string.IsNullOrEmpty(_origUsername)) usernameTextbox.Text = _origUsername;
             if (!string.IsNullOrEmpty(_origPassword)) passwordTextbox.Text = _origPassword;
-            if (string.IsNullOrEmpty(_origPartnerToken)) _origPartnerToken = "4894673879"; // "9999999999";
+            if (string.IsNullOrEmpty(_partnerToken)) _partnerToken = "4894673879"; // "9999999999";
         }
 
         public void Save()
@@ -73,6 +73,7 @@ namespace Windar.MP3tunes
                 _conf.Sections.Add("mp3tunes", new Dictionary<string, string>());
             _conf.Sections["mp3tunes"]["username"] = usernameTextbox.Text;
             _conf.Sections["mp3tunes"]["password"] = passwordTextbox.Text;
+            _conf.Sections["mp3tunes"]["partner_token"] = _partnerToken;
             _conf.Save();
 
             // Reset the original values to the new saved values.

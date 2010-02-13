@@ -246,8 +246,6 @@ namespace Windar.PlayerPlugin.Commands
             switch (PlayerState)
             {
                 case State.Ended:
-                    ignore = true;
-                    break;
                 case State.Stopped:
                     ignore = true;
                     break;

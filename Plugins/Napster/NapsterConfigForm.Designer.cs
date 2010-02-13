@@ -114,10 +114,10 @@ namespace Windar.NapsterPlugin
             this.napsterNote.AutoSize = true;
             this.napsterNote.Location = new System.Drawing.Point(-3, 0);
             this.napsterNote.Name = "napsterNote";
-            this.napsterNote.Size = new System.Drawing.Size(446, 13);
+            this.napsterNote.Size = new System.Drawing.Size(439, 13);
             this.napsterNote.TabIndex = 1;
-            this.napsterNote.Text = "Resolve and stream tracks with a personal account on Napster. Requires a paid sub" +
-                "scription.";
+            this.napsterNote.Text = "Resolver for Napster. Paid account has full streams, otherwise provides 30 second" +
+                " samples.";
             // 
             // NapsterConfigForm
             // 

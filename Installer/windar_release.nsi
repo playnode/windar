@@ -352,45 +352,7 @@ FunctionEnd
 #                                                                            #
 ##############################################################################
 
-Section "Windar Tray Application" SEC_WINDAR
-   SectionIn 1 2 3 RO
-
-   ;Shutdown Windar if running.
-   IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
-   windar_installed:
-      FileOpen $0 $INSTDIR\SHUTDOWN w
-      FileWrite $0 "x"
-      FileClose $0
-      DetailPrint "Pausing to allow Windar to shutdown, if running."
-      Sleep 3000
-   windar_not_installed:
-   
-   Call RequireMicrosoftNET2
-
-   DetailPrint "Installing the Windar application components."
-
-   SetOutPath "$INSTDIR"
-
-   ;Windar application components:
-   File Temp\Playnode.ErlangTerms.dll
-   File Temp\Windar.exe
-   File Temp\Windar.Common.dll
-   File Temp\Windar.PlaydarDaemon.dll
-   File Temp\Windar.PluginAPI.dll
-
-   ;Configuration
-   File Temp\Windar.exe.config
-   
-   ;Other libs:
-   File Temp\log4net.dll
-
-   ;License & copyright files.
-   File /oname=COPYING.txt ..\COPYING
-   File /oname=LICENSE.txt ..\LICENSE
-   File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
-SectionEnd
-
-Section "Playdar Core" SEC_PLAYDAR
+Section "Playdar-core & Windar." SEC_WINDAR
    SectionIn 1 2 3 RO
 
    Call RequireCRedist
@@ -453,17 +415,55 @@ Section "Playdar Core" SEC_PLAYDAR
    SetOutPath "$INSTDIR\minimerl\bin"
    File Temp\erlini.exe
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
+;SectionEnd
+
+;Section "Windar Tray Application" SEC_WINDAR
+;   SectionIn 1 2 3 RO
+
+   ;Shutdown Windar if running.
+   IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
+   windar_installed:
+      FileOpen $0 $INSTDIR\SHUTDOWN w
+      FileWrite $0 "x"
+      FileClose $0
+      DetailPrint "Pausing to allow Windar to shutdown, if running."
+      Sleep 3000
+   windar_not_installed:
+   
+   Call RequireMicrosoftNET2
+
+   DetailPrint "Installing the Windar application components."
+
+   SetOutPath "$INSTDIR"
+
+   ;Windar application components:
+   File Temp\Playnode.ErlangTerms.dll
+   File Temp\Windar.exe
+   File Temp\Windar.Common.dll
+   File Temp\Windar.PlaydarDaemon.dll
+   File Temp\Windar.PluginAPI.dll
+
+   ;Configuration
+   File Temp\Windar.exe.config
+   
+   ;Other libs:
+   File Temp\log4net.dll
+
+   ;License & copyright files.
+   File /oname=COPYING.txt ..\COPYING
+   File /oname=LICENSE.txt ..\LICENSE
+   File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
 SectionEnd
 
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
-   ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
+   ${MementoSection} "Auto-start on system startup." SEC_STARTUP_FOLDER
       SectionIn 1 2
       DetailPrint "Adding shortcut in Startup folder to start Windar on login."
       CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
    ${MementoSectionEnd}
 !endif
 
-SectionGroup "Additional shortcuts"
+SectionGroup "Additional shortcuts."
 
 !ifdef OPTION_SECTION_SC_START_MENU
    ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
@@ -499,7 +499,7 @@ SectionGroup "Additional shortcuts"
 
 SectionGroupEnd
 
-${MementoSection} "Player" SEC_PLAYER
+${MementoSection} "Resolver test & stream player." SEC_PLAYER
    SectionIn 1 2
    DetailPrint "Installing MPlayer and the Player plugin for Windar."
 
@@ -509,7 +509,7 @@ ${MementoSection} "Player" SEC_PLAYER
    File Temp\Newtonsoft.Json.Net20.dll
 ${MementoSectionEnd}
 
-${MementoUnselectedSection} "Scrobbler" SEC_SCROBBLER
+${MementoUnselectedSection} "Scrobbler support." SEC_SCROBBLER
    SectionIn 2
    DetailPrint "Installing the scrobbler module and Windar plugin."
 
@@ -519,7 +519,7 @@ ${MementoUnselectedSection} "Scrobbler" SEC_SCROBBLER
    File Temp\Windar.ScrobblerPlugin.dll
 ${MementoSectionEnd}
 
-SectionGroup "Additional Playdar Resolvers"
+SectionGroup "Additional resolvers."
 
 #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
 #   SectionIn 2
@@ -568,6 +568,7 @@ ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
    DetailPrint "Installing resolver for MP3tunes."
    SetOutPath "$INSTDIR\playdar\contrib"
    File /r Payload\playdar_scripts\mp3tunes
+   SetOutPath "$INSTDIR"
    File Temp\Windar.MP3tunesPlugin.dll
 ${MementoSectionEnd}
 
@@ -576,6 +577,7 @@ ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
    DetailPrint "Installing resolver for Napster."
    SetOutPath "$INSTDIR\playdar\contrib"
    File /r Payload\playdar_scripts\napster
+   SetOutPath "$INSTDIR"
    File Temp\Windar.NapsterPlugin.dll
 ${MementoSectionEnd}
 
@@ -594,8 +596,7 @@ ${MementoSectionDone}
 ;--------------------------------
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Windows tray application for Playdar service."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYDAR} "Playdar core and minimum Erlang components."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core, mini-Erlang & Windar tray application."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYER} "MPlayer and Player plugin for Windar."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
@@ -605,7 +606,7 @@ ${MementoSectionDone}
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Requires a paid account."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SOUNDCLOUD_RESOLVER} "SoundCloud resolver script."
 
 !ifdef OPTION_SECTION_SC_START_MENU
