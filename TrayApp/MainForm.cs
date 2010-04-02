@@ -74,9 +74,8 @@ namespace Windar.TrayApp
             logBox.VScroll += RichTextBoxPlus_VScroll;
             logBox.ScrollToEnd();
 #else
-            MainTabControl.TabPages.Remove(logBoxTab);
-            _logBoxTab = null;
-            _logBox = null;
+            mainTabControl.TabPages.Remove(logTabPage);
+            logTabPage = null;
 #endif
 
             //TODO: Re-add tabs.

@@ -437,7 +437,7 @@ Section "Playdar-core & Windar." SEC_WINDAR
    SetOutPath "$INSTDIR"
 
    ;Windar application components:
-   File Temp\Playnode.ErlangTerms.dll
+   File Temp\ErlangTerms.dll
    File Temp\Windar.exe
    File Temp\Windar.Common.dll
    File Temp\Windar.PlaydarDaemon.dll
@@ -447,7 +447,7 @@ Section "Playdar-core & Windar." SEC_WINDAR
    File Temp\Windar.exe.config
 
    ;Debug build PDB files:
-   File Temp\Playnode.ErlangTerms.pdb
+   File Temp\ErlangTerms.pdb
    File Temp\Windar.pdb
    File Temp\Windar.Common.pdb
    File Temp\Windar.PlaydarDaemon.pdb

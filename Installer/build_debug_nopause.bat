@@ -68,7 +68,7 @@ CD %INSTALL_BUILD_DIR%..\TrayApp\bin\Debug
 ECHO ______________________________
 ECHO Windar application components:
 @ECHO ON
-COPY Playnode.ErlangTerms.dll %BUILD_TEMP%
+COPY ErlangTerms.dll %BUILD_TEMP%
 COPY Windar.exe %BUILD_TEMP%
 COPY Windar.Common.dll %BUILD_TEMP%
 COPY Windar.NapsterPlugin.dll %BUILD_TEMP%
@@ -83,7 +83,7 @@ ECHO.
 ECHO ______________________
 ECHO Debug build PDB files:
 @ECHO ON
-COPY Playnode.ErlangTerms.pdb %BUILD_TEMP%
+COPY ErlangTerms.pdb %BUILD_TEMP%
 COPY Windar.pdb %BUILD_TEMP%
 COPY Windar.Common.pdb %BUILD_TEMP%
 COPY Windar.NapsterPlugin.pdb %BUILD_TEMP%

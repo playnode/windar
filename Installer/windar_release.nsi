@@ -437,7 +437,7 @@ Section "Playdar-core & Windar." SEC_WINDAR
    SetOutPath "$INSTDIR"
 
    ;Windar application components:
-   File Temp\Playnode.ErlangTerms.dll
+   File Temp\ErlangTerms.dll
    File Temp\Windar.exe
    File Temp\Windar.Common.dll
    File Temp\Windar.PlaydarDaemon.dll
