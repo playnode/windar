@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D99D0151-B872-4AFC-9DC3-7207A1BF99B0}</ProjectGuid>
+    <ProjectGuid>{AB7B80E9-B922-4162-818F-748635B1B0A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Windar.ElectronomePlugin</RootNamespace>
-    <AssemblyName>Windar.ElectronomePlugin</AssemblyName>
+    <RootNamespace>Playnode.ErlangTerms.Parser</RootNamespace>
+    <AssemblyName>ErlangTerms</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,63 +31,58 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\log4net.dll</HintPath>
+      <HintPath>..\Libraries\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ElectronomeTabPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ElectronomeTabPage.Designer.cs">
-      <DependentUpon>ElectronomeTabPage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ElectronomePlugin.cs" />
+    <Compile Include="AtomParser.cs" />
+    <Compile Include="AtomToken.cs" />
+    <Compile Include="BooleanToken.cs" />
+    <Compile Include="CommaToken.cs" />
+    <Compile Include="CommentToken.cs" />
+    <Compile Include="CompositeToken.cs" />
+    <Compile Include="ErlangTermsDocument.cs" />
+    <Compile Include="ErlangTermsParser.cs" />
+    <Compile Include="FloatToken.cs" />
+    <Compile Include="IntegerToken.cs" />
+    <Compile Include="IValueToken.cs" />
+    <Compile Include="ListParser.cs" />
+    <Compile Include="ListToken.cs" />
+    <Compile Include="NamedBoolean.cs" />
+    <Compile Include="NamedInteger.cs" />
+    <Compile Include="NamedList.cs" />
+    <Compile Include="NamedString.cs" />
+    <Compile Include="NamedValue.cs" />
+    <Compile Include="NumericExpression.cs" />
+    <Compile Include="NumericExpressionParser.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="ParserException.cs" />
+    <Compile Include="ParserInputStream.cs" />
+    <Compile Include="ParserToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Common\Common.csproj">
-      <Project>{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\PluginAPI\PluginAPI.csproj">
-      <Project>{3202D3B8-DB45-4B99-A2DD-65A698E701B9}</Project>
-      <Name>PluginAPI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ElectronomeTabPage.resx">
-      <DependentUpon>ElectronomeTabPage.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="StringParser.cs" />
+    <Compile Include="StringToken.cs" />
+    <Compile Include="TermEndToken.cs" />
+    <Compile Include="TupleParser.cs" />
+    <Compile Include="TupleToken.cs" />
+    <Compile Include="WhitespaceParser.cs" />
+    <Compile Include="WhitespaceToken.cs" />
+    <Compile Include="AddedComment.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets. -->
   <Target Name="BeforeBuild">
     <IncrementBuildNumber AssemblyFileLocation="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" />
+  </Target>
+  <Target Name="PreBuildEvent" Condition="'$(PreBuildEvent)'!=''" DependsOnTargets="$(PreBuildEventDependsOn)">
+    <Exec WorkingDirectory="$(OutDir)" Command="$(PreBuildEvent)" IgnoreExitCode="true" />
   </Target>
   <Target Name="AfterBuild">
   </Target>

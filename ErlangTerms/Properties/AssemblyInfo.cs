@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Windar Player Plugin")]
-[assembly: AssemblyDescription("Player plugin for Windar.")]
+[assembly: AssemblyTitle("ErlangTerms")]
+[assembly: AssemblyDescription("Tokeniser for some basic Erlang terms.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Windar")]
-[assembly: AssemblyProduct("Windar")]
+[assembly: AssemblyCompany("Playnode")]
+[assembly: AssemblyProduct("ErlangTerms")]
 [assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c18340a7-63e5-4ad0-8f5e-2e126b286ca6")]
+[assembly: Guid("fbfc5079-708d-4769-b575-5b735e5e30dd")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.916")]
-[assembly: AssemblyFileVersion("1.0.0.916")]
+[assembly: AssemblyVersion("1.0.0.27")]
+[assembly: AssemblyFileVersion("1.0.0.27")]

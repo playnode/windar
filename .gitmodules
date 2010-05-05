@@ -1,15 +1,9 @@
 [submodule "Libraries/BuildTasks"]
 	path = Libraries/BuildTasks
 	url = git://github.com/stever/vs-build-task.git
-[submodule "Libraries/ErlangTerms"]
-	path = Libraries/ErlangTerms
-	url = git://github.com/stever/erlangterms.git
 [submodule "Installer/Packages/Playdar"]
 	path = Installer/Packages/Playdar
-	url = git://github.com/stever/playdar-core.git
+	url = git://github.com/playnode/playdar-core.git
 [submodule "Installer/Packages/Erlang"]
 	path = Installer/Packages/Erlang
 	url = git://github.com/erlang/otp.git
-[submodule "Libraries/Json.NET"]
-	path = Libraries/Json.NET
-	url = http://github.com/stever/json.net.git
