@@ -7,7 +7,7 @@
 ;
 ; Windar is free software: you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation, either version 3 of the License, or
+; the Free Software Foundation, either version 2 of the License, or
 ; (at your option) any later version.
 ;
 ; Windar is distributed in the hope that it will be useful,
@@ -29,6 +29,7 @@
 ;-----------------------------------------------------------------------------
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
+!define OPTION_DEBUG_BUILD
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
@@ -445,6 +446,15 @@ Section "Playdar-core & Windar." SEC_WINDAR
 
    ;Configuration
    File Temp\Windar.exe.config
+
+   !ifdef OPTION_DEBUG_BUILD
+      ;Debug build PDB files:
+      File Temp\ErlangTerms.pdb
+      File Temp\Windar.pdb
+      File Temp\Windar.Common.pdb
+      File Temp\Windar.PlaydarDaemon.pdb
+      File Temp\Windar.PluginAPI.pdb
+   !endif
    
    ;Other libs:
    File Temp\log4net.dll
@@ -506,6 +516,9 @@ ${MementoSection} "Resolver test & stream player." SEC_PLAYER
    SetOutPath "$INSTDIR"
    File /r Payload\mplayer
    File Temp\Windar.PlayerPlugin.dll
+   !ifdef OPTION_DEBUG_BUILD
+      File Temp\Windar.PlayerPlugin.pdb
+   !endif
    File Temp\Newtonsoft.Json.Net20.dll
 ${MementoSectionEnd}
 
@@ -517,6 +530,9 @@ ${MementoUnselectedSection} "Scrobbler support." SEC_SCROBBLER
    File /r Payload\playdar_modules\audioscrobbler
    SetOutPath "$INSTDIR"
    File Temp\Windar.ScrobblerPlugin.dll
+   !ifdef OPTION_DEBUG_BUILD
+      File Temp\Windar.ScrobblerPlugin.pdb
+   !endif
 ${MementoSectionEnd}
 
 SectionGroup "Additional resolvers."
@@ -570,6 +586,9 @@ ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
    File /r Payload\playdar_scripts\mp3tunes
    SetOutPath "$INSTDIR"
    File Temp\Windar.MP3tunesPlugin.dll
+   !ifdef OPTION_DEBUG_BUILD
+      File Temp\Windar.MP3tunesPlugin.pdb
+   !endif
 ${MementoSectionEnd}
 
 ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
@@ -579,6 +598,9 @@ ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
    File /r Payload\playdar_scripts\napster
    SetOutPath "$INSTDIR"
    File Temp\Windar.NapsterPlugin.dll
+   !ifdef OPTION_DEBUG_BUILD
+      File Temp\Windar.NapsterPlugin.pdb
+   !endif
 ${MementoSectionEnd}
 
 #${MementoUnselectedSection} "SoundCloud" SEC_SOUNDCLOUD_RESOLVER

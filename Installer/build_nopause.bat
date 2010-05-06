@@ -118,7 +118,7 @@ ECHO *                                           *
 ECHO *********************************************
 ECHO.
 CD %INSTALL_BUILD_DIR%..\Installer
-%MAKENSIS% windar_debug.nsi
+%MAKENSIS% windar.nsi
 IF NOT %ERRORLEVEL% == 0 GOTO NSIS_ERROR
 
 ECHO.
