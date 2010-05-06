@@ -216,7 +216,7 @@ namespace Windar.TrayApp
             }
 
             // Clear appender until next update.
-            _memoryAppender.Clear();
+            if (_memoryAppender != null) _memoryAppender.Clear();
 
             // Update the log buffer.
             if (sb.Length > 0) sb.Remove(sb.Length - 1, 1); // Remove last newline.
