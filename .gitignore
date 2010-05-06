@@ -17,6 +17,9 @@ Installer/Payload/vcredist_x86.exe
 Installer/Temp
 Installer/Utils/erlini/bin
 Installer/Utils/erlini/obj
+Installer/Utils/erlini/erlini.pdb
+Installer/Utils/erlini/erlini.vshost.exe
+Installer/Utils/erlini/erlini.vshost.exe.manifest
 Installer/windar-*.exe
 Installer/build.log
 bin
