@@ -49,7 +49,7 @@
 ;-----------------------------------------------------------------------------
 Name "Windar"
 Caption "Playdar for Windows"
-BrandingText "www.windar.org"
+BrandingText "Windar Software Installer"
 OutFile "windar-${VERSION}.exe"
 InstallDir "$PROGRAMFILES\Windar"
 InstallDirRegKey HKCU "Software\Windar" ""
