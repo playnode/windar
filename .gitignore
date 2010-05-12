@@ -12,7 +12,8 @@ Installer/Payload/minimerl
 Installer/Payload/mplayer
 Installer/Payload/playdar
 Installer/Payload/playdar_modules
-Installer/Payload/playdar_scripts
+Installer/Payload/playdar_python_resolvers/build
+Installer/Payload/playdar_python_resolvers/dist
 Installer/Payload/vcredist_x86.exe
 Installer/Temp
 Installer/Utils/erlini/bin

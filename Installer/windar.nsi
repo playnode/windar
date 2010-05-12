@@ -31,6 +31,9 @@
 ;-----------------------------------------------------------------------------
 !define OPTION_DEBUG_BUILD
 !define OPTION_BUNDLE_C_REDIST
+!define OPTION_BUNDLE_RESOLVERS
+!define OPTION_BUNDLE_TEST_PLAYER
+!define OPTION_BUNDLE_SCROBBLER
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
@@ -407,6 +410,20 @@ Section "Playdar-core & Windar." SEC_WINDAR
    SetOutPath "$INSTDIR"
    File /r Payload\minimerl
    File /r Payload\playdar
+   
+   ;py2exe payload.
+   SetOutPath "$INSTDIR\playdar\py2exe"
+   File Payload\playdar_python_resolvers\dist\_ctypes.pyd
+   File Payload\playdar_python_resolvers\dist\_hashlib.pyd
+   File Payload\playdar_python_resolvers\dist\_socket.pyd
+   File Payload\playdar_python_resolvers\dist\_ssl.pyd
+   File Payload\playdar_python_resolvers\dist\bz2.pyd
+   File Payload\playdar_python_resolvers\dist\library.zip
+   File Payload\playdar_python_resolvers\dist\pyexpat.pyd
+   File Payload\playdar_python_resolvers\dist\python26.dll
+   File Payload\playdar_python_resolvers\dist\select.pyd
+   File Payload\playdar_python_resolvers\dist\unicodedata.pyd
+   File Payload\playdar_python_resolvers\dist\w9xpopen.exe
 
    ;Bat script to launch playdar-core in command window.
    SetOutPath "$INSTDIR\playdar"
@@ -467,9 +484,11 @@ SectionEnd
 
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
    ${MementoSection} "Auto-start on system startup." SEC_STARTUP_FOLDER
-      SectionIn 1 2
-      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
+      SectionIn 1 2      
+      DetailPrint "Adding shortcut in Startup folder to start Windar on login."      
+      SetShellVarContext all
       CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
+      SetShellVarContext current
    ${MementoSectionEnd}
 !endif
 
@@ -478,22 +497,22 @@ SectionGroup "Additional shortcuts."
 !ifdef OPTION_SECTION_SC_START_MENU
    ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
       SectionIn 1 2
-
       DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
-
+      SetShellVarContext all
       RMDir /r "$SMPROGRAMS\Windar"
       CreateDirectory "$SMPROGRAMS\Windar"
       CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
       CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"      
-      CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+      SetShellVarContext current
    ${MementoSectionEnd}
 !endif
 
 !ifdef OPTION_SECTION_SC_DESKTOP
    ${MementoUnselectedSection} "Desktop Shortcut" SEC_DESKTOP
-      SectionIn 2
+      SectionIn 1 2
       DetailPrint "Creating Desktop Shortcuts"
       CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
    ${MementoSectionEnd}
@@ -509,108 +528,112 @@ SectionGroup "Additional shortcuts."
 
 SectionGroupEnd
 
-${MementoSection} "Resolver test & stream player." SEC_PLAYER
-   SectionIn 1 2
-   DetailPrint "Installing MPlayer and the Player plugin for Windar."
+!ifdef OPTION_BUNDLE_TEST_PLAYER
+   ${MementoSection} "Resolver test & stream player." SEC_PLAYER
+      SectionIn 1 2
+      DetailPrint "Installing MPlayer and the Player plugin for Windar."
+      SetOutPath "$INSTDIR"
+      File /r Payload\mplayer
+      File Temp\Windar.PlayerPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.PlayerPlugin.pdb
+      !endif
+      File Temp\Newtonsoft.Json.Net20.dll
+   ${MementoSectionEnd}
+!endif
 
-   SetOutPath "$INSTDIR"
-   File /r Payload\mplayer
-   File Temp\Windar.PlayerPlugin.dll
-   !ifdef OPTION_DEBUG_BUILD
-      File Temp\Windar.PlayerPlugin.pdb
-   !endif
-   File Temp\Newtonsoft.Json.Net20.dll
-${MementoSectionEnd}
+!ifdef OPTION_BUNDLE_SCROBBLER
+   ${MementoUnselectedSection} "Scrobbler support." SEC_SCROBBLER
+      SectionIn 2
+      DetailPrint "Installing the scrobbler module and Windar plugin."
+      SetOutPath "$INSTDIR\playdar\playdar_modules"
+      File /r Payload\playdar_modules\audioscrobbler
+      SetOutPath "$INSTDIR"
+      File Temp\Windar.ScrobblerPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.ScrobblerPlugin.pdb
+      !endif
+   ${MementoSectionEnd}
+!endif
 
-${MementoUnselectedSection} "Scrobbler support." SEC_SCROBBLER
-   SectionIn 2
-   DetailPrint "Installing the scrobbler module and Windar plugin."
-
-   SetOutPath "$INSTDIR\playdar\playdar_modules"
-   File /r Payload\playdar_modules\audioscrobbler
-   SetOutPath "$INSTDIR"
-   File Temp\Windar.ScrobblerPlugin.dll
-   !ifdef OPTION_DEBUG_BUILD
-      File Temp\Windar.ScrobblerPlugin.pdb
-   !endif
-${MementoSectionEnd}
-
-SectionGroup "Additional resolvers."
-
-#${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
-#   SectionIn 2
-#   DetailPrint "Installing resolver for Amie Street."
-#   SetOutPath "$INSTDIR\playdar\contrib"
-#   File /r Payload\playdar_scripts\amiestreet
-#${MementoSectionEnd}
-
-${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for the AOL Music Index."
-   SetOutPath "$INSTDIR\playdar\playdar_modules"
-   File /r Payload\playdar_modules\aolmusic
-${MementoSectionEnd}
-
-${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for Audiofarm."
-   SetOutPath "$INSTDIR\playdar\contrib"
-   File /r Payload\playdar_scripts\audiofarm
-${MementoSectionEnd}
-
-${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for The Echo Nest."
-   SetOutPath "$INSTDIR\playdar\contrib"
-   File /r Payload\playdar_scripts\echonest
-${MementoSectionEnd}
-
-${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for Jamendo."
-   SetOutPath "$INSTDIR\playdar\playdar_modules"
-   File /r Payload\playdar_modules\jamendo
-${MementoSectionEnd}
-
-${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for Magnatune."
-   SetOutPath "$INSTDIR\playdar\playdar_modules"
-   File /r Payload\playdar_modules\magnatune
-${MementoSectionEnd}
-
-${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for MP3tunes."
-   SetOutPath "$INSTDIR\playdar\contrib"
-   File /r Payload\playdar_scripts\mp3tunes
-   SetOutPath "$INSTDIR"
-   File Temp\Windar.MP3tunesPlugin.dll
-   !ifdef OPTION_DEBUG_BUILD
-      File Temp\Windar.MP3tunesPlugin.pdb
-   !endif
-${MementoSectionEnd}
-
-${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
-   SectionIn 2
-   DetailPrint "Installing resolver for Napster."
-   SetOutPath "$INSTDIR\playdar\contrib"
-   File /r Payload\playdar_scripts\napster
-   SetOutPath "$INSTDIR"
-   File Temp\Windar.NapsterPlugin.dll
-   !ifdef OPTION_DEBUG_BUILD
-      File Temp\Windar.NapsterPlugin.pdb
-   !endif
-${MementoSectionEnd}
-
-#${MementoUnselectedSection} "SoundCloud" SEC_SOUNDCLOUD_RESOLVER
-#   SectionIn 2
-#   DetailPrint "Installing resolver for SoundCloud."
-#   SetOutPath "$INSTDIR\playdar\contrib"
-#   File /r Payload\playdar_scripts\soundcloud
-#${MementoSectionEnd}
-
-SectionGroupEnd
+!ifdef OPTION_BUNDLE_RESOLVERS
+   SectionGroup "Additional resolvers."
+   
+   #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
+   #   SectionIn 2
+   #   DetailPrint "Installing resolver for Amie Street."
+   #   SetOutPath "$INSTDIR\playdar\py2exe"
+   #   File /r Payload\playdar_python_resolvers\dist\amiestreet-resolver.exe
+   #${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for the AOL Music Index."
+      SetOutPath "$INSTDIR\playdar\playdar_modules"
+      File /r Payload\playdar_modules\aolmusic
+   ${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for Audiofarm."
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
+   ${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for The Echo Nest."
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\echonest-resolver.exe
+   ${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for Jamendo."
+      SetOutPath "$INSTDIR\playdar\playdar_modules"
+      File /r Payload\playdar_modules\jamendo
+   ${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for Magnatune."
+      SetOutPath "$INSTDIR\playdar\playdar_modules"
+      File /r Payload\playdar_modules\magnatune
+   ${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for MP3tunes."
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
+      SetOutPath "$INSTDIR"
+      File Temp\Windar.MP3tunesPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.MP3tunesPlugin.pdb
+      !endif
+   ${MementoSectionEnd}
+   
+   ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
+      SectionIn 2
+      DetailPrint "Installing resolver for Napster."
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
+      SetOutPath "$INSTDIR"
+      File Temp\Windar.NapsterPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.NapsterPlugin.pdb
+      !endif
+   ${MementoSectionEnd}
+   
+   #${MementoUnselectedSection} "SoundCloud" SEC_SOUNDCLOUD_RESOLVER
+   #   SectionIn 2
+   #   DetailPrint "Installing resolver for SoundCloud."
+   #   SetOutPath "$INSTDIR\playdar\py2exe"
+   #   File /r Payload\playdar_python_resolvers\dist\soundcloud-resolver.exe
+   #${MementoSectionEnd}
+   
+   SectionGroupEnd
+!endif
 
 ${MementoSectionDone}
 
@@ -660,7 +683,7 @@ Section -post
 
    ;Uninstaller file.
    DetailPrint "Writing Uninstaller"
-   WriteUninstaller $INSTDIR\Uninstall.exe
+   WriteUninstaller $INSTDIR\uninstall.exe
 
    ;Release notes.
    !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
@@ -682,15 +705,16 @@ Section -post
    WriteRegDWORD HKLM "Software\Windar" "VersionBuild" "${VER_BUILD}"
 
    ;Add or Remove Programs entry.
-   WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "UninstallString" '"$INSTDIR\Uninstall.exe"'
+   WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "UninstallString" '"$INSTDIR\uninstall.exe"'
    WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "InstallLocation" "$INSTDIR"
    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "DisplayName" "Windar"
-   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "DisplayIcon" "$INSTDIR\Uninstall.exe,0"
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "Publisher" "Playnode projects (Open Source)"
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "DisplayIcon" "$INSTDIR\uninstall.exe,0"
    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "DisplayVersion" "${VERSION}"
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "VersionMajor" "${VER_MAJOR}"
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "VersionMinor" "${VER_MINOR}.${VER_REVISION}"
-   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "URLInfoAbout" "http://www.windar.org/"
-   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "HelpLink" "http://www.playdar.org/"
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "URLInfoAbout" "http://windar.org/"
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "HelpLink" "http://playnode.org/"
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "NoModify" "1"
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "NoRepair" "1"
 
@@ -729,12 +753,14 @@ Section Uninstall
 
    ;Start menu shortcuts.
    !ifdef OPTION_SECTION_SC_START_MENU
+      SetShellVarContext all
       RMDir /r "$SMPROGRAMS\Windar"
+      SetShellVarContext current
    !endif
 
    ;Startup folder shortcut.
-      IfFileExists "$SMPROGRAMS\Startup\Windar.lnk" 0 +2
-         Delete "$SMPROGRAMS\Startup\Windar.lnk"   
+   IfFileExists "$SMPROGRAMS\Startup\Windar.lnk" 0 +2
+      Delete "$SMPROGRAMS\Startup\Windar.lnk"   
 
    ;Desktop shortcut.
    !ifdef OPTION_SECTION_SC_DESKTOP

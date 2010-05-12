@@ -62,7 +62,7 @@ namespace Windar.Erlini
         {
             var result = new StringBuilder();
             result.Append("[erlang]").Append(Newline);
-            result.Append("Bindir=").Append(cmdPath).Append(EscapePath(@"\erts\bin")).Append(Newline);
+            result.Append("Bindir=").Append(cmdPath).Append(EscapePath(@"\bin")).Append(Newline);
             result.Append("Progname=erl").Append(Newline);
             result.Append("Rootdir=").Append(cmdPath).Append(Newline);
             return result.ToString();
