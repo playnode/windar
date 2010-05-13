@@ -356,7 +356,7 @@ FunctionEnd
 #                                                                            #
 ##############################################################################
 
-Section "Playdar-core & Windar." SEC_WINDAR
+Section "Playdar-core & Windar" SEC_WINDAR
    SectionIn 1 2 3 RO
 
    Call RequireCRedist
@@ -483,7 +483,7 @@ Section "Playdar-core & Windar." SEC_WINDAR
 SectionEnd
 
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
-   ${MementoSection} "Auto-start on system startup." SEC_STARTUP_FOLDER
+   ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
       SectionIn 1 2      
       DetailPrint "Adding shortcut in Startup folder to start Windar on login."      
       SetShellVarContext all
@@ -492,7 +492,7 @@ SectionEnd
    ${MementoSectionEnd}
 !endif
 
-SectionGroup "Additional shortcuts."
+SectionGroup "Application shortcuts"
 
 !ifdef OPTION_SECTION_SC_START_MENU
    ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
@@ -511,7 +511,7 @@ SectionGroup "Additional shortcuts."
 !endif
 
 !ifdef OPTION_SECTION_SC_DESKTOP
-   ${MementoUnselectedSection} "Desktop Shortcut" SEC_DESKTOP
+   ${MementoSection} "Desktop Shortcut" SEC_DESKTOP
       SectionIn 1 2
       DetailPrint "Creating Desktop Shortcuts"
       CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
@@ -529,7 +529,7 @@ SectionGroup "Additional shortcuts."
 SectionGroupEnd
 
 !ifdef OPTION_BUNDLE_TEST_PLAYER
-   ${MementoSection} "Resolver test & stream player." SEC_PLAYER
+   ${MementoSection} "Test player" SEC_PLAYER
       SectionIn 1 2
       DetailPrint "Installing MPlayer and the Player plugin for Windar."
       SetOutPath "$INSTDIR"
@@ -543,7 +543,7 @@ SectionGroupEnd
 !endif
 
 !ifdef OPTION_BUNDLE_SCROBBLER
-   ${MementoUnselectedSection} "Scrobbler support." SEC_SCROBBLER
+   ${MementoUnselectedSection} "Scrobbler support" SEC_SCROBBLER
       SectionIn 2
       DetailPrint "Installing the scrobbler module and Windar plugin."
       SetOutPath "$INSTDIR\playdar\playdar_modules"
@@ -557,7 +557,7 @@ SectionGroupEnd
 !endif
 
 !ifdef OPTION_BUNDLE_RESOLVERS
-   SectionGroup "Additional resolvers."
+   SectionGroup "Resolvers (additional)"
    
    #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
    #   SectionIn 2
@@ -642,7 +642,7 @@ ${MementoSectionDone}
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core, mini-Erlang & Windar tray application."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYER} "MPlayer and Player plugin for Windar."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYER} "MPlayer and Player plugin for Windar. Provides a tab in Windar to directly test resolver results."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
