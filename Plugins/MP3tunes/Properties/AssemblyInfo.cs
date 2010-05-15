@@ -2,15 +2,12 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("MP3tunes")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Windar MP3tunes Plugin")]
+[assembly: AssemblyDescription("MP3tunes plugin for Windar.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("MP3tunes")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
+[assembly: AssemblyCompany("Windar")]
+[assembly: AssemblyProduct("Windar")]
+[assembly: AssemblyCopyright("Copyright © 2009, 2010 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

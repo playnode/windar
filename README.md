@@ -6,15 +6,14 @@ It has an HTTP API to answer the question "can i play this song?".
 If yes, you get a localhost URL that will play the song, from whichever
 source playdar resolved it to (plugins do the resolving).
 
-For more information see: [www.playdar.org](http://www.playdar.org/)
-
 This product includes software developed by the OpenSSL Project for use in
-the OpenSSL Toolkit [www.openssl.org](http://www.openssl.org/)
+the OpenSSL Toolkit ([www.openssl.org](http://www.openssl.org/)).
+
+For more information see: [www.playdar.org](http://www.playdar.org/)
 
 Windar
 ======
-Windar is an GPL-licensed package for Playdar installation on Windows.
-For more information see: [www.windar.org](http://www.windar.org/)
+[Windar](http://windar.org/) is an GPL-licensed package for [Playdar](http://www.playdar.org/) installation on Windows.
 
 0.1.3 Release Notes
 -------------------
@@ -27,9 +26,19 @@ with a fresh copy of the default configuration files.
 Developing
 ----------
 Steps to rebuild:
+
 -   Use [7-zip](http://www.7-zip.org/) to unpack the following to same directory.
+
     -   Installer\Payload\libeay32.7z
+
     -   Installer\Payload\minimerl.7z
+
     -   Installer\Payload\mplayer.7z
+
     -   Installer\Payload\playdar.7z
+
     -   Installer\Payload\playdar_python_resolvers\dist.7z
+
+-   Open the Windar solution file in Visual Studio 2008 Express (free download).
+    Allow modified project file to load normally. Versioning requires build task which results
+    in a warning when you open each versioned project.

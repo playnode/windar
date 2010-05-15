@@ -2,15 +2,12 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 [assembly: AssemblyTitle("Windar Scrobbler Plugin")]
 [assembly: AssemblyDescription("Scrobbler plugin for Windar.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Windar")]
 [assembly: AssemblyProduct("Windar")]
-[assembly: AssemblyCopyright("Copyright © 2009 Steven Robertson")]
+[assembly: AssemblyCopyright("Copyright © 2009, 2010 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
