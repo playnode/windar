@@ -32,18 +32,33 @@ Steps to rebuild:
     archive files to same directory. 
 
     -   Installer\Payload\libeay32.7z
-        (Pre-compiled [OpenSSL for Windows](http://gnuwin32.sourceforge.net/packages/openssl.htm))
+        
+        Pre-compiled [OpenSSL for Windows]
+        (http://gnuwin32.sourceforge.net/packages/openssl.htm).
+        
     -   Installer\Payload\minimerl.7z
-        (Pre-compiled, cut-down version of [Erlang](http://www.erlang.org/))
+        
+        Pre-compiled, cut-down version of [Erlang]
+        (http://www.erlang.org/).
+        
     -   Installer\Payload\mplayer.7z
-        (Pre-compiled, cut-down version of [MPlayer](http://www.mplayerhq.hu/))
+        
+        Pre-compiled, cut-down version of [MPlayer]
+        (http://www.mplayerhq.hu/).
+        
     -   Installer\Payload\playdar.7z
-        (Pre-compiled [Playdar](http://www.playdar.org/) core)
+        
+        Pre-compiled [Playdar]
+        (http://www.playdar.org/) core distribution files.
+        
     -   Installer\Payload\playdar_python_resolvers\dist.7z
-        (Pre-compiled resolvers for [Playdar](http://www.playdar.org/) using Python and py2exe)
+        
+        A set of Python resolvers for [Playdar]
+        (http://www.playdar.org/), pre-compiled with py2exe.
 
--   Open the Windar solution file in Visual C# 2008 Express Edition
-    ([free download](http://www.microsoft.com/express/downloads/))
+-   Open the Windar solution file in Visual C# 2008 Express Edition.
+    You should be able to find this as a free download [here]
+    (http://www.microsoft.com/express/downloads/)).
 
     Allow modified project file to load normally. Versioning requires build task which results
     in a warning when you open each versioned project.
