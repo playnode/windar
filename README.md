@@ -33,16 +33,12 @@ Steps to rebuild:
 
     -   Installer\Payload\libeay32.7z
         (pre-compiled [OpenSSL for Windows](http://gnuwin32.sourceforge.net/packages/openssl.htm))
-        
     -   Installer\Payload\minimerl.7z
         (pre-compiled, cut-down version of [Erlang](http://www.erlang.org/))
-        
     -   Installer\Payload\mplayer.7z
         (pre-compiled, cut-down version of [MPlayer](http://www.mplayerhq.hu/))
-        
     -   Installer\Payload\playdar.7z
         (pre-compiled [Playdar](http://www.playdar.org/) core distribution files)
-        
     -   Installer\Payload\playdar_python_resolvers\dist.7z
         (set of Python resolvers for [Playdar](http://www.playdar.org/), pre-compiled with py2exe)
 
