@@ -23,15 +23,15 @@ How to get started when developing Windar:
 -   Use [7-zip](http://www.7-zip.org/) to unpack the contents of the following
     archive files to same directory containing each archive file. 
 
-    -   Installer\Payload\libeay32.7z
+    -   `Installer\Payload\libeay32.7z`
         (pre-compiled [OpenSSL for Windows](http://gnuwin32.sourceforge.net/packages/openssl.htm))
-    -   Installer\Payload\minimerl.7z
+    -   `Installer\Payload\minimerl.7z`
         (pre-compiled, cut-down version of [Erlang](http://www.erlang.org/))
-    -   Installer\Payload\mplayer.7z
+    -   `Installer\Payload\mplayer.7z`
         (pre-compiled, cut-down version of [MPlayer](http://www.mplayerhq.hu/))
-    -   Installer\Payload\playdar.7z
+    -   `Installer\Payload\playdar.7z`
         (pre-compiled [Playdar](http://www.playdar.org/) core distribution files)
-    -   Installer\Payload\playdar_python_resolvers\dist.7z
+    -   `Installer\Payload\playdar_python_resolvers\dist.7z`
         (set of Python resolvers for [Playdar](http://www.playdar.org/), pre-compiled with py2exe)
 
 -   Open the Windar solution file in Visual C# 2008 Express Edition. You should
@@ -47,7 +47,7 @@ How to get started when developing Windar:
 -   Click on the Shutdown option in the Windar tray icon context menu to end.
 
 If there are problems preventing a gracefull shutdown, or other software crash,
-you'll likely find that you need to kill the erl.exe and epmd.exe processes
+you'll likely find that you need to kill the `erl.exe` and `epmd.exe` processes
 which are related to Erlang and playdar-core.
 
 It is normal for the epmd.exe process to remain running, however it will lock
@@ -57,7 +57,7 @@ have a clean start or when deleting or moving the folder.
 Installer build
 ---------------
 It is possible to compile Windar and build the installer without Visual Studio
-using the supplied build.bat file in the Installer folder. However, you'll
+using the supplied `build.bat` file in the Installer folder. However, you'll
 need the following:
 
 -   .NET Framework 2.0
