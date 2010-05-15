@@ -38,8 +38,10 @@ Steps to build Windar from source using Visual Studio Express:
 
 -   Open the Windar solution file in Visual C# 2008 Express Edition. You should
     find this as a free download [here](http://www.microsoft.com/express/downloads/).
-    You can allow the modified TrayApp project file to load normally and ignore
-    warning due to the included build task, used to auto-increment the DLL version.
+
+-   You can allow the modified TrayApp project file to load normally and ignore
+    the initial warning, which is due to the included build task. The build
+    task is used to auto-increment the main TrayApp version, used in the installer.
 
 -   Click on the "Set as StartUp Project" option in the context menu for the
     TrayApp project in the Solution Explorer panel.
