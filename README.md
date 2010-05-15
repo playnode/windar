@@ -46,6 +46,8 @@ Steps to build Windar from source using Visual Studio Express:
 -   Click on the "Set as StartUp Project" option in the context menu for the
     TrayApp project in the Solution Explorer panel.
 
+-   Rebuild Solution to build plugins, so there ready to be used in next step.
+
 -   Start Debugging (F5)
 
 -   Click on the Shutdown option in the Windar tray icon context menu to end.
@@ -73,4 +75,4 @@ need the following:
     a scriptable win32 installer/uninstaller system.
 
 [7-zip](http://www.7-zip.org/) must still be used to unpack the contents some
-pre-compiled software as described in the section on "Developing" above.
+pre-compiled software as described in the section on "Developing", above.
