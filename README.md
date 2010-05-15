@@ -13,7 +13,8 @@ For more information see: [www.playdar.org](http://www.playdar.org/)
 
 Windar
 ======
-[Windar](http://windar.org/) is an GPL-licensed package for [Playdar](http://www.playdar.org/) installation on Windows.
+[Windar](http://windar.org/) is an GPL-licensed package for 
+[Playdar](http://www.playdar.org/) installation on Windows.
 
 0.1.3 Release Notes
 -------------------
@@ -27,14 +28,22 @@ Developing
 ----------
 Steps to rebuild:
 
--   Use [7-zip](http://www.7-zip.org/) to unpack the following to same directory.
+-   Use [7-zip](http://www.7-zip.org/) to unpack the contents of the following
+    archive files to same directory. 
 
     -   Installer\Payload\libeay32.7z
+        (Pre-compiled [OpenSSL for Windows](http://gnuwin32.sourceforge.net/packages/openssl.htm))
     -   Installer\Payload\minimerl.7z
+        (Pre-compiled, cut-down version of [Erlang](http://www.erlang.org/))
     -   Installer\Payload\mplayer.7z
+        (Pre-compiled, cut-down version of [MPlayer](http://www.mplayerhq.hu/))
     -   Installer\Payload\playdar.7z
+        (Pre-compiled [Playdar](http://www.playdar.org/) core)
     -   Installer\Payload\playdar_python_resolvers\dist.7z
+        (Pre-compiled resolvers for [Playdar](http://www.playdar.org/) using Python and py2exe)
 
--   Open the Windar solution file in Visual Studio 2008 Express (free download).
+-   Open the Windar solution file in Visual C# 2008 Express Edition
+    ([free download](http://www.microsoft.com/express/downloads/))
+
     Allow modified project file to load normally. Versioning requires build task which results
     in a warning when you open each versioned project.
