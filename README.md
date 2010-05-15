@@ -32,29 +32,19 @@ Steps to rebuild:
     archive files to same directory. 
 
     -   Installer\Payload\libeay32.7z
-        
-        Pre-compiled [OpenSSL for Windows]
-        (http://gnuwin32.sourceforge.net/packages/openssl.htm).
+        (pre-compiled [OpenSSL for Windows](http://gnuwin32.sourceforge.net/packages/openssl.htm))
         
     -   Installer\Payload\minimerl.7z
-        
-        Pre-compiled, cut-down version of [Erlang]
-        (http://www.erlang.org/).
+        (pre-compiled, cut-down version of [Erlang](http://www.erlang.org/))
         
     -   Installer\Payload\mplayer.7z
-        
-        Pre-compiled, cut-down version of [MPlayer]
-        (http://www.mplayerhq.hu/).
+        (pre-compiled, cut-down version of [MPlayer](http://www.mplayerhq.hu/))
         
     -   Installer\Payload\playdar.7z
-        
-        Pre-compiled [Playdar]
-        (http://www.playdar.org/) core distribution files.
+        (pre-compiled [Playdar](http://www.playdar.org/) core distribution files)
         
     -   Installer\Payload\playdar_python_resolvers\dist.7z
-        
-        A set of Python resolvers for [Playdar]
-        (http://www.playdar.org/), pre-compiled with py2exe.
+        (set of Python resolvers for [Playdar](http://www.playdar.org/), pre-compiled with py2exe)
 
 -   Open the Windar solution file in Visual C# 2008 Express Edition.
     You should be able to find this as a free download [here]
