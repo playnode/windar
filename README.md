@@ -16,9 +16,11 @@ Windar
 [Windar](http://windar.org/) is a GPL-licensed package for 
 [Playdar](http://www.playdar.org/) installation on Windows.
 
+This software is currently pre-release and actively being developed.
+
 Developing
 ----------
-How to get started when developing Windar:
+Steps to build Windar from source using Visual Studio Express:
 
 -   Use [7-zip](http://www.7-zip.org/) to unpack the contents of the following
     archive files to same directory containing each archive file. 
@@ -61,12 +63,12 @@ using the supplied `build.bat` file in the Installer folder. However, you'll
 need the following:
 
 -   .NET Framework 2.0
-    [x86](http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5&displaylang=en)
-    [x64](http://www.microsoft.com/downloads/details.aspx?familyid=B44A0000-ACF8-4FA1-AFFB-40E78D788B00&displaylang=en)
-    or [.NET Framework 3.5](http://www.microsoft.com/downloads/details.aspx?familyid=333325FD-AE52-4E35-B531-508D977D32A6&displaylang=en)
+    ([x86](http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5&displaylang=en)
+    or [x64](http://www.microsoft.com/downloads/details.aspx?familyid=B44A0000-ACF8-4FA1-AFFB-40E78D788B00&displaylang=en))
+    or [.NET Framework 3.5](http://www.microsoft.com/downloads/details.aspx?familyid=333325FD-AE52-4E35-B531-508D977D32A6&displaylang=en).
     One or both will typically be available on XP, Vista, and Windows 7.
--   [NSIS](http://nsis.sourceforge.net/Download) is a 
-    scriptable win32 installer/uninstaller system.
+-   [NSIS](http://nsis.sourceforge.net/Download),
+    a scriptable win32 installer/uninstaller system.
 
 [7-zip](http://www.7-zip.org/) must still be used to unpack the contents some
-pre-compiled software as described in the section "Developing" above.
+pre-compiled software as described in the section on "Developing" above.
