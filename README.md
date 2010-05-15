@@ -21,7 +21,7 @@ Developing
 How to get started when developing Windar:
 
 -   Use [7-zip](http://www.7-zip.org/) to unpack the contents of the following
-    archive files to same directory. 
+    archive files to same directory containing each archive file. 
 
     -   Installer\Payload\libeay32.7z
         (pre-compiled [OpenSSL for Windows](http://gnuwin32.sourceforge.net/packages/openssl.htm))
