@@ -42,9 +42,8 @@ Steps to rebuild:
     -   Installer\Payload\playdar_python_resolvers\dist.7z
         (set of Python resolvers for [Playdar](http://www.playdar.org/), pre-compiled with py2exe)
 
--   Open the Windar solution file in Visual C# 2008 Express Edition.
-    You should be able to find this as a free download [here]
-    (http://www.microsoft.com/express/downloads/)).
+-   Open the Windar solution file in Visual C# 2008 Express Edition. You should
+    find this as a free download [here](http://www.microsoft.com/express/downloads/)).
 
-    Allow modified project file to load normally. Versioning requires build task which results
-    in a warning when you open each versioned project.
+    You can allow the modified TrayApp project file to load normally and ignore
+    warning due to the included build task, used to auto-increment the DLL version.
