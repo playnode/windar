@@ -30,13 +30,9 @@ Steps to rebuild:
 -   Use [7-zip](http://www.7-zip.org/) to unpack the following to same directory.
 
     -   Installer\Payload\libeay32.7z
-
     -   Installer\Payload\minimerl.7z
-
     -   Installer\Payload\mplayer.7z
-
     -   Installer\Payload\playdar.7z
-
     -   Installer\Payload\playdar_python_resolvers\dist.7z
 
 -   Open the Windar solution file in Visual Studio 2008 Express (free download).
