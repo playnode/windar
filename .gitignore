@@ -5,6 +5,7 @@ _ReSharper.*
 *.csproj.user
 *.suo
 *.sln.cache
+*.pyc
 BuildTasks/bin
 BuildTasks/obj
 Installer/Payload/libeay32.dll

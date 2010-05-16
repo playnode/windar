@@ -32,7 +32,6 @@
 !define OPTION_DEBUG_BUILD
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_BUNDLE_RESOLVERS
-!define OPTION_BUNDLE_TEST_PLAYER
 !define OPTION_BUNDLE_SCROBBLER
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
@@ -52,7 +51,7 @@
 ;-----------------------------------------------------------------------------
 Name "Windar"
 Caption "Playdar for Windows"
-BrandingText "Windar Software Installer"
+BrandingText "Playnode projects (Open Source)"
 OutFile "windar-${VERSION}.exe"
 InstallDir "$PROGRAMFILES\Windar"
 InstallDirRegKey HKCU "Software\Windar" ""
@@ -110,8 +109,8 @@ ReserveFile windar.ini
 !define MUI_HEADERIMAGE_BITMAP page_header.bmp
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_TITLE "Windar Install Completed"
-!define MUI_FINISHPAGE_LINK "Click here to visit the Playdar website."
-!define MUI_FINISHPAGE_LINK_LOCATION "http://www.playdar.org/"
+!define MUI_FINISHPAGE_LINK "Click here to visit the Playnode website."
+!define MUI_FINISHPAGE_LINK_LOCATION "http://playnode.org/"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
    !define MUI_FINISHPAGE_SHOWREADME
@@ -356,11 +355,21 @@ FunctionEnd
 #                                                                            #
 ##############################################################################
 
-Section "Playdar-core & Windar" SEC_WINDAR
+Section "Windar core" SEC_WINDAR
    SectionIn 1 2 3 RO
 
    Call RequireCRedist
    
+   ;Shutdown Windar if running.
+   IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
+   windar_installed:
+      FileOpen $0 $INSTDIR\SHUTDOWN w
+      FileWrite $0 "x"
+      FileClose $0
+      DetailPrint "Pausing to allow Windar to shutdown, if running."
+      Sleep 3000
+   windar_not_installed:
+
    DetailPrint "Installing core Playdar and minimum Erlang components."
    
    ;Check for and offer to kill epmd.exe process.
@@ -429,24 +438,10 @@ Section "Playdar-core & Windar" SEC_WINDAR
    SetOutPath "$INSTDIR\playdar"
    File Payload\playdar-core.bat
 
-   ;Write the required erl.ini files.
+   ;Write the required erl.ini file.
    SetOutPath "$INSTDIR\minimerl\bin"
    File Temp\erlini.exe
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
-;SectionEnd
-
-;Section "Windar Tray Application" SEC_WINDAR
-;   SectionIn 1 2 3 RO
-
-   ;Shutdown Windar if running.
-   IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
-   windar_installed:
-      FileOpen $0 $INSTDIR\SHUTDOWN w
-      FileWrite $0 "x"
-      FileClose $0
-      DetailPrint "Pausing to allow Windar to shutdown, if running."
-      Sleep 3000
-   windar_not_installed:
    
    Call RequireMicrosoftNET2
 
@@ -480,6 +475,21 @@ Section "Playdar-core & Windar" SEC_WINDAR
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
    File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
+
+   ;MPlayer and the Player plugin for Windar.
+   DetailPrint "Installing MPlayer and the Player plugin for Windar."
+   SetOutPath "$INSTDIR"
+   File /r Payload\mplayer
+   File Temp\Windar.PlayerPlugin.dll
+   !ifdef OPTION_DEBUG_BUILD
+      File Temp\Windar.PlayerPlugin.pdb
+   !endif
+   File Temp\Newtonsoft.Json.Net20.dll
+
+   ;Player module for Playdar.
+   DetailPrint "Installing player module for Playdar."
+   SetOutPath "$INSTDIR\playdar\playdar_modules"
+   File /r Payload\playdar_modules\player
 SectionEnd
 
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
@@ -528,36 +538,8 @@ SectionGroup "Application shortcuts"
 
 SectionGroupEnd
 
-!ifdef OPTION_BUNDLE_TEST_PLAYER
-   ${MementoSection} "Test player" SEC_PLAYER
-      SectionIn 1 2
-      DetailPrint "Installing MPlayer and the Player plugin for Windar."
-      SetOutPath "$INSTDIR"
-      File /r Payload\mplayer
-      File Temp\Windar.PlayerPlugin.dll
-      !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.PlayerPlugin.pdb
-      !endif
-      File Temp\Newtonsoft.Json.Net20.dll
-   ${MementoSectionEnd}
-!endif
-
-!ifdef OPTION_BUNDLE_SCROBBLER
-   ${MementoUnselectedSection} "Scrobbler support" SEC_SCROBBLER
-      SectionIn 2
-      DetailPrint "Installing the scrobbler module and Windar plugin."
-      SetOutPath "$INSTDIR\playdar\playdar_modules"
-      File /r Payload\playdar_modules\audioscrobbler
-      SetOutPath "$INSTDIR"
-      File Temp\Windar.ScrobblerPlugin.dll
-      !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.ScrobblerPlugin.pdb
-      !endif
-   ${MementoSectionEnd}
-!endif
-
 !ifdef OPTION_BUNDLE_RESOLVERS
-   SectionGroup "Resolvers (additional)"
+   SectionGroup "Additional resolver modules"
    
    #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
    #   SectionIn 2
@@ -635,14 +617,27 @@ SectionGroupEnd
    SectionGroupEnd
 !endif
 
+!ifdef OPTION_BUNDLE_SCROBBLER
+   ${MementoUnselectedSection} "Audioscrobbler support" SEC_SCROBBLER
+      SectionIn 2
+      DetailPrint "Installing the scrobbler module and Windar plugin."
+      SetOutPath "$INSTDIR\playdar\playdar_modules"
+      File /r Payload\playdar_modules\audioscrobbler
+      SetOutPath "$INSTDIR"
+      File Temp\Windar.ScrobblerPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.ScrobblerPlugin.pdb
+      !endif
+   ${MementoSectionEnd}
+!endif
+
 ${MementoSectionDone}
 
 ;Installer section descriptions
 ;--------------------------------
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core, mini-Erlang & Windar tray application."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLAYER} "MPlayer and Player plugin for Windar. Provides a tab in Windar to directly test resolver results."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with cut-down versions of Erlang and mplayer."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
 #!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
