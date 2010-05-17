@@ -8,8 +8,6 @@ _ReSharper.*
 *.pyc
 BuildTasks/bin
 BuildTasks/obj
-Installer/Packages/NSIS/Processes
-Installer/Payload/libeay32.dll
 Installer/Payload/minimerl
 Installer/Payload/mplayer
 Installer/Payload/playdar
