@@ -40,7 +40,6 @@ CD %INSTALL_BUILD_DIR%Utils\erlini
 %FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Release
 IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
 
-CD %INSTALL_BUILD_DIR%Utils\erlini\bin\Release
 @ECHO ON
 COPY erlini.exe %BUILD_TEMP%
 @ECHO OFF
@@ -105,9 +104,11 @@ COPY Newtonsoft.Json.Net20.dll %BUILD_TEMP%
 ECHO.
 ECHO __________________
 ECHO Configuration file:
-CD %INSTALL_BUILD_DIR%..\bin\Debug
+CD %INSTALL_BUILD_DIR%
 @ECHO ON
-COPY Windar.exe.config %BUILD_TEMP%
+COPY App.config %BUILD_TEMP%
+CD %BUILD_TEMP%
+RENAME App.config Windar.exe.config
 @ECHO OFF
 
 ECHO.

@@ -22,7 +22,7 @@ Installer/Utils/erlini/erlini.pdb
 Installer/Utils/erlini/erlini.vshost.exe
 Installer/Utils/erlini/erlini.vshost.exe.manifest
 Installer/windar-*.exe
-Installer/build.log
+Installer/build_log.log
 bin
 obj
 

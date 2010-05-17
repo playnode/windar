@@ -39,7 +39,7 @@
 !define OPTION_SECTION_SC_QUICK_LAUNCH
 !define OPTION_FINISHPAGE
 !define OPTION_FINISHPAGE_LAUNCHER
-!define OPTION_FINISHPAGE_RELEASE_NOTES
+;!define OPTION_FINISHPAGE_RELEASE_NOTES
 
 ;-----------------------------------------------------------------------------
 ;Other required definitions.
@@ -95,7 +95,7 @@ ReserveFile windar.ini
 ;-----------------------------------------------------------------------------
 !define MEMENTO_REGISTRY_ROOT HKLM
 !define MEMENTO_REGISTRY_KEY Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar
-                
+
 ;-----------------------------------------------------------------------------
 ;Modern User Interface (MUI) defintions and setup.
 ;-----------------------------------------------------------------------------
@@ -153,6 +153,73 @@ Page custom PageReinstall PageLeaveReinstall
       ExecShell "open" "$INSTDIR\README.txt"
    FunctionEnd
 !endif
+
+Function KillErlang
+   ;Check for and offer to kill epmd.exe process.
+   DetailPrint "Searching for processes called epmd.exe"
+   Processes::FindProcess "epmd"
+   StrCmp $R0 "0" epmd_completed
+   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+     "Found epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
+     IDYES epmd_killproc IDNO epmd_completed
+   epmd_killproc:
+      DetailPrint "Killing all processes called epmd.exe"
+      Processes::KillProcess "epmd"
+      Sleep 1500
+      StrCmp $R0 "1" epmd_completed
+      DetailPrint "KillProcess not found!"
+   epmd_completed:
+
+   ;Check for and offer to kill erl.exe process.
+   StrCpy $0 "erl.exe"
+   DetailPrint "Searching for processes called erl.exe"
+   Processes::FindProcess "erl"
+   StrCmp $R0 "0" erl_completed
+   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+     "Found erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
+     IDYES erl_killproc IDNO erl_completed
+   erl_killproc:
+      DetailPrint "Killing all processes called erl.exe"
+      Processes::KillProcess "erl"
+	    Sleep 1500
+      StrCmp $R0 "1" erl_completed
+      DetailPrint "KillProcess not found!"
+   erl_completed:
+FunctionEnd
+
+Function un.KillErlang
+   ;Same as KillErlang function, but used by uninstaller (requires separate un. function).
+   ;Check for and offer to kill epmd.exe process.
+   DetailPrint "Searching for processes called epmd.exe"
+   Processes::FindProcess "epmd"
+   StrCmp $R0 "0" epmd_completed
+   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+     "Found epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
+     IDYES epmd_killproc IDNO epmd_completed
+   epmd_killproc:
+      DetailPrint "Killing all processes called epmd.exe"
+      Processes::KillProcess "epmd"
+      Sleep 1500
+      StrCmp $R0 "1" epmd_completed
+      DetailPrint "KillProcess not found!"
+   epmd_completed:
+
+   ;Check for and offer to kill erl.exe process.
+   StrCpy $0 "erl.exe"
+   DetailPrint "Searching for processes called erl.exe"
+   Processes::FindProcess "erl"
+   StrCmp $R0 "0" erl_completed
+   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
+     "Found erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
+     IDYES erl_killproc IDNO erl_completed
+   erl_killproc:
+      DetailPrint "Killing all processes called erl.exe"
+      Processes::KillProcess "erl"
+      Sleep 1500
+      StrCmp $R0 "1" erl_completed
+      DetailPrint "KillProcess not found!"
+   erl_completed:
+FunctionEnd
 
 ##############################################################################
 #                                                                            #
@@ -236,24 +303,24 @@ FunctionEnd
 !ifdef OPTION_BUNDLE_C_REDIST
    Function IsDllVersionGoodEnough
       IntCmp 0 $R0 normal0 normal0 negative0
-      normal0: 
+      normal0:
          IntOp $R2 $R0 >> 16
          Goto continue0
       negative0:
          IntOp $R2 $R0 & 0x7FFF0000
          IntOp $R2 $R2 >> 16
          IntOp $R2 $R2 | 0x8000
-      continue0:		
+      continue0:
          IntOp $R3 $R0 & 0x0000FFFF
          IntCmp 0 $R1 normal1 normal1 negative1
-      normal1: 
+      normal1:
          IntOp $R4 $R1 >> 16
          Goto continue1
       negative1:
          IntOp $R4 $R1 & 0x7FFF0000
          IntOp $R4 $R4 >> 16
          IntOp $R4 $R4 | 0x8000
-      continue1:		
+      continue1:
          IntOp $R5 $R1 & 0x0000FFFF
          StrCpy $2 "$R2.$R3.$R4.$R5"
          ${VersionCompare} $2 ${REDIST_DLL_VERSION} $R0
@@ -262,7 +329,7 @@ FunctionEnd
 
    Function RequireCRedist
       IfFileExists $SYSDIR\msvcr90.dll MaybeFoundInSystem
-      SearchSxs:	
+      SearchSxs:
          FindFirst $0 $1 $WINDIR\WinSxS\x86*
       Loop:
          StrCmp $1 "" NotFound
@@ -274,7 +341,7 @@ FunctionEnd
          Call IsDllVersionGoodEnough
          FindNext $0 $1
          IntCmp 2 $R0 Loop
-         Goto Found 
+         Goto Found
       MaybeFoundInSystem:
          GetDllVersion $SYSDIR\msvcr90.dll $R0 $R1
          Call IsDllVersionGoodEnough
@@ -333,7 +400,7 @@ FunctionEnd
 
 Function InstallNETFramework2
    DetailPrint "Installing .NET Framework 2.0"
-   
+
    IfFileExists '${NETFRAMEWORK20_SETUP_NAME}' DOTNETFX_SUCCESS DOWNLOAD_NET_RUNTIME
    DOWNLOAD_NET_RUNTIME:
       NSISdl::download /TIMEOUT=30000 '${NETFRAMEWORK20_DOWNLOAD_LOCATION}' '${NETFRAMEWORK20_SETUP_NAME}'
@@ -359,7 +426,7 @@ Section "Windar core" SEC_WINDAR
    SectionIn 1 2 3 RO
 
    Call RequireCRedist
-   
+
    ;Shutdown Windar if running.
    IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
    windar_installed:
@@ -371,55 +438,19 @@ Section "Windar core" SEC_WINDAR
    windar_not_installed:
 
    DetailPrint "Installing core Playdar and minimum Erlang components."
-   
-   ;Check for and offer to kill epmd.exe process.
-   StrCpy $0 "epmd.exe"
-   DetailPrint "Searching for processes called '$0'"
-   KillProc::FindProcesses
-   StrCmp $1 "-1" epmd_error
-   StrCmp $0 "0" epmd_completed
-   Sleep 1500   
-   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
-     "Found $0 epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES epmd_killproc IDNO epmd_completed    
-   epmd_killproc:
-      StrCpy $0 "epmd.exe"
-      DetailPrint "Killing all processes called '$0'"
-      KillProc::KillProcesses
-      StrCmp $1 "-1" epmd_error
-      DetailPrint "Killed $0 processes, faild to kill $1 processes."
-   epmd_error:
-   epmd_completed:
-      
-   ;Check for and offer to kill erl.exe process.
-   StrCpy $0 "erl.exe"
-   DetailPrint "Searching for processes called '$0'"
-   KillProc::FindProcesses
-   StrCmp $1 "-1" erl_error
-   StrCmp $0 "0" erl_completed
-   Sleep 1500   
-   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
-     "Found $0 erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES erl_killproc IDNO erl_completed    
-   erl_killproc:
-      StrCpy $0 "erl.exe"
-      DetailPrint "Killing all processes called '$0'"
-      KillProc::KillProcesses
-      StrCmp $1 "-1" erl_error
-      DetailPrint "Killed $0 processes, faild to kill $1 processes."
-   erl_error:
-   erl_completed:
+
+	 Call KillErlang
 
    IfFileExists "$WINDIR\system32\libeay32.dll" openssl_lib_installed
       SetOutPath "$WINDIR\system32"
       File Payload\libeay32.dll
    openssl_lib_installed:
-   
+
    ;Erlang and Playdar payload.
    SetOutPath "$INSTDIR"
    File /r Payload\minimerl
    File /r Payload\playdar
-   
+
    ;py2exe payload.
    SetOutPath "$INSTDIR\playdar\py2exe"
    File Payload\playdar_python_resolvers\dist\_ctypes.pyd
@@ -442,7 +473,7 @@ Section "Windar core" SEC_WINDAR
    SetOutPath "$INSTDIR\minimerl\bin"
    File Temp\erlini.exe
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
-   
+
    Call RequireMicrosoftNET2
 
    DetailPrint "Installing the Windar application components."
@@ -467,7 +498,7 @@ Section "Windar core" SEC_WINDAR
       File Temp\Windar.PlaydarDaemon.pdb
       File Temp\Windar.PluginAPI.pdb
    !endif
-   
+
    ;Other libs:
    File Temp\log4net.dll
 
@@ -494,8 +525,8 @@ SectionEnd
 
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
    ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
-      SectionIn 1 2      
-      DetailPrint "Adding shortcut in Startup folder to start Windar on login."      
+      SectionIn 1 2
+      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
       SetShellVarContext all
       CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
       SetShellVarContext current
@@ -540,49 +571,49 @@ SectionGroupEnd
 
 !ifdef OPTION_BUNDLE_RESOLVERS
    SectionGroup "Additional resolver modules"
-   
+
    #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
    #   SectionIn 2
    #   DetailPrint "Installing resolver for Amie Street."
    #   SetOutPath "$INSTDIR\playdar\py2exe"
    #   File /r Payload\playdar_python_resolvers\dist\amiestreet-resolver.exe
    #${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for the AOL Music Index."
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\aolmusic
    ${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for Audiofarm."
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
    ${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for The Echo Nest."
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\echonest-resolver.exe
    ${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for Jamendo."
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\jamendo
    ${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for Magnatune."
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\magnatune
    ${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for MP3tunes."
@@ -594,7 +625,7 @@ SectionGroupEnd
          File Temp\Windar.MP3tunesPlugin.pdb
       !endif
    ${MementoSectionEnd}
-   
+
    ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
       SectionIn 2
       DetailPrint "Installing resolver for Napster."
@@ -606,14 +637,14 @@ SectionGroupEnd
          File Temp\Windar.NapsterPlugin.pdb
       !endif
    ${MementoSectionEnd}
-   
+
    #${MementoUnselectedSection} "SoundCloud" SEC_SOUNDCLOUD_RESOLVER
    #   SectionIn 2
    #   DetailPrint "Installing resolver for SoundCloud."
    #   SetOutPath "$INSTDIR\playdar\py2exe"
    #   File /r Payload\playdar_python_resolvers\dist\soundcloud-resolver.exe
    #${MementoSectionEnd}
-   
+
    SectionGroupEnd
 !endif
 
@@ -671,7 +702,7 @@ Section -post
 
    ;Remove the erlang ini writing utility. NOTE: Delete on this doesn't see to work.
    Delete '"$INSTDIR\minimerl\bin\erlini.exe"'
-   
+
    ;Remove the redistributable installers.
    IfFileExists '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"' 0 +2
       Delete '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"'
@@ -755,7 +786,7 @@ Section Uninstall
 
    ;Startup folder shortcut.
    IfFileExists "$SMPROGRAMS\Startup\Windar.lnk" 0 +2
-      Delete "$SMPROGRAMS\Startup\Windar.lnk"   
+      Delete "$SMPROGRAMS\Startup\Windar.lnk"
 
    ;Desktop shortcut.
    !ifdef OPTION_SECTION_SC_DESKTOP
@@ -768,6 +799,8 @@ Section Uninstall
       IfFileExists "$QUICKLAUNCH\Windar.lnk" 0 +2
          Delete "$QUICKLAUNCH\Windar.lnk"
    !endif
+
+	 Call un.KillErlang
 
    RMDir /r $INSTDIR\minimerl
    RMDir /r $INSTDIR\playdar
@@ -788,9 +821,9 @@ Function .onInit
    StrCmp $R0 0 +3
       MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
       Abort
-   
+
    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "windar.ini"
-   
+
    ;Warn user if system is older than Windows XP.
    ${IfNot} ${AtLeastWinXP}
       MessageBox MB_OK "Unsupported on anything older than Windows XP."
@@ -805,7 +838,7 @@ Function .onInit
    ${EndIf}
 
    ${MementoSectionRestore}
-   
+
 FunctionEnd
 
 Function .onInstSuccess
