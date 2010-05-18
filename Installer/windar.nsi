@@ -156,68 +156,76 @@ Page custom PageReinstall PageLeaveReinstall
 
 Function KillErlang
    ;Check for and offer to kill epmd.exe process.
-   DetailPrint "Searching for processes called epmd.exe"
+   SetDetailsPrint both
+   DetailPrint "Searching for epmd.exe processes to stop."
+   SetDetailsPrint listonly
    Processes::FindProcess "epmd"
    StrCmp $R0 "0" epmd_completed
    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
      "Found epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
      IDYES epmd_killproc IDNO epmd_completed
    epmd_killproc:
-      DetailPrint "Killing all processes called epmd.exe"
+      DetailPrint "Killing epmd.exe processes."
       Processes::KillProcess "epmd"
       Sleep 1500
       StrCmp $R0 "1" epmd_completed
-      DetailPrint "KillProcess not found!"
+      DetailPrint "Process to kill not found!"
    epmd_completed:
 
    ;Check for and offer to kill erl.exe process.
    StrCpy $0 "erl.exe"
-   DetailPrint "Searching for processes called erl.exe"
+   SetDetailsPrint both
+   DetailPrint "Searching for erl.exe processes to stop."
+   SetDetailsPrint listonly
    Processes::FindProcess "erl"
    StrCmp $R0 "0" erl_completed
    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
      "Found erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
      IDYES erl_killproc IDNO erl_completed
    erl_killproc:
-      DetailPrint "Killing all processes called erl.exe"
+      DetailPrint "Killing erl.exe processes."
       Processes::KillProcess "erl"
-	    Sleep 1500
+       Sleep 1500
       StrCmp $R0 "1" erl_completed
-      DetailPrint "KillProcess not found!"
+      DetailPrint "Process to kill not found!"
    erl_completed:
 FunctionEnd
 
 Function un.KillErlang
    ;Same as KillErlang function, but used by uninstaller (requires separate un. function).
    ;Check for and offer to kill epmd.exe process.
-   DetailPrint "Searching for processes called epmd.exe"
+   SetDetailsPrint both
+   DetailPrint "Searching for epmd.exe processes to stop."
+   SetDetailsPrint listonly
    Processes::FindProcess "epmd"
    StrCmp $R0 "0" epmd_completed
    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
      "Found epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
      IDYES epmd_killproc IDNO epmd_completed
    epmd_killproc:
-      DetailPrint "Killing all processes called epmd.exe"
+      DetailPrint "Killing epmd.exe processes."
       Processes::KillProcess "epmd"
       Sleep 1500
       StrCmp $R0 "1" epmd_completed
-      DetailPrint "KillProcess not found!"
+      DetailPrint "Process to kill not found!"
    epmd_completed:
 
    ;Check for and offer to kill erl.exe process.
    StrCpy $0 "erl.exe"
-   DetailPrint "Searching for processes called erl.exe"
+   SetDetailsPrint both
+   DetailPrint "Searching for erl.exe processes to stop."
+   SetDetailsPrint listonly
    Processes::FindProcess "erl"
    StrCmp $R0 "0" erl_completed
    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
      "Found erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
      IDYES erl_killproc IDNO erl_completed
    erl_killproc:
-      DetailPrint "Killing all processes called erl.exe"
+      DetailPrint "Killing erl.exe processes."
       Processes::KillProcess "erl"
-      Sleep 1500
+       Sleep 1500
       StrCmp $R0 "1" erl_completed
-      DetailPrint "KillProcess not found!"
+      DetailPrint "Process to kill not found!"
    erl_completed:
 FunctionEnd
 
@@ -374,7 +382,9 @@ Function GetDotNETVersion
 FunctionEnd
 
 Function RequireMicrosoftNET2
+   SetDetailsPrint both
    DetailPrint "Checking .NET Framework and required version."
+   SetDetailsPrint listonly
 
    ;Check for and install the .NET Framework redistributable if required.
    Call GetDotNETVersion
@@ -399,7 +409,11 @@ Function RequireMicrosoftNET2
 FunctionEnd
 
 Function InstallNETFramework2
+   SetDetailsPrint both
    DetailPrint "Installing .NET Framework 2.0"
+   SetDetailsPrint listonly
+
+   SetOutPath "$INSTDIR"
 
    IfFileExists '${NETFRAMEWORK20_SETUP_NAME}' DOTNETFX_SUCCESS DOWNLOAD_NET_RUNTIME
    DOWNLOAD_NET_RUNTIME:
@@ -413,6 +427,9 @@ Function InstallNETFramework2
                  IDRETRY  DOWNLOAD_NET_RUNTIME \
                  IDCANCEL USER_CANCELED
    DOTNETFX_SUCCESS:
+      SetDetailsPrint both
+      DetailPrint "Installing .NET Framework. This may take a while, please wait..."
+      SetDetailsPrint listonly
       ExecWait '"${NETFRAMEWORK20_SETUP_NAME}" /q:a /c:"install /l /q"'
 FunctionEnd
 
@@ -424,6 +441,7 @@ FunctionEnd
 
 Section "Windar core" SEC_WINDAR
    SectionIn 1 2 3 RO
+   SetDetailsPrint listonly
 
    Call RequireCRedist
 
@@ -433,13 +451,17 @@ Section "Windar core" SEC_WINDAR
       FileOpen $0 $INSTDIR\SHUTDOWN w
       FileWrite $0 "x"
       FileClose $0
+      SetDetailsPrint both
       DetailPrint "Pausing to allow Windar to shutdown, if running."
+      SetDetailsPrint listonly
       Sleep 3000
    windar_not_installed:
 
-   DetailPrint "Installing core Playdar and minimum Erlang components."
+   Call KillErlang
 
-	 Call KillErlang
+   SetDetailsPrint both
+   DetailPrint "Installing core Playdar and minimum Erlang components."
+   SetDetailsPrint listonly
 
    IfFileExists "$WINDIR\system32\libeay32.dll" openssl_lib_installed
       SetOutPath "$WINDIR\system32"
@@ -476,7 +498,9 @@ Section "Windar core" SEC_WINDAR
 
    Call RequireMicrosoftNET2
 
+   SetDetailsPrint both
    DetailPrint "Installing the Windar application components."
+   SetDetailsPrint listonly
 
    SetOutPath "$INSTDIR"
 
@@ -508,7 +532,9 @@ Section "Windar core" SEC_WINDAR
    File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
 
    ;MPlayer and the Player plugin for Windar.
+   SetDetailsPrint both
    DetailPrint "Installing MPlayer and the Player plugin for Windar."
+   SetDetailsPrint listonly
    SetOutPath "$INSTDIR"
    File /r Payload\mplayer
    File Temp\Windar.PlayerPlugin.dll
@@ -518,7 +544,9 @@ Section "Windar core" SEC_WINDAR
    File Temp\Newtonsoft.Json.Net20.dll
 
    ;Player module for Playdar.
+   SetDetailsPrint both
    DetailPrint "Installing player module for Playdar."
+   SetDetailsPrint listonly
    SetOutPath "$INSTDIR\playdar\playdar_modules"
    File /r Payload\playdar_modules\player
 SectionEnd
@@ -526,7 +554,9 @@ SectionEnd
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
    ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
       SectionIn 1 2
+      SetDetailsPrint both
       DetailPrint "Adding shortcut in Startup folder to start Windar on login."
+      SetDetailsPrint listonly
       SetShellVarContext all
       CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
       SetShellVarContext current
@@ -538,7 +568,9 @@ SectionGroup "Application shortcuts"
 !ifdef OPTION_SECTION_SC_START_MENU
    ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
       SectionIn 1 2
+      SetDetailsPrint both
       DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
+      SetDetailsPrint listonly
       SetShellVarContext all
       RMDir /r "$SMPROGRAMS\Windar"
       CreateDirectory "$SMPROGRAMS\Windar"
@@ -554,7 +586,9 @@ SectionGroup "Application shortcuts"
 !ifdef OPTION_SECTION_SC_DESKTOP
    ${MementoSection} "Desktop Shortcut" SEC_DESKTOP
       SectionIn 1 2
+      SetDetailsPrint both
       DetailPrint "Creating Desktop Shortcuts"
+      SetDetailsPrint listonly
       CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
    ${MementoSectionEnd}
 !endif
@@ -562,7 +596,9 @@ SectionGroup "Application shortcuts"
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
    ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
       SectionIn 1 2
+      SetDetailsPrint both
       DetailPrint "Creating Quick Launch Shortcut"
+      SetDetailsPrint listonly
       CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
    ${MementoSectionEnd}
 !endif
@@ -574,49 +610,63 @@ SectionGroupEnd
 
    #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
    #   SectionIn 2
+   #   SetDetailsPrint both
    #   DetailPrint "Installing resolver for Amie Street."
+   #   SetDetailsPrint listonly
    #   SetOutPath "$INSTDIR\playdar\py2exe"
    #   File /r Payload\playdar_python_resolvers\dist\amiestreet-resolver.exe
    #${MementoSectionEnd}
 
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for the AOL Music Index."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\aolmusic
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for Audiofarm."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for The Echo Nest."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\echonest-resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for Jamendo."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\jamendo
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for Magnatune."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\magnatune
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for MP3tunes."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
       SetOutPath "$INSTDIR"
@@ -628,7 +678,9 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing resolver for Napster."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
       SetOutPath "$INSTDIR"
@@ -640,7 +692,9 @@ SectionGroupEnd
 
    #${MementoUnselectedSection} "SoundCloud" SEC_SOUNDCLOUD_RESOLVER
    #   SectionIn 2
+   #   SetDetailsPrint both
    #   DetailPrint "Installing resolver for SoundCloud."
+   #   SetDetailsPrint listonly
    #   SetOutPath "$INSTDIR\playdar\py2exe"
    #   File /r Payload\playdar_python_resolvers\dist\soundcloud-resolver.exe
    #${MementoSectionEnd}
@@ -651,7 +705,9 @@ SectionGroupEnd
 !ifdef OPTION_BUNDLE_SCROBBLER
    ${MementoUnselectedSection} "Audioscrobbler support" SEC_SCROBBLER
       SectionIn 2
+      SetDetailsPrint both
       DetailPrint "Installing the scrobbler module and Windar plugin."
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\audioscrobbler
       SetOutPath "$INSTDIR"
@@ -699,6 +755,7 @@ ${MementoSectionDone}
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Section -post
+   SetDetailsPrint listonly
 
    ;Remove the erlang ini writing utility. NOTE: Delete on this doesn't see to work.
    Delete '"$INSTDIR\minimerl\bin\erlini.exe"'
@@ -708,12 +765,16 @@ Section -post
       Delete '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"'
 
    ;Uninstaller file.
+   SetDetailsPrint both
    DetailPrint "Writing Uninstaller"
+   SetDetailsPrint listonly
    WriteUninstaller $INSTDIR\uninstall.exe
 
    ;Release notes.
    !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
+      SetDetailsPrint both
       DetailPrint "Writing Release Notes"
+      SetDetailsPrint listonly
       SetOutPath "$INSTDIR"
       File /oname=README.txt ..\README.md
       IfFileExists "$SMPROGRAMS\Windar" 0 +2
@@ -721,7 +782,9 @@ Section -post
    !endif
 
    ;Registry keys required for installer version handling and uninstaller.
+   SetDetailsPrint both
    DetailPrint "Writing Installer Registry Keys"
+   SetDetailsPrint listonly
 
    ;Version numbers used to detect existing installation version for comparisson.
    WriteRegStr HKLM "Software\Windar" "" $INSTDIR
@@ -744,7 +807,9 @@ Section -post
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "NoModify" "1"
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "NoRepair" "1"
 
+   SetDetailsPrint both
    DetailPrint "Installation Complete"
+   SetDetailsPrint listonly
 SectionEnd
 
 ##############################################################################
@@ -765,7 +830,9 @@ Section Uninstall
    FileOpen $0 $INSTDIR\SHUTDOWN w
    FileWrite $0 "x"
    FileClose $0
+   SetDetailsPrint both
    DetailPrint "Pausing to allow Windar to shutdown, if running."
+   SetDetailsPrint listonly
    Sleep 3000
 
    ;Delete registry keys.
@@ -800,7 +867,7 @@ Section Uninstall
          Delete "$QUICKLAUNCH\Windar.lnk"
    !endif
 
-	 Call un.KillErlang
+    Call un.KillErlang
 
    RMDir /r $INSTDIR\minimerl
    RMDir /r $INSTDIR\playdar
