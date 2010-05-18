@@ -44,7 +44,7 @@
 ;-----------------------------------------------------------------------------
 ;Other required definitions.
 ;-----------------------------------------------------------------------------
-!define REDIST_DLL_VERSION 9.0.21022.8
+!define REDIST_DLL_VERSION 8.0.50727.4053
 
 ;-----------------------------------------------------------------------------
 ;Initial installer setup and definitions.
@@ -369,7 +369,6 @@ FunctionEnd
          DetailPrint "Installing the Microsoft C runtime redistributable."
          SetDetailsPrint listonly
          ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'
-        ;ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"'
          Delete "$INSTDIR\${VCRUNTIME_SETUP_NAME}"
    FunctionEnd
 !endif
@@ -500,12 +499,6 @@ Section "Windar core" SEC_WINDAR
    ;Bat script to launch playdar-core in command window.
    SetOutPath "$INSTDIR\playdar"
    File Payload\playdar-core.bat
-
-   ;Write the required erl.ini file.
-   SetOutPath "$INSTDIR\minimerl\bin"
-   File Temp\erlini.exe
-   ExecWait "$INSTDIR\minimerl\bin\erlini.exe"
-   Delete "$INSTDIR\minimerl\bin\erlini.exe"
 
    Call RequireMicrosoftNET2
 
@@ -785,6 +778,12 @@ Section -post
          CreateShortCut "$SMPROGRAMS\Windar\README.lnk" "$INSTDIR\README.txt"
    !endif
 
+   ;Write the required erl.ini file.
+   SetOutPath "$INSTDIR\minimerl\bin"
+   File Temp\erlini.exe
+   ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
+   Delete "$INSTDIR\minimerl\bin\erlini.exe"
+
    ;Registry keys required for installer version handling and uninstaller.
    SetDetailsPrint both
    DetailPrint "Writing Installer Registry Keys"
@@ -871,11 +870,15 @@ Section Uninstall
          Delete "$QUICKLAUNCH\Windar.lnk"
    !endif
 
-    Call un.KillErlang
+   Call un.KillErlang
 
    RMDir /r $INSTDIR\minimerl
    RMDir /r $INSTDIR\playdar
    RMDir /r $INSTDIR
+
+   SetDetailsPrint both
+   DetailPrint "Uninstalled."
+   SetDetailsPrint listonly
 SectionEnd
 
 ##############################################################################
