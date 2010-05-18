@@ -336,22 +336,26 @@ FunctionEnd
    FunctionEnd
 
    Function RequireCRedist
-      IfFileExists $SYSDIR\msvcr90.dll MaybeFoundInSystem
+      SetDetailsPrint both
+      DetailPrint "Checking for the Microsoft C runtime version required."
+      SetDetailsPrint listonly
+
+      IfFileExists $SYSDIR\msvcr80.dll MaybeFoundInSystem
       SearchSxs:
          FindFirst $0 $1 $WINDIR\WinSxS\x86*
       Loop:
          StrCmp $1 "" NotFound
-         IfFileExists $WINDIR\WinSxS\$1\msvcr90.dll MaybeFoundInSxs
+         IfFileExists $WINDIR\WinSxS\$1\msvcr80.dll MaybeFoundInSxs
          FindNext $0 $1
          Goto Loop
       MaybeFoundInSxs:
-         GetDllVersion $WINDIR\WinSxS\$1\msvcr90.dll $R0 $R1
+         GetDllVersion $WINDIR\WinSxS\$1\msvcr80.dll $R0 $R1
          Call IsDllVersionGoodEnough
          FindNext $0 $1
          IntCmp 2 $R0 Loop
          Goto Found
       MaybeFoundInSystem:
-         GetDllVersion $SYSDIR\msvcr90.dll $R0 $R1
+         GetDllVersion $SYSDIR\msvcr80.dll $R0 $R1
          Call IsDllVersionGoodEnough
          IntCmp 2 $R0 SearchSxS
       Found:
@@ -361,7 +365,12 @@ FunctionEnd
             do not have the Microsoft C runtime version required. It will now be installed."
          SetOutPath "$INSTDIR"
          File "Payload\${VCRUNTIME_SETUP_NAME}"
+         SetDetailsPrint both
+         DetailPrint "Installing the Microsoft C runtime redistributable."
+         SetDetailsPrint listonly
          ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'
+        ;ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"'
+         Delete "$INSTDIR\${VCRUNTIME_SETUP_NAME}"
    FunctionEnd
 !endif
 
@@ -431,6 +440,7 @@ Function InstallNETFramework2
       DetailPrint "Installing .NET Framework. This may take a while, please wait..."
       SetDetailsPrint listonly
       ExecWait '"${NETFRAMEWORK20_SETUP_NAME}" /q:a /c:"install /l /q"'
+      Delete "$INSTDIR\${NETFRAMEWORK20_SETUP_NAME}"
 FunctionEnd
 
 ##############################################################################
@@ -494,7 +504,8 @@ Section "Windar core" SEC_WINDAR
    ;Write the required erl.ini file.
    SetOutPath "$INSTDIR\minimerl\bin"
    File Temp\erlini.exe
-   ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
+   ExecWait "$INSTDIR\minimerl\bin\erlini.exe"
+   Delete "$INSTDIR\minimerl\bin\erlini.exe"
 
    Call RequireMicrosoftNET2
 
@@ -756,13 +767,6 @@ ${MementoSectionDone}
 
 Section -post
    SetDetailsPrint listonly
-
-   ;Remove the erlang ini writing utility. NOTE: Delete on this doesn't see to work.
-   Delete '"$INSTDIR\minimerl\bin\erlini.exe"'
-
-   ;Remove the redistributable installers.
-   IfFileExists '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"' 0 +2
-      Delete '"$INSTDIR\${VCRUNTIME_SETUP_NAME}"'
 
    ;Uninstaller file.
    SetDetailsPrint both
