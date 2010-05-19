@@ -129,7 +129,7 @@ namespace Windar.TrayApp
 
         public void AddTabPage(UserControl control, string title)
         {
-            var tab = new TabPage {Text = title};
+            var tab = new TabPage { Text = title };
             tab.Controls.Add(control);
             control.Dock = DockStyle.Fill;
             Program.Instance.MainForm.mainTabControl.Controls.Add(tab);
@@ -150,7 +150,7 @@ namespace Windar.TrayApp
             var tab = new TabPage { Text = title };
             tab.Controls.Add(control);
             tab.Padding = new Padding(3);
-            tab.BackColor = Color.White;
+            tab.BackColor = Color.FromKnownColor(KnownColor.Control);
             control.Dock = DockStyle.Fill;
             Program.Instance.MainForm.optionsTabControl.Controls.Add(tab);
         }

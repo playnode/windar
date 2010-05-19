@@ -62,6 +62,18 @@ namespace Windar.TrayApp
             this.playdarLogo = new System.Windows.Forms.PictureBox();
             this.optionsTabPage = new System.Windows.Forms.TabPage();
             this.optionsTabControl = new System.Windows.Forms.TabControl();
+            this.libraryTabPage = new System.Windows.Forms.TabPage();
+            this.libraryPanel = new System.Windows.Forms.Panel();
+            this.deleteIndexButton = new System.Windows.Forms.Button();
+            this.rebuildIndexButton = new System.Windows.Forms.Button();
+            this.tracklistButton = new System.Windows.Forms.Button();
+            this.libraryGrid = new System.Windows.Forms.DataGridView();
+            this.LibraryItemPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.libraryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.libraryCancelButton = new System.Windows.Forms.Button();
+            this.librarySaveButton = new System.Windows.Forms.Button();
             this.generalOptionsTabPage = new System.Windows.Forms.TabPage();
             this.generalOptionsPanel = new System.Windows.Forms.Panel();
             this.generalOptionsCancelButton = new System.Windows.Forms.Button();
@@ -87,18 +99,6 @@ namespace Windar.TrayApp
             this.peersContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addPeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removePeerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.libraryTabPage = new System.Windows.Forms.TabPage();
-            this.libraryPanel = new System.Windows.Forms.Panel();
-            this.deleteIndexButton = new System.Windows.Forms.Button();
-            this.rebuildIndexButton = new System.Windows.Forms.Button();
-            this.tracklistButton = new System.Windows.Forms.Button();
-            this.libraryGrid = new System.Windows.Forms.DataGridView();
-            this.LibraryItemPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.libraryContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeLibPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.libraryCancelButton = new System.Windows.Forms.Button();
-            this.librarySaveButton = new System.Windows.Forms.Button();
             this.modsTabPage = new System.Windows.Forms.TabPage();
             this.modsPanel = new System.Windows.Forms.Panel();
             this.modsGrid = new System.Windows.Forms.DataGridView();
@@ -146,39 +146,39 @@ namespace Windar.TrayApp
             this.logSplitPanel = new System.Windows.Forms.SplitContainer();
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
             this.logBoxPanel = new System.Windows.Forms.Panel();
-            this.cellEndEditTimer = new System.Windows.Forms.Timer(this.components);
             this.logBox = new Windar.TrayApp.LogTextBox();
+            this.cellEndEditTimer = new System.Windows.Forms.Timer(this.components);
             this.mainformBorderPanel.SuspendLayout();
             this.mainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
             this.aboutCenterPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize) (this.playdarLogo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).BeginInit();
             this.optionsTabPage.SuspendLayout();
             this.optionsTabControl.SuspendLayout();
+            this.libraryTabPage.SuspendLayout();
+            this.libraryPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.libraryGrid)).BeginInit();
+            this.libraryContextMenu.SuspendLayout();
             this.generalOptionsTabPage.SuspendLayout();
             this.generalOptionsPanel.SuspendLayout();
             this.aboutGroupBox.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.peersGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.peersGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peersGrid)).BeginInit();
             this.peersContextMenu.SuspendLayout();
-            this.libraryTabPage.SuspendLayout();
-            this.libraryPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.libraryGrid)).BeginInit();
-            this.libraryContextMenu.SuspendLayout();
             this.modsTabPage.SuspendLayout();
             this.modsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.modsGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modsGrid)).BeginInit();
             this.modsContextMenu.SuspendLayout();
             this.pluginsTabPage.SuspendLayout();
             this.pluginsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.pluginsGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pluginsGrid)).BeginInit();
             this.pluginsContextMenu.SuspendLayout();
             this.propsTabPage.SuspendLayout();
             this.propsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.propsGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.propsGrid)).BeginInit();
             this.propsContextMenu.SuspendLayout();
             this.playdarTabPage.SuspendLayout();
             this.daemonSplitPanel.Panel1.SuspendLayout();
@@ -199,7 +199,7 @@ namespace Windar.TrayApp
             this.mainformBorderPanel.Location = new System.Drawing.Point(0, 0);
             this.mainformBorderPanel.Name = "mainformBorderPanel";
             this.mainformBorderPanel.Padding = new System.Windows.Forms.Padding(4, 6, 4, 4);
-            this.mainformBorderPanel.Size = new System.Drawing.Size(624, 442);
+            this.mainformBorderPanel.Size = new System.Drawing.Size(632, 453);
             this.mainformBorderPanel.TabIndex = 1;
             // 
             // mainTabControl
@@ -215,7 +215,7 @@ namespace Windar.TrayApp
             this.mainTabControl.Margin = new System.Windows.Forms.Padding(0);
             this.mainTabControl.Name = "mainTabControl";
             this.mainTabControl.SelectedIndex = 0;
-            this.mainTabControl.Size = new System.Drawing.Size(616, 432);
+            this.mainTabControl.Size = new System.Drawing.Size(624, 443);
             this.mainTabControl.TabIndex = 2;
             this.mainTabControl.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.MainTabControl_Deselecting);
             this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.MainTabControl_SelectedIndexChanged);
@@ -227,17 +227,17 @@ namespace Windar.TrayApp
             this.aboutTabPage.Location = new System.Drawing.Point(4, 25);
             this.aboutTabPage.Margin = new System.Windows.Forms.Padding(0);
             this.aboutTabPage.Name = "aboutTabPage";
-            this.aboutTabPage.Size = new System.Drawing.Size(608, 403);
+            this.aboutTabPage.Size = new System.Drawing.Size(616, 414);
             this.aboutTabPage.TabIndex = 0;
             this.aboutTabPage.Text = "About";
             this.aboutTabPage.UseVisualStyleBackColor = true;
             // 
             // versionLabel
             // 
-            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.versionLabel.AutoSize = true;
             this.versionLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.versionLabel.Location = new System.Drawing.Point(-1, 389);
+            this.versionLabel.Location = new System.Drawing.Point(-1, 400);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(82, 13);
             this.versionLabel.TabIndex = 6;
@@ -250,7 +250,7 @@ namespace Windar.TrayApp
             this.aboutCenterPanel.Controls.Add(this.pictureBox1);
             this.aboutCenterPanel.Controls.Add(this.playdarLink);
             this.aboutCenterPanel.Controls.Add(this.playdarLogo);
-            this.aboutCenterPanel.Location = new System.Drawing.Point(13, 50);
+            this.aboutCenterPanel.Location = new System.Drawing.Point(17, 56);
             this.aboutCenterPanel.Name = "aboutCenterPanel";
             this.aboutCenterPanel.Size = new System.Drawing.Size(577, 274);
             this.aboutCenterPanel.TabIndex = 3;
@@ -258,7 +258,7 @@ namespace Windar.TrayApp
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(294, 136);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(177, 20);
@@ -276,12 +276,12 @@ namespace Windar.TrayApp
             // 
             // playdarLink
             // 
-            this.playdarLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int) (((byte) (128)))), ((int) (((byte) (128)))), ((int) (((byte) (255)))));
+            this.playdarLink.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.playdarLink.AutoSize = true;
-            this.playdarLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.playdarLink.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.playdarLink.Location = new System.Drawing.Point(295, 159);
             this.playdarLink.Name = "playdarLink";
-            this.playdarLink.Size = new System.Drawing.Size(117, 16);
+            this.playdarLink.Size = new System.Drawing.Size(118, 16);
             this.playdarLink.TabIndex = 5;
             this.playdarLink.TabStop = true;
             this.playdarLink.Text = "www.playdar.org";
@@ -289,7 +289,7 @@ namespace Windar.TrayApp
             // 
             // playdarLogo
             // 
-            this.playdarLogo.Image = ((System.Drawing.Image) (resources.GetObject("playdarLogo.Image")));
+            this.playdarLogo.Image = ((System.Drawing.Image)(resources.GetObject("playdarLogo.Image")));
             this.playdarLogo.Location = new System.Drawing.Point(3, 9);
             this.playdarLogo.Name = "playdarLogo";
             this.playdarLogo.Size = new System.Drawing.Size(257, 256);
@@ -302,7 +302,7 @@ namespace Windar.TrayApp
             this.optionsTabPage.Location = new System.Drawing.Point(4, 25);
             this.optionsTabPage.Margin = new System.Windows.Forms.Padding(0);
             this.optionsTabPage.Name = "optionsTabPage";
-            this.optionsTabPage.Size = new System.Drawing.Size(608, 403);
+            this.optionsTabPage.Size = new System.Drawing.Size(616, 414);
             this.optionsTabPage.TabIndex = 3;
             this.optionsTabPage.Text = "Settings";
             this.optionsTabPage.UseVisualStyleBackColor = true;
@@ -319,10 +319,154 @@ namespace Windar.TrayApp
             this.optionsTabControl.Name = "optionsTabControl";
             this.optionsTabControl.Padding = new System.Drawing.Point(0, 0);
             this.optionsTabControl.SelectedIndex = 0;
-            this.optionsTabControl.Size = new System.Drawing.Size(608, 403);
+            this.optionsTabControl.Size = new System.Drawing.Size(616, 414);
             this.optionsTabControl.TabIndex = 7;
             this.optionsTabControl.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.optionsTabControl_Deselecting);
             this.optionsTabControl.SelectedIndexChanged += new System.EventHandler(this.optionsTabControl_SelectedIndexChanged);
+            // 
+            // libraryTabPage
+            // 
+            this.libraryTabPage.Controls.Add(this.libraryPanel);
+            this.libraryTabPage.Location = new System.Drawing.Point(4, 22);
+            this.libraryTabPage.Name = "libraryTabPage";
+            this.libraryTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.libraryTabPage.Size = new System.Drawing.Size(608, 388);
+            this.libraryTabPage.TabIndex = 7;
+            this.libraryTabPage.Text = "Local Library";
+            this.libraryTabPage.UseVisualStyleBackColor = true;
+            // 
+            // libraryPanel
+            // 
+            this.libraryPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.libraryPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.libraryPanel.Controls.Add(this.deleteIndexButton);
+            this.libraryPanel.Controls.Add(this.rebuildIndexButton);
+            this.libraryPanel.Controls.Add(this.tracklistButton);
+            this.libraryPanel.Controls.Add(this.libraryGrid);
+            this.libraryPanel.Controls.Add(this.libraryCancelButton);
+            this.libraryPanel.Controls.Add(this.librarySaveButton);
+            this.libraryPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.libraryPanel.Location = new System.Drawing.Point(3, 3);
+            this.libraryPanel.Name = "libraryPanel";
+            this.libraryPanel.Padding = new System.Windows.Forms.Padding(6);
+            this.libraryPanel.Size = new System.Drawing.Size(602, 382);
+            this.libraryPanel.TabIndex = 1;
+            // 
+            // deleteIndexButton
+            // 
+            this.deleteIndexButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.deleteIndexButton.Location = new System.Drawing.Point(337, 348);
+            this.deleteIndexButton.Name = "deleteIndexButton";
+            this.deleteIndexButton.Size = new System.Drawing.Size(80, 23);
+            this.deleteIndexButton.TabIndex = 27;
+            this.deleteIndexButton.Text = "Delete Index";
+            this.deleteIndexButton.UseVisualStyleBackColor = true;
+            this.deleteIndexButton.Click += new System.EventHandler(this.deleteIndexButton_Click);
+            // 
+            // rebuildIndexButton
+            // 
+            this.rebuildIndexButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.rebuildIndexButton.Location = new System.Drawing.Point(423, 348);
+            this.rebuildIndexButton.Name = "rebuildIndexButton";
+            this.rebuildIndexButton.Size = new System.Drawing.Size(80, 23);
+            this.rebuildIndexButton.TabIndex = 28;
+            this.rebuildIndexButton.Text = "Rebuild Index";
+            this.rebuildIndexButton.UseVisualStyleBackColor = true;
+            this.rebuildIndexButton.Click += new System.EventHandler(this.rebuildIndexButton_Click);
+            // 
+            // tracklistButton
+            // 
+            this.tracklistButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tracklistButton.Location = new System.Drawing.Point(509, 348);
+            this.tracklistButton.Name = "tracklistButton";
+            this.tracklistButton.Size = new System.Drawing.Size(80, 23);
+            this.tracklistButton.TabIndex = 29;
+            this.tracklistButton.Text = "Track List";
+            this.tracklistButton.UseVisualStyleBackColor = true;
+            this.tracklistButton.Click += new System.EventHandler(this.tracklistButton_Click);
+            // 
+            // libraryGrid
+            // 
+            this.libraryGrid.AllowUserToAddRows = false;
+            this.libraryGrid.AllowUserToDeleteRows = false;
+            this.libraryGrid.AllowUserToResizeRows = false;
+            this.libraryGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.libraryGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.libraryGrid.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.libraryGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.libraryGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.libraryGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.LibraryItemPath});
+            this.libraryGrid.ContextMenuStrip = this.libraryContextMenu;
+            this.libraryGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.libraryGrid.Location = new System.Drawing.Point(9, 9);
+            this.libraryGrid.Name = "libraryGrid";
+            this.libraryGrid.ReadOnly = true;
+            this.libraryGrid.RowHeadersVisible = false;
+            this.libraryGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.libraryGrid.Size = new System.Drawing.Size(580, 329);
+            this.libraryGrid.StandardTab = true;
+            this.libraryGrid.TabIndex = 24;
+            this.libraryGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellValueChanged);
+            this.libraryGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseDown);
+            this.libraryGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseClick);
+            this.libraryGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseClick);
+            this.libraryGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellEndEdit);
+            this.libraryGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseDoubleClick);
+            // 
+            // LibraryItemPath
+            // 
+            this.LibraryItemPath.HeaderText = "Path";
+            this.LibraryItemPath.Name = "LibraryItemPath";
+            this.LibraryItemPath.ReadOnly = true;
+            // 
+            // libraryContextMenu
+            // 
+            this.libraryContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addLibPathMenuItem,
+            this.removeLibPathMenuItem});
+            this.libraryContextMenu.Name = "libraryContextMenu";
+            this.libraryContextMenu.Size = new System.Drawing.Size(125, 48);
+            // 
+            // addLibPathMenuItem
+            // 
+            this.addLibPathMenuItem.Name = "addLibPathMenuItem";
+            this.addLibPathMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.addLibPathMenuItem.Text = "Add";
+            this.addLibPathMenuItem.Click += new System.EventHandler(this.addLibPathMenuItem_Click);
+            // 
+            // removeLibPathMenuItem
+            // 
+            this.removeLibPathMenuItem.Name = "removeLibPathMenuItem";
+            this.removeLibPathMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.removeLibPathMenuItem.Text = "Remove";
+            this.removeLibPathMenuItem.Click += new System.EventHandler(this.removeLibPathMenuItem_Click);
+            // 
+            // libraryCancelButton
+            // 
+            this.libraryCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.libraryCancelButton.Enabled = false;
+            this.libraryCancelButton.Location = new System.Drawing.Point(75, 348);
+            this.libraryCancelButton.Name = "libraryCancelButton";
+            this.libraryCancelButton.Size = new System.Drawing.Size(60, 23);
+            this.libraryCancelButton.TabIndex = 26;
+            this.libraryCancelButton.Text = "Cancel";
+            this.libraryCancelButton.UseVisualStyleBackColor = true;
+            this.libraryCancelButton.Click += new System.EventHandler(this.libraryCancelButton_Click);
+            // 
+            // librarySaveButton
+            // 
+            this.librarySaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.librarySaveButton.Enabled = false;
+            this.librarySaveButton.Location = new System.Drawing.Point(9, 348);
+            this.librarySaveButton.Name = "librarySaveButton";
+            this.librarySaveButton.Size = new System.Drawing.Size(60, 23);
+            this.librarySaveButton.TabIndex = 25;
+            this.librarySaveButton.Text = "Save";
+            this.librarySaveButton.UseVisualStyleBackColor = true;
+            this.librarySaveButton.Click += new System.EventHandler(this.librarySaveButton_Click);
             // 
             // generalOptionsTabPage
             // 
@@ -330,7 +474,7 @@ namespace Windar.TrayApp
             this.generalOptionsTabPage.Location = new System.Drawing.Point(4, 22);
             this.generalOptionsTabPage.Name = "generalOptionsTabPage";
             this.generalOptionsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.generalOptionsTabPage.Size = new System.Drawing.Size(600, 377);
+            this.generalOptionsTabPage.Size = new System.Drawing.Size(608, 388);
             this.generalOptionsTabPage.TabIndex = 2;
             this.generalOptionsTabPage.Text = "Networking";
             this.generalOptionsTabPage.UseVisualStyleBackColor = true;
@@ -347,14 +491,14 @@ namespace Windar.TrayApp
             this.generalOptionsPanel.Location = new System.Drawing.Point(3, 3);
             this.generalOptionsPanel.Name = "generalOptionsPanel";
             this.generalOptionsPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.generalOptionsPanel.Size = new System.Drawing.Size(594, 371);
+            this.generalOptionsPanel.Size = new System.Drawing.Size(602, 382);
             this.generalOptionsPanel.TabIndex = 0;
             // 
             // generalOptionsCancelButton
             // 
-            this.generalOptionsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.generalOptionsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.generalOptionsCancelButton.Enabled = false;
-            this.generalOptionsCancelButton.Location = new System.Drawing.Point(75, 337);
+            this.generalOptionsCancelButton.Location = new System.Drawing.Point(75, 348);
             this.generalOptionsCancelButton.Name = "generalOptionsCancelButton";
             this.generalOptionsCancelButton.Size = new System.Drawing.Size(60, 23);
             this.generalOptionsCancelButton.TabIndex = 23;
@@ -364,9 +508,9 @@ namespace Windar.TrayApp
             // 
             // generalOptionsSaveButton
             // 
-            this.generalOptionsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.generalOptionsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.generalOptionsSaveButton.Enabled = false;
-            this.generalOptionsSaveButton.Location = new System.Drawing.Point(9, 337);
+            this.generalOptionsSaveButton.Location = new System.Drawing.Point(9, 348);
             this.generalOptionsSaveButton.Name = "generalOptionsSaveButton";
             this.generalOptionsSaveButton.Size = new System.Drawing.Size(60, 23);
             this.generalOptionsSaveButton.TabIndex = 22;
@@ -376,13 +520,13 @@ namespace Windar.TrayApp
             // 
             // aboutGroupBox
             // 
-            this.aboutGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.aboutGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.aboutGroupBox.Controls.Add(this.tableLayoutPanel1);
             this.aboutGroupBox.Controls.Add(this.tableLayoutPanel2);
             this.aboutGroupBox.Location = new System.Drawing.Point(9, 9);
             this.aboutGroupBox.Name = "aboutGroupBox";
-            this.aboutGroupBox.Size = new System.Drawing.Size(572, 117);
+            this.aboutGroupBox.Size = new System.Drawing.Size(580, 117);
             this.aboutGroupBox.TabIndex = 8;
             this.aboutGroupBox.TabStop = false;
             this.aboutGroupBox.Text = "This Computer";
@@ -449,7 +593,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 89.08297F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.91703F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 184F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 147F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 148F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -470,7 +614,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(191, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(190, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 15;
@@ -481,7 +625,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(220, 3);
+            this.label6.Location = new System.Drawing.Point(219, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 16;
@@ -492,7 +636,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(398, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(397, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 17;
@@ -504,7 +648,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(44, 3);
+            this.label2.Location = new System.Drawing.Point(43, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 14;
@@ -514,7 +658,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 23);
+            this.label5.Location = new System.Drawing.Point(10, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
             this.label5.TabIndex = 18;
@@ -524,7 +668,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(191, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(190, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 19;
@@ -533,14 +677,14 @@ namespace Windar.TrayApp
             // 
             // peersGroupBox
             // 
-            this.peersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.peersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.peersGroupBox.Controls.Add(this.peersGrid);
             this.peersGroupBox.Location = new System.Drawing.Point(9, 132);
             this.peersGroupBox.Name = "peersGroupBox";
             this.peersGroupBox.Padding = new System.Windows.Forms.Padding(7, 4, 6, 7);
-            this.peersGroupBox.Size = new System.Drawing.Size(572, 199);
+            this.peersGroupBox.Size = new System.Drawing.Size(580, 210);
             this.peersGroupBox.TabIndex = 20;
             this.peersGroupBox.TabStop = false;
             this.peersGroupBox.Text = "Other Computers";
@@ -564,7 +708,7 @@ namespace Windar.TrayApp
             this.peersGrid.Name = "peersGrid";
             this.peersGrid.RowHeadersVisible = false;
             this.peersGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.peersGrid.Size = new System.Drawing.Size(559, 175);
+            this.peersGrid.Size = new System.Drawing.Size(567, 186);
             this.peersGrid.StandardTab = true;
             this.peersGrid.TabIndex = 21;
             this.peersGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.peersGrid_CellValueChanged);
@@ -607,165 +751,21 @@ namespace Windar.TrayApp
             this.addPeerMenuItem,
             this.removePeerMenuItem});
             this.peersContextMenu.Name = "peersContextMenu";
-            this.peersContextMenu.Size = new System.Drawing.Size(118, 48);
+            this.peersContextMenu.Size = new System.Drawing.Size(125, 48);
             // 
             // addPeerMenuItem
             // 
             this.addPeerMenuItem.Name = "addPeerMenuItem";
-            this.addPeerMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addPeerMenuItem.Size = new System.Drawing.Size(124, 22);
             this.addPeerMenuItem.Text = "Add";
             this.addPeerMenuItem.Click += new System.EventHandler(this.addPeerMenuItem_Click);
             // 
             // removePeerMenuItem
             // 
             this.removePeerMenuItem.Name = "removePeerMenuItem";
-            this.removePeerMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removePeerMenuItem.Size = new System.Drawing.Size(124, 22);
             this.removePeerMenuItem.Text = "Remove";
             this.removePeerMenuItem.Click += new System.EventHandler(this.removePeerMenuItem_Click);
-            // 
-            // libraryTabPage
-            // 
-            this.libraryTabPage.Controls.Add(this.libraryPanel);
-            this.libraryTabPage.Location = new System.Drawing.Point(4, 22);
-            this.libraryTabPage.Name = "libraryTabPage";
-            this.libraryTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.libraryTabPage.Size = new System.Drawing.Size(600, 377);
-            this.libraryTabPage.TabIndex = 7;
-            this.libraryTabPage.Text = "Local Library";
-            this.libraryTabPage.UseVisualStyleBackColor = true;
-            // 
-            // libraryPanel
-            // 
-            this.libraryPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.libraryPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.libraryPanel.Controls.Add(this.deleteIndexButton);
-            this.libraryPanel.Controls.Add(this.rebuildIndexButton);
-            this.libraryPanel.Controls.Add(this.tracklistButton);
-            this.libraryPanel.Controls.Add(this.libraryGrid);
-            this.libraryPanel.Controls.Add(this.libraryCancelButton);
-            this.libraryPanel.Controls.Add(this.librarySaveButton);
-            this.libraryPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.libraryPanel.Location = new System.Drawing.Point(3, 3);
-            this.libraryPanel.Name = "libraryPanel";
-            this.libraryPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.libraryPanel.Size = new System.Drawing.Size(594, 371);
-            this.libraryPanel.TabIndex = 1;
-            // 
-            // deleteIndexButton
-            // 
-            this.deleteIndexButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.deleteIndexButton.Location = new System.Drawing.Point(329, 337);
-            this.deleteIndexButton.Name = "deleteIndexButton";
-            this.deleteIndexButton.Size = new System.Drawing.Size(80, 23);
-            this.deleteIndexButton.TabIndex = 27;
-            this.deleteIndexButton.Text = "Delete Index";
-            this.deleteIndexButton.UseVisualStyleBackColor = true;
-            this.deleteIndexButton.Click += new System.EventHandler(this.deleteIndexButton_Click);
-            // 
-            // rebuildIndexButton
-            // 
-            this.rebuildIndexButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.rebuildIndexButton.Location = new System.Drawing.Point(415, 337);
-            this.rebuildIndexButton.Name = "rebuildIndexButton";
-            this.rebuildIndexButton.Size = new System.Drawing.Size(80, 23);
-            this.rebuildIndexButton.TabIndex = 28;
-            this.rebuildIndexButton.Text = "Rebuild Index";
-            this.rebuildIndexButton.UseVisualStyleBackColor = true;
-            this.rebuildIndexButton.Click += new System.EventHandler(this.rebuildIndexButton_Click);
-            // 
-            // tracklistButton
-            // 
-            this.tracklistButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tracklistButton.Location = new System.Drawing.Point(501, 337);
-            this.tracklistButton.Name = "tracklistButton";
-            this.tracklistButton.Size = new System.Drawing.Size(80, 23);
-            this.tracklistButton.TabIndex = 29;
-            this.tracklistButton.Text = "Track List";
-            this.tracklistButton.UseVisualStyleBackColor = true;
-            this.tracklistButton.Click += new System.EventHandler(this.tracklistButton_Click);
-            // 
-            // libraryGrid
-            // 
-            this.libraryGrid.AllowUserToAddRows = false;
-            this.libraryGrid.AllowUserToDeleteRows = false;
-            this.libraryGrid.AllowUserToResizeRows = false;
-            this.libraryGrid.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.libraryGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.libraryGrid.BackgroundColor = System.Drawing.SystemColors.Control;
-            this.libraryGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.libraryGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.libraryGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.LibraryItemPath});
-            this.libraryGrid.ContextMenuStrip = this.libraryContextMenu;
-            this.libraryGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.libraryGrid.Location = new System.Drawing.Point(9, 9);
-            this.libraryGrid.Name = "libraryGrid";
-            this.libraryGrid.ReadOnly = true;
-            this.libraryGrid.RowHeadersVisible = false;
-            this.libraryGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.libraryGrid.Size = new System.Drawing.Size(572, 318);
-            this.libraryGrid.StandardTab = true;
-            this.libraryGrid.TabIndex = 24;
-            this.libraryGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellValueChanged);
-            this.libraryGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseDown);
-            this.libraryGrid.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseClick);
-            this.libraryGrid.MouseClick += new System.Windows.Forms.MouseEventHandler(this.libraryGrid_MouseClick);
-            this.libraryGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.libraryGrid_CellEndEdit);
-            this.libraryGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.libraryGrid_CellMouseDoubleClick);
-            // 
-            // LibraryItemPath
-            // 
-            this.LibraryItemPath.HeaderText = "Path";
-            this.LibraryItemPath.Name = "LibraryItemPath";
-            this.LibraryItemPath.ReadOnly = true;
-            // 
-            // libraryContextMenu
-            // 
-            this.libraryContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addLibPathMenuItem,
-            this.removeLibPathMenuItem});
-            this.libraryContextMenu.Name = "libraryContextMenu";
-            this.libraryContextMenu.Size = new System.Drawing.Size(118, 48);
-            // 
-            // addLibPathMenuItem
-            // 
-            this.addLibPathMenuItem.Name = "addLibPathMenuItem";
-            this.addLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.addLibPathMenuItem.Text = "Add";
-            this.addLibPathMenuItem.Click += new System.EventHandler(this.addLibPathMenuItem_Click);
-            // 
-            // removeLibPathMenuItem
-            // 
-            this.removeLibPathMenuItem.Name = "removeLibPathMenuItem";
-            this.removeLibPathMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.removeLibPathMenuItem.Text = "Remove";
-            this.removeLibPathMenuItem.Click += new System.EventHandler(this.removeLibPathMenuItem_Click);
-            // 
-            // libraryCancelButton
-            // 
-            this.libraryCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.libraryCancelButton.Enabled = false;
-            this.libraryCancelButton.Location = new System.Drawing.Point(75, 337);
-            this.libraryCancelButton.Name = "libraryCancelButton";
-            this.libraryCancelButton.Size = new System.Drawing.Size(60, 23);
-            this.libraryCancelButton.TabIndex = 26;
-            this.libraryCancelButton.Text = "Cancel";
-            this.libraryCancelButton.UseVisualStyleBackColor = true;
-            this.libraryCancelButton.Click += new System.EventHandler(this.libraryCancelButton_Click);
-            // 
-            // librarySaveButton
-            // 
-            this.librarySaveButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.librarySaveButton.Enabled = false;
-            this.librarySaveButton.Location = new System.Drawing.Point(9, 337);
-            this.librarySaveButton.Name = "librarySaveButton";
-            this.librarySaveButton.Size = new System.Drawing.Size(60, 23);
-            this.librarySaveButton.TabIndex = 25;
-            this.librarySaveButton.Text = "Save";
-            this.librarySaveButton.UseVisualStyleBackColor = true;
-            this.librarySaveButton.Click += new System.EventHandler(this.librarySaveButton_Click);
             // 
             // modsTabPage
             // 
@@ -773,7 +773,7 @@ namespace Windar.TrayApp
             this.modsTabPage.Location = new System.Drawing.Point(4, 22);
             this.modsTabPage.Name = "modsTabPage";
             this.modsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.modsTabPage.Size = new System.Drawing.Size(600, 377);
+            this.modsTabPage.Size = new System.Drawing.Size(608, 388);
             this.modsTabPage.TabIndex = 4;
             this.modsTabPage.Text = "Resolvers";
             this.modsTabPage.UseVisualStyleBackColor = true;
@@ -789,7 +789,7 @@ namespace Windar.TrayApp
             this.modsPanel.Location = new System.Drawing.Point(3, 3);
             this.modsPanel.Name = "modsPanel";
             this.modsPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.modsPanel.Size = new System.Drawing.Size(594, 371);
+            this.modsPanel.Size = new System.Drawing.Size(602, 382);
             this.modsPanel.TabIndex = 0;
             // 
             // modsGrid
@@ -797,7 +797,7 @@ namespace Windar.TrayApp
             this.modsGrid.AllowUserToAddRows = false;
             this.modsGrid.AllowUserToDeleteRows = false;
             this.modsGrid.AllowUserToResizeRows = false;
-            this.modsGrid.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.modsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.modsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -817,7 +817,7 @@ namespace Windar.TrayApp
             this.modsGrid.Name = "modsGrid";
             this.modsGrid.RowHeadersVisible = false;
             this.modsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.modsGrid.Size = new System.Drawing.Size(572, 318);
+            this.modsGrid.Size = new System.Drawing.Size(580, 329);
             this.modsGrid.StandardTab = true;
             this.modsGrid.TabIndex = 30;
             this.modsGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.modsGrid_CellValueChanged);
@@ -857,25 +857,25 @@ namespace Windar.TrayApp
             this.addModMenuItem,
             this.removeModMenuItem});
             this.modsContextMenu.Name = "modsContextMenu";
-            this.modsContextMenu.Size = new System.Drawing.Size(118, 48);
+            this.modsContextMenu.Size = new System.Drawing.Size(125, 48);
             // 
             // addModMenuItem
             // 
             this.addModMenuItem.Name = "addModMenuItem";
-            this.addModMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addModMenuItem.Size = new System.Drawing.Size(124, 22);
             this.addModMenuItem.Text = "Add";
             // 
             // removeModMenuItem
             // 
             this.removeModMenuItem.Name = "removeModMenuItem";
-            this.removeModMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removeModMenuItem.Size = new System.Drawing.Size(124, 22);
             this.removeModMenuItem.Text = "Remove";
             // 
             // modsCancelButton
             // 
-            this.modsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.modsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.modsCancelButton.Enabled = false;
-            this.modsCancelButton.Location = new System.Drawing.Point(75, 337);
+            this.modsCancelButton.Location = new System.Drawing.Point(75, 348);
             this.modsCancelButton.Name = "modsCancelButton";
             this.modsCancelButton.Size = new System.Drawing.Size(60, 23);
             this.modsCancelButton.TabIndex = 32;
@@ -884,9 +884,9 @@ namespace Windar.TrayApp
             // 
             // modsSaveButton
             // 
-            this.modsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.modsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.modsSaveButton.Enabled = false;
-            this.modsSaveButton.Location = new System.Drawing.Point(9, 337);
+            this.modsSaveButton.Location = new System.Drawing.Point(9, 348);
             this.modsSaveButton.Name = "modsSaveButton";
             this.modsSaveButton.Size = new System.Drawing.Size(60, 23);
             this.modsSaveButton.TabIndex = 31;
@@ -899,7 +899,7 @@ namespace Windar.TrayApp
             this.pluginsTabPage.Location = new System.Drawing.Point(4, 22);
             this.pluginsTabPage.Name = "pluginsTabPage";
             this.pluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.pluginsTabPage.Size = new System.Drawing.Size(600, 377);
+            this.pluginsTabPage.Size = new System.Drawing.Size(608, 388);
             this.pluginsTabPage.TabIndex = 6;
             this.pluginsTabPage.Text = "Plug-ins";
             this.pluginsTabPage.UseVisualStyleBackColor = true;
@@ -915,7 +915,7 @@ namespace Windar.TrayApp
             this.pluginsPanel.Location = new System.Drawing.Point(3, 3);
             this.pluginsPanel.Name = "pluginsPanel";
             this.pluginsPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.pluginsPanel.Size = new System.Drawing.Size(594, 371);
+            this.pluginsPanel.Size = new System.Drawing.Size(602, 382);
             this.pluginsPanel.TabIndex = 0;
             // 
             // pluginsGrid
@@ -923,7 +923,7 @@ namespace Windar.TrayApp
             this.pluginsGrid.AllowUserToAddRows = false;
             this.pluginsGrid.AllowUserToDeleteRows = false;
             this.pluginsGrid.AllowUserToResizeRows = false;
-            this.pluginsGrid.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.pluginsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.pluginsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -940,7 +940,7 @@ namespace Windar.TrayApp
             this.pluginsGrid.Name = "pluginsGrid";
             this.pluginsGrid.RowHeadersVisible = false;
             this.pluginsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.pluginsGrid.Size = new System.Drawing.Size(572, 318);
+            this.pluginsGrid.Size = new System.Drawing.Size(580, 329);
             this.pluginsGrid.StandardTab = true;
             this.pluginsGrid.TabIndex = 33;
             this.pluginsGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pluginsGrid_MouseDown);
@@ -965,25 +965,25 @@ namespace Windar.TrayApp
             this.addPluginMenuItem,
             this.removePluginMenuItem});
             this.pluginsContextMenu.Name = "pluginsContextMenu";
-            this.pluginsContextMenu.Size = new System.Drawing.Size(118, 48);
+            this.pluginsContextMenu.Size = new System.Drawing.Size(125, 48);
             // 
             // addPluginMenuItem
             // 
             this.addPluginMenuItem.Name = "addPluginMenuItem";
-            this.addPluginMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addPluginMenuItem.Size = new System.Drawing.Size(124, 22);
             this.addPluginMenuItem.Text = "Add";
             // 
             // removePluginMenuItem
             // 
             this.removePluginMenuItem.Name = "removePluginMenuItem";
-            this.removePluginMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removePluginMenuItem.Size = new System.Drawing.Size(124, 22);
             this.removePluginMenuItem.Text = "Remove";
             // 
             // pluginsCancelButton
             // 
-            this.pluginsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pluginsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pluginsCancelButton.Enabled = false;
-            this.pluginsCancelButton.Location = new System.Drawing.Point(75, 337);
+            this.pluginsCancelButton.Location = new System.Drawing.Point(75, 348);
             this.pluginsCancelButton.Name = "pluginsCancelButton";
             this.pluginsCancelButton.Size = new System.Drawing.Size(60, 23);
             this.pluginsCancelButton.TabIndex = 35;
@@ -992,9 +992,9 @@ namespace Windar.TrayApp
             // 
             // pluginsSaveButton
             // 
-            this.pluginsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pluginsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pluginsSaveButton.Enabled = false;
-            this.pluginsSaveButton.Location = new System.Drawing.Point(9, 337);
+            this.pluginsSaveButton.Location = new System.Drawing.Point(9, 348);
             this.pluginsSaveButton.Name = "pluginsSaveButton";
             this.pluginsSaveButton.Size = new System.Drawing.Size(60, 23);
             this.pluginsSaveButton.TabIndex = 34;
@@ -1007,7 +1007,7 @@ namespace Windar.TrayApp
             this.propsTabPage.Location = new System.Drawing.Point(4, 22);
             this.propsTabPage.Name = "propsTabPage";
             this.propsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.propsTabPage.Size = new System.Drawing.Size(600, 377);
+            this.propsTabPage.Size = new System.Drawing.Size(608, 388);
             this.propsTabPage.TabIndex = 3;
             this.propsTabPage.Text = "Plug-in Properties";
             this.propsTabPage.UseVisualStyleBackColor = true;
@@ -1023,14 +1023,14 @@ namespace Windar.TrayApp
             this.propsPanel.Location = new System.Drawing.Point(3, 3);
             this.propsPanel.Name = "propsPanel";
             this.propsPanel.Padding = new System.Windows.Forms.Padding(6);
-            this.propsPanel.Size = new System.Drawing.Size(594, 371);
+            this.propsPanel.Size = new System.Drawing.Size(602, 382);
             this.propsPanel.TabIndex = 0;
             // 
             // propsCancelButton
             // 
-            this.propsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.propsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.propsCancelButton.Enabled = false;
-            this.propsCancelButton.Location = new System.Drawing.Point(75, 337);
+            this.propsCancelButton.Location = new System.Drawing.Point(75, 348);
             this.propsCancelButton.Name = "propsCancelButton";
             this.propsCancelButton.Size = new System.Drawing.Size(60, 23);
             this.propsCancelButton.TabIndex = 38;
@@ -1039,9 +1039,9 @@ namespace Windar.TrayApp
             // 
             // propsSaveButton
             // 
-            this.propsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.propsSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.propsSaveButton.Enabled = false;
-            this.propsSaveButton.Location = new System.Drawing.Point(9, 337);
+            this.propsSaveButton.Location = new System.Drawing.Point(9, 348);
             this.propsSaveButton.Name = "propsSaveButton";
             this.propsSaveButton.Size = new System.Drawing.Size(60, 23);
             this.propsSaveButton.TabIndex = 37;
@@ -1053,7 +1053,7 @@ namespace Windar.TrayApp
             this.propsGrid.AllowUserToAddRows = false;
             this.propsGrid.AllowUserToDeleteRows = false;
             this.propsGrid.AllowUserToResizeRows = false;
-            this.propsGrid.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.propsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.propsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -1070,7 +1070,7 @@ namespace Windar.TrayApp
             this.propsGrid.Name = "propsGrid";
             this.propsGrid.RowHeadersVisible = false;
             this.propsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.propsGrid.Size = new System.Drawing.Size(572, 318);
+            this.propsGrid.Size = new System.Drawing.Size(580, 329);
             this.propsGrid.StandardTab = true;
             this.propsGrid.TabIndex = 36;
             this.propsGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.propsGrid_MouseDown);
@@ -1093,18 +1093,18 @@ namespace Windar.TrayApp
             this.addPropMenuItem,
             this.removePropMenuItem});
             this.propsContextMenu.Name = "propsContextMenu";
-            this.propsContextMenu.Size = new System.Drawing.Size(118, 48);
+            this.propsContextMenu.Size = new System.Drawing.Size(125, 48);
             // 
             // addPropMenuItem
             // 
             this.addPropMenuItem.Name = "addPropMenuItem";
-            this.addPropMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.addPropMenuItem.Size = new System.Drawing.Size(124, 22);
             this.addPropMenuItem.Text = "Add";
             // 
             // removePropMenuItem
             // 
             this.removePropMenuItem.Name = "removePropMenuItem";
-            this.removePropMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.removePropMenuItem.Size = new System.Drawing.Size(124, 22);
             this.removePropMenuItem.Text = "Remove";
             // 
             // playdarTabPage
@@ -1154,7 +1154,7 @@ namespace Windar.TrayApp
             // 
             // restartDaemonButton
             // 
-            this.restartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.restartDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.restartDaemonButton.Location = new System.Drawing.Point(546, 0);
             this.restartDaemonButton.Name = "restartDaemonButton";
             this.restartDaemonButton.Size = new System.Drawing.Size(60, 23);
@@ -1187,7 +1187,7 @@ namespace Windar.TrayApp
             // 
             // stopDaemonButton
             // 
-            this.stopDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.stopDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.stopDaemonButton.Location = new System.Drawing.Point(480, 0);
             this.stopDaemonButton.Name = "stopDaemonButton";
             this.stopDaemonButton.Size = new System.Drawing.Size(60, 23);
@@ -1198,7 +1198,7 @@ namespace Windar.TrayApp
             // 
             // startDaemonButton
             // 
-            this.startDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.startDaemonButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.startDaemonButton.Enabled = false;
             this.startDaemonButton.Location = new System.Drawing.Point(414, 0);
             this.startDaemonButton.Name = "startDaemonButton";
@@ -1287,10 +1287,6 @@ namespace Windar.TrayApp
             this.logBoxPanel.Size = new System.Drawing.Size(608, 374);
             this.logBoxPanel.TabIndex = 1;
             // 
-            // cellEndEditTimer
-            // 
-            this.cellEndEditTimer.Tick += new System.EventHandler(this.cellEndEditTimer_Tick);
-            // 
             // logBox
             // 
             this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1308,13 +1304,17 @@ namespace Windar.TrayApp
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;
             // 
+            // cellEndEditTimer
+            // 
+            this.cellEndEditTimer.Tick += new System.EventHandler(this.cellEndEditTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 442);
+            this.ClientSize = new System.Drawing.Size(632, 453);
             this.Controls.Add(this.mainformBorderPanel);
-            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1330,10 +1330,14 @@ namespace Windar.TrayApp
             this.aboutTabPage.PerformLayout();
             this.aboutCenterPanel.ResumeLayout(false);
             this.aboutCenterPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize) (this.playdarLogo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playdarLogo)).EndInit();
             this.optionsTabPage.ResumeLayout(false);
             this.optionsTabControl.ResumeLayout(false);
+            this.libraryTabPage.ResumeLayout(false);
+            this.libraryPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.libraryGrid)).EndInit();
+            this.libraryContextMenu.ResumeLayout(false);
             this.generalOptionsTabPage.ResumeLayout(false);
             this.generalOptionsPanel.ResumeLayout(false);
             this.aboutGroupBox.ResumeLayout(false);
@@ -1342,23 +1346,19 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.peersGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.peersGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.peersGrid)).EndInit();
             this.peersContextMenu.ResumeLayout(false);
-            this.libraryTabPage.ResumeLayout(false);
-            this.libraryPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.libraryGrid)).EndInit();
-            this.libraryContextMenu.ResumeLayout(false);
             this.modsTabPage.ResumeLayout(false);
             this.modsPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.modsGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.modsGrid)).EndInit();
             this.modsContextMenu.ResumeLayout(false);
             this.pluginsTabPage.ResumeLayout(false);
             this.pluginsPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.pluginsGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pluginsGrid)).EndInit();
             this.pluginsContextMenu.ResumeLayout(false);
             this.propsTabPage.ResumeLayout(false);
             this.propsPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.propsGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.propsGrid)).EndInit();
             this.propsContextMenu.ResumeLayout(false);
             this.playdarTabPage.ResumeLayout(false);
             this.daemonSplitPanel.Panel1.ResumeLayout(false);
