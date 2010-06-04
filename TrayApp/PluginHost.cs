@@ -149,8 +149,8 @@ namespace Windar.TrayApp
         {
             var tab = new TabPage { Text = title };
             tab.Controls.Add(control);
+            tab.BackColor = Color.FromKnownColor(KnownColor.Transparent);
             tab.Padding = new Padding(3);
-            tab.BackColor = Color.FromKnownColor(KnownColor.Control);
             control.Dock = DockStyle.Fill;
             Program.Instance.MainForm.optionsTabControl.Controls.Add(tab);
         }
