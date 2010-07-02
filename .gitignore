@@ -13,11 +13,11 @@ _ReSharper.*
 /Installer/Payload/playdar_python_resolvers/build
 /Installer/Payload/playdar_python_resolvers/dist
 /Installer/Temp
-/Installer/Utils/erlini/bin
-/Installer/Utils/erlini/obj
-/Installer/Utils/erlini/erlini.pdb
-/Installer/Utils/erlini/erlini.vshost.exe
-/Installer/Utils/erlini/erlini.vshost.exe.manifest
+/nsis/erlini/bin
+/nsis/erlini/obj
+/nsis/erlini/erlini.pdb
+/nsis/erlini/erlini.vshost.exe
+/nsis/erlini/erlini.vshost.exe.manifest
 /Installer/windar-*.exe
 /Installer/build_log.log
 /src/Common/bin
