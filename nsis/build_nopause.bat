@@ -36,7 +36,7 @@ ECHO.
 SET BUILD_TEMP="%INSTALL_BUILD_DIR%Temp\"
 IF NOT EXIST %BUILD_TEMP% MKDIR %BUILD_TEMP%
 
-CD %INSTALL_BUILD_DIR%Utils\erlini
+CD %INSTALL_BUILD_DIR%erlini
 %FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Release
 IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
 
@@ -51,7 +51,7 @@ ECHO *   Building solution.                      *
 ECHO *                                           *
 ECHO *********************************************
 ECHO.
-CD %INSTALL_BUILD_DIR%..
+CD %INSTALL_BUILD_DIR%..\src
 %FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% Windar.sln /v:Quiet /t:Rebuild /p:Configuration=Debug
 IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
 
@@ -62,7 +62,7 @@ ECHO *   Copy build product to temp folder.      *
 ECHO *                                           *
 ECHO *********************************************
 ECHO.
-CD %INSTALL_BUILD_DIR%..\TrayApp\bin\Debug
+CD %INSTALL_BUILD_DIR%..\src\TrayApp\bin\Debug
 
 ECHO ______________________________
 ECHO Windar application components:
@@ -118,7 +118,7 @@ ECHO *   Building the NSIS installer package.    *
 ECHO *                                           *
 ECHO *********************************************
 ECHO.
-CD %INSTALL_BUILD_DIR%..\Installer
+CD %INSTALL_BUILD_DIR%
 %MAKENSIS% windar.nsi
 IF NOT %ERRORLEVEL% == 0 GOTO NSIS_ERROR
 

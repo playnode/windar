@@ -34,7 +34,6 @@
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_BUNDLE_RESOLVERS
 !define OPTION_BUNDLE_SCROBBLER
-!define OPTION_BUNDLE_TESTPLAYER
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
@@ -111,8 +110,8 @@ ReserveFile windar.ini
 !define MUI_HEADERIMAGE_BITMAP page_header.bmp
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_TITLE "Windar Install Completed"
-!define MUI_FINISHPAGE_LINK "Click here to visit the Playnode website."
-!define MUI_FINISHPAGE_LINK_LOCATION "http://playnode.org/"
+!define MUI_FINISHPAGE_LINK "Click here to visit the Playdar website."
+!define MUI_FINISHPAGE_LINK_LOCATION "http://www.playdar.org/"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
    !define MUI_FINISHPAGE_SHOWREADME
