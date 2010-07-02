@@ -13,7 +13,7 @@ the OpenSSL Toolkit ([www.openssl.org](http://www.openssl.org/)).
 
 Windar
 ======
-[Windar](http://windar.org/) is a GPL-licensed package for 
+[Windar](http://windar.org/) is a LGPL-licensed package for 
 [Playdar](http://www.playdar.org/) installation on Windows.
 
 This software is currently pre-release and continues to be developed.

@@ -1,23 +1,23 @@
-;*************************************************************************
 ; DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 ;
 ; Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
 ;
-; Windar: Playdar for Windows
+; Windar - Playdar for Windows
 ;
-; Windar is free software: you can redistribute it and/or modify
-; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation, either version 2 of the License, or
-; (at your option) any later version.
+; Windar is free software; you can redistribute it and/or modify it
+; under the terms of the GNU Lesser General Public License (LGPL) as published
+; by the Free Software Foundation; either version 2.1 of the License, or (at
+; your option) any later version.
 ;
 ; Windar is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-; GNU General Public License for more details.
+; GNU Lesser General Public License version 2.1 for more details
+; (a copy is included in the LICENSE file that accompanied this code).
 ;
-; You should have received a copy of the GNU General Public License
+; You should have received a copy of the GNU Lesser General Public License
 ; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;************************************************************************/
+;/
 
 ;-----------------------------------------------------------------------------
 ;Get version information from Windar exe.
@@ -30,9 +30,11 @@
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
 !define OPTION_DEBUG_BUILD
+;!define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_BUNDLE_RESOLVERS
 !define OPTION_BUNDLE_SCROBBLER
+!define OPTION_BUNDLE_TESTPLAYER
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
@@ -125,7 +127,9 @@ ReserveFile windar.ini
 ;Page macros.
 ;-----------------------------------------------------------------------------
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+!ifdef OPTION_LICENSE_AGREEMENT
+   !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+!endif
 Page custom PageReinstall PageLeaveReinstall
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -533,7 +537,6 @@ Section "Windar core" SEC_WINDAR
    ;License & copyright files.
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
-   File /oname=LICENSE-OPENSSL.txt ..\LICENSE-OPENSSL
 
    ;MPlayer and the Player plugin for Windar.
    SetDetailsPrint both
@@ -581,7 +584,6 @@ SectionGroup "Application shortcuts"
       CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
       CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE-OPENSSL.lnk" "$INSTDIR\LICENSE-OPENSSL.txt"
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\uninstall.exe"
       SetShellVarContext current
    ${MementoSectionEnd}
