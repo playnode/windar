@@ -1,6 +1,3 @@
-[submodule "Installer/Packages/Playdar"]
-	path = Installer/Packages/Playdar
-	url = git://github.com/playnode/playdar-core.git
-[submodule "Installer/Packages/Erlang"]
-	path = Installer/Packages/Erlang
-	url = git://github.com/erlang/otp.git
+[submodule "nsis/playdar-core"]
+	path = nsis/playdar-core
+	url = git://github.com/RJ/playdar-core.git
