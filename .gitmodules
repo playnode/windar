@@ -1,6 +1,3 @@
-[submodule "Libraries/BuildTasks"]
-	path = Libraries/BuildTasks
-	url = git://github.com/stever/vs-build-task.git
 [submodule "Installer/Packages/Playdar"]
 	path = Installer/Packages/Playdar
 	url = git://github.com/playnode/playdar-core.git
