@@ -125,7 +125,7 @@ ReserveFile windar.ini
 ;Page macros.
 ;-----------------------------------------------------------------------------
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "LICENSE.rtf"
+!insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
 Page custom PageReinstall PageLeaveReinstall
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
