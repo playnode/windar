@@ -1,3 +1,0 @@
-libeay32.dll is from OpenSSL for Windows
-http://gnuwin32.sourceforge.net/packages/openssl.htm
-http://code.google.com/p/openssl-for-windows/

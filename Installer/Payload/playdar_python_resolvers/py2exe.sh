@@ -1,1 +1,0 @@
-/cygdrive/c/Python26/python.exe py2exe_setup.py py2exe
