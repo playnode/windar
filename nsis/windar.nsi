@@ -9,7 +9,7 @@
 ; by the Free Software Foundation; either version 2.1 of the License, or (at
 ; your option) any later version.
 ;
-; Windar is distributed in the hope that it will be useful,
+; This software is distributed in the hope that it will be useful,
 ; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ; GNU Lesser General Public License version 2.1 for more details
@@ -30,7 +30,7 @@
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
 !define OPTION_DEBUG_BUILD
-;!define OPTION_LICENSE_AGREEMENT
+!define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_BUNDLE_RESOLVERS
 !define OPTION_BUNDLE_SCROBBLER
@@ -52,7 +52,7 @@
 ;-----------------------------------------------------------------------------
 Name "Windar"
 Caption "Playdar for Windows"
-BrandingText "Playnode projects (Open Source)"
+BrandingText "Playdar software installer"
 OutFile "windar-${VERSION}.exe"
 InstallDir "$PROGRAMFILES\Windar"
 InstallDirRegKey HKCU "Software\Windar" ""
@@ -451,7 +451,7 @@ FunctionEnd
 #                                                                            #
 ##############################################################################
 
-Section "Windar core" SEC_WINDAR
+Section "Playdar core & Windar tray application" SEC_WINDAR
    SectionIn 1 2 3 RO
    SetDetailsPrint listonly
 
@@ -557,22 +557,10 @@ Section "Windar core" SEC_WINDAR
    File /r Payload\playdar_modules\player
 SectionEnd
 
-!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
-   ${MementoSection} "Auto-start on system startup" SEC_STARTUP_FOLDER
-      SectionIn 1 2
-      SetDetailsPrint both
-      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
-      SetDetailsPrint listonly
-      SetShellVarContext all
-      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
-      SetShellVarContext current
-   ${MementoSectionEnd}
-!endif
-
-SectionGroup "Application shortcuts"
+SectionGroup "Shortcuts"
 
 !ifdef OPTION_SECTION_SC_START_MENU
-   ${MementoSection} "Start Menu Program Group Shortcuts" SEC_START_MENU
+   ${MementoSection} "Start Menu Program Group" SEC_START_MENU
       SectionIn 1 2
       SetDetailsPrint both
       DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
@@ -584,6 +572,18 @@ SectionGroup "Application shortcuts"
       CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+      SetShellVarContext current
+   ${MementoSectionEnd}
+!endif
+
+!ifdef OPTION_SECTION_SC_START_MENU_STARTUP
+   ${MementoSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
+      SectionIn 1 2
+      SetDetailsPrint both
+      DetailPrint "Adding shortcut in Startup folder to start Windar on login."
+      SetDetailsPrint listonly
+      SetShellVarContext all
+      CreateShortCut "$SMPROGRAMS\Startup\Windar.lnk" "$INSTDIR\Windar.exe"
       SetShellVarContext current
    ${MementoSectionEnd}
 !endif
@@ -681,27 +681,18 @@ SectionGroupEnd
       !endif
    ${MementoSectionEnd}
 
-   ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
-      SectionIn 2
-      SetDetailsPrint both
-      DetailPrint "Installing resolver for Napster."
-      SetDetailsPrint listonly
-      SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
-      SetOutPath "$INSTDIR"
-      File Temp\Windar.NapsterPlugin.dll
-      !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.NapsterPlugin.pdb
-      !endif
-   ${MementoSectionEnd}
-
-   #${MementoUnselectedSection} "SoundCloud" SEC_SOUNDCLOUD_RESOLVER
+   #${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
    #   SectionIn 2
    #   SetDetailsPrint both
-   #   DetailPrint "Installing resolver for SoundCloud."
+   #   DetailPrint "Installing resolver for Napster."
    #   SetDetailsPrint listonly
    #   SetOutPath "$INSTDIR\playdar\py2exe"
-   #   File /r Payload\playdar_python_resolvers\dist\soundcloud-resolver.exe
+   #   File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
+   #   SetOutPath "$INSTDIR"
+   #   File Temp\Windar.NapsterPlugin.dll
+   #   !ifdef OPTION_DEBUG_BUILD
+   #      File Temp\Windar.NapsterPlugin.pdb
+   #   !endif
    #${MementoSectionEnd}
 
    SectionGroupEnd
@@ -738,8 +729,7 @@ ${MementoSectionDone}
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
-#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SOUNDCLOUD_RESOLVER} "SoundCloud resolver script."
+#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
 
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
