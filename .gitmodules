@@ -1,3 +1,0 @@
-[submodule "nsis/playdar-core"]
-	path = nsis/playdar-core
-	url = git://github.com/RJ/playdar-core.git

@@ -17,7 +17,6 @@
 ;
 ; You should have received a copy of the GNU Lesser General Public License
 ; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;/
 
 ;-----------------------------------------------------------------------------
 ;Get version information from Windar exe.
@@ -29,7 +28,7 @@
 ;-----------------------------------------------------------------------------
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
-!define OPTION_DEBUG_BUILD
+;!define OPTION_DEBUG_BUILD
 !define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_BUNDLE_RESOLVERS
@@ -485,20 +484,6 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    File /r Payload\minimerl
    File /r Payload\playdar
 
-   ;py2exe payload.
-   SetOutPath "$INSTDIR\playdar\py2exe"
-   File Payload\playdar_python_resolvers\dist\_ctypes.pyd
-   File Payload\playdar_python_resolvers\dist\_hashlib.pyd
-   File Payload\playdar_python_resolvers\dist\_socket.pyd
-   File Payload\playdar_python_resolvers\dist\_ssl.pyd
-   File Payload\playdar_python_resolvers\dist\bz2.pyd
-   File Payload\playdar_python_resolvers\dist\library.zip
-   File Payload\playdar_python_resolvers\dist\pyexpat.pyd
-   File Payload\playdar_python_resolvers\dist\python26.dll
-   File Payload\playdar_python_resolvers\dist\select.pyd
-   File Payload\playdar_python_resolvers\dist\unicodedata.pyd
-   File Payload\playdar_python_resolvers\dist\w9xpopen.exe
-
    ;Bat script to launch playdar-core in command window.
    SetOutPath "$INSTDIR\playdar"
    File Payload\playdar-core.bat
@@ -537,12 +522,11 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
 
-   ;MPlayer and the Player plugin for Windar.
+   ;Player plugin for Windar.
    SetDetailsPrint both
-   DetailPrint "Installing MPlayer and the Player plugin for Windar."
+   DetailPrint "Installing the Player plugin for Windar."
    SetDetailsPrint listonly
    SetOutPath "$INSTDIR"
-   File /r Payload\mplayer
    File Temp\Windar.PlayerPlugin.dll
    !ifdef OPTION_DEBUG_BUILD
       File Temp\Windar.PlayerPlugin.pdb
@@ -561,7 +545,7 @@ SectionGroup "Shortcuts"
 
 !ifdef OPTION_SECTION_SC_START_MENU
    ${MementoSection} "Start Menu Program Group" SEC_START_MENU
-      SectionIn 1 2
+      SectionIn 1 2 3
       SetDetailsPrint both
       DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
       SetDetailsPrint listonly
@@ -613,15 +597,6 @@ SectionGroupEnd
 !ifdef OPTION_BUNDLE_RESOLVERS
    SectionGroup "Additional resolver modules"
 
-   #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
-   #   SectionIn 2
-   #   SetDetailsPrint both
-   #   DetailPrint "Installing resolver for Amie Street."
-   #   SetDetailsPrint listonly
-   #   SetOutPath "$INSTDIR\playdar\py2exe"
-   #   File /r Payload\playdar_python_resolvers\dist\amiestreet-resolver.exe
-   #${MementoSectionEnd}
-
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
       SetDetailsPrint both
@@ -629,24 +604,6 @@ SectionGroupEnd
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\aolmusic
-   ${MementoSectionEnd}
-
-   ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
-      SectionIn 2
-      SetDetailsPrint both
-      DetailPrint "Installing resolver for Audiofarm."
-      SetDetailsPrint listonly
-      SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
-   ${MementoSectionEnd}
-
-   ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
-      SectionIn 2
-      SetDetailsPrint both
-      DetailPrint "Installing resolver for The Echo Nest."
-      SetDetailsPrint listonly
-      SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\echonest-resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
@@ -666,34 +623,6 @@ SectionGroupEnd
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\magnatune
    ${MementoSectionEnd}
-
-   ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
-      SectionIn 2
-      SetDetailsPrint both
-      DetailPrint "Installing resolver for MP3tunes."
-      SetDetailsPrint listonly
-      SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
-      SetOutPath "$INSTDIR"
-      File Temp\Windar.MP3tunesPlugin.dll
-      !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.MP3tunesPlugin.pdb
-      !endif
-   ${MementoSectionEnd}
-
-   #${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
-   #   SectionIn 2
-   #   SetDetailsPrint both
-   #   DetailPrint "Installing resolver for Napster."
-   #   SetDetailsPrint listonly
-   #   SetOutPath "$INSTDIR\playdar\py2exe"
-   #   File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
-   #   SetOutPath "$INSTDIR"
-   #   File Temp\Windar.NapsterPlugin.dll
-   #   !ifdef OPTION_DEBUG_BUILD
-   #      File Temp\Windar.NapsterPlugin.pdb
-   #   !endif
-   #${MementoSectionEnd}
 
    SectionGroupEnd
 !endif
@@ -722,14 +651,9 @@ ${MementoSectionDone}
 
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with cut-down versions of Erlang and mplayer."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
-#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
-#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
 
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
