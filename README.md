@@ -16,6 +16,5 @@ Windar
 [Windar](http://windar.org/) is a LGPL-licensed package for 
 [Playdar](http://www.playdar.org/) installation on Windows.
 
-This software is currently pre-release and continues to be developed.
 You can build from source following instructions
 [here](http://wiki.github.com/playnode/windar/build-and-develop).

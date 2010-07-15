@@ -34,7 +34,7 @@ namespace Windar.Common
             WindarProgramFiles = appPath;
         }
 
-        public string LocalPlaydarURL
+        public string LocalPlaydarUrl
         {
             get
             {

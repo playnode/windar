@@ -65,10 +65,15 @@ namespace Windar.TrayApp
             Plugins = GetPlugins<IPlugin>();
             foreach (var plugin in Plugins)
             {
+                // Check for player plugin and ignore it if mplayer is not found.
+                var pluginName = plugin.GetType().Name;
+                if (Log.IsDebugEnabled) Log.Debug("Found plugin: " + pluginName);
+                if (pluginName.Equals("PlayerPlugin") && !Program.Instance.FindMPlayer()) continue;
+
                 plugin.Host = this;
                 plugin.Load();
 
-                if (Log.IsDebugEnabled) Log.Debug("Loaded plugin: " + plugin.GetType().Name);
+                if (Log.IsDebugEnabled) Log.Debug("Loaded plugin: " + pluginName);
             }
         }
 

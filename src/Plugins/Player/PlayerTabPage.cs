@@ -266,7 +266,7 @@ namespace Windar.PlayerPlugin
 
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("api/?method=stat");
+            url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("api/?method=stat");
 
             // Get and process result.
             var response = PlayerPlugin.WGet(url.ToString());
@@ -321,7 +321,7 @@ namespace Windar.PlayerPlugin
 
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("api/?method=resolve");
+            url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("api/?method=resolve");
             url.Append("&artist=").Append(artistName);
             url.Append("&album=").Append(albumName);
             url.Append("&track=").Append(trackTitle);
@@ -343,7 +343,7 @@ namespace Windar.PlayerPlugin
         {
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("api/?method=get_results");
+            url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("api/?method=get_results");
             url.Append("&qid=").Append(qid);
             if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
 
@@ -467,7 +467,7 @@ namespace Windar.PlayerPlugin
 
             // Build the request URL.
             var url = new StringBuilder();
-            url.Append(Plugin.Host.Paths.LocalPlaydarURL).Append("sid/").Append(item.SId);
+            url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("sid/").Append(item.SId);
             if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
 
             // Play the music!

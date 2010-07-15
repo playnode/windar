@@ -49,6 +49,7 @@ namespace Windar.TrayApp
             get
             {
                 var result = new StringBuilder();
+                //TODO: Get the configured URL from config.
                 result.Append("http://127.0.0.1:");
                 var port = 60211;
                 if (Config != null) port = Config.Main.WebPort;
@@ -678,5 +679,12 @@ namespace Windar.TrayApp
         }
 
         #endregion
+
+        internal bool FindMPlayer()
+        {
+            var path = new StringBuilder(Paths.WindarProgramFiles).Append(@"\mplayer\mplayer.exe").ToString();
+            if (Log.IsDebugEnabled) Log.Debug("Looking for MPlayer. Path = \"" + path + "\"");
+            return File.Exists(path);
+        }
     }
 }

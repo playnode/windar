@@ -50,7 +50,7 @@ namespace Windar.PlayerPlugin
         string BaseUrl()
         {
             var str = new StringBuilder();
-            str.Append(_page.Plugin.Host.Paths.LocalPlaydarURL);
+            str.Append(_page.Plugin.Host.Paths.LocalPlaydarUrl);
             str.Append("audioscrobbler/");
             return str.ToString();
         }
