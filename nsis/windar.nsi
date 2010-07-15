@@ -517,26 +517,26 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    SetOutPath "$INSTDIR"
 
    ;Windar application components:
-   File Temp\ErlangTerms.dll
-   File Temp\Windar.exe
-   File Temp\Windar.Common.dll
-   File Temp\Windar.PlaydarDaemon.dll
-   File Temp\Windar.PluginAPI.dll
+   File temp\ErlangTerms.dll
+   File temp\Windar.exe
+   File temp\Windar.Common.dll
+   File temp\Windar.PlaydarDaemon.dll
+   File temp\Windar.PluginAPI.dll
 
    ;Configuration
-   File Temp\Windar.exe.config
+   File temp\Windar.exe.config
 
    !ifdef OPTION_DEBUG_BUILD
       ;Debug build PDB files:
-      File Temp\ErlangTerms.pdb
-      File Temp\Windar.pdb
-      File Temp\Windar.Common.pdb
-      File Temp\Windar.PlaydarDaemon.pdb
-      File Temp\Windar.PluginAPI.pdb
+      File temp\ErlangTerms.pdb
+      File temp\Windar.pdb
+      File temp\Windar.Common.pdb
+      File temp\Windar.PlaydarDaemon.pdb
+      File temp\Windar.PluginAPI.pdb
    !endif
 
    ;Other libs:
-   File Temp\log4net.dll
+   File temp\log4net.dll
 
    ;License & copyright files.
    File /oname=COPYING.txt ..\COPYING
@@ -547,11 +547,11 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    DetailPrint "Installing the Player plugin for Windar."
    SetDetailsPrint listonly
    SetOutPath "$INSTDIR"
-   File Temp\Windar.PlayerPlugin.dll
+   File temp\Windar.PlayerPlugin.dll
    !ifdef OPTION_DEBUG_BUILD
-      File Temp\Windar.PlayerPlugin.pdb
+      File temp\Windar.PlayerPlugin.pdb
    !endif
-   File Temp\Newtonsoft.Json.Net20.dll
+   File temp\Newtonsoft.Json.Net20.dll
 
    ;Player module for Playdar.
    SetDetailsPrint both
@@ -679,9 +679,9 @@ SectionGroupEnd
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
       SetOutPath "$INSTDIR"
-      File Temp\Windar.MP3tunesPlugin.dll
+      File temp\Windar.MP3tunesPlugin.dll
       !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.MP3tunesPlugin.pdb
+         File temp\Windar.MP3tunesPlugin.pdb
       !endif
    ${MementoSectionEnd}
 
@@ -693,9 +693,9 @@ SectionGroupEnd
       SetOutPath "$INSTDIR\playdar\py2exe"
       File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
       SetOutPath "$INSTDIR"
-      File Temp\Windar.NapsterPlugin.dll
+      File temp\Windar.NapsterPlugin.dll
       !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.NapsterPlugin.pdb
+         File temp\Windar.NapsterPlugin.pdb
       !endif
    ${MementoSectionEnd}
 
@@ -711,9 +711,9 @@ SectionGroupEnd
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\audioscrobbler
       SetOutPath "$INSTDIR"
-      File Temp\Windar.ScrobblerPlugin.dll
+      File temp\Windar.ScrobblerPlugin.dll
       !ifdef OPTION_DEBUG_BUILD
-         File Temp\Windar.ScrobblerPlugin.pdb
+         File temp\Windar.ScrobblerPlugin.pdb
       !endif
    ${MementoSectionEnd}
 !endif
@@ -775,7 +775,7 @@ Section -post
 
    ;Write the required erl.ini file.
    SetOutPath "$INSTDIR\minimerl\bin"
-   File Temp\erlini.exe
+   File temp\erlini.exe
    ExecWait '"$INSTDIR\minimerl\bin\erlini.exe"'
    Delete "$INSTDIR\minimerl\bin\erlini.exe"
 

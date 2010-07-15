@@ -33,7 +33,7 @@ ECHO *                                           *
 ECHO *********************************************
 ECHO.
 
-SET BUILD_TEMP="%INSTALL_BUILD_DIR%Temp\"
+SET BUILD_TEMP="%INSTALL_BUILD_DIR%temp\"
 IF NOT EXIST %BUILD_TEMP% MKDIR %BUILD_TEMP%
 
 CD %INSTALL_BUILD_DIR%erlini

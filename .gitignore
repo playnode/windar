@@ -12,7 +12,7 @@ _ReSharper.*
 /nsis/payload/playdar_modules
 /nsis/payload/playdar_python_resolvers/build
 /nsis/payload/playdar_python_resolvers/dist
-/nsis/Temp
+/nsis/temp
 /nsis/erlini/bin
 /nsis/erlini/obj
 /nsis/erlini/erlini.pdb
