@@ -61,6 +61,7 @@ InstType Minimal
 SetCompressor /SOLID lzma
 RequestExecutionLevel admin
 ReserveFile windar.ini
+ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
 
 ;-----------------------------------------------------------------------------
 ;Redistributable installer definitions.
@@ -80,10 +81,14 @@ ReserveFile windar.ini
 ;-----------------------------------------------------------------------------
 ;Include some required header files.
 ;-----------------------------------------------------------------------------
-!include MUI.nsh ;Provides modern user interface.
+;!include MUI.nsh ;Provides modern user interface.
+!include LogicLib.nsh ;Used by APPDATA uninstaller.
+!include nsDialogs.nsh ;Used by APPDATA uninstaller.
+!include MUI2.nsh ;Used by APPDATA uninstaller.
+!include InstallOptions.nsh ;Required by MUI2 to support old MUI_INSTALLOPTIONS.
+!include Memento.nsh ;Remember user selections.
 !include WordFunc.nsh ;Used by VersionCompare macro function.
 !include WinVer.nsh ;Windows version detection.
-!include Memento.nsh ;Remember user selections.
 
 ;-----------------------------------------------------------------------------
 ;Required macros.
@@ -103,8 +108,8 @@ ReserveFile windar.ini
 !define MUI_ICON installer.ico
 !define MUI_UNICON installer.ico
 !define MUI_WELCOMEFINISHPAGE_BITMAP welcome.bmp
-!define MUI_WELCOMEPAGE_TITLE "Windar ${VERSION} Setup\rInstaller Build Revision ${VER_REVISION}"
-!define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation.\r\n\r\n$_CLICK"
+!define MUI_WELCOMEPAGE_TITLE "Windar ${VERSION} Setup$\r$\nInstaller Build Revision ${VER_REVISION}"
+!define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation.$\r$\n$\r$\n$_CLICK"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP page_header.bmp
 !define MUI_COMPONENTSPAGE_SMALLDESC
@@ -134,15 +139,16 @@ Page custom PageReinstall PageLeaveReinstall
 !insertmacro MUI_PAGE_INSTFILES
 !ifdef OPTION_FINISHPAGE
    !insertmacro MUI_PAGE_FINISH
-   !insertmacro MUI_UNPAGE_CONFIRM
 !endif
+
+!insertmacro MUI_UNPAGE_CONFIRM
+UninstPage custom un.UnPageProfile un.UnPageProfileLeave
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ;-----------------------------------------------------------------------------
 ;Other MUI macros.
 ;-----------------------------------------------------------------------------
 !insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 ##############################################################################
 #                                                                            #
@@ -256,34 +262,34 @@ Function PageReinstall
       IntCmp $R0 ${VER_REVISION} same_version new_version older_version
 
    new_version:
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 1" "Text" "An older version of Windar is installed on your system. It is recommended that you uninstall the current version before installing. Select the operation you want to perform and click Next to continue."
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 2" "Text" "Uninstall before installing"
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 3" "Text" "Do not uninstall"
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 1" "Text" "An older version of Windar is installed on your system. It is recommended that you uninstall the current version before installing. Select the operation you want to perform and click Next to continue."
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 2" "Text" "Uninstall before installing"
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 3" "Text" "Do not uninstall"
       !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose how you want to install Windar."
       StrCpy $R0 "1"
       Goto reinst_start
 
    older_version:
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 1" "Text" "A newer version of Windar is already installed! It is not recommended that you install an older version. If you really want to install this older version, it is better to uninstall the current version first. Select the operation you want to perform and click Next to continue."
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 2" "Text" "Uninstall before installing"
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 3" "Text" "Do not uninstall"
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 1" "Text" "A newer version of Windar is already installed! It is not recommended that you install an older version. If you really want to install this older version, it is better to uninstall the current version first. Select the operation you want to perform and click Next to continue."
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 2" "Text" "Uninstall before installing"
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 3" "Text" "Do not uninstall"
       !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose how you want to install Windar."
       StrCpy $R0 "1"
       Goto reinst_start
 
    same_version:
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 1" "Text" "Windar ${VERSION} is already installed.\r\nSelect the operation you want to perform and click Next to continue."
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 2" "Text" "Add/Reinstall components"
-      !insertmacro MUI_INSTALLOPTIONS_WRITE "windar.ini" "Field 3" "Text" "Uninstall Windar"
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 1" "Text" "Windar ${VERSION} is already installed.$\r$\nSelect the operation you want to perform and click Next to continue."
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 2" "Text" "Add/Reinstall components"
+      !insertmacro INSTALLOPTIONS_WRITE "windar.ini" "Field 3" "Text" "Uninstall Windar"
       !insertmacro MUI_HEADER_TEXT "Already Installed" "Choose the maintenance option to perform."
       StrCpy $R0 "2"
 
    reinst_start:
-      !insertmacro MUI_INSTALLOPTIONS_DISPLAY "windar.ini"
+      !insertmacro INSTALLOPTIONS_DISPLAY "windar.ini"
 FunctionEnd
 
 Function PageLeaveReinstall
-   !insertmacro MUI_INSTALLOPTIONS_READ $R1 "windar.ini" "Field 2" "State"
+   !insertmacro INSTALLOPTIONS_READ $R1 "windar.ini" "Field 2" "State"
    StrCmp $R0 "1" 0 +2
    StrCmp $R1 "1" reinst_uninstall reinst_done
    StrCmp $R0 "2" 0 +3
@@ -484,6 +490,20 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    File /r Payload\minimerl
    File /r Payload\playdar
 
+   ;py2exe payload.
+   SetOutPath "$INSTDIR\playdar\py2exe"
+   File Payload\playdar_python_resolvers\dist\_ctypes.pyd
+   File Payload\playdar_python_resolvers\dist\_hashlib.pyd
+   File Payload\playdar_python_resolvers\dist\_socket.pyd
+   File Payload\playdar_python_resolvers\dist\_ssl.pyd
+   File Payload\playdar_python_resolvers\dist\bz2.pyd
+   File Payload\playdar_python_resolvers\dist\library.zip
+   File Payload\playdar_python_resolvers\dist\pyexpat.pyd
+   File Payload\playdar_python_resolvers\dist\python26.dll
+   File Payload\playdar_python_resolvers\dist\select.pyd
+   File Payload\playdar_python_resolvers\dist\unicodedata.pyd
+   File Payload\playdar_python_resolvers\dist\w9xpopen.exe
+
    ;Bat script to launch playdar-core in command window.
    SetOutPath "$INSTDIR\playdar"
    File Payload\playdar-core.bat
@@ -597,6 +617,15 @@ SectionGroupEnd
 !ifdef OPTION_BUNDLE_RESOLVERS
    SectionGroup "Additional resolver modules"
 
+   #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
+   #   SectionIn 2
+   #   SetDetailsPrint both
+   #   DetailPrint "Installing resolver for Amie Street."
+   #   SetDetailsPrint listonly
+   #   SetOutPath "$INSTDIR\playdar\py2exe"
+   #   File /r Payload\playdar_python_resolvers\dist\amiestreet-resolver.exe
+   #${MementoSectionEnd}
+
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
       SetDetailsPrint both
@@ -604,6 +633,24 @@ SectionGroupEnd
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\aolmusic
+   ${MementoSectionEnd}
+
+   ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
+      SectionIn 2
+      SetDetailsPrint both
+      DetailPrint "Installing resolver for Audiofarm."
+      SetDetailsPrint listonly
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
+   ${MementoSectionEnd}
+
+   ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
+      SectionIn 2
+      SetDetailsPrint both
+      DetailPrint "Installing resolver for The Echo Nest."
+      SetDetailsPrint listonly
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\echonest-resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
@@ -622,6 +669,34 @@ SectionGroupEnd
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
       File /r Payload\playdar_modules\magnatune
+   ${MementoSectionEnd}
+
+   ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
+      SectionIn 2
+      SetDetailsPrint both
+      DetailPrint "Installing resolver for MP3tunes."
+      SetDetailsPrint listonly
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
+      SetOutPath "$INSTDIR"
+      File Temp\Windar.MP3tunesPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.MP3tunesPlugin.pdb
+      !endif
+   ${MementoSectionEnd}
+
+   ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
+      SectionIn 2
+      SetDetailsPrint both
+      DetailPrint "Installing resolver for Napster."
+      SetDetailsPrint listonly
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
+      SetOutPath "$INSTDIR"
+      File Temp\Windar.NapsterPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File Temp\Windar.NapsterPlugin.pdb
+      !endif
    ${MementoSectionEnd}
 
    SectionGroupEnd
@@ -651,9 +726,14 @@ ${MementoSectionDone}
 
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with cut-down versions of Erlang and mplayer."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
+#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
 
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
@@ -736,6 +816,40 @@ SectionEnd
 #                                                                            #
 ##############################################################################
 
+Var UnPageProfileDialog
+Var UnPageProfileCheckbox
+Var UnPageProfileCheckbox_State
+Var UnPageProfileEditBox
+
+Function un.UnPageProfile
+   !insertmacro MUI_HEADER_TEXT "Uninstall Windar" "Remove Windar's profile folder from your computer."
+   nsDialogs::Create /NOUNLOAD 1018
+   Pop $UnPageProfileDialog
+
+   ${If} $UnPageProfileDialog == error
+      Abort
+   ${EndIf}
+
+   ${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder?"
+   Pop $0
+
+   ${NSD_CreateText} 0 13u 100% 12u "$APPDATA\Windar"
+   Pop $UnPageProfileEditBox
+   SendMessage $UnPageProfileEditBox ${EM_SETREADONLY} 1 0
+
+   ${NSD_CreateLabel} 0 46u 100% 24u "Leave unchecked to keep the profile folder for later use or check to delete the profile folder."
+   Pop $0
+
+   ${NSD_CreateCheckbox} 0 71u 100% 8u "Yes, also delete the profile folder."
+   Pop $UnPageProfileCheckbox
+
+   nsDialogs::Show
+FunctionEnd
+
+Function un.UnPageProfileLeave
+   ${NSD_GetState} $UnPageProfileCheckbox $UnPageProfileCheckbox_State
+FunctionEnd
+
 Section Uninstall
 
    IfFileExists $INSTDIR\Windar.exe windar_installed
@@ -790,6 +904,11 @@ Section Uninstall
    RMDir /r $INSTDIR\minimerl
    RMDir /r $INSTDIR\playdar
    RMDir /r $INSTDIR
+  
+   ;Uninstall User Data if option is checked, otherwise skip
+   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
+      RMDir /r "$APPDATA\Windar"
+   ${EndIf}
 
    SetDetailsPrint both
    DetailPrint "Uninstalled."
@@ -811,7 +930,7 @@ Function .onInit
       MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
       Abort
 
-   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "windar.ini"
+   !insertmacro INSTALLOPTIONS_EXTRACT "windar.ini"
 
    ;Warn user if system is older than Windows XP.
    ${IfNot} ${AtLeastWinXP}
@@ -831,7 +950,5 @@ Function .onInit
 FunctionEnd
 
 Function .onInstSuccess
-
    ${MementoSectionSave}
-
 FunctionEnd
