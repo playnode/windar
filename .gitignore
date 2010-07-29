@@ -2,6 +2,7 @@
 *~
 _ReSharper.*
 *.resharper.user
+*.ReSharper.user
 *.csproj.user
 *.suo
 *.sln.cache

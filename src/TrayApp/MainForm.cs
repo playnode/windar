@@ -29,6 +29,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
+using Newtonsoft.Json.Linq;
 using Windar.Common;
 using Windar.TrayApp.Configuration;
 
@@ -39,6 +40,7 @@ namespace Windar.TrayApp
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
         internal delegate void ShowTracklistCallback(string text, int n);
+        internal delegate void PlaydarStateChangedCallback(bool available);
 
         [DllImport("wininet.dll", SetLastError = true)]
         static extern long DeleteUrlCacheEntry(string lpszUrlName);
@@ -52,6 +54,8 @@ namespace Windar.TrayApp
         Size _oldSize;
         IOptionsPage _optionsPage;
         int _navLoopCount;
+        BackgroundWorker _backgroundPoller;
+        bool _playdarLastPolledRunning = true;
 
         #region Init
 
@@ -83,6 +87,9 @@ namespace Windar.TrayApp
             optionsTabControl.TabPages.Remove(modsTabPage);
             optionsTabControl.TabPages.Remove(pluginsTabPage);
             optionsTabControl.TabPages.Remove(propsTabPage);
+
+            // Start the Playdar polling timer.
+            playdarPoller.Start();
 
             ShowDaemonPage();
             LoadPlaydarHomepage();
@@ -375,9 +382,9 @@ namespace Windar.TrayApp
                 refreshButton.Enabled = false;
                 if (url.Equals(Program.Instance.PlaydarDaemon))
                 {
-                    startDaemonButton.Enabled = true;
-                    restartDaemonButton.Enabled = false;
-                    stopDaemonButton.Enabled = false;
+                    //startDaemonButton.Enabled = true;
+                    //restartDaemonButton.Enabled = false;
+                    //stopDaemonButton.Enabled = false;
                     ShowDaemonPage("Playdar service not running.", false);
                 }
                 else
@@ -1439,5 +1446,92 @@ namespace Windar.TrayApp
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// This event handler responds to the timer tick event, and is used to
+        /// check whether Playdar is running using the stat method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        
+        void playdarPoller_Tick(object sender, EventArgs e)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("playdarPoller_Tick");
+
+            _backgroundPoller = new BackgroundWorker();
+            _backgroundPoller.DoWork += backgroundPoller_DoWork;
+            _backgroundPoller.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// The background worker is used to make a web request to check if
+        /// Playdar is running, to avoid an issue with GUI responsiveness in
+        /// case of failed web requests.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void backgroundPoller_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (Log.IsDebugEnabled) Log.Debug("backgroundPoller_DoWork");
+
+            var playdarAvailable = false;
+
+            // Build the request URL.
+            var url = new StringBuilder();
+            url.Append(Program.Instance.Paths.LocalPlaydarUrl).Append("api/?method=stat");
+
+            // Get and process result.
+            var response = Program.WGet(url.ToString(), 100); // 0.1 secs
+            if (response != null)
+            {
+                var json = JObject.Parse(response);
+                playdarAvailable = DeQuotify(json["name"]).Equals("playdar");
+            }
+
+            if (Log.IsDebugEnabled) Log.Debug("Playdar available = " + playdarAvailable);
+
+            // Check if there's a change to Playdar running state.
+            if (_playdarLastPolledRunning != playdarAvailable)
+            {
+                var d = new PlaydarStateChangedCallback(PlaydarStateChanged);
+                var args = new object[] { playdarAvailable };
+                Program.Instance.MainForm.Invoke(d, args);
+
+                // Record the new poll result.
+                _playdarLastPolledRunning = playdarAvailable;
+            }
+        }
+
+        internal void PlaydarStateChanged(bool available)
+        {
+            startDaemonButton.Enabled = !available;
+            restartDaemonButton.Enabled = available;
+            stopDaemonButton.Enabled = available;
+            Application.DoEvents();
+
+            if (!available) return;
+
+            homeButton.Enabled = false;
+            backButton.Enabled = false;
+            Application.DoEvents();
+
+            LoadPlaydarHomepage();
+            Application.DoEvents();
+
+            refreshButton.Enabled = true;
+            Application.DoEvents();
+        }
+
+        static string DeQuotify(JToken token)
+        {
+            if (token == null) return null;
+            var str = token.ToString();
+            var result = str;
+
+            if (str[0] == '"' && str[str.Length - 1] == '"')
+                result = str.Substring(1, str.Length - 2);
+
+            return result;
+        }
     }
 }

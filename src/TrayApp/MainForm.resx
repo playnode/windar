@@ -121,8 +121,8 @@
   <data name="playdarLogo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAOuwAA
-        DrsBx/jUNgAA6DZJREFUeF7snQWYHMe5tW+Sm5vcm//GiR0zMzMzo2zJFlpGyZIsGSVZzMza1TKzmJmZ
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAOuAAA
+        DrgBakH1WwAA6DZJREFUeF7snQWYHMe5tW+Sm5vcm//GiR0zMzMzo2zJFlpGyZIsGSVZzMza1TKzmJmZ
         mWWBme3ETuygnRuo/z3VXT09szML0kqWbel5ztOzM6Pp7uo654P6quo//uPIvyMtcKQFjrTAkRY40gJH
         WuBICxxpgSMtcKQFjrTAkRY40gJHWuBICxxpgSMtcKQFjrTAkRb4brXA3m8GHA3O2/fNoFv2fTO43hvf
         DG0GXrb4+7A2b/49qXcc9Aq+Y7875Bn+7yP8xs381hl7v+n/39+tVjhytUda4HvaAnu/Hngh5Kz1xjfD
@@ -1172,6 +1172,9 @@
   </metadata>
   <metadata name="cellEndEditTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>174, 56</value>
+  </metadata>
+  <metadata name="playdarPoller.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>316, 56</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

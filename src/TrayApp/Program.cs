@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -524,24 +525,21 @@ namespace Windar.TrayApp
 
         internal void StartDaemon()
         {
-            Instance.Daemon.Start();
             Instance.MainForm.startDaemonButton.Enabled = false;
-            Instance.MainForm.stopDaemonButton.Enabled = true;
-            Instance.MainForm.restartDaemonButton.Enabled = true;
-            Instance.MainForm.LoadPlaydarHomepage();
-            Instance.MainForm.refreshButton.Enabled = true;
+            Application.DoEvents();
+            Instance.Daemon.Start();
         }
 
         internal void StopDaemon()
         {
-            Instance.Daemon.Stop();
-            Instance.MainForm.startDaemonButton.Enabled = true;
             Instance.MainForm.stopDaemonButton.Enabled = false;
             Instance.MainForm.restartDaemonButton.Enabled = false;
             Instance.MainForm.ShowDaemonPage();
             Instance.MainForm.homeButton.Enabled = false;
             Instance.MainForm.backButton.Enabled = false;
             Instance.MainForm.refreshButton.Enabled = false;
+            Application.DoEvents();
+            Instance.Daemon.Stop();
         }
 
         internal void RestartDaemon()
@@ -554,13 +552,10 @@ namespace Windar.TrayApp
             Instance.MainForm.homeButton.Enabled = false;
             Instance.MainForm.backButton.Enabled = false;
             Instance.MainForm.refreshButton.Enabled = false;
+            Application.DoEvents();
             Instance.Daemon.Restart();
             if (!Instance.Daemon.Started) return;
             Instance.MainForm.playdarBrowser.Navigate(PlaydarDaemon);
-            Instance.MainForm.refreshButton.Enabled = true;
-            Instance.MainForm.startDaemonButton.Enabled = false;
-            Instance.MainForm.stopDaemonButton.Enabled = true;
-            Instance.MainForm.restartDaemonButton.Enabled = true;
         }
 
         #endregion
@@ -679,6 +674,53 @@ namespace Windar.TrayApp
         }
 
         #endregion
+
+        internal static string WGet(string url, int timeout)
+        {
+            string result = null;
+
+            if (Log.IsDebugEnabled) Log.Debug("WGet " + url);
+            var request = (HttpWebRequest) WebRequest.Create(url);
+            request.Timeout = timeout;
+            request.UserAgent = "Windar";
+            try
+            {
+                var response = (HttpWebResponse) request.GetResponse();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var enc = Encoding.GetEncoding(1252);
+                    var stream = new StreamReader(response.GetResponseStream(), enc);
+                    result = stream.ReadToEnd();
+                    response.Close();
+                    stream.Close();
+                    if (Log.IsDebugEnabled) Log.Debug("WGet result:\n" + result);
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response == null)
+                {
+                    if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                }
+                else
+                {
+                    switch (((HttpWebResponse) ex.Response).StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            if (Log.IsErrorEnabled) Log.Error("404 Not Found");
+                            break; // Ignore.
+                        default:
+                            if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+            }
+            return result;
+        }
 
         internal bool FindMPlayer()
         {

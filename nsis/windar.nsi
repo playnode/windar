@@ -32,9 +32,10 @@
 !define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
 !define OPTION_BUNDLE_RESOLVERS
-!define OPTION_BUNDLE_SCROBBLER
+;!define OPTION_BUNDLE_NAPSTER_RESOLVER
+;!define OPTION_BUNDLE_SCROBBLER
 !define OPTION_SECTION_SC_START_MENU
-!define OPTION_SECTION_SC_START_MENU_STARTUP
+;!define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
 !define OPTION_SECTION_SC_QUICK_LAUNCH
 !define OPTION_FINISHPAGE
@@ -552,13 +553,6 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
       File temp\Windar.PlayerPlugin.pdb
    !endif
    File temp\Newtonsoft.Json.Net20.dll
-
-   ;Player module for Playdar.
-   SetDetailsPrint both
-   DetailPrint "Installing player module for Playdar."
-   SetDetailsPrint listonly
-   SetOutPath "$INSTDIR\playdar\playdar_modules"
-   File /r Payload\playdar_modules\player
 SectionEnd
 
 SectionGroup "Shortcuts"
@@ -573,6 +567,7 @@ SectionGroup "Shortcuts"
       RMDir /r "$SMPROGRAMS\Windar"
       CreateDirectory "$SMPROGRAMS\Windar"
       CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
+      CreateShortCut "$SMPROGRAMS\Windar\Playdar Core.lnk" "$INSTDIR\playdar\playdar-core.bat"
       CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
       CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\uninstall.exe"
@@ -616,15 +611,6 @@ SectionGroupEnd
 
 !ifdef OPTION_BUNDLE_RESOLVERS
    SectionGroup "Additional resolver modules"
-
-   #${MementoSection} "Amie Street" SEC_AMIESTREET_RESOLVER
-   #   SectionIn 2
-   #   SetDetailsPrint both
-   #   DetailPrint "Installing resolver for Amie Street."
-   #   SetDetailsPrint listonly
-   #   SetOutPath "$INSTDIR\playdar\py2exe"
-   #   File /r Payload\playdar_python_resolvers\dist\amiestreet-resolver.exe
-   #${MementoSectionEnd}
 
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
@@ -685,20 +671,22 @@ SectionGroupEnd
       !endif
    ${MementoSectionEnd}
 
-   ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
-      SectionIn 2
-      SetDetailsPrint both
-      DetailPrint "Installing resolver for Napster."
-      SetDetailsPrint listonly
-      SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
-      SetOutPath "$INSTDIR"
-      File temp\Windar.NapsterPlugin.dll
-      !ifdef OPTION_DEBUG_BUILD
-         File temp\Windar.NapsterPlugin.pdb
-      !endif
-   ${MementoSectionEnd}
-
+   !ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
+      ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
+         SectionIn 2
+         SetDetailsPrint both
+         DetailPrint "Installing resolver for Napster."
+         SetDetailsPrint listonly
+         SetOutPath "$INSTDIR\playdar\py2exe"
+         File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
+         SetOutPath "$INSTDIR"
+         File temp\Windar.NapsterPlugin.dll
+         !ifdef OPTION_DEBUG_BUILD
+            File temp\Windar.NapsterPlugin.pdb
+         !endif
+      ${MementoSectionEnd}
+   !endif
+   
    SectionGroupEnd
 !endif
 
@@ -724,29 +712,26 @@ ${MementoSectionDone}
 ;--------------------------------
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with cut-down versions of Erlang and mplayer."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with a cut-down version of Erlang."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
-#!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AMIESTREET_RESOLVER} "Amie Street resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
-
+!ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
+!endif
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
 !endif
-
 !ifdef OPTION_SECTION_SC_DESKTOP
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DESKTOP} "Desktop shortcut for Windar."
 !endif
-
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_QUICK_LAUNCH} "Quick Launch shortcut for Windar."
 !endif
-
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_STARTUP_FOLDER} "Startup folder shortcut to start Windar on login."
 !endif
@@ -883,9 +868,11 @@ Section Uninstall
       SetShellVarContext current
    !endif
 
-   ;Startup folder shortcut.
+   ;Startup folder shortcuts.
    IfFileExists "$SMPROGRAMS\Startup\Windar.lnk" 0 +2
       Delete "$SMPROGRAMS\Startup\Windar.lnk"
+   IfFileExists "$SMPROGRAMS\Startup\Playdar Core.lnk" 0 +2
+      Delete "$SMPROGRAMS\Startup\Playdar Core.lnk"
 
    ;Desktop shortcut.
    !ifdef OPTION_SECTION_SC_DESKTOP
