@@ -45,7 +45,7 @@ namespace Windar.TrayApp
         readonly MenuItem _playlickMenuItem;
         readonly MenuItem _playgrubMenuItem;
         readonly MenuItem _openSpiffdarMenuItem;
-        readonly MenuItem _modeDemosMenuItem;
+        readonly MenuItem _moreDemosMenuItem;
         readonly MenuItem _balloonsMenuItem;
         readonly MenuItem _scanfilesMenuItem;
         readonly MenuItem _numfilesMenuItem;
@@ -66,7 +66,7 @@ namespace Windar.TrayApp
             _playlickMenuItem = new MenuItem("Playlick", OpenPlaylickWebsite);
             _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
             _openSpiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdar);
-            _modeDemosMenuItem = new MenuItem("More Demos", OpenMoreDemos);
+            _moreDemosMenuItem = new MenuItem("More Demos", OpenMoreDemos);
             _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) { Checked = Properties.Settings.Default.ShowBalloons };
             _scanfilesMenuItem = new MenuItem("Scan Files", ShowScanSelect);
             _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
@@ -78,7 +78,8 @@ namespace Windar.TrayApp
             var demos = new MenuItem("Playdar Demos");
             demos.MenuItems.Add(_playlickMenuItem);
             demos.MenuItems.Add(_playgrubMenuItem);
-            demos.MenuItems.Add(_modeDemosMenuItem);
+            demos.MenuItems.Add(_openSpiffdarMenuItem);
+            demos.MenuItems.Add(_moreDemosMenuItem);
 
             // Tray menu.
             _trayMenu = new ContextMenu();

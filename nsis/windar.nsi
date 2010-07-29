@@ -29,8 +29,9 @@
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
 ;!define OPTION_DEBUG_BUILD
-!define OPTION_LICENSE_AGREEMENT
+;!define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
+;!define OPTION_BUNDLE_MPLAYER
 !define OPTION_BUNDLE_RESOLVERS
 ;!define OPTION_BUNDLE_NAPSTER_RESOLVER
 ;!define OPTION_BUNDLE_SCROBBLER
@@ -52,7 +53,7 @@
 ;-----------------------------------------------------------------------------
 Name "Windar"
 Caption "Playdar for Windows"
-BrandingText "Playdar software installer"
+BrandingText "Windar by Steven Robertson <steve@playnode.org>"
 OutFile "windar-${VERSION}.exe"
 InstallDir "$PROGRAMFILES\Windar"
 InstallDirRegKey HKCU "Software\Windar" ""
@@ -115,8 +116,8 @@ ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
 !define MUI_HEADERIMAGE_BITMAP page_header.bmp
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_TITLE "Windar Install Completed"
-!define MUI_FINISHPAGE_LINK "Click here to visit the Playdar website."
-!define MUI_FINISHPAGE_LINK_LOCATION "http://www.playdar.org/"
+!define MUI_FINISHPAGE_LINK "Click here to visit the Windar website."
+!define MUI_FINISHPAGE_LINK_LOCATION "http://windar.org/"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
    !define MUI_FINISHPAGE_SHOWREADME
@@ -478,7 +479,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    Call KillErlang
 
    SetDetailsPrint both
-   DetailPrint "Installing core Playdar and minimum Erlang components."
+   DetailPrint "Installing the OpenSSL DLL."
    SetDetailsPrint listonly
 
    IfFileExists "$WINDIR\system32\libeay32.dll" openssl_lib_installed
@@ -488,22 +489,38 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
 
    ;Erlang and Playdar payload.
    SetOutPath "$INSTDIR"
+      
+   SetDetailsPrint both
+   DetailPrint "Installing minimum Erlang components."
+   SetDetailsPrint listonly
+
    File /r payload\minimerl
+
+   SetDetailsPrint both
+   DetailPrint "Installing Playdar core."
+   SetDetailsPrint listonly
+
    File /r payload\playdar
 
+   SetDetailsPrint both
+   DetailPrint "Installing py2exe shared components."
+   SetDetailsPrint listonly
+
    ;py2exe payload.
-   SetOutPath "$INSTDIR\playdar\py2exe"
-   File payload\playdar_python_resolvers\dist\_ctypes.pyd
-   File payload\playdar_python_resolvers\dist\_hashlib.pyd
-   File payload\playdar_python_resolvers\dist\_socket.pyd
-   File payload\playdar_python_resolvers\dist\_ssl.pyd
-   File payload\playdar_python_resolvers\dist\bz2.pyd
-   File payload\playdar_python_resolvers\dist\library.zip
-   File payload\playdar_python_resolvers\dist\pyexpat.pyd
-   File payload\playdar_python_resolvers\dist\python26.dll
-   File payload\playdar_python_resolvers\dist\select.pyd
-   File payload\playdar_python_resolvers\dist\unicodedata.pyd
-   File payload\playdar_python_resolvers\dist\w9xpopen.exe
+   !ifdef OPTION_BUNDLE_RESOLVERS
+      SetOutPath "$INSTDIR\playdar\py2exe"
+      File payload\playdar_python_resolvers\dist\_ctypes.pyd
+      File payload\playdar_python_resolvers\dist\_hashlib.pyd
+      File payload\playdar_python_resolvers\dist\_socket.pyd
+      File payload\playdar_python_resolvers\dist\_ssl.pyd
+      File payload\playdar_python_resolvers\dist\bz2.pyd
+      File payload\playdar_python_resolvers\dist\library.zip
+      File payload\playdar_python_resolvers\dist\pyexpat.pyd
+      File payload\playdar_python_resolvers\dist\python26.dll
+      File payload\playdar_python_resolvers\dist\select.pyd
+      File payload\playdar_python_resolvers\dist\unicodedata.pyd
+      File payload\playdar_python_resolvers\dist\w9xpopen.exe
+   !endif
 
    ;Bat script to launch playdar-core in command window.
    SetOutPath "$INSTDIR\playdar"
@@ -527,8 +544,8 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    ;Configuration
    File temp\Windar.exe.config
 
+   ;Debug build PDB files:
    !ifdef OPTION_DEBUG_BUILD
-      ;Debug build PDB files:
       File temp\ErlangTerms.pdb
       File temp\Windar.pdb
       File temp\Windar.Common.pdb
@@ -538,21 +555,24 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
 
    ;Other libs:
    File temp\log4net.dll
+   File temp\Newtonsoft.Json.Net20.dll
 
    ;License & copyright files.
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
 
    ;Player plugin for Windar.
-   SetDetailsPrint both
-   DetailPrint "Installing the Player plugin for Windar."
-   SetDetailsPrint listonly
-   SetOutPath "$INSTDIR"
-   File temp\Windar.PlayerPlugin.dll
-   !ifdef OPTION_DEBUG_BUILD
-      File temp\Windar.PlayerPlugin.pdb
+   !ifdef OPTION_BUNDLE_MPLAYER
+      SetDetailsPrint both
+      DetailPrint "Installing the Player plugin for Windar."
+      SetDetailsPrint listonly
+      SetOutPath "$INSTDIR"
+      File /r payload\mplayer
+      File temp\Windar.PlayerPlugin.dll
+      !ifdef OPTION_DEBUG_BUILD
+         File temp\Windar.PlayerPlugin.pdb
+      !endif
    !endif
-   File temp\Newtonsoft.Json.Net20.dll
 SectionEnd
 
 SectionGroup "Shortcuts"
@@ -589,7 +609,7 @@ SectionGroup "Shortcuts"
 
 !ifdef OPTION_SECTION_SC_DESKTOP
    ${MementoSection} "Desktop Shortcut" SEC_DESKTOP
-      SectionIn 2
+      SectionIn 1 2
       SetDetailsPrint both
       DetailPrint "Creating Desktop Shortcuts"
       SetDetailsPrint listonly

@@ -49,7 +49,7 @@ namespace Windar.PlayerPlugin
         {
             get
             {
-                return "Test Player";
+                return "Test";
             }
         }
 

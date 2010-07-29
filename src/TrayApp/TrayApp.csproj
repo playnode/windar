@@ -185,7 +185,7 @@ IF EXIST "$(TargetDir)mplayer" RMDIR /S /Q "$(TargetDir)mplayer"
 IF EXIST "$(TargetDir)playdar" RMDIR /S /Q "$(TargetDir)playdar"
 
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\minimerl" "$(TargetDir)minimerl\"
-IF EXIST "$(ProjectDir)..\..\mplayer" XCOPY /E "$(ProjectDir)..\..\mplayer" "$(TargetDir)mplayer\"
+IF EXIST "$(ProjectDir)..\..\nsis\payload\mplayer" XCOPY /E "$(ProjectDir)..\..\nsis\payload\mplayer" "$(TargetDir)mplayer\"
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\playdar" "$(TargetDir)playdar\"
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\playdar_modules" "$(TargetDir)playdar\playdar_modules\"
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\playdar_python_resolvers\dist\*" "$(TargetDir)playdar\py2exe\"

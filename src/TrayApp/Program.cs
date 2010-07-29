@@ -555,6 +555,7 @@ namespace Windar.TrayApp
             Application.DoEvents();
             Instance.Daemon.Restart();
             if (!Instance.Daemon.Started) return;
+            Instance.MainForm.PlaydarStateChanged(true); // Required due to timing issue.
             Instance.MainForm.playdarBrowser.Navigate(PlaydarDaemon);
         }
 
