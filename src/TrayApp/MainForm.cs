@@ -1496,28 +1496,27 @@ namespace Windar.TrayApp
                 var d = new PlaydarStateChangedCallback(PlaydarStateChanged);
                 var args = new object[] { playdarAvailable };
                 Program.Instance.MainForm.Invoke(d, args);
-
-                // Record the new poll result.
-                _playdarLastPolledRunning = playdarAvailable;
             }
         }
 
         internal void PlaydarStateChanged(bool available)
         {
+            // Record the state change to detect next change.
+            _playdarLastPolledRunning = available;
+
+            // Set state of the daemon start/stop/restart buttons.
             startDaemonButton.Enabled = !available;
             restartDaemonButton.Enabled = available;
             stopDaemonButton.Enabled = available;
             Application.DoEvents();
 
+            // Load the Playdar homepage if Playdar is available.
             if (!available) return;
-
             homeButton.Enabled = false;
             backButton.Enabled = false;
             Application.DoEvents();
-
             LoadPlaydarHomepage();
             Application.DoEvents();
-
             refreshButton.Enabled = true;
             Application.DoEvents();
         }

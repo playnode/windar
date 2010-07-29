@@ -18,7 +18,6 @@ rm -rf playdar_modules/magnatune
 cp -R contrib/aolmusic playdar_modules
 cp -R contrib/jamendo playdar_modules
 cp -R contrib/magnatune_module playdar_modules/magnatune
-cp -R contrib/player playdar_modules
 make clean
 make
 rm -rf ../windar/nsis/payload/playdar_modules

@@ -44,6 +44,7 @@ namespace Windar.TrayApp
         readonly MenuItem _daemonMenuItem;
         readonly MenuItem _playlickMenuItem;
         readonly MenuItem _playgrubMenuItem;
+        readonly MenuItem _openSpiffdarMenuItem;
         readonly MenuItem _modeDemosMenuItem;
         readonly MenuItem _balloonsMenuItem;
         readonly MenuItem _scanfilesMenuItem;
@@ -64,6 +65,7 @@ namespace Windar.TrayApp
             _daemonMenuItem = new MenuItem("Playdar Information", ShowDaemonInfo);
             _playlickMenuItem = new MenuItem("Playlick", OpenPlaylickWebsite);
             _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
+            _openSpiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdar);
             _modeDemosMenuItem = new MenuItem("More Demos", OpenMoreDemos);
             _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) { Checked = Properties.Settings.Default.ShowBalloons };
             _scanfilesMenuItem = new MenuItem("Scan Files", ShowScanSelect);
@@ -250,6 +252,11 @@ namespace Windar.TrayApp
         static void OpenPlaygrub(object sender, EventArgs e)
         {
             Process.Start("http://playgrub.com/");
+        }
+
+        static void OpenSpiffdar(object sender, EventArgs e)
+        {
+            Process.Start("http://spiffdar.playnode.org/");
         }
 
         static void OpenMoreDemos(object sender, EventArgs e)

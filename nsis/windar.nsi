@@ -373,7 +373,7 @@ FunctionEnd
          MessageBox MB_ICONINFORMATION|MB_OK "Windar Setup determined that you \
             do not have the Microsoft C runtime version required. It will now be installed."
          SetOutPath "$INSTDIR"
-         File "Payload\${VCRUNTIME_SETUP_NAME}"
+         File "payload\${VCRUNTIME_SETUP_NAME}"
          SetDetailsPrint both
          DetailPrint "Installing the Microsoft C runtime redistributable."
          SetDetailsPrint listonly
@@ -483,31 +483,31 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
 
    IfFileExists "$WINDIR\system32\libeay32.dll" openssl_lib_installed
       SetOutPath "$WINDIR\system32"
-      File Payload\libeay32.dll
+      File payload\libeay32.dll
    openssl_lib_installed:
 
    ;Erlang and Playdar payload.
    SetOutPath "$INSTDIR"
-   File /r Payload\minimerl
-   File /r Payload\playdar
+   File /r payload\minimerl
+   File /r payload\playdar
 
    ;py2exe payload.
    SetOutPath "$INSTDIR\playdar\py2exe"
-   File Payload\playdar_python_resolvers\dist\_ctypes.pyd
-   File Payload\playdar_python_resolvers\dist\_hashlib.pyd
-   File Payload\playdar_python_resolvers\dist\_socket.pyd
-   File Payload\playdar_python_resolvers\dist\_ssl.pyd
-   File Payload\playdar_python_resolvers\dist\bz2.pyd
-   File Payload\playdar_python_resolvers\dist\library.zip
-   File Payload\playdar_python_resolvers\dist\pyexpat.pyd
-   File Payload\playdar_python_resolvers\dist\python26.dll
-   File Payload\playdar_python_resolvers\dist\select.pyd
-   File Payload\playdar_python_resolvers\dist\unicodedata.pyd
-   File Payload\playdar_python_resolvers\dist\w9xpopen.exe
+   File payload\playdar_python_resolvers\dist\_ctypes.pyd
+   File payload\playdar_python_resolvers\dist\_hashlib.pyd
+   File payload\playdar_python_resolvers\dist\_socket.pyd
+   File payload\playdar_python_resolvers\dist\_ssl.pyd
+   File payload\playdar_python_resolvers\dist\bz2.pyd
+   File payload\playdar_python_resolvers\dist\library.zip
+   File payload\playdar_python_resolvers\dist\pyexpat.pyd
+   File payload\playdar_python_resolvers\dist\python26.dll
+   File payload\playdar_python_resolvers\dist\select.pyd
+   File payload\playdar_python_resolvers\dist\unicodedata.pyd
+   File payload\playdar_python_resolvers\dist\w9xpopen.exe
 
    ;Bat script to launch playdar-core in command window.
    SetOutPath "$INSTDIR\playdar"
-   File Payload\playdar-core.bat
+   File payload\playdar-core.bat
 
    Call RequireMicrosoftNET2
 
@@ -618,7 +618,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for the AOL Music Index."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
-      File /r Payload\playdar_modules\aolmusic
+      File /r payload\playdar_modules\aolmusic
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
@@ -627,7 +627,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for Audiofarm."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
+      File /r payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
@@ -636,7 +636,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for The Echo Nest."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\echonest-resolver.exe
+      File /r payload\playdar_python_resolvers\dist\echonest-resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
@@ -645,7 +645,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for Jamendo."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
-      File /r Payload\playdar_modules\jamendo
+      File /r payload\playdar_modules\jamendo
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
@@ -654,7 +654,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for Magnatune."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
-      File /r Payload\playdar_modules\magnatune
+      File /r payload\playdar_modules\magnatune
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
@@ -663,7 +663,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for MP3tunes."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r Payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
+      File /r payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
       SetOutPath "$INSTDIR"
       File temp\Windar.MP3tunesPlugin.dll
       !ifdef OPTION_DEBUG_BUILD
@@ -678,7 +678,7 @@ SectionGroupEnd
          DetailPrint "Installing resolver for Napster."
          SetDetailsPrint listonly
          SetOutPath "$INSTDIR\playdar\py2exe"
-         File /r Payload\playdar_python_resolvers\dist\napster_resolver.exe
+         File /r payload\playdar_python_resolvers\dist\napster_resolver.exe
          SetOutPath "$INSTDIR"
          File temp\Windar.NapsterPlugin.dll
          !ifdef OPTION_DEBUG_BUILD
@@ -697,7 +697,7 @@ SectionGroupEnd
       DetailPrint "Installing the scrobbler module and Windar plugin."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
-      File /r Payload\playdar_modules\audioscrobbler
+      File /r payload\playdar_modules\audioscrobbler
       SetOutPath "$INSTDIR"
       File temp\Windar.ScrobblerPlugin.dll
       !ifdef OPTION_DEBUG_BUILD
