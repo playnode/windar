@@ -589,7 +589,7 @@ SectionGroup "Shortcuts"
 
 !ifdef OPTION_SECTION_SC_DESKTOP
    ${MementoSection} "Desktop Shortcut" SEC_DESKTOP
-      SectionIn 1 2
+      SectionIn 1
       SetDetailsPrint both
       DetailPrint "Creating Desktop Shortcuts"
       SetDetailsPrint listonly

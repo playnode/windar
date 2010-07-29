@@ -7,7 +7,7 @@
 
 BUILD_DIR=`pwd`
 
-PLAYDAR_REL_PATH=../../../Playdar
+PLAYDAR_REL_PATH=../../../playdar-core
 PLAYDAR_HOME=`cd $PLAYDAR_REL_PATH; pwd`
 
 # Refresh playdar modules in payload folder.
