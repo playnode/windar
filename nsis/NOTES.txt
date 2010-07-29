@@ -1,0 +1,10 @@
+Windar 0.2.1
+============
+
+   - Changed licence from GPL to LGPL.
+   - Improved installer, with option to remove Application Data.
+   - Improved the Playdar state detection using the stat method.
+   - Updated to Erlang R014A, and reduced to bare essentials.
+   - Removed the Napster resolver and plugin. There is potential that this will
+     be re-introduced in the next Windar release.
+   - Removed the MPlayer-powered test player to reduce installer size.

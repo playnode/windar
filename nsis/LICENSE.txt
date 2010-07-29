@@ -10,21 +10,18 @@ http://github.com/stever/windar
 
 Windar is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 
-
-OpenSSL:
+    OpenSSL
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)
 
-
-Erlang:
+    Erlang
 
 Windar is distributed as a larger work combining Erlang with other code not governed by the terms of the Erlang license, and distributed as a single product.
 
 Refer to the text of the Erlang Public License, available at:
 http://www.erlang.org/EPLICENSE
 
-
-Playdar:
+    Playdar
 
 Copyright (c) 2009 Richard Jones
 

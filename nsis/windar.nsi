@@ -29,7 +29,7 @@
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
 ;!define OPTION_DEBUG_BUILD
-;!define OPTION_LICENSE_AGREEMENT
+!define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
 ;!define OPTION_BUNDLE_MPLAYER
 !define OPTION_BUNDLE_RESOLVERS
@@ -41,7 +41,7 @@
 !define OPTION_SECTION_SC_QUICK_LAUNCH
 !define OPTION_FINISHPAGE
 !define OPTION_FINISHPAGE_LAUNCHER
-;!define OPTION_FINISHPAGE_RELEASE_NOTES
+!define OPTION_FINISHPAGE_RELEASE_NOTES
 
 ;-----------------------------------------------------------------------------
 ;Other required definitions.
@@ -53,7 +53,7 @@
 ;-----------------------------------------------------------------------------
 Name "Windar"
 Caption "Playdar for Windows"
-BrandingText "Windar by Steven Robertson <steve@playnode.org>"
+BrandingText "Windar by Steven Robertson"
 OutFile "windar-${VERSION}.exe"
 InstallDir "$PROGRAMFILES\Windar"
 InstallDirRegKey HKCU "Software\Windar" ""
@@ -120,12 +120,15 @@ ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
 !define MUI_FINISHPAGE_LINK_LOCATION "http://windar.org/"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
-   !define MUI_FINISHPAGE_SHOWREADME
+   !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+   !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\NOTES.txt"
    !define MUI_FINISHPAGE_SHOWREADME_TEXT "Show release notes"
    !define MUI_FINISHPAGE_SHOWREADME_FUNCTION ShowReleaseNotes
 !endif
 !ifdef OPTION_FINISHPAGE_LAUNCHER
+   !define MUI_FINISHPAGE_NOAUTOCLOSE
    !define MUI_FINISHPAGE_RUN "$INSTDIR\Windar.exe"
+   !define MUI_FINISHPAGE_RUN_NOTCHECKED
 !endif
 
 ;-----------------------------------------------------------------------------
@@ -160,7 +163,7 @@ UninstPage custom un.UnPageProfile un.UnPageProfileLeave
 
 !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
    Function ShowReleaseNotes
-      ExecShell "open" "$INSTDIR\README.txt"
+      ExecShell "open" "$INSTDIR\NOTES.txt"
    FunctionEnd
 !endif
 
@@ -557,7 +560,8 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    File temp\log4net.dll
    File temp\Newtonsoft.Json.Net20.dll
 
-   ;License & copyright files.
+   ;REAME, License & copyright files.
+   File NOTES.txt
    File /oname=COPYING.txt ..\COPYING
    File /oname=LICENSE.txt ..\LICENSE
 
@@ -587,9 +591,10 @@ SectionGroup "Shortcuts"
       RMDir /r "$SMPROGRAMS\Windar"
       CreateDirectory "$SMPROGRAMS\Windar"
       CreateShortCut "$SMPROGRAMS\Windar\Windar.lnk" "$INSTDIR\Windar.exe"
-      CreateShortCut "$SMPROGRAMS\Windar\Playdar Core.lnk" "$INSTDIR\playdar\playdar-core.bat"
+      CreateShortCut "$SMPROGRAMS\Windar\Playdar Core (Shell).lnk" "$INSTDIR\playdar\playdar-core.bat"
       CreateShortCut "$SMPROGRAMS\Windar\COPYING.lnk" "$INSTDIR\COPYING.txt"
-      CreateShortCut "$SMPROGRAMS\Windar\LICENSE.lnk" "$INSTDIR\LICENSE.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\Windar Licence.lnk" "$INSTDIR\LICENSE.txt"
+      CreateShortCut "$SMPROGRAMS\Windar\Release Notes.lnk" "$INSTDIR\NOTES.txt"
       CreateShortCut "$SMPROGRAMS\Windar\Uninstall.lnk" "$INSTDIR\uninstall.exe"
       SetShellVarContext current
    ${MementoSectionEnd}
@@ -766,17 +771,6 @@ Section -post
    DetailPrint "Writing Uninstaller"
    SetDetailsPrint listonly
    WriteUninstaller $INSTDIR\uninstall.exe
-
-   ;Release notes.
-   !ifdef OPTION_FINISHPAGE_RELEASE_NOTES
-      SetDetailsPrint both
-      DetailPrint "Writing Release Notes"
-      SetDetailsPrint listonly
-      SetOutPath "$INSTDIR"
-      File /oname=README.txt ..\README.md
-      IfFileExists "$SMPROGRAMS\Windar" 0 +2
-         CreateShortCut "$SMPROGRAMS\Windar\README.lnk" "$INSTDIR\README.txt"
-   !endif
 
    ;Write the required erl.ini file.
    SetOutPath "$INSTDIR\minimerl\bin"
