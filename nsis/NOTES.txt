@@ -8,7 +8,9 @@ Windar 0.2.1
    - Updated to Erlang R014A, and reduced to bare essentials.
    - Removed the Napster resolver and plugin. There is potential that this will
      be re-introduced in the next Windar release.
-   - Removed the MPlayer-powered test player to reduce installer size. It would
-     require better error for failed web requests which might be recovered.
+   - Removed the MPlayer-powered test player to reduce installer size. It will
+     require better error handling for failed web requests which might be 
+     recovered by MPlayer automatically.
    - Removed the Scrobbler plugin as it required an auth hack. This had been
-     intended to work with the test player and may made to work independently.
+     intended to work with the test player, and may instead be made to work
+     independently in a future release.
