@@ -925,7 +925,7 @@ SectionEnd
 Function .onInit
 
    ;Prevent multiple instances.
-   System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex") i .r1 ?e'
+   System::Call 'kernel32::CreateMutexA(i 0, i 0, t "windarInstaller") i .r1 ?e'
    Pop $R0
    StrCmp $R0 0 +3
       MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."

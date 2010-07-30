@@ -14,3 +14,4 @@ Windar 0.2.1
    - Removed the Scrobbler plugin as it required an auth hack. This had been
      intended to work with the test player, and may instead be made to work
      independently in a future release.
+   - Removed the Startup folder shortcut from the installer.
