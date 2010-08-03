@@ -26,6 +26,11 @@
 !define VERSION "${VER_MAJOR}.${VER_MINOR}.${VER_BUILD}"
 
 ;-----------------------------------------------------------------------------
+;Installer build timestamp.
+;-----------------------------------------------------------------------------
+!define /date BUILD_TIME "built on %Y/%m/%d at %I:%M %p  (rev. ${VER_REVISION})"
+
+;-----------------------------------------------------------------------------
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
 ;!define OPTION_DEBUG_BUILD
@@ -53,7 +58,7 @@
 ;-----------------------------------------------------------------------------
 Name "Windar"
 Caption "Playdar for Windows"
-BrandingText "Windar by Steven Robertson"
+BrandingText "Windar ${VERSION}  -- ${BUILD_TIME}"
 OutFile "windar-${VERSION}.exe"
 InstallDir "$PROGRAMFILES\Windar"
 InstallDirRegKey HKCU "Software\Windar" ""
@@ -61,41 +66,21 @@ InstType Standard
 InstType Full
 InstType Minimal
 SetCompressor /SOLID lzma
-RequestExecutionLevel admin
+RequestExecutionLevel user ;Now using the UAC plugin.
 ReserveFile windar.ini
 ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
 
 ;-----------------------------------------------------------------------------
-;Redistributable installer definitions.
-;-----------------------------------------------------------------------------
-!define VCRUNTIME_SETUP_NAME "vcredist_x86.exe"
-!define NETFRAMEWORK20_SETUP_NAME "dotnetfx.exe"
-!define NETFRAMEWORK20_DOWNLOAD_LOCATION "http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/${NETFRAMEWORK20_SETUP_NAME}"
-!define DOWNLOAD_FAILED_MSG "Download of system components failed. Possible \
-   reasons include:$\n$\n1.   You canceled the installation$\n$\n2.   You do \
-   not have an Internet connection right now. Please connect to the Internet \
-   and run the installation again.$\n$\n3.   The connection to the server \
-   timed out. Please try running the installation again.$\n$\n3.   Technical \
-   issue with automatic download and/or installation. Please attempt to \
-   download and install the required component manually, or temporarily \
-   disable Internet security software (such as firewall) which may be interfering."
-
-;-----------------------------------------------------------------------------
 ;Include some required header files.
 ;-----------------------------------------------------------------------------
-;!include MUI.nsh ;Provides modern user interface.
 !include LogicLib.nsh ;Used by APPDATA uninstaller.
 !include nsDialogs.nsh ;Used by APPDATA uninstaller.
 !include MUI2.nsh ;Used by APPDATA uninstaller.
 !include InstallOptions.nsh ;Required by MUI2 to support old MUI_INSTALLOPTIONS.
 !include Memento.nsh ;Remember user selections.
-!include WordFunc.nsh ;Used by VersionCompare macro function.
 !include WinVer.nsh ;Windows version detection.
-
-;-----------------------------------------------------------------------------
-;Required macros.
-;-----------------------------------------------------------------------------
-!insertmacro VersionCompare
+!include WordFunc.nsh ;Used by VersionCompare macro function.
+!include UAC.nsh ;Used by the UAC elevation to install as user or admin.
 
 ;-----------------------------------------------------------------------------
 ;Memento selections stored in registry.
@@ -127,8 +112,11 @@ ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
 !endif
 !ifdef OPTION_FINISHPAGE_LAUNCHER
    !define MUI_FINISHPAGE_NOAUTOCLOSE
-   !define MUI_FINISHPAGE_RUN "$INSTDIR\Windar.exe"
-   !define MUI_FINISHPAGE_RUN_NOTCHECKED
+   !define MUI_FINISHPAGE_RUN
+   !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchWindar"
+   ;!define MUI_FINISHPAGE_RUN_NOTCHECKED
+   ;!define MUI_FINISHPAGE_RUN "$INSTDIR\Windar.exe"
+   ;!define MUI_FINISHPAGE_RUN_TEXT "Run Windar"
 !endif
 
 ;-----------------------------------------------------------------------------
@@ -145,7 +133,6 @@ Page custom PageReinstall PageLeaveReinstall
 !ifdef OPTION_FINISHPAGE
    !insertmacro MUI_PAGE_FINISH
 !endif
-
 !insertmacro MUI_UNPAGE_CONFIRM
 UninstPage custom un.UnPageProfile un.UnPageProfileLeave
 !insertmacro MUI_UNPAGE_INSTFILES
@@ -167,9 +154,18 @@ UninstPage custom un.UnPageProfile un.UnPageProfileLeave
    FunctionEnd
 !endif
 
+Function LaunchWindar
+   ${UAC.CallFunctionAsUser} LaunchWindarAsUser
+FunctionEnd
+
+Function LaunchWindarAsUser
+   Exec "$INSTDIR\Windar.exe"
+FunctionEnd
+
 Function KillErlang
+
    ;Check for and offer to kill epmd.exe process.
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Searching for epmd.exe processes to stop."
    SetDetailsPrint listonly
    Processes::FindProcess "epmd"
@@ -187,7 +183,7 @@ Function KillErlang
 
    ;Check for and offer to kill erl.exe process.
    StrCpy $0 "erl.exe"
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Searching for erl.exe processes to stop."
    SetDetailsPrint listonly
    Processes::FindProcess "erl"
@@ -207,7 +203,7 @@ FunctionEnd
 Function un.KillErlang
    ;Same as KillErlang function, but used by uninstaller (requires separate un. function).
    ;Check for and offer to kill epmd.exe process.
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Searching for epmd.exe processes to stop."
    SetDetailsPrint listonly
    Processes::FindProcess "epmd"
@@ -225,7 +221,7 @@ Function un.KillErlang
 
    ;Check for and offer to kill erl.exe process.
    StrCpy $0 "erl.exe"
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Searching for erl.exe processes to stop."
    SetDetailsPrint listonly
    Processes::FindProcess "erl"
@@ -240,6 +236,139 @@ Function un.KillErlang
       StrCmp $R0 "1" erl_completed
       DetailPrint "Process to kill not found!"
    erl_completed:
+FunctionEnd
+
+##############################################################################
+#                                                                            #
+#   C REDISTRIBUTABLE INSTALLER                                              #
+#                                                                            #
+##############################################################################
+
+!define VCRUNTIME_SETUP_NAME "vcredist_x86.exe"
+
+!ifdef OPTION_BUNDLE_C_REDIST
+   Function IsDllVersionGoodEnough
+      IntCmp 0 $R0 normal0 normal0 negative0
+      normal0:
+         IntOp $R2 $R0 >> 16
+         Goto continue0
+      negative0:
+         IntOp $R2 $R0 & 0x7FFF0000
+         IntOp $R2 $R2 >> 16
+         IntOp $R2 $R2 | 0x8000
+      continue0:
+         IntOp $R3 $R0 & 0x0000FFFF
+         IntCmp 0 $R1 normal1 normal1 negative1
+      normal1:
+         IntOp $R4 $R1 >> 16
+         Goto continue1
+      negative1:
+         IntOp $R4 $R1 & 0x7FFF0000
+         IntOp $R4 $R4 >> 16
+         IntOp $R4 $R4 | 0x8000
+      continue1:
+         IntOp $R5 $R1 & 0x0000FFFF
+         StrCpy $2 "$R2.$R3.$R4.$R5"
+         ${VersionCompare} $2 ${REDIST_DLL_VERSION} $R0
+         Return
+   FunctionEnd
+
+   Function RequireCRedist
+      SetDetailsPrint textonly
+      DetailPrint "Checking for the Microsoft C runtime version required."
+      SetDetailsPrint listonly
+
+      IfFileExists $SYSDIR\msvcr80.dll MaybeFoundInSystem
+      SearchSxs:
+         FindFirst $0 $1 $WINDIR\WinSxS\x86*
+      Loop:
+         StrCmp $1 "" NotFound
+         IfFileExists $WINDIR\WinSxS\$1\msvcr80.dll MaybeFoundInSxs
+         FindNext $0 $1
+         Goto Loop
+      MaybeFoundInSxs:
+         GetDllVersion $WINDIR\WinSxS\$1\msvcr80.dll $R0 $R1
+         Call IsDllVersionGoodEnough
+         FindNext $0 $1
+         IntCmp 2 $R0 Loop
+         Goto Found
+      MaybeFoundInSystem:
+         GetDllVersion $SYSDIR\msvcr80.dll $R0 $R1
+         Call IsDllVersionGoodEnough
+         IntCmp 2 $R0 SearchSxS
+      Found:
+         Return
+      NotFound:
+         MessageBox MB_ICONINFORMATION|MB_OK "Windar Setup determined that you \
+            do not have the Microsoft C runtime version required. It will now be installed."
+         SetOutPath "$INSTDIR"
+         File "payload\${VCRUNTIME_SETUP_NAME}"
+         SetDetailsPrint textonly
+         DetailPrint "Installing the Microsoft C runtime redistributable."
+         SetDetailsPrint listonly
+         ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'
+         Delete "$INSTDIR\${VCRUNTIME_SETUP_NAME}"
+   FunctionEnd
+!endif
+
+##############################################################################
+#                                                                            #
+#   .NET FRAMEWORK INSTALLER                                                 #
+#                                                                            #
+##############################################################################
+
+!define NET_URL "http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe"
+
+!insertmacro VersionCompare
+
+Function GetDotNETVersion
+   Push $0
+   Push $1
+   System::Call "mscoree::GetCORVersion(w .r0, i ${NSIS_MAX_STRLEN}, *i) i .r1 ?u"
+   StrCmp $1 "error" 0 +2
+      StrCpy $0 "not found"
+   Pop $1
+   Exch $0
+FunctionEnd
+
+Function RequireDotNet
+   SetDetailsPrint textonly
+   DetailPrint "Checking for .NET Framework 2.0 or newer."
+   SetDetailsPrint listonly
+
+   Call GetDotNETVersion
+   Pop $0
+   ${If} $0 == "not found"
+      Call GetDotNetFramework
+   ${Else}
+      StrCpy $0 $0 "" 1 # skip "v"
+      ${VersionCompare} $0 "2.0" $1
+      ${If} $1 == 2
+         Call GetDotNetFramework
+      ${EndIf}
+   ${EndIf}
+FunctionEnd
+
+Function GetDotNetFramework
+   SetDetailsPrint textonly
+   DetailPrint "Downloading .NET Framework 2.0"
+   SetDetailsPrint listonly
+   
+   MessageBox MB_OK "Playnode uses .NET Framework 2.0, which will now be downloaded and installed" 
+   StrCpy $2 "$TEMP\The .NET Framework.exe"
+   nsisdl::download /TIMEOUT=30000 ${NET_URL} $2
+   Pop $R0 ;Get the return value
+   StrCmp $R0 "success" +4
+      MessageBox MB_OK "Download failed: $R0"
+      UAC::Unload
+      Quit
+
+   SetDetailsPrint textonly
+   DetailPrint "Installing the .NET Framework."
+   SetDetailsPrint listonly
+
+   ExecWait '"$2" /q:a /c:"install /l /q"'
+   Delete '"$2"'
 FunctionEnd
 
 ##############################################################################
@@ -309,150 +438,11 @@ Function PageLeaveReinstall
       Delete $R1
       RMDir $INSTDIR
    no_remove_uninstaller:
-      StrCmp $R0 "2" 0 +2
+      StrCmp $R0 "2" 0 +3
+      UAC::Unload
       Quit
       BringToFront
    reinst_done:
-FunctionEnd
-
-##############################################################################
-#                                                                            #
-#   C REDISTRIBUTABLE INSTALLER                                              #
-#                                                                            #
-##############################################################################
-
-!ifdef OPTION_BUNDLE_C_REDIST
-   Function IsDllVersionGoodEnough
-      IntCmp 0 $R0 normal0 normal0 negative0
-      normal0:
-         IntOp $R2 $R0 >> 16
-         Goto continue0
-      negative0:
-         IntOp $R2 $R0 & 0x7FFF0000
-         IntOp $R2 $R2 >> 16
-         IntOp $R2 $R2 | 0x8000
-      continue0:
-         IntOp $R3 $R0 & 0x0000FFFF
-         IntCmp 0 $R1 normal1 normal1 negative1
-      normal1:
-         IntOp $R4 $R1 >> 16
-         Goto continue1
-      negative1:
-         IntOp $R4 $R1 & 0x7FFF0000
-         IntOp $R4 $R4 >> 16
-         IntOp $R4 $R4 | 0x8000
-      continue1:
-         IntOp $R5 $R1 & 0x0000FFFF
-         StrCpy $2 "$R2.$R3.$R4.$R5"
-         ${VersionCompare} $2 ${REDIST_DLL_VERSION} $R0
-         Return
-   FunctionEnd
-
-   Function RequireCRedist
-      SetDetailsPrint both
-      DetailPrint "Checking for the Microsoft C runtime version required."
-      SetDetailsPrint listonly
-
-      IfFileExists $SYSDIR\msvcr80.dll MaybeFoundInSystem
-      SearchSxs:
-         FindFirst $0 $1 $WINDIR\WinSxS\x86*
-      Loop:
-         StrCmp $1 "" NotFound
-         IfFileExists $WINDIR\WinSxS\$1\msvcr80.dll MaybeFoundInSxs
-         FindNext $0 $1
-         Goto Loop
-      MaybeFoundInSxs:
-         GetDllVersion $WINDIR\WinSxS\$1\msvcr80.dll $R0 $R1
-         Call IsDllVersionGoodEnough
-         FindNext $0 $1
-         IntCmp 2 $R0 Loop
-         Goto Found
-      MaybeFoundInSystem:
-         GetDllVersion $SYSDIR\msvcr80.dll $R0 $R1
-         Call IsDllVersionGoodEnough
-         IntCmp 2 $R0 SearchSxS
-      Found:
-         Return
-      NotFound:
-         MessageBox MB_ICONINFORMATION|MB_OK "Windar Setup determined that you \
-            do not have the Microsoft C runtime version required. It will now be installed."
-         SetOutPath "$INSTDIR"
-         File "payload\${VCRUNTIME_SETUP_NAME}"
-         SetDetailsPrint both
-         DetailPrint "Installing the Microsoft C runtime redistributable."
-         SetDetailsPrint listonly
-         ExecWait '"$INSTDIR\${VCRUNTIME_SETUP_NAME}" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /qb!"" "'
-         Delete "$INSTDIR\${VCRUNTIME_SETUP_NAME}"
-   FunctionEnd
-!endif
-
-##############################################################################
-#                                                                            #
-#   THE .NET FRAMEWORK INSTALLER                                             #
-#                                                                            #
-##############################################################################
-
-Function GetDotNETVersion
-   Push $0
-   Push $1
-   System::Call "mscoree::GetCORVersion(w .r0, i ${NSIS_MAX_STRLEN}, *i) i .r1 ?u"
-   StrCmp $1 "error" 0 +2
-      StrCpy $0 "not found"
-   Pop $1
-   Exch $0
-FunctionEnd
-
-Function RequireMicrosoftNET2
-   SetDetailsPrint both
-   DetailPrint "Checking .NET Framework and required version."
-   SetDetailsPrint listonly
-
-   ;Check for and install the .NET Framework redistributable if required.
-   Call GetDotNETVersion
-   Pop $0
-   ${If} $0 == "not found"
-      MessageBox MB_ICONINFORMATION|MB_OK "Windar Setup determined that you \
-         do not have the Microsoft .NET Framework version 2.0 installed on your \
-         system. As this is a required component in order for Windar to function \
-         properly it will now be installed."
-      Call InstallNETFramework2
-   ${Else}
-      StrCpy $0 $0 "" 1 # skip "v"
-      ${VersionCompare} $0 "2.0" $1
-      ${If} $1 == 2
-         MessageBox MB_ICONINFORMATION|MB_OK "Windar Setup determined that you \
-            do not have the Microsoft .NET Framework version 2.0 installed on your \
-            system. As this is a required component in order for Windar to function \
-            properly it will now be installed."
-         Call InstallNETFramework2
-      ${EndIf}
-   ${EndIf}
-FunctionEnd
-
-Function InstallNETFramework2
-   SetDetailsPrint both
-   DetailPrint "Installing .NET Framework 2.0"
-   SetDetailsPrint listonly
-
-   SetOutPath "$INSTDIR"
-
-   IfFileExists '${NETFRAMEWORK20_SETUP_NAME}' DOTNETFX_SUCCESS DOWNLOAD_NET_RUNTIME
-   DOWNLOAD_NET_RUNTIME:
-      NSISdl::download /TIMEOUT=30000 '${NETFRAMEWORK20_DOWNLOAD_LOCATION}' '${NETFRAMEWORK20_SETUP_NAME}'
-      Pop $R0 ;Get the return value
-      StrCmp $R0 "success" DOTNETFX_SUCCESS DOTNETFX_FAILURE
-   USER_CANCELED:
-      Quit
-   DOTNETFX_FAILURE:
-      MessageBox MB_ICONEXCLAMATION|MB_RETRYCANCEL '${DOWNLOAD_FAILED_MSG}' \
-                 IDRETRY  DOWNLOAD_NET_RUNTIME \
-                 IDCANCEL USER_CANCELED
-   DOTNETFX_SUCCESS:
-      SetDetailsPrint both
-      DetailPrint "Installing .NET Framework. This may take a while, please wait..."
-      SetDetailsPrint listonly
-      ExecWait '"${NETFRAMEWORK20_SETUP_NAME}" /q:a /c:"install /l /q"'
-      Delete "$INSTDIR\${NETFRAMEWORK20_SETUP_NAME}"
 FunctionEnd
 
 ##############################################################################
@@ -466,6 +456,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    SetDetailsPrint listonly
 
    Call RequireCRedist
+   Call RequireDotNet
 
    ;Shutdown Windar if running.
    IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
@@ -473,7 +464,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
       FileOpen $0 $INSTDIR\SHUTDOWN w
       FileWrite $0 "x"
       FileClose $0
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Pausing to allow Windar to shutdown, if running."
       SetDetailsPrint listonly
       Sleep 3000
@@ -481,7 +472,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
 
    Call KillErlang
 
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Installing the OpenSSL DLL."
    SetDetailsPrint listonly
 
@@ -493,19 +484,19 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    ;Erlang and Playdar payload.
    SetOutPath "$INSTDIR"
       
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Installing minimum Erlang components."
    SetDetailsPrint listonly
 
    File /r payload\minimerl
 
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Installing Playdar core."
    SetDetailsPrint listonly
 
    File /r payload\playdar
 
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Installing py2exe shared components."
    SetDetailsPrint listonly
 
@@ -529,9 +520,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    SetOutPath "$INSTDIR\playdar"
    File payload\playdar-core.bat
 
-   Call RequireMicrosoftNET2
-
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Installing the Windar application components."
    SetDetailsPrint listonly
 
@@ -567,7 +556,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
 
    ;Player plugin for Windar.
    !ifdef OPTION_BUNDLE_MPLAYER
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing the Player plugin for Windar."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR"
@@ -584,7 +573,7 @@ SectionGroup "Shortcuts"
 !ifdef OPTION_SECTION_SC_START_MENU
    ${MementoSection} "Start Menu Program Group" SEC_START_MENU
       SectionIn 1 2 3
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Adding shortcuts for the Windar program group to the Start Menu."
       SetDetailsPrint listonly
       SetShellVarContext all
@@ -603,7 +592,7 @@ SectionGroup "Shortcuts"
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
    ${MementoSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
       SectionIn 1 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Adding shortcut in Startup folder to start Windar on login."
       SetDetailsPrint listonly
       SetShellVarContext all
@@ -615,7 +604,7 @@ SectionGroup "Shortcuts"
 !ifdef OPTION_SECTION_SC_DESKTOP
    ${MementoSection} "Desktop Shortcut" SEC_DESKTOP
       SectionIn 1 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Creating Desktop Shortcuts"
       SetDetailsPrint listonly
       CreateShortCut "$DESKTOP\Windar.lnk" "$INSTDIR\Windar.exe"
@@ -625,7 +614,7 @@ SectionGroup "Shortcuts"
 !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
    ${MementoSection} "Quick Launch Shortcut" SEC_QUICK_LAUNCH
       SectionIn 1 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Creating Quick Launch Shortcut"
       SetDetailsPrint listonly
       CreateShortCut "$QUICKLAUNCH\Windar.lnk" "$INSTDIR\Windar.exe"
@@ -639,7 +628,7 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing resolver for the AOL Music Index."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
@@ -648,7 +637,7 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "Audiofarm.org" SEC_AUDIOFARM_RESOLVER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing resolver for Audiofarm."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
@@ -657,7 +646,7 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing resolver for The Echo Nest."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
@@ -666,7 +655,7 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing resolver for Jamendo."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
@@ -675,7 +664,7 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing resolver for Magnatune."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
@@ -684,7 +673,7 @@ SectionGroupEnd
 
    ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing resolver for MP3tunes."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
@@ -699,7 +688,7 @@ SectionGroupEnd
    !ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
       ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
          SectionIn 2
-         SetDetailsPrint both
+         SetDetailsPrint textonly
          DetailPrint "Installing resolver for Napster."
          SetDetailsPrint listonly
          SetOutPath "$INSTDIR\playdar\py2exe"
@@ -718,7 +707,7 @@ SectionGroupEnd
 !ifdef OPTION_BUNDLE_SCROBBLER
    ${MementoUnselectedSection} "Audioscrobbler support" SEC_SCROBBLER
       SectionIn 2
-      SetDetailsPrint both
+      SetDetailsPrint textonly
       DetailPrint "Installing the scrobbler module and Windar plugin."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\playdar_modules"
@@ -764,10 +753,9 @@ ${MementoSectionDone}
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Section -post
-   SetDetailsPrint listonly
 
    ;Uninstaller file.
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Writing Uninstaller"
    SetDetailsPrint listonly
    WriteUninstaller $INSTDIR\uninstall.exe
@@ -779,7 +767,7 @@ Section -post
    Delete "$INSTDIR\minimerl\bin\erlini.exe"
 
    ;Registry keys required for installer version handling and uninstaller.
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Writing Installer Registry Keys"
    SetDetailsPrint listonly
 
@@ -804,9 +792,12 @@ Section -post
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "NoModify" "1"
    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar" "NoRepair" "1"
 
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Installation Complete"
    SetDetailsPrint listonly
+
+   SetDetailsPrint textonly
+   DetailPrint "Finsihed."
 SectionEnd
 
 ##############################################################################
@@ -861,7 +852,7 @@ Section Uninstall
    FileOpen $0 $INSTDIR\SHUTDOWN w
    FileWrite $0 "x"
    FileClose $0
-   SetDetailsPrint both
+   SetDetailsPrint textonly
    DetailPrint "Pausing to allow Windar to shutdown, if running."
    SetDetailsPrint listonly
    Sleep 3000
@@ -902,18 +893,18 @@ Section Uninstall
 
    Call un.KillErlang
 
+   ;Remove all the Program Files.
    RMDir /r $INSTDIR\minimerl
    RMDir /r $INSTDIR\playdar
    RMDir /r $INSTDIR
   
-   ;Uninstall User Data if option is checked, otherwise skip
+   ;Uninstall User Data if option is checked, otherwise skip.
    ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
       RMDir /r "$APPDATA\Windar"
    ${EndIf}
 
-   SetDetailsPrint both
-   DetailPrint "Uninstalled."
-   SetDetailsPrint listonly
+   SetDetailsPrint textonly
+   DetailPrint "Finsihed."
 SectionEnd
 
 ##############################################################################
@@ -923,19 +914,12 @@ SectionEnd
 ##############################################################################
 
 Function .onInit
-
-   ;Prevent multiple instances.
-   System::Call 'kernel32::CreateMutexA(i 0, i 0, t "windarInstaller") i .r1 ?e'
-   Pop $R0
-   StrCmp $R0 0 +3
-      MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
-      Abort
-
    !insertmacro INSTALLOPTIONS_EXTRACT "windar.ini"
 
    ;Warn user if system is older than Windows XP.
    ${IfNot} ${AtLeastWinXP}
       MessageBox MB_OK "Unsupported on anything older than Windows XP."
+      ;UAC::Unload
       ;Quit
    ${EndIf}
 
@@ -948,8 +932,41 @@ Function .onInit
 
    ${MementoSectionRestore}
 
+   UAC_Elevate:
+       UAC::RunElevated 
+       StrCmp 1223 $0 UAC_ElevationAborted ; UAC dialog aborted by user?
+       StrCmp 0 $0 0 UAC_Err ; Error?
+       StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
+       Quit
+    
+   UAC_Err:
+       MessageBox mb_iconstop "Unable to elevate, error $0"
+       Abort
+    
+   UAC_ElevationAborted:
+       # elevation was aborted, run as normal?
+       ;MessageBox mb_iconstop "This installer requires admin access, aborting!"
+       Abort
+    
+   UAC_Success:
+       StrCmp 1 $3 +4 ;Admin?
+       StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?
+       MessageBox mb_iconstop "This installer requires admin access, try again"
+       goto UAC_Elevate 
+
+   ;Prevent multiple instances.
+   System::Call 'kernel32::CreateMutexA(i 0, i 0, t "windarInstaller") i .r1 ?e'
+   Pop $R0
+   StrCmp $R0 0 +3
+      MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
+      Abort
 FunctionEnd
 
 Function .onInstSuccess
    ${MementoSectionSave}
+    UAC::Unload ;Must call unload!
+FunctionEnd
+
+Function .onInstFailed
+    UAC::Unload ;Must call unload!
 FunctionEnd
