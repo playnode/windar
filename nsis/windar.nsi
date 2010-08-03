@@ -108,7 +108,6 @@ ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
    !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
    !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\NOTES.txt"
    !define MUI_FINISHPAGE_SHOWREADME_TEXT "Show release notes"
-   !define MUI_FINISHPAGE_SHOWREADME_FUNCTION ShowReleaseNotes
 !endif
 !ifdef OPTION_FINISHPAGE_LAUNCHER
    !define MUI_FINISHPAGE_NOAUTOCLOSE
@@ -147,12 +146,6 @@ UninstPage custom un.UnPageProfile un.UnPageProfileLeave
 #   MISC. FUNCTIONS                                                          #
 #                                                                            #
 ##############################################################################
-
-!ifdef OPTION_FINISHPAGE_RELEASE_NOTES
-   Function ShowReleaseNotes
-      ExecShell "open" "$INSTDIR\NOTES.txt"
-   FunctionEnd
-!endif
 
 Function LaunchWindar
    ${UAC.CallFunctionAsUser} LaunchWindarAsUser
