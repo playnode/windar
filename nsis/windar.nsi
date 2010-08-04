@@ -113,9 +113,6 @@ ReserveFile '${NSISDIR}\Plugins\InstallOptions.dll'
    !define MUI_FINISHPAGE_NOAUTOCLOSE
    !define MUI_FINISHPAGE_RUN
    !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchWindar"
-   ;!define MUI_FINISHPAGE_RUN_NOTCHECKED
-   ;!define MUI_FINISHPAGE_RUN "$INSTDIR\Windar.exe"
-   ;!define MUI_FINISHPAGE_RUN_TEXT "Run Windar"
 !endif
 
 ;-----------------------------------------------------------------------------
@@ -143,7 +140,7 @@ UninstPage custom un.UnPageProfile un.UnPageProfileLeave
 
 ##############################################################################
 #                                                                            #
-#   MISC. FUNCTIONS                                                          #
+#   FINISH PAGE LAUNCHER FUNCTIONS                                           #
 #                                                                            #
 ##############################################################################
 
@@ -155,81 +152,106 @@ Function LaunchWindarAsUser
    Exec "$INSTDIR\Windar.exe"
 FunctionEnd
 
-Function KillErlang
+##############################################################################
+#                                                                            #
+#   PROCESS HANDLING FUNCTIONS AND MACROS                                    #
+#                                                                            #
+##############################################################################
 
-   ;Check for and offer to kill epmd.exe process.
-   SetDetailsPrint textonly
-   DetailPrint "Searching for epmd.exe processes to stop."
-   SetDetailsPrint listonly
-   Processes::FindProcess "epmd"
-   StrCmp $R0 "0" epmd_completed
+!macro CheckForProcess processName gotoWhenFound gotoWhenNotFound
+   Processes::FindProcess ${processName}
+   StrCmp $R0 "0" ${gotoWhenNotFound} ${gotoWhenFound}
+!macroend
+
+!macro WaitOnProcessShutdown processName sleepMillis gotoWhenNotFound
+   !insertmacro CheckForProcess ${processName} 0 ${gotoWhenNotFound}
+   Sleep ${sleepMillis}
+!macroend
+
+!macro ConfirmEndProcess processName
    MessageBox MB_YESNO|MB_ICONEXCLAMATION \
-     "Found epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES epmd_killproc IDNO epmd_completed
-   epmd_killproc:
-      DetailPrint "Killing epmd.exe processes."
-      Processes::KillProcess "epmd"
+     "Found ${processName} process(s) which need to be stopped.$\nDo you want the installer to stop these for you?" \
+     IDYES process_${processName}_kill IDNO process_${processName}_ended
+   process_${processName}_kill:
+      DetailPrint "Killing ${processName} processes."
+      Processes::KillProcess ${processName}
       Sleep 1500
-      StrCmp $R0 "1" epmd_completed
+      StrCmp $R0 "1" process_${processName}_ended
       DetailPrint "Process to kill not found!"
-   epmd_completed:
+   process_${processName}_ended:
+!macroend
 
-   ;Check for and offer to kill erl.exe process.
-   StrCpy $0 "erl.exe"
-   SetDetailsPrint textonly
-   DetailPrint "Searching for erl.exe processes to stop."
-   SetDetailsPrint listonly
-   Processes::FindProcess "erl"
-   StrCmp $R0 "0" erl_completed
-   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
-     "Found erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES erl_killproc IDNO erl_completed
-   erl_killproc:
-      DetailPrint "Killing erl.exe processes."
-      Processes::KillProcess "erl"
-       Sleep 1500
-      StrCmp $R0 "1" erl_completed
-      DetailPrint "Process to kill not found!"
-   erl_completed:
-FunctionEnd
+!macro CheckAndConfirmEndProcess processName
+   !insertmacro CheckForProcess ${processName} 0 no_process_${processName}_to_end
+   !insertmacro ConfirmEndProcess ${processName}
+   no_process_${processName}_to_end:
+!macroend
 
-Function un.KillErlang
-   ;Same as KillErlang function, but used by uninstaller (requires separate un. function).
-   ;Check for and offer to kill epmd.exe process.
-   SetDetailsPrint textonly
-   DetailPrint "Searching for epmd.exe processes to stop."
-   SetDetailsPrint listonly
-   Processes::FindProcess "epmd"
-   StrCmp $R0 "0" epmd_completed
-   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
-     "Found epmd.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES epmd_killproc IDNO epmd_completed
-   epmd_killproc:
-      DetailPrint "Killing epmd.exe processes."
-      Processes::KillProcess "epmd"
-      Sleep 1500
-      StrCmp $R0 "1" epmd_completed
-      DetailPrint "Process to kill not found!"
-   epmd_completed:
+!macro WaitOnProcessToEnd processName
 
-   ;Check for and offer to kill erl.exe process.
-   StrCpy $0 "erl.exe"
-   SetDetailsPrint textonly
-   DetailPrint "Searching for erl.exe processes to stop."
-   SetDetailsPrint listonly
-   Processes::FindProcess "erl"
-   StrCmp $R0 "0" erl_completed
-   MessageBox MB_YESNO|MB_ICONEXCLAMATION \
-     "Found erl.exe process(s) which may need to be stopped.$\nDo you want the installer to stop these for you?" \
-     IDYES erl_killproc IDNO erl_completed
-   erl_killproc:
-      DetailPrint "Killing erl.exe processes."
-      Processes::KillProcess "erl"
-       Sleep 1500
-      StrCmp $R0 "1" erl_completed
-      DetailPrint "Process to kill not found!"
-   erl_completed:
-FunctionEnd
+   ;Wait up to 10 seconds for the process to end.
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 1
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 2
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 3
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 4
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 5
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 6
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 7
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 8
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ; 9
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;10
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;11
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;12
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;13
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;14
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;15
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;16
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;17
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;18
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;19
+   !insertmacro WaitOnProcessShutdown ${processName} 500 waiting_on_process_ended ;20
+
+   ;If not completed offer to kill it.
+   !insertmacro ConfirmEndProcess ${processName}
+
+   waiting_on_process_ended:
+!macroend
+
+!macro ShutdownWindarTray un
+   Function ${un}ShutdownWindarTray   
+      !insertmacro CheckForProcess "Windar.exe" 0 skip_tray_shutdown
+
+      SetDetailsPrint textonly
+      DetailPrint "Shutting down the Windar tray application."
+      SetDetailsPrint listonly
+      
+      ;Write a file to prompt the tray app to shutdown.
+      FileOpen $0 "$INSTDIR\SHUTDOWN" w
+      FileWrite $0 "x"
+      FileClose $0
+      
+      ;Give the tray app some time to shutdown.
+      SetDetailsPrint textonly
+      DetailPrint "Pausing to allow Windar tray to shutdown, if running."
+      SetDetailsPrint listonly
+      !insertmacro WaitOnProcessToEnd "Windar.exe"
+      
+      skip_tray_shutdown:
+   FunctionEnd
+!macroend
+
+!insertmacro ShutdownWindarTray ""
+!insertmacro ShutdownWindarTray "un."
+
+!macro KillErlang un
+   Function ${un}KillErlang
+      !insertmacro CheckAndConfirmEndProcess "epmd.exe"
+      !insertmacro CheckAndConfirmEndProcess "erl.exe"
+   FunctionEnd
+!macroend
+
+!insertmacro KillErlang ""
+!insertmacro KillErlang "un."
 
 ##############################################################################
 #                                                                            #
@@ -447,23 +469,13 @@ FunctionEnd
 Section "Playdar core & Windar tray application" SEC_WINDAR
    SectionIn 1 2 3 RO
    SetDetailsPrint listonly
+   
+   ;Shutdown Windar in case Add/Remove re-installer option used.
+   Call ShutdownWindarTray
+   Call KillErlang
 
    Call RequireCRedist
    Call RequireDotNet
-
-   ;Shutdown Windar if running.
-   IfFileExists $INSTDIR\Windar.exe windar_installed windar_not_installed
-   windar_installed:
-      FileOpen $0 $INSTDIR\SHUTDOWN w
-      FileWrite $0 "x"
-      FileClose $0
-      SetDetailsPrint textonly
-      DetailPrint "Pausing to allow Windar to shutdown, if running."
-      SetDetailsPrint listonly
-      Sleep 3000
-   windar_not_installed:
-
-   Call KillErlang
 
    SetDetailsPrint textonly
    DetailPrint "Installing the OpenSSL DLL."
@@ -834,21 +846,14 @@ Function un.UnPageProfileLeave
 FunctionEnd
 
 Section Uninstall
-
    IfFileExists $INSTDIR\Windar.exe windar_installed
       MessageBox MB_YESNO "It does not appear that Windar is installed in the directory '$INSTDIR'.$\r$\nContinue anyway (not recommended)?" IDYES windar_installed
       Abort "Uninstall aborted by user"
-
    windar_installed:
-
-   ;Shutdown Windar if running.
-   FileOpen $0 $INSTDIR\SHUTDOWN w
-   FileWrite $0 "x"
-   FileClose $0
-   SetDetailsPrint textonly
-   DetailPrint "Pausing to allow Windar to shutdown, if running."
-   SetDetailsPrint listonly
-   Sleep 3000
+   
+   ;Shutdown Windar in case Add/Remove re-installer option used.
+   Call un.ShutdownWindarTray
+   Call un.KillErlang
 
    ;Delete registry keys.
    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Windar"
@@ -883,8 +888,6 @@ Section Uninstall
       IfFileExists "$QUICKLAUNCH\Windar.lnk" 0 +2
          Delete "$QUICKLAUNCH\Windar.lnk"
    !endif
-
-   Call un.KillErlang
 
    ;Remove all the Program Files.
    RMDir /r $INSTDIR\minimerl

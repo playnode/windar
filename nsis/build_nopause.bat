@@ -10,7 +10,7 @@ IF NOT EXIST %MAKENSIS% SET MAKENSIS="C:\Program Files (x86)\NSIS\makensis.exe"
 
 ECHO *********************************************
 ECHO *                                           *
-ECHO *   Windar Debug Builder.                   *
+ECHO *   Windar Installer Build Script.          *
 ECHO *                                           *
 ECHO *********************************************
 ECHO.
@@ -37,7 +37,7 @@ SET BUILD_TEMP="%INSTALL_BUILD_DIR%temp\"
 IF NOT EXIST %BUILD_TEMP% MKDIR %BUILD_TEMP%
 
 CD %INSTALL_BUILD_DIR%erlini
-%FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Release
+%FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% erlini.sln /v:Quiet /t:Rebuild /p:Configuration=Release /p:Platform=x86
 IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
 
 @ECHO ON
@@ -52,7 +52,7 @@ ECHO *                                           *
 ECHO *********************************************
 ECHO.
 CD %INSTALL_BUILD_DIR%..\src
-%FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% Windar.sln /v:Quiet /t:Rebuild /p:Configuration=Debug
+%FRAMEWORK_PATH%\MSBuild %MSBUILD_OPTIONS% Windar.sln /v:Quiet /t:Rebuild /p:Configuration=Release /p:Platform=x86
 IF NOT %ERRORLEVEL% == 0 GOTO BUILD_ERROR
 
 ECHO.
@@ -62,7 +62,7 @@ ECHO *   Copy build product to temp folder.      *
 ECHO *                                           *
 ECHO *********************************************
 ECHO.
-CD %INSTALL_BUILD_DIR%..\src\TrayApp\bin\Debug
+CD %INSTALL_BUILD_DIR%..\src\TrayApp\bin\Release
 
 ECHO ______________________________
 ECHO Windar application components:
@@ -78,20 +78,20 @@ COPY Windar.PluginAPI.dll %BUILD_TEMP%
 COPY Windar.ScrobblerPlugin.dll %BUILD_TEMP%
 @ECHO OFF
 
-ECHO.
-ECHO ______________________
-ECHO Debug build PDB files:
-@ECHO ON
-COPY ErlangTerms.pdb %BUILD_TEMP%
-COPY Windar.pdb %BUILD_TEMP%
-COPY Windar.Common.pdb %BUILD_TEMP%
-COPY Windar.NapsterPlugin.pdb %BUILD_TEMP%
-COPY Windar.MP3tunesPlugin.pdb %BUILD_TEMP%
-COPY Windar.PlaydarDaemon.pdb %BUILD_TEMP%
-COPY Windar.PlayerPlugin.pdb %BUILD_TEMP%
-COPY Windar.PluginAPI.pdb %BUILD_TEMP%
-COPY Windar.ScrobblerPlugin.pdb %BUILD_TEMP%
-@ECHO OFF
+REM ECHO.
+REM ECHO ______________________
+REM ECHO Debug build PDB files:
+REM @ECHO ON
+REM COPY ErlangTerms.pdb %BUILD_TEMP%
+REM COPY Windar.pdb %BUILD_TEMP%
+REM COPY Windar.Common.pdb %BUILD_TEMP%
+REM COPY Windar.NapsterPlugin.pdb %BUILD_TEMP%
+REM COPY Windar.MP3tunesPlugin.pdb %BUILD_TEMP%
+REM COPY Windar.PlaydarDaemon.pdb %BUILD_TEMP%
+REM COPY Windar.PlayerPlugin.pdb %BUILD_TEMP%
+REM COPY Windar.PluginAPI.pdb %BUILD_TEMP%
+REM COPY Windar.ScrobblerPlugin.pdb %BUILD_TEMP%
+REM @ECHO OFF
 
 ECHO.
 ECHO ___________
@@ -125,7 +125,7 @@ IF NOT %ERRORLEVEL% == 0 GOTO NSIS_ERROR
 ECHO.
 ECHO *********************************************
 ECHO *                                           *
-ECHO *   Windar Debug Build Success.             *
+ECHO *   Windar Build Success.                   *
 ECHO *                                           *
 ECHO *********************************************
 CD %INSTALL_BUILD_DIR%

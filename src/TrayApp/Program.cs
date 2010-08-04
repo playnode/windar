@@ -31,6 +31,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using log4net;
+using Microsoft.Win32;
 using Windar.Common;
 using Windar.PlaydarDaemon;
 using Windar.TrayApp.Configuration;
@@ -105,12 +106,10 @@ namespace Windar.TrayApp
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    
-                    Instance = new Program();
 
-                    // Register shutdown/logout handler.
-                    _controlHandler += ControlHandler;
-                    SetConsoleCtrlHandler(_controlHandler, true);
+                    SetupSessionEndingHandler();
+
+                    Instance = new Program();
 
 #if DEBUG
                     Instance.Run();
@@ -124,9 +123,6 @@ namespace Windar.TrayApp
                         if (Log.IsErrorEnabled) Log.Error("Exception in Main", ex);
                     }
 #endif
-
-                    // Unregister shutdown/logout handler.
-                    SetConsoleCtrlHandler(_controlHandler, false);
 
                     if (Log.IsInfoEnabled) Log.Info("Finished.");
                 }
@@ -251,47 +247,6 @@ namespace Windar.TrayApp
             }
         }
 
-        #region So far unsuccessful attempt to get file-system shutdown/log-off events.
-
-        enum ControlEventType
-        {
-            CtrlCEvent = 0,
-            CtrlBreakEvent = 1,
-            CtrlCloseEvent = 2,
-            CtrlLogoffEvent = 5,
-            CtrlShutdownEvent = 6,
-        }
-
-        [DllImport("kernel32", SetLastError = true)]
-        static extern bool SetConsoleCtrlHandler(HandlerDelegate handlerRoutine, bool add);
-
-        delegate bool HandlerDelegate(ControlEventType dwControlType);
-
-        static HandlerDelegate _controlHandler;
-
-        static bool ControlHandler(ControlEventType controlEvent)
-        {
-            // TODO: Either get this method to work, replace or delete it.
-            if (Log.IsDebugEnabled) Log.Debug("Control event (" + controlEvent + ')');
-            var result = false;
-            switch (controlEvent)
-            {
-                case ControlEventType.CtrlCEvent:
-                case ControlEventType.CtrlBreakEvent:
-                case ControlEventType.CtrlCloseEvent:
-                case ControlEventType.CtrlLogoffEvent:
-                case ControlEventType.CtrlShutdownEvent:
-
-                    // Return true to show that the event was handled.
-                    Shutdown();
-                    result = true;
-                    break;
-            }
-            return result;
-        }
-
-        #endregion
-
         #region Uninstaller shutdown file-watcher.
 
         static void SetupShutdownFileWatcher()
@@ -318,6 +273,21 @@ namespace Windar.TrayApp
         static void ShutdownFile_OnChanged(object source, FileSystemEventArgs e)
         {
             if (Log.IsInfoEnabled) Log.Info("Shutdown initiated by the file-system event.");
+            Shutdown();
+        }
+
+        #endregion
+
+        #region Session ending
+
+        static void SetupSessionEndingHandler()
+        {
+            SystemEvents.SessionEnding += SystemEvents_OnSessionEnding;
+        }
+
+        static void SystemEvents_OnSessionEnding(object sender, EventArgs e)
+        {
+            if (Log.IsInfoEnabled) Log.Info("Session ending!");
             Shutdown();
         }
 
