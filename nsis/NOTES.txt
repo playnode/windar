@@ -1,11 +1,12 @@
 Windar 0.2.2
 ============
 
-   Released: TDB
+   Released: 2010-08-07
 
    - Better process handling in the installer.
    - NSIS UAC plugin used in installer to run on finish, as user not admin.
-   - (Added session end event handler to shutdown Playdar on logout and shutdown) Working?
+   - Updated the 16x16 icons used in tray and title bar.
+   - Using 32-bit compile options.
 
 Windar 0.2.1
 ============
