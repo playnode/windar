@@ -147,9 +147,9 @@ namespace Windar.TrayApp
             this.logSplitPanel = new System.Windows.Forms.SplitContainer();
             this.followTailCheckBox = new System.Windows.Forms.CheckBox();
             this.logBoxPanel = new System.Windows.Forms.Panel();
-            this.logBox = new Windar.TrayApp.LogTextBox();
             this.cellEndEditTimer = new System.Windows.Forms.Timer(this.components);
             this.playdarPoller = new System.Windows.Forms.Timer(this.components);
+            this.logBox = new Windar.TrayApp.LogTextBox();
             this.mainformBorderPanel.SuspendLayout();
             this.mainTabControl.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
@@ -269,7 +269,7 @@ namespace Windar.TrayApp
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Windar.TrayApp.Properties.Resources.playdar_text;
+            this.pictureBox1.Image = global::Windar.TrayApp.Properties.Resources.playdarText;
             this.pictureBox1.Location = new System.Drawing.Point(296, 88);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(228, 45);
@@ -595,7 +595,7 @@ namespace Windar.TrayApp
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 89.08297F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.91703F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 184F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 153F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 156F));
             this.tableLayoutPanel2.Controls.Add(this.allowIncomingCheckBox, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.autostartCheckBox, 3, 0);
@@ -616,7 +616,7 @@ namespace Windar.TrayApp
             // 
             this.allowIncomingCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.allowIncomingCheckBox.AutoSize = true;
-            this.allowIncomingCheckBox.Location = new System.Drawing.Point(186, 3);
+            this.allowIncomingCheckBox.Location = new System.Drawing.Point(183, 3);
             this.allowIncomingCheckBox.Name = "allowIncomingCheckBox";
             this.allowIncomingCheckBox.Size = new System.Drawing.Size(15, 14);
             this.allowIncomingCheckBox.TabIndex = 15;
@@ -627,7 +627,7 @@ namespace Windar.TrayApp
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(214, 3);
+            this.label6.Location = new System.Drawing.Point(211, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(172, 13);
             this.label6.TabIndex = 16;
@@ -638,7 +638,7 @@ namespace Windar.TrayApp
             // 
             this.autostartCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.autostartCheckBox.AutoSize = true;
-            this.autostartCheckBox.Location = new System.Drawing.Point(392, 3);
+            this.autostartCheckBox.Location = new System.Drawing.Point(389, 3);
             this.autostartCheckBox.Name = "autostartCheckBox";
             this.autostartCheckBox.Size = new System.Drawing.Size(15, 14);
             this.autostartCheckBox.TabIndex = 17;
@@ -650,7 +650,7 @@ namespace Windar.TrayApp
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(39, 3);
+            this.label2.Location = new System.Drawing.Point(36, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 14;
@@ -660,7 +660,7 @@ namespace Windar.TrayApp
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 23);
+            this.label5.Location = new System.Drawing.Point(3, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(174, 13);
             this.label5.TabIndex = 18;
@@ -670,7 +670,7 @@ namespace Windar.TrayApp
             // 
             this.forwardCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.forwardCheckBox.AutoSize = true;
-            this.forwardCheckBox.Location = new System.Drawing.Point(186, 23);
+            this.forwardCheckBox.Location = new System.Drawing.Point(183, 23);
             this.forwardCheckBox.Name = "forwardCheckBox";
             this.forwardCheckBox.Size = new System.Drawing.Size(15, 14);
             this.forwardCheckBox.TabIndex = 19;
@@ -1289,6 +1289,15 @@ namespace Windar.TrayApp
             this.logBoxPanel.Size = new System.Drawing.Size(616, 385);
             this.logBoxPanel.TabIndex = 1;
             // 
+            // cellEndEditTimer
+            // 
+            this.cellEndEditTimer.Tick += new System.EventHandler(this.cellEndEditTimer_Tick);
+            // 
+            // playdarPoller
+            // 
+            this.playdarPoller.Interval = 1000;
+            this.playdarPoller.Tick += new System.EventHandler(this.playdarPoller_Tick);
+            // 
             // logBox
             // 
             this.logBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1305,15 +1314,6 @@ namespace Windar.TrayApp
             this.logBox.Text = "";
             this.logBox.Updating = false;
             this.logBox.WordWrap = false;
-            // 
-            // cellEndEditTimer
-            // 
-            this.cellEndEditTimer.Tick += new System.EventHandler(this.cellEndEditTimer_Tick);
-            // 
-            // playdarPoller
-            // 
-            this.playdarPoller.Interval = 1000;
-            this.playdarPoller.Tick += new System.EventHandler(this.playdarPoller_Tick);
             // 
             // MainForm
             // 

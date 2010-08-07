@@ -50,8 +50,8 @@ namespace Windar.TrayApp.Configuration
 
         public void Load()
         {
-            var mainConfig = Program.Instance.Config.Main;
-            var peerConfig = Program.Instance.Config.Peers;
+            var mainConfig = Program.Instance.Config.MainConfig;
+            var peerConfig = Program.Instance.Config.PeersConfig;
             _origAutoStart = false; //TODO
             _origNodeName = mainConfig.Name;
             _origPort = peerConfig.Port;
@@ -95,7 +95,7 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 string result;
-                var configName = Program.Instance.Config.Main.Name;
+                var configName = Program.Instance.Config.MainConfig.Name;
                 if (!string.IsNullOrEmpty(configName)) result = configName;
                 else
                 {
@@ -117,7 +117,7 @@ namespace Windar.TrayApp.Configuration
                 }
                 if (_nodeNameChanged)
                 {
-                    Program.Instance.Config.Main.Name = value;
+                    Program.Instance.Config.MainConfig.Name = value;
                 }
             }
         }
@@ -126,12 +126,12 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.Config.Peers.Port;
+                return Program.Instance.Config.PeersConfig.Port;
             }
             set
             {
                 _portChanged = value != _origPort;
-                Program.Instance.Config.Peers.Port = value;
+                Program.Instance.Config.PeersConfig.Port = value;
             }
         }
         
@@ -139,12 +139,12 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.Config.Peers.Listen;
+                return Program.Instance.Config.PeersConfig.Listen;
             }
             set
             {
                 _allowIncomingChanged = value != _origAllowIncoming;
-                Program.Instance.Config.Peers.Listen = value;
+                Program.Instance.Config.PeersConfig.Listen = value;
             }
         }
         
@@ -152,12 +152,12 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.Config.Peers.Forward;
+                return Program.Instance.Config.PeersConfig.Forward;
             }
             set
             {
                 _forwardQueriesChanged = value != _origForwardQueries;
-                Program.Instance.Config.Peers.Forward = value;
+                Program.Instance.Config.PeersConfig.Forward = value;
             }
         }
 
@@ -167,19 +167,19 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                return Program.Instance.Config.Peers.GetPeers();
+                return Program.Instance.Config.PeersConfig.GetPeers();
             }
         }
 
         public void RemovePeer(string host, int port)
         {
-            Program.Instance.Config.Peers.RemovePeer(host, port);
+            Program.Instance.Config.PeersConfig.RemovePeer(host, port);
             _peersChanged = true;
         }
 
         public void AddNewPeer(string host, int port, bool share)
         {
-            Program.Instance.Config.Peers.SetPeerInfo(host, port, share);
+            Program.Instance.Config.PeersConfig.SetPeerInfo(host, port, share);
             _peersChanged = true;
         }
 

@@ -102,7 +102,7 @@ namespace Windar.TrayApp
             NotifyIcon = new NotifyIcon
                            {
                                Text = "Playdar",
-                               Icon = Properties.Resources.Playdar,
+                               Icon = Properties.Resources.trayIcon,
                                ContextMenu = _trayMenu,
                                Visible = true
                            };

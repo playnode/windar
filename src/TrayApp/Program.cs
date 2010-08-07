@@ -44,7 +44,7 @@ namespace Windar.TrayApp
 
         internal delegate void ScanCompletedCallback();
 
-        internal static Program Instance { get; set; }
+        internal static Program Instance { get; private set; }
 
         internal string PlaydarDaemon
         {
@@ -54,7 +54,7 @@ namespace Windar.TrayApp
                 //TODO: Get the configured URL from config.
                 result.Append("http://127.0.0.1:");
                 var port = 60211;
-                if (Config != null) port = Config.Main.WebPort;
+                if (Config != null) port = Config.MainConfig.WebPort;
                 result.Append(port).Append('/');
                 return result.ToString();
             }
@@ -71,8 +71,8 @@ namespace Windar.TrayApp
 
         internal class ConfigGroup
         {
-            public MainConfigFile Main { get; set; }
-            public TcpConfigFile Peers { get; set; }
+            public MainConfigFile MainConfig { get; set; }
+            public TcpConfigFile PeersConfig { get; set; }
         }
 
         // NOTE: Config set to null on config load exception.
@@ -86,28 +86,38 @@ namespace Windar.TrayApp
 
         #endregion
 
-        #region Init
-
         [STAThread]
         static void Main()
         {
-            // Application exception handling.
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
-            Application.ThreadException += HandleThreadException;
-
             // Ensure only one instance of application runs.
-            bool notCurrentlyShown;
-            using (new Mutex(true, "Windar", out notCurrentlyShown))
+            bool notRunning;
+            using (new Mutex(true, "Windar", out notRunning))
             {
-                if (notCurrentlyShown)
+                if (!notRunning)
                 {
-                    if (Log.IsInfoEnabled) Log.Info("Starting.");
+                    // If already running, bring it to the front.
+                    var current = Process.GetCurrentProcess();
+                    foreach (var process in Process.GetProcessesByName(current.ProcessName))
+                    {
+                        if (process.Id == current.Id) continue;
+                        SetForegroundWindow(process.MainWindowHandle);
+                        break;
+                    }
+                }
+                else
+                {
+                    if (Log.IsInfoEnabled) Log.Info("Started.");
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
 
                     SetupSessionEndingHandler();
+                    SetupShutdownFileWatcher();
+
+                    // Application exception handling.
+                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                    AppDomain.CurrentDomain.UnhandledException += HandleUnhandledException;
+                    Application.ThreadException += HandleThreadException;
 
                     Instance = new Program();
 
@@ -126,24 +136,12 @@ namespace Windar.TrayApp
 
                     if (Log.IsInfoEnabled) Log.Info("Finished.");
                 }
-                else
-                {
-                    var current = Process.GetCurrentProcess();
-                    foreach (var process in Process.GetProcessesByName(current.ProcessName))
-                    {
-                        if (process.Id == current.Id) continue;
-                        SetForegroundWindow(process.MainWindowHandle);
-                        break;
-                    }
-                }
             }
         }
 
         Program()
         {
             Instance = this;
-
-            SetupShutdownFileWatcher();
             
             Config = new ConfigGroup();
             Paths = new WindarPaths(Application.StartupPath);
@@ -185,10 +183,6 @@ namespace Windar.TrayApp
             }
             Application.Run(Tray);
         }
-
-        #endregion
-
-        #region Program exit.
 
         internal static void Shutdown()
         {
@@ -282,16 +276,15 @@ namespace Windar.TrayApp
 
         static void SetupSessionEndingHandler()
         {
+            if (Log.IsDebugEnabled) Log.Debug("Setting up handler for SessionEnding event.");
             SystemEvents.SessionEnding += SystemEvents_OnSessionEnding;
         }
 
         static void SystemEvents_OnSessionEnding(object sender, EventArgs e)
         {
-            if (Log.IsInfoEnabled) Log.Info("Session ending!");
+            if (Log.IsInfoEnabled) Log.Info("Session ending! Initiating shutdown.");
             Shutdown();
         }
-
-        #endregion
 
         #endregion
 
@@ -574,12 +567,12 @@ namespace Windar.TrayApp
 
         internal void SaveConfiguration()
         {
-            Config.Main.Save();
+            Config.MainConfig.Save();
 
             // Always disable default sharing as it conflicts with the peer
             // configuration provided by this UI for now.
-            Config.Peers.DefaultShare = false;
-            Config.Peers.Save();
+            Config.PeersConfig.DefaultShare = false;
+            Config.PeersConfig.Save();
         }
 
         /// <summary>
@@ -601,12 +594,12 @@ namespace Windar.TrayApp
                 if (!peer.Exists) throw new WindarException("Playdar TCP config file not found!");
 
                 // Load main config.
-                Config.Main = new MainConfigFile();
-                Config.Main.Load(main);
+                Config.MainConfig = new MainConfigFile();
+                Config.MainConfig.Load(main);
 
                 // Load peers config.
-                Config.Peers = new TcpConfigFile();
-                Config.Peers.Load(peer);
+                Config.PeersConfig = new TcpConfigFile();
+                Config.PeersConfig.Load(peer);
 
                 result = true;
             }
@@ -635,12 +628,12 @@ namespace Windar.TrayApp
         {
             var path = Paths.WindarAppData;
             path = path.Replace('\\', '/');
-            var update = (Config.Main.LibraryDbDir != path)
-                || (Config.Main.AuthDbDir != path);
+            var update = (Config.MainConfig.LibraryDbDir != path)
+                || (Config.MainConfig.AuthDbDir != path);
 
             if (!update) return;
-            Config.Main.LibraryDbDir = path;
-            Config.Main.AuthDbDir = path;
+            Config.MainConfig.LibraryDbDir = path;
+            Config.MainConfig.AuthDbDir = path;
             SaveConfiguration();
         }
 

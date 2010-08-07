@@ -24,9 +24,9 @@ namespace Windar.TrayApp.Properties {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
         
-        static global::System.Resources.ResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
-        static global::System.Globalization.CultureInfo resourceCulture;
+        private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
@@ -60,17 +60,17 @@ namespace Windar.TrayApp.Properties {
             }
         }
         
-        internal static System.Drawing.Icon Playdar {
+        internal static System.Drawing.Bitmap playdarText {
             get {
-                object obj = ResourceManager.GetObject("Playdar", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                object obj = ResourceManager.GetObject("playdarText", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap playdar_text {
+        internal static System.Drawing.Icon trayIcon {
             get {
-                object obj = ResourceManager.GetObject("playdar-text", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("trayIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

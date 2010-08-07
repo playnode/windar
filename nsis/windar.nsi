@@ -33,7 +33,7 @@
 ;-----------------------------------------------------------------------------
 ;Some installer script options (comment-out options not required)
 ;-----------------------------------------------------------------------------
-;!define OPTION_DEBUG_BUILD
+!define OPTION_DEBUG_BUILD
 !define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
 ;!define OPTION_BUNDLE_MPLAYER

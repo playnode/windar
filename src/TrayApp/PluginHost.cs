@@ -45,12 +45,12 @@ namespace Windar.TrayApp
         {
             get
             {
-                return Program.Instance.Config.Main.ScrobblerCredentials;
+                return Program.Instance.Config.MainConfig.ScrobblerCredentials;
             }
             set
             {
-                Program.Instance.Config.Main.ScrobblerCredentials = value;
-                Program.Instance.Config.Main.Save();
+                Program.Instance.Config.MainConfig.ScrobblerCredentials = value;
+                Program.Instance.Config.MainConfig.Save();
             }
         }
 

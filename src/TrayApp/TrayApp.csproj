@@ -148,7 +148,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Playdar.ico" />
-    <None Include="Resources\playdar-text.png" />
+    <None Include="Resources\playdarText.png" />
+    <None Include="Resources\trayIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

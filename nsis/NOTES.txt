@@ -1,5 +1,16 @@
+Windar 0.2.2
+============
+
+   Released: TDB
+
+   - Better process handling in the installer.
+   - NSIS UAC plugin used in installer to run on finish, as user not admin.
+   - (Added session end event handler to shutdown Playdar on logout and shutdown) Working?
+
 Windar 0.2.1
 ============
+
+   Released: 2010-07-29
 
    - Changed licence from GPL to LGPL.
    - Improved installer, with option to remove Application Data.

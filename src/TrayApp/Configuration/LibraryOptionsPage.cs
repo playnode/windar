@@ -58,23 +58,23 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 if (_scanPaths == null) 
-                    _scanPaths = Program.Instance.Config.Main.ListScanPaths();
+                    _scanPaths = Program.Instance.Config.MainConfig.ListScanPaths();
                 return _scanPaths;
             }
         }
 
         public void RemoveScanPath(string path)
         {
-            Program.Instance.Config.Main.RemoveScanPath(path);
+            Program.Instance.Config.MainConfig.RemoveScanPath(path);
             ScanPathsRemoved = true;
-            _scanPaths = Program.Instance.Config.Main.ListScanPaths();
+            _scanPaths = Program.Instance.Config.MainConfig.ListScanPaths();
             _scanPathsChanged = true;
         }
 
         public void AddScanPath(string path)
         {
-            Program.Instance.Config.Main.AddScanPath(path);
-            _scanPaths = Program.Instance.Config.Main.ListScanPaths();
+            Program.Instance.Config.MainConfig.AddScanPath(path);
+            _scanPaths = Program.Instance.Config.MainConfig.ListScanPaths();
             _scanPathsChanged = true;
         }
 
