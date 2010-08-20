@@ -1,3 +1,11 @@
+Windar 0.2.3
+============
+
+   Released: TBD
+
+   - Re-bundling the Napster resolver, using a new API key.   
+   - Hiding the stat heart-beat check in the log panel.
+
 Windar 0.2.2
 ============
 

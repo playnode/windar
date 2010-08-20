@@ -19,7 +19,7 @@ import pickle
 import playdar_resolver
 import uuid
 
-NAPSTER_API_KEY="oAdWexObHJrLGuwmcFBX"
+NAPSTER_API_KEY="KLqvaORoIlOawcghlmmp"
 
 session_created=False
 session_key = ""

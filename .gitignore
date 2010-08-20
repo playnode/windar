@@ -12,7 +12,15 @@ _ReSharper.*
 /nsis/payload/playdar
 /nsis/payload/playdar_modules
 /nsis/payload/playdar_python_resolvers/build
+/nsis/payload/playdar_python_resolvers/audiofarm_resolver.py
 /nsis/payload/playdar_python_resolvers/dist
+/nsis/payload/playdar_python_resolvers/echonest-resolver.py
+/nsis/payload/playdar_python_resolvers/mp3tunes-resolver.py
+/nsis/payload/playdar_python_resolvers/napster.py
+/nsis/payload/playdar_python_resolvers/napster_resolver.py
+/nsis/payload/playdar_python_resolvers/playdar_resolver.py
+/nsis/payload/playdar_python_resolvers/pyechonest
+/nsis/payload/playdar_python_resolvers/simplejson
 /nsis/temp
 /nsis/erlini/bin
 /nsis/erlini/obj

@@ -1295,7 +1295,7 @@ namespace Windar.TrayApp
             // 
             // playdarPoller
             // 
-            this.playdarPoller.Interval = 1000;
+            this.playdarPoller.Interval = 3000;
             this.playdarPoller.Tick += new System.EventHandler(this.playdarPoller_Tick);
             // 
             // logBox

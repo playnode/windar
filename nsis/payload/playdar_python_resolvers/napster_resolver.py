@@ -35,6 +35,7 @@ class NapsterResolver(playdar_resolver.PlaydarResolver):
 				'artist': track["artist"],
 				'track' : track["track"],
 				'album' : track["album"],
+				'mimetype' : "audio/mp4",
 				'source' : "Napster",
 				'url' : url,
 				'duration' : track["duration"],
@@ -43,11 +44,13 @@ class NapsterResolver(playdar_resolver.PlaydarResolver):
 
 	def choose_playback_format(self, mimetypes):
 		""" Choose what format to give the stream in.
-		    TODO: Add AAC and FMS """
+		    TODO: Add AAC and FMS
 		if "audio/x-ms-wma" in mimetypes:
 			return "STREAM_128"
+		if "audio/mp4" in mimetypes:
+			return "HTTP_STREAM_MP4" """
 
-		return "HTTP_STREAM_128_MP3"
+		return "HTTP_STREAM_MP4"
 
 	def calculate_score(self, query, track):
 		artist_score = self.single_score(query.get("artist", "").lower(), track["artist"].lower())

@@ -36,12 +36,12 @@
 !define OPTION_DEBUG_BUILD
 !define OPTION_LICENSE_AGREEMENT
 !define OPTION_BUNDLE_C_REDIST
-;!define OPTION_BUNDLE_MPLAYER
+!define OPTION_BUNDLE_MPLAYER
 !define OPTION_BUNDLE_RESOLVERS
-;!define OPTION_BUNDLE_NAPSTER_RESOLVER
-;!define OPTION_BUNDLE_SCROBBLER
+!define OPTION_BUNDLE_NAPSTER_RESOLVER
+!define OPTION_BUNDLE_SCROBBLER
 !define OPTION_SECTION_SC_START_MENU
-;!define OPTION_SECTION_SC_START_MENU_STARTUP
+!define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
 !define OPTION_SECTION_SC_QUICK_LAUNCH
 !define OPTION_FINISHPAGE
@@ -537,6 +537,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    File temp\Windar.Common.dll
    File temp\Windar.PlaydarDaemon.dll
    File temp\Windar.PluginAPI.dll
+   File temp\Windar.PlayerPlugin.dll
 
    ;Configuration
    File temp\Windar.exe.config
@@ -548,6 +549,7 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
       File temp\Windar.Common.pdb
       File temp\Windar.PlaydarDaemon.pdb
       File temp\Windar.PluginAPI.pdb
+      File temp\Windar.PlayerPlugin.pdb
    !endif
 
    ;Other libs:
@@ -562,14 +564,10 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    ;Player plugin for Windar.
    !ifdef OPTION_BUNDLE_MPLAYER
       SetDetailsPrint textonly
-      DetailPrint "Installing the Player plugin for Windar."
+      DetailPrint "Installing MPlayer for the test Player plugin."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR"
       File /r payload\mplayer
-      File temp\Windar.PlayerPlugin.dll
-      !ifdef OPTION_DEBUG_BUILD
-         File temp\Windar.PlayerPlugin.pdb
-      !endif
    !endif
 SectionEnd
 

@@ -45,8 +45,4 @@ cp contrib/napster/napster.py ../windar/nsis/payload/playdar_python_resolvers/
 cp -R contrib/resolver_libs/simplejson ../windar/nsis/payload/playdar_python_resolvers/
 cp contrib/resolver_libs/playdar_resolver.py ../windar/nsis/payload/playdar_python_resolvers/
 
-# Re-compile python contrib scripts with py2exe.
-cd ../windar/nsis/payload/playdar_python_resolvers
-/cygdrive/c/Python26/python.exe py2exe_setup.py py2exe
-
 cd $BUILD_DIR

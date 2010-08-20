@@ -190,6 +190,12 @@ namespace Windar.TrayApp
                     var msg = logEvent.RenderedMessage;
                     if (msg.StartsWith(CommandPrefix))
                     {
+                        // Don't log the stat heart-beat check.
+                        if (msg.Contains("info playdar_web GET /api/?method=stat 127.0.0.1"))
+                        {
+                            continue;
+                        }
+
                         var len = CommandPrefix.Length;
                         var str = msg.Substring(len, msg.Length - len).TrimEnd();
                         if (str.Length > 0)
