@@ -1,10 +1,16 @@
 Windar 0.2.3
 ============
 
-   Released: TBD
+   Released: 2010-08-20
 
    - Re-bundling the Napster resolver, using a new API key.   
-   - Hiding the stat heart-beat check in the log panel.
+   - Hiding the stat heart-beat log in the log panel.
+   - Stat heart-beat check period increased (3s).
+   - Increased the time allowed for HTTP headers to (1s) and streams (2s).
+   - Increased the time allowed for resolver results (20s).
+   - Using more recent Python 2.7 for py2exe compiled resolvers.
+   - Including test player and audioscrobbler plugins again.
+   - Re-tweaked some resolver weights.
 
 Windar 0.2.2
 ============

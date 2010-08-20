@@ -508,17 +508,17 @@ Section "Playdar core & Windar tray application" SEC_WINDAR
    ;py2exe payload.
    !ifdef OPTION_BUNDLE_RESOLVERS
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File payload\playdar_python_resolvers\dist\_ctypes.pyd
-      File payload\playdar_python_resolvers\dist\_hashlib.pyd
-      File payload\playdar_python_resolvers\dist\_socket.pyd
-      File payload\playdar_python_resolvers\dist\_ssl.pyd
-      File payload\playdar_python_resolvers\dist\bz2.pyd
-      File payload\playdar_python_resolvers\dist\library.zip
-      File payload\playdar_python_resolvers\dist\pyexpat.pyd
-      File payload\playdar_python_resolvers\dist\python26.dll
-      File payload\playdar_python_resolvers\dist\select.pyd
-      File payload\playdar_python_resolvers\dist\unicodedata.pyd
-      File payload\playdar_python_resolvers\dist\w9xpopen.exe
+      File payload\py2exe\dist\_ctypes.pyd
+      File payload\py2exe\dist\_hashlib.pyd
+      File payload\py2exe\dist\_socket.pyd
+      File payload\py2exe\dist\_ssl.pyd
+      File payload\py2exe\dist\bz2.pyd
+      File payload\py2exe\dist\library.zip
+      File payload\py2exe\dist\pyexpat.pyd
+      File payload\py2exe\dist\python27.dll
+      File payload\py2exe\dist\select.pyd
+      File payload\py2exe\dist\unicodedata.pyd
+      File payload\py2exe\dist\w9xpopen.exe
    !endif
 
    ;Bat script to launch playdar-core in command window.
@@ -593,8 +593,8 @@ SectionGroup "Shortcuts"
 !endif
 
 !ifdef OPTION_SECTION_SC_START_MENU_STARTUP
-   ${MementoSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
-      SectionIn 1 2
+   ${MementoUnselectedSection} "Start Menu Startup Folder Shortcut" SEC_STARTUP_FOLDER
+      SectionIn 2
       SetDetailsPrint textonly
       DetailPrint "Adding shortcut in Startup folder to start Windar on login."
       SetDetailsPrint listonly
@@ -627,7 +627,7 @@ SectionGroup "Shortcuts"
 SectionGroupEnd
 
 !ifdef OPTION_BUNDLE_RESOLVERS
-   SectionGroup "Additional resolver modules"
+   SectionGroup "Additional resolvers"
 
    ${MementoUnselectedSection} "AOL Music Index" SEC_AOL_RESOLVER
       SectionIn 2
@@ -644,7 +644,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for Audiofarm."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r payload\playdar_python_resolvers\dist\audiofarm_resolver.exe
+      File /r payload\py2exe\dist\audiofarm_resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "The Echo Nest" SEC_ECHONEST_RESOLVER
@@ -653,7 +653,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for The Echo Nest."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r payload\playdar_python_resolvers\dist\echonest-resolver.exe
+      File /r payload\py2exe\dist\echonest-resolver.exe
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Jamendo" SEC_JAMENDO_RESOLVER
@@ -680,7 +680,7 @@ SectionGroupEnd
       DetailPrint "Installing resolver for MP3tunes."
       SetDetailsPrint listonly
       SetOutPath "$INSTDIR\playdar\py2exe"
-      File /r payload\playdar_python_resolvers\dist\mp3tunes-resolver.exe
+      File /r payload\py2exe\dist\mp3tunes-resolver.exe
       SetOutPath "$INSTDIR"
       File temp\Windar.MP3tunesPlugin.dll
       !ifdef OPTION_DEBUG_BUILD
@@ -695,7 +695,7 @@ SectionGroupEnd
          DetailPrint "Installing resolver for Napster."
          SetDetailsPrint listonly
          SetOutPath "$INSTDIR\playdar\py2exe"
-         File /r payload\playdar_python_resolvers\dist\napster_resolver.exe
+         File /r payload\py2exe\dist\napster_resolver.exe
          SetOutPath "$INSTDIR"
          File temp\Windar.NapsterPlugin.dll
          !ifdef OPTION_DEBUG_BUILD
@@ -708,7 +708,7 @@ SectionGroupEnd
 !endif
 
 !ifdef OPTION_BUNDLE_SCROBBLER
-   ${MementoUnselectedSection} "Audioscrobbler support" SEC_SCROBBLER
+   ${MementoUnselectedSection} "Audioscrobbler" SEC_SCROBBLER
       SectionIn 2
       SetDetailsPrint textonly
       DetailPrint "Installing the scrobbler module and Windar plugin."
