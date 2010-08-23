@@ -290,7 +290,7 @@ FunctionEnd
 
    Function RequireCRedist
       SetDetailsPrint textonly
-      DetailPrint "Checking for the Microsoft C runtime version required."
+      DetailPrint "Checking for the Microsoft C runtime version required. Please wait (may take a while)"
       SetDetailsPrint listonly
 
       IfFileExists $SYSDIR\msvcr80.dll MaybeFoundInSystem
@@ -913,8 +913,8 @@ Function .onInit
    ;Warn user if system is older than Windows XP.
    ${IfNot} ${AtLeastWinXP}
       MessageBox MB_OK "Unsupported on anything older than Windows XP."
-      ;UAC::Unload
-      ;Quit
+      UAC::Unload
+      Quit
    ${EndIf}
 
    ;Remove Quick Launch option from Windows 7 as no longer applicable.
@@ -927,26 +927,24 @@ Function .onInit
    ${MementoSectionRestore}
 
    UAC_Elevate:
-       UAC::RunElevated 
-       StrCmp 1223 $0 UAC_ElevationAborted ; UAC dialog aborted by user?
-       StrCmp 0 $0 0 UAC_Err ; Error?
-       StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
-       Quit
+      UAC::RunElevated 
+      StrCmp 1223 $0 UAC_ElevationAborted ; UAC dialog aborted by user?
+      StrCmp 0 $0 0 UAC_Err ; Error?
+      StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
+      Quit
     
    UAC_Err:
-       MessageBox mb_iconstop "Unable to elevate, error $0"
-       Abort
+      MessageBox mb_iconstop "Unable to elevate, error $0"
+      Abort
     
    UAC_ElevationAborted:
-       # elevation was aborted, run as normal?
-       ;MessageBox mb_iconstop "This installer requires admin access, aborting!"
-       Abort
+      Abort
     
    UAC_Success:
-       StrCmp 1 $3 +4 ;Admin?
-       StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?
-       MessageBox mb_iconstop "This installer requires admin access, try again"
-       goto UAC_Elevate 
+      StrCmp 1 $3 +4 ;Admin?
+      StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?
+      MessageBox mb_iconstop "This installer requires admin access, try again"
+      goto UAC_Elevate 
 
    ;Prevent multiple instances.
    System::Call 'kernel32::CreateMutexA(i 0, i 0, t "windarInstaller") i .r1 ?e'
@@ -963,4 +961,48 @@ FunctionEnd
 
 Function .onInstFailed
     UAC::Unload ;Must call unload!
+FunctionEnd
+
+##############################################################################
+#                                                                            #
+#   NSIS Uninstaller Event Handler Functions                                 #
+#                                                                            #
+##############################################################################
+
+Function un.onInit
+
+   UAC_Elevate:
+      UAC::RunElevated 
+      StrCmp 1223 $0 UAC_ElevationAborted ; UAC dialog aborted by user?
+      StrCmp 0 $0 0 UAC_Err ; Error?
+      StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
+      Quit
+    
+   UAC_Err:
+      MessageBox MB_ICONSTOP "Unable to elevate, error $0"
+      Abort
+    
+   UAC_ElevationAborted:
+      Abort
+    
+   UAC_Success:
+      StrCmp 1 $3 +4 ;Admin?
+      StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?
+      MessageBox MB_ICONSTOP "This uninstaller requires admin access, try again"
+      goto UAC_Elevate 
+
+   ;Prevent multiple instances.
+   System::Call 'kernel32::CreateMutexA(i 0, i 0, t "windarUninstaller") i .r1 ?e'
+   Pop $R0
+   StrCmp $R0 0 +3
+      MessageBox MB_OK|MB_ICONEXCLAMATION "This uninstaller is already running."
+      Abort
+FunctionEnd
+
+Function un.onUnInstSuccess
+   UAC::Unload ;Must call unload!
+FunctionEnd
+
+Function un.onUnInstFailed
+   UAC::Unload ;Must call unload!
 FunctionEnd
