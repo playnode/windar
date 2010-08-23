@@ -290,7 +290,7 @@ FunctionEnd
 
    Function RequireCRedist
       SetDetailsPrint textonly
-      DetailPrint "Checking for the Microsoft C runtime version required. Please wait (may take a while)"
+      DetailPrint "Checking for the Microsoft C runtime version required. Please wait."
       SetDetailsPrint listonly
 
       IfFileExists $SYSDIR\msvcr80.dll MaybeFoundInSystem
