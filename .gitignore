@@ -45,6 +45,8 @@ _ReSharper.*
 /src/Plugins/Player/obj
 /src/Plugins/Scrobbler/bin
 /src/Plugins/Scrobbler/obj
+/src/Plugins/Spotify/bin
+/src/Plugins/Spotify/obj
 /src/TrayApp/bin
 /src/TrayApp/obj
 /src/TrayAppTest/bin

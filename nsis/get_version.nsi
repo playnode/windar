@@ -1,4 +1,4 @@
-!define File "Temp\Windar.exe"
+!define File "temp\Windar.exe"
 
 RequestExecutionLevel user
 OutFile "get_version.exe"
