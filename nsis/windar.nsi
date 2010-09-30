@@ -39,7 +39,9 @@
 !define OPTION_BUNDLE_MPLAYER
 !define OPTION_BUNDLE_RESOLVERS
 !define OPTION_BUNDLE_NAPSTER_RESOLVER
-!define OPTION_BUNDLE_SCROBBLER
+!define OPTION_BUNDLE_SPOTIFY_RESOLVER
+!define OPTION_BUNDLE_SPOTIFY
+!define OPTION_DISABLE_WIN7_QUICK_LAUNCH_OPTION
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
 !define OPTION_SECTION_SC_DESKTOP
@@ -704,6 +706,21 @@ SectionGroupEnd
       ${MementoSectionEnd}
    !endif
    
+   !ifdef OPTION_BUNDLE_SPOTIFY_RESOLVER
+      ${MementoUnselectedSection} "Spotify" SEC_SPOTIFY_RESOLVER
+         SectionIn 2
+         SetDetailsPrint textonly
+         DetailPrint "Installing resolver for Spotify."
+         SetDetailsPrint listonly
+         SetOutPath "$INSTDIR"
+         File /r payload\spotify
+         File temp\Windar.SpotifyPlugin.dll
+         !ifdef OPTION_DEBUG_BUILD
+            File temp\Windar.SpotifyPlugin.pdb
+         !endif
+      ${MementoSectionEnd}
+   !endif
+
    SectionGroupEnd
 !endif
 
@@ -728,17 +745,23 @@ ${MementoSectionDone}
 ;Installer section descriptions
 ;--------------------------------
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with a cut-down version of Erlang."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
-!ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
-   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
+!ifdef OPTION_BUNDLE_RESOLVERS
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_WINDAR} "Playdar core and Windar tray application with a cut-down version of Erlang."
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUDIOFARM_RESOLVER} "Audiofarm.org resolver script."
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AOL_RESOLVER} "Resolves to web content in the AOL Music Index."
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ECHONEST_RESOLVER} "The Echo Nest resolver."
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_JAMENDO_RESOLVER} "Resolver for free and legal music downloads on Jamendo."
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MAGNATUNE_RESOLVER} "Resolver for free content on Magnatune."
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
+   !ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
+      !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
+   !endif
+   !ifdef OPTION_BUNDLE_SPOTIFY_RESOLVER
+      !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SPOTIFY_RESOLVER} "Resolver for Spotify. Requires a Spotify Premium account."
+   !endif
+!endif
+!ifdef OPTION_BUNDLE_SCROBBLER
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCROBBLER} "Scrobbing support for Last.fm/audioscrobbler."
 !endif
 !ifdef OPTION_SECTION_SC_START_MENU
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_START_MENU} "Windar program group, with shortcuts for Windar, info, and the Windar Uninstaller."
@@ -883,8 +906,11 @@ Section Uninstall
 
    ;Quick Launch shortcut.
    !ifdef OPTION_SECTION_SC_QUICK_LAUNCH
-      IfFileExists "$QUICKLAUNCH\Windar.lnk" 0 +2
-         Delete "$QUICKLAUNCH\Windar.lnk"
+      !ifdef OPTION_DISABLE_WIN7_QUICK_LAUNCH_OPTION
+      !else   
+         IfFileExists "$QUICKLAUNCH\Windar.lnk" 0 +2
+            Delete "$QUICKLAUNCH\Windar.lnk"
+      !endif
    !endif
 
    ;Remove all the Program Files.
@@ -916,13 +942,17 @@ Function .onInit
       UAC::Unload
       Quit
    ${EndIf}
+   
+   !ifdef OPTION_DISABLE_WIN7_QUICK_LAUNCH_OPTION
 
-   ;Remove Quick Launch option from Windows 7 as no longer applicable.
-   ${IfNot} ${AtMostWinVista}
-      SectionSetText ${SEC_QUICK_LAUNCH} "Quick Launch Shortcut (N/A)"
-      SectionSetFlags ${SEC_QUICK_LAUNCH} ${SF_RO}
-      SectionSetInstTypes ${SEC_QUICK_LAUNCH} 0
-   ${EndIf}
+      ;Remove Quick Launch option from Windows 7 as no longer applicable.
+      ${IfNot} ${AtMostWinVista}
+         SectionSetText ${SEC_QUICK_LAUNCH} "Quick Launch Shortcut (N/A)"
+         SectionSetFlags ${SEC_QUICK_LAUNCH} ${SF_RO}
+         SectionSetInstTypes ${SEC_QUICK_LAUNCH} 0
+      ${EndIf}
+   
+   !endif
 
    ${MementoSectionRestore}
 
@@ -977,14 +1007,14 @@ Function un.onInit
       StrCmp 0 $0 0 UAC_Err ; Error?
       StrCmp 1 $1 0 UAC_Success ;Are we the real deal or just the wrapper?
       Quit
-    
+
    UAC_Err:
       MessageBox MB_ICONSTOP "Unable to elevate, error $0"
       Abort
-    
+
    UAC_ElevationAborted:
       Abort
-    
+
    UAC_Success:
       StrCmp 1 $3 +4 ;Admin?
       StrCmp 3 $1 0 UAC_ElevationAborted ;Try again?

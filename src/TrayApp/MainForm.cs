@@ -107,13 +107,23 @@ namespace Windar.TrayApp
 
         public void EnsureVisible()
         {
-            if (WindowState == FormWindowState.Minimized)
+            if (!Visible)
+            {
+                // Gracefull restore the window.
+                WindowState = FormWindowState.Minimized;
+                Show();
+
+                // Restore window state.
                 WindowState = _lastWindowState;
-            if (!Visible) Show();
-            Program.Instance.MainForm.Activate();
-            if (Properties.Settings.Default.MainFormVisible) return;
-            Properties.Settings.Default.MainFormVisible = true;
-            Properties.Settings.Default.Save();
+
+                // Attempt to bring the window to front.
+                Program.Instance.MainForm.Activate();
+
+                // Persist the visibility state.
+                if (Properties.Settings.Default.MainFormVisible) return;
+                Properties.Settings.Default.MainFormVisible = true;
+                Properties.Settings.Default.Save();
+            }
         }
 
         public bool InModalDialog()
@@ -427,9 +437,15 @@ namespace Windar.TrayApp
             }
             else
             {
+                // Hide instead of close.
                 e.Cancel = true;
                 Hide();
+                
+                // Always return to the about page.
                 mainTabControl.SelectTab(aboutTabPage);
+                
+                // Persist the visibility state.
+                if (!Properties.Settings.Default.MainFormVisible) return;
                 Properties.Settings.Default.MainFormVisible = false;
                 Properties.Settings.Default.Save();
             }

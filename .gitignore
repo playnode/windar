@@ -21,6 +21,7 @@ _ReSharper.*
 /nsis/payload/py2exe/playdar_resolver.py
 /nsis/payload/py2exe/pyechonest
 /nsis/payload/py2exe/simplejson
+/nsis/payload/spotify/SpotifyResolver.exe
 /nsis/temp
 /nsis/erlini/bin
 /nsis/erlini/obj
