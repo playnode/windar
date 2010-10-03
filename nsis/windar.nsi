@@ -39,8 +39,6 @@
 !define OPTION_BUNDLE_MPLAYER
 !define OPTION_BUNDLE_RESOLVERS
 !define OPTION_BUNDLE_NAPSTER_RESOLVER
-!define OPTION_BUNDLE_SPOTIFY_RESOLVER
-!define OPTION_BUNDLE_SPOTIFY
 !define OPTION_DISABLE_WIN7_QUICK_LAUNCH_OPTION
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
@@ -705,21 +703,6 @@ SectionGroupEnd
          !endif
       ${MementoSectionEnd}
    !endif
-   
-   !ifdef OPTION_BUNDLE_SPOTIFY_RESOLVER
-      ${MementoUnselectedSection} "Spotify" SEC_SPOTIFY_RESOLVER
-         SectionIn 2
-         SetDetailsPrint textonly
-         DetailPrint "Installing resolver for Spotify."
-         SetDetailsPrint listonly
-         SetOutPath "$INSTDIR"
-         File /r payload\spotify
-         File temp\Windar.SpotifyPlugin.dll
-         !ifdef OPTION_DEBUG_BUILD
-            File temp\Windar.SpotifyPlugin.pdb
-         !endif
-      ${MementoSectionEnd}
-   !endif
 
    SectionGroupEnd
 !endif
@@ -755,9 +738,6 @@ ${MementoSectionDone}
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MP3TUNES_RESOLVER} "Resolver for your MP3tunes locker. Requires a free or paid account."
    !ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
       !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NAPSTER_RESOLVER} "Resolver for Napster. Paid account has full streams, otherwise provides 30 second samples."
-   !endif
-   !ifdef OPTION_BUNDLE_SPOTIFY_RESOLVER
-      !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SPOTIFY_RESOLVER} "Resolver for Spotify. Requires a Spotify Premium account."
    !endif
 !endif
 !ifdef OPTION_BUNDLE_SCROBBLER
