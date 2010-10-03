@@ -226,7 +226,6 @@ IF EXIST "$(ProjectDir)..\..\nsis\payload\mplayer" XCOPY /E "$(ProjectDir)..\..\
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\playdar" "$(TargetDir)playdar\"
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\playdar_modules" "$(TargetDir)playdar\playdar_modules\"
 XCOPY /E "$(ProjectDir)..\..\nsis\payload\playdar_python_resolvers\dist\*" "$(TargetDir)playdar\py2exe\"
-XCOPY /E /Y "$(ProjectDir)..\Plugins\Spotify\$(OutDir)*" "$(TargetDir)"
 XCOPY /E /Y "$(ProjectDir)..\Plugins\Napster\$(OutDir)*" "$(TargetDir)"
 XCOPY /E /Y "$(ProjectDir)..\Plugins\MP3tunes\$(OutDir)*" "$(TargetDir)"
 XCOPY /E /Y "$(ProjectDir)..\Plugins\Player\$(OutDir)*" "$(TargetDir)"

@@ -230,13 +230,15 @@ namespace Windar.Common
         void StopStandardOutputThread()
         {
             // Try to abort the standard output reader.
-            if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
             for (var i = 0; i < 50; i++)
             {
-                if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
+                if (_stdOutThread == null || !_stdOutThread.IsAlive) 
+                    return;
+                
                 Thread.Sleep(100);
             }
-            if (Log.IsWarnEnabled) Log.Warn("Aborting reader thread for standard output.");
+            if (Log.IsWarnEnabled) 
+                Log.Warn("Aborting reader thread for standard output.");
             try
             {
                 _stdOutThread.Interrupt();
@@ -244,7 +246,8 @@ namespace Windar.Common
             }
             catch (Exception ex)
             {
-                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                if (Log.IsErrorEnabled) 
+                    Log.Error("Exception", ex);
             }
             _stdOutThread = null;
         }
@@ -252,13 +255,15 @@ namespace Windar.Common
         void StopStandardErrorThread()
         {
             // Try to abort the standard error reader.
-            if (_stdErrThread == null || !_stdErrThread.IsAlive) return;
             for (var i = 0; i < 50; i++)
             {
-                if (_stdOutThread == null || !_stdOutThread.IsAlive) return;
+                if (_stdErrThread == null || !_stdErrThread.IsAlive) 
+                    return;
+                
                 Thread.Sleep(100);
             }
-            if (Log.IsWarnEnabled) Log.Warn("Aborting reader thread for error output.");
+            if (Log.IsWarnEnabled) 
+                Log.Warn("Aborting reader thread for error output.");
             try
             {
                 _stdErrThread.Interrupt();
@@ -266,7 +271,8 @@ namespace Windar.Common
             }
             catch (Exception ex)
             {
-                if (Log.IsErrorEnabled) Log.Error("Exception", ex);
+                if (Log.IsErrorEnabled) 
+                    Log.Error("Exception", ex);
             }
             _stdErrThread = null;
         }
