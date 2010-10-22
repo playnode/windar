@@ -76,6 +76,7 @@ COPY Windar.PlaydarDaemon.dll %BUILD_TEMP%
 COPY Windar.PlayerPlugin.dll %BUILD_TEMP%
 COPY Windar.PluginAPI.dll %BUILD_TEMP%
 COPY Windar.ScrobblerPlugin.dll %BUILD_TEMP%
+COPY Windar.SpotifyPlugin.dll %BUILD_TEMP%
 @ECHO OFF
 
 ECHO.
@@ -91,6 +92,7 @@ COPY Windar.PlaydarDaemon.pdb %BUILD_TEMP%
 COPY Windar.PlayerPlugin.pdb %BUILD_TEMP%
 COPY Windar.PluginAPI.pdb %BUILD_TEMP%
 COPY Windar.ScrobblerPlugin.pdb %BUILD_TEMP%
+COPY Windar.SpotifyPlugin.pdb %BUILD_TEMP%
 @ECHO OFF
 
 ECHO.

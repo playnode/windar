@@ -1,3 +1,10 @@
+Windar 0.2.5
+============
+
+   Released: 2010-10-22
+
+   - Added a resolver for Spotify.
+
 Windar 0.2.4
 ============
 

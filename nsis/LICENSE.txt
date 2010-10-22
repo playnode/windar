@@ -1,27 +1,44 @@
-Copyright (c) 2009, 2010 Steven Robertson <steve@playnode.org>
-
 Windar is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
-
-Refer to the text of the GNU Lesser General Public License, available at:
-http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
 
 If you do not have the source code, it is available at:
 http://github.com/stever/windar
 
 Windar is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 
-    OpenSSL
+
+Spotify Resolver
+=====================================================
+
+The following specific terms apply to your use of the Spotify Resolver:
+
+  * Steven Robertson, and not Spotify, is responsible for this application.
+  * Spotify declares that the API is provided “as-is,” without any warranties, and that expressly disclaims all implied warranties, including the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+  * Modifying or creating derivative works based on any part of the Spotify API is prohibited.
+  * Decompiling, reverse-engineering, disassembling, and otherwise reducing the Spotify API to source code or other human-perceivable form, is prohibited, to the full extent allowed by law.
+  * Ownership of the Spotify API and Service resides with Spotify.
+  * Spotify disclaims any liability for any interruptions in the Service as accessed via the Application.
+  * There is no data collected as part of this application, but if there were then it would be subject to a privacy policy provided with this software and not Spotify’s.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+OpenSSL
+=====================================================
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)
 
-    Erlang
+
+Erlang
+=====================================================
 
 Windar is distributed as a larger work combining Erlang with other code not governed by the terms of the Erlang license, and distributed as a single product.
 
 Refer to the text of the Erlang Public License, available at:
 http://www.erlang.org/EPLICENSE
 
-    Playdar
+
+Playdar
+=====================================================
 
 Copyright (c) 2009 Richard Jones
 
