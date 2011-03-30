@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -67,7 +67,7 @@ namespace Windar.TrayApp
         void MainForm_Load(object sender, EventArgs e)
         {
             // Version info for the About page.
-            var info = new StringBuilder();
+            StringBuilder info = new StringBuilder();
             info.Append(Program.AssemblyProduct).Append(' ').Append(Program.AssemblyVersion);
             versionLabel.Text = info.ToString();
 
@@ -128,7 +128,7 @@ namespace Windar.TrayApp
 
         public bool InModalDialog()
         {
-            var modal = _inDirectoryDialog;
+            bool modal = _inDirectoryDialog;
             if (modal) EnsureVisible();
             return modal;
         }
@@ -231,7 +231,7 @@ namespace Windar.TrayApp
         {
             if (string.IsNullOrEmpty(text)) text = "&nbsp;";
             playdarBrowser.Stop();
-            var html = new StringBuilder();
+            StringBuilder html = new StringBuilder();
             html.Append("<html>").Append(Environment.NewLine);
             html.Append("<head>").Append(Environment.NewLine);
             html.Append("<style>").Append(Environment.NewLine);
@@ -297,7 +297,7 @@ namespace Windar.TrayApp
 
         void playdarBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            var url = e.Url.ToString();
+            string url = e.Url.ToString();
             if (Log.IsDebugEnabled) Log.Debug("Navigating to " + url);
 
             // Protect from loop if Internet Explorer is going haywire.
@@ -353,18 +353,18 @@ namespace Windar.TrayApp
         void PlaydarBrowserLinkClicked(object sender, EventArgs e)
         {
             if (playdarBrowser.Document == null) return;
-            var link = playdarBrowser.Document.ActiveElement;
+            HtmlElement link = playdarBrowser.Document.ActiveElement;
             if (link == null) return;
             _lastLink = link.GetAttribute("href");
         }
 
         void playdarBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            var url = e.Url.ToString();
+            string url = e.Url.ToString();
 
             if (Log.IsDebugEnabled)
             {
-                var msg = new StringBuilder();
+                StringBuilder msg = new StringBuilder();
                 msg.Append("Document completed. URL = \"").Append(url).Append('"');
                 if (playdarBrowser.Document != null)
                 {
@@ -405,7 +405,7 @@ namespace Windar.TrayApp
             }
 
             // Attach click event handler to all javascript links too.
-            var links = playdarBrowser.Document.Links;
+            HtmlElementCollection links = playdarBrowser.Document.Links;
             foreach (HtmlElement var in links)
             {
                 var.AttachEventHandler("onclick", PlaydarBrowserLinkClicked);
@@ -658,7 +658,7 @@ namespace Windar.TrayApp
         {
             if (Visible && _optionsPage != null && _optionsPage.Changed)
             {
-                var result = Program.ShowYesNoCancelDialog("Save changes?");
+                DialogResult result = Program.ShowYesNoCancelDialog("Save changes?");
                 if (result == DialogResult.Cancel) return false;
                 if (result == DialogResult.No) _optionsPage = null;
                 else if (_optionsPage is GeneralOptionsPage) SaveGeneralOptions();
@@ -700,7 +700,7 @@ namespace Windar.TrayApp
 
             // Load peers table.
             peersGrid.Rows.Clear();
-            foreach (var peer in options.Peers) peersGrid.Rows.Add(GetPeerListRow(peer));
+            foreach (PeerInfo peer in options.Peers) peersGrid.Rows.Add(GetPeerListRow(peer));
             peersGrid.CurrentCell = null;
             if (peersGrid.Rows.Count <= 0) return;
             peersGrid.Rows[0].Selected = false;
@@ -708,7 +708,7 @@ namespace Windar.TrayApp
 
         void UpdateGeneralOptionsButtons()
         {
-            var state = _optionsPage != null && _optionsPage is GeneralOptionsPage;
+            bool state = _optionsPage != null && _optionsPage is GeneralOptionsPage;
             state = state ? _optionsPage.Changed : false;
             generalOptionsSaveButton.Enabled = state;
             generalOptionsCancelButton.Enabled = state;
@@ -716,14 +716,14 @@ namespace Windar.TrayApp
 
         void SaveGeneralOptions()
         {
-            foreach (var obj in peersGrid.Rows)
+            foreach (object obj in peersGrid.Rows)
             {
-                var row = (DataGridViewRow) obj;
+                DataGridViewRow row = (DataGridViewRow)obj;
 
                 // Get host, port and share from row.
-                var host = (string) row.Cells[0].Value;
-                var port = 0;
-                var portObj = row.Cells[1].Value;
+                string host = (string) row.Cells[0].Value;
+                int port = 0;
+                object portObj = row.Cells[1].Value;
                 if (portObj is int) port = (int) portObj;
                 else if (portObj is string)
                 {
@@ -746,13 +746,13 @@ namespace Windar.TrayApp
                         Log.Warn("Unexpected type for port. portObj = " + portObj);
                     }
                 }
-                var share = (bool) row.Cells[2].Value;
+                bool share = (bool) row.Cells[2].Value;
 
                 // Handle new and updated rows.
                 if (row.Tag != null)
                 {
                     // Updating
-                    var tag = (PeerInfo) row.Tag;
+                    PeerInfo tag = (PeerInfo)row.Tag;
                     if (host != tag.Host || port != tag.Port || share != tag.Share)
                     {
                         ((GeneralOptionsPage) _optionsPage).RemovePeer(tag.Host, tag.Port);
@@ -837,20 +837,32 @@ namespace Windar.TrayApp
 
         static DataGridViewRow GetPeerListRow(PeerInfo peer)
         {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = peer.Host });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = peer.Port });
-            row.Cells.Add(new DataGridViewCheckBoxCell { Value = peer.Share });
+            DataGridViewRow row = new DataGridViewRow();
+            DataGridViewTextBoxCell cellHost = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellPort = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellShare = new DataGridViewTextBoxCell();
+            cellHost.Value = peer.Host;
+            cellPort.Value = peer.Port;
+            cellShare.Value = peer.Share;
+            row.Cells.Add(cellHost);
+            row.Cells.Add(cellPort);
+            row.Cells.Add(cellShare);
             row.Tag = peer;
             return row;
         }
 
         static DataGridViewRow GetPeerListRow()
         {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = "" });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = "60211" });
-            row.Cells.Add(new DataGridViewCheckBoxCell { Value = false });
+            DataGridViewRow row = new DataGridViewRow();
+            DataGridViewTextBoxCell cellHost = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellPort = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellShare = new DataGridViewTextBoxCell();
+            cellHost.Value = "";
+            cellPort.Value = "60211";
+            cellShare.Value = false;
+            row.Cells.Add(cellHost);
+            row.Cells.Add(cellPort);
+            row.Cells.Add(cellShare);
             return row;
         }
 
@@ -861,19 +873,19 @@ namespace Windar.TrayApp
             UpdateGeneralOptionsButtons();
 
             // Select the first cell the new row.
-            var row = peersGrid.Rows[peersGrid.Rows.Count - 1];
+            DataGridViewRow row = peersGrid.Rows[peersGrid.Rows.Count - 1];
             peersGrid.CurrentCell = row.Cells[0];
             peersGrid.BeginEdit(false);
         }
 
         void removePeerMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var obj in peersGrid.SelectedRows)
+            foreach (object obj in peersGrid.SelectedRows)
             {
-                var row = (DataGridViewRow) obj;
+                DataGridViewRow row = (DataGridViewRow)obj;
                 if (row.Tag != null)
                 {
-                    var peer = (PeerInfo) row.Tag;
+                    PeerInfo peer = (PeerInfo)row.Tag;
                     ((GeneralOptionsPage) _optionsPage).RemovePeer(peer.Host, peer.Port);
                 }
                 peersGrid.Rows.Remove(row);
@@ -885,7 +897,7 @@ namespace Windar.TrayApp
         {
             if (e.Button != MouseButtons.Left) return;
             if (peersGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
-            foreach (var obj in peersGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
+            foreach (object obj in peersGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
             peersGrid.CurrentCell = null;
         }
 
@@ -905,7 +917,7 @@ namespace Windar.TrayApp
         void peersGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
-            var cell = peersGrid[e.ColumnIndex, e.RowIndex];
+            DataGridViewCell cell = peersGrid[e.ColumnIndex, e.RowIndex];
             if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
         }
 
@@ -929,7 +941,7 @@ namespace Windar.TrayApp
 
             // Load scan paths list.
             libraryGrid.Rows.Clear();
-            foreach (var path in options.ScanPaths) libraryGrid.Rows.Add(GetScanPathRow(path));
+            foreach (string path in options.ScanPaths) libraryGrid.Rows.Add(GetScanPathRow(path));
 
             UpdateLibraryControls();
 
@@ -944,19 +956,19 @@ namespace Windar.TrayApp
 
         void SaveLibrarySettings()
         {
-            var options = (LibraryOptionsPage) _optionsPage;
+            LibraryOptionsPage options = (LibraryOptionsPage)_optionsPage;
 
             // Update and add paths to scan, as required.
-            foreach (var obj in libraryGrid.Rows)
+            foreach (object obj in libraryGrid.Rows)
             {
-                var row = (DataGridViewRow) obj;
-                var path = (string) row.Cells[0].Value;
+                DataGridViewRow row = (DataGridViewRow)obj;
+                string path = (string) row.Cells[0].Value;
 
                 // Handle new and updated rows.
                 if (row.Tag != null)
                 {
                     // Updating
-                    var tag = (string) row.Tag;
+                    string tag = (string) row.Tag;
                     if (path != tag)
                     {
                         options.RemoveScanPath(WindarPaths.ToUnixPath(tag));
@@ -988,7 +1000,7 @@ namespace Windar.TrayApp
 
             // Load scan paths list.
             libraryGrid.Rows.Clear();
-            foreach (var path in options.ScanPaths) libraryGrid.Rows.Add(GetScanPathRow(path));
+            foreach (string path in options.ScanPaths) libraryGrid.Rows.Add(GetScanPathRow(path));
 
             // Deselect
             libraryGrid.CurrentCell = null;
@@ -1017,18 +1029,18 @@ namespace Windar.TrayApp
         void UpdateLibraryControls()
         {
             if (_optionsPage == null || !(_optionsPage is LibraryOptionsPage)) return;
-            var options = (LibraryOptionsPage) _optionsPage;
+            LibraryOptionsPage options = (LibraryOptionsPage)_optionsPage;
 
             // Save and cancel buttons.
             librarySaveButton.Enabled = options.Changed;
             libraryCancelButton.Enabled = options.Changed;
 
             // Context menu.
-            var indexing = Program.Instance.Indexing;
+            bool indexing = Program.Instance.Indexing;
             libraryContextMenu.Enabled = !indexing;
 
             // Re-index, tracklist and delete index buttons.
-            var savedPaths = options.SavedScanPathCount;
+            int savedPaths = options.SavedScanPathCount;
             rebuildIndexButton.Enabled = !indexing && savedPaths > 0;
             tracklistButton.Enabled = !indexing && savedPaths > 0;
             deleteIndexButton.Enabled = !indexing && savedPaths > 0;
@@ -1036,17 +1048,21 @@ namespace Windar.TrayApp
 
         static DataGridViewRow GetScanPathRow(string path)
         {
-            var row = new DataGridViewRow();
-            var str = WindarPaths.ToWindowsPath(path);
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = str });
+            DataGridViewRow row = new DataGridViewRow();
+            string str = WindarPaths.ToWindowsPath(path);
+            DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
+            cell.Value = str;
+            row.Cells.Add(cell);
             row.Tag = str;
             return row;
         }
 
         static DataGridViewRow GetNewScanPathRow(string path)
         {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = path });
+            DataGridViewRow row = new DataGridViewRow();
+            DataGridViewTextBoxCell cell = new DataGridViewTextBoxCell();
+            cell.Value = path;
+            row.Cells.Add(cell);
             return row;
         }
 
@@ -1057,14 +1073,14 @@ namespace Windar.TrayApp
 
         void AddScanPath()
         {
-            var path = SelectScanPath();
+            string path = SelectScanPath();
             if (string.IsNullOrEmpty(path)) return;
 
             // Ensure the path isn't already in the list.
-            foreach (var obj in libraryGrid.Rows)
+            foreach (object obj in libraryGrid.Rows)
             {
-                var row = (DataGridViewRow) obj;
-                var value = (string) row.Cells[0].Value;
+                DataGridViewRow row = (DataGridViewRow)obj;
+                string value = (string) row.Cells[0].Value;
                 if (path != value) continue;
                 row.Selected = true;
                 return;
@@ -1086,12 +1102,12 @@ namespace Windar.TrayApp
 
         void removeLibPathMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var obj in libraryGrid.SelectedRows)
+            foreach (object obj in libraryGrid.SelectedRows)
             {
-                var row = (DataGridViewRow) obj;
+                DataGridViewRow row = (DataGridViewRow)obj;
                 if (row.Tag != null)
                 {
-                    var path = WindarPaths.ToUnixPath((string) row.Tag);
+                    string path = WindarPaths.ToUnixPath((string) row.Tag);
                     ((LibraryOptionsPage) _optionsPage).RemoveScanPath(path);
                 }
                 libraryGrid.Rows.Remove(row);
@@ -1129,7 +1145,7 @@ namespace Windar.TrayApp
 
         void deleteIndexButton_Click(object sender, EventArgs e)
         {
-            var msg = new StringBuilder();
+            StringBuilder msg = new StringBuilder();
             msg.Append("Are you sure you want to delete the current index?").Append(Environment.NewLine);
             msg.Append("Playdar will be restarted.");
             if (!Program.ShowYesNoDialog(msg.ToString())) return;
@@ -1144,8 +1160,8 @@ namespace Windar.TrayApp
             Program.Instance.WaitingDialog.ShowDialog();
 
             // Delete each path from options.
-            var options = (LibraryOptionsPage) _optionsPage;
-            foreach (var path in options.ScanPaths) options.RemoveScanPath(path);
+            LibraryOptionsPage options = (LibraryOptionsPage)_optionsPage;
+            foreach (string path in options.ScanPaths) options.RemoveScanPath(path);
 
             SaveLibrarySettings();
             ReloadLibrarySettings();
@@ -1155,10 +1171,10 @@ namespace Windar.TrayApp
         static void DeleteLibraryIndexFiles()
         {
             Program.Instance.Daemon.Stop();
-            var libraryFilename = Program.Instance.Paths.WindarAppData + @"\library.db";
-            var libraryIndexFilename = Program.Instance.Paths.WindarAppData + @"\library_index.db";
-            var libraryFileInfo = new FileInfo(libraryFilename);
-            var libraryIndexFileInfo = new FileInfo(libraryIndexFilename);
+            string libraryFilename = Program.Instance.Paths.WindarAppData + @"\library.db";
+            string libraryIndexFilename = Program.Instance.Paths.WindarAppData + @"\library_index.db";
+            FileInfo libraryFileInfo = new FileInfo(libraryFilename);
+            FileInfo libraryIndexFileInfo = new FileInfo(libraryIndexFilename);
             if (libraryFileInfo.Exists) libraryFileInfo.Delete();
             if (libraryIndexFileInfo.Exists) libraryIndexFileInfo.Delete();
             Program.Instance.Daemon.Start();
@@ -1171,10 +1187,10 @@ namespace Windar.TrayApp
 
         void BuildLibrary(bool alwaysRebuild)
         {
-            var options = (LibraryOptionsPage) _optionsPage;
+            LibraryOptionsPage options = (LibraryOptionsPage)_optionsPage;
             if (options.ScanPathsRemoved || alwaysRebuild)
             {
-                var msg = new StringBuilder();
+                StringBuilder msg = new StringBuilder();
                 msg.Append("Playdar will need to be restarted.").Append(Environment.NewLine);
                 msg.Append("Do you wish to continue?");
                 if (!Program.ShowYesNoDialog(msg.ToString())) return;
@@ -1190,7 +1206,7 @@ namespace Windar.TrayApp
 
                 // Queue the folders to be re-scanned.
                 Program.Instance.ShowTrayInfo("Scan started.");
-                foreach (var path in options.ScanPaths)
+                foreach (string path in options.ScanPaths)
                     Program.Instance.AddScanPath(path);
 
                 ReloadLibrarySettings();
@@ -1206,11 +1222,11 @@ namespace Windar.TrayApp
 
                 // Queue the new folders to be scanned.
                 Program.Instance.ShowTrayInfo("Scan started.");
-                foreach (var obj in libraryGrid.Rows)
+                foreach (object obj in libraryGrid.Rows)
                 {
-                    var row = (DataGridViewRow) obj;
+                    DataGridViewRow row = (DataGridViewRow)obj;
                     if (row.Tag != null) continue;
-                    var value = (string) row.Cells[0].Value;
+                    string value = (string)row.Cells[0].Value;
 
                     // Deselect
                     libraryGrid.CurrentCell = null;
@@ -1246,16 +1262,16 @@ namespace Windar.TrayApp
 
         static void ShowTracklist()
         {
-            var lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
-            var build = new StringBuilder();
-            foreach (var str in lines)
+            string[] lines = Program.Instance.Daemon.DumpLibrary().Split('\n');
+            StringBuilder build = new StringBuilder();
+            foreach (string str in lines)
             {
-                var line = str.Trim();
+                string line = str.Trim();
                 if (line.Length == 0) continue;
-                var fields = line.Split('\t');
+                string[] fields = line.Split('\t');
                 if (fields.Length < 6)
                 {
-                    foreach (var field in fields)
+                    foreach (string field in fields)
                         build.Append(field).Append('\t');
                     break;
                 }
@@ -1292,9 +1308,9 @@ namespace Windar.TrayApp
             lines = build.ToString().Trim().Split('\n');
             Array.Sort(lines);
 
-            var n = 0;
+            int n = 0;
             build = new StringBuilder();
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
                 n++;
                 build.Append(line);
@@ -1302,18 +1318,16 @@ namespace Windar.TrayApp
             }
 
             Program.Instance.WaitingDialog.Stop();
-            var d = new ShowTracklistCallback(ShowTracklistOutput);
-            var args = new object[] { build.ToString().Trim(), n };
+            ShowTracklistCallback d = new ShowTracklistCallback(ShowTracklistOutput);
+            object[] args = new object[] { build.ToString().Trim(), n };
             Program.Instance.MainForm.Invoke(d, args);
         }
 
         static void ShowTracklistOutput(string text, int n)
         {
-            var dialog = new OutputDisplay
-            {
-                TextBox = { Text = text },
-                Text = n == 1 ? "Track List (1 track)" : "Track List (" + n + " tracks)"
-            };
+            OutputDisplay dialog = new OutputDisplay();
+            dialog.TextBox.Text = text;
+            dialog.Text = n == 1 ? "Track List (1 track)" : "Track List (" + n + " tracks)";
 
             dialog.TextBox.Font = new Font(
                 dialog.TextBox.Font.FontFamily,
@@ -1327,7 +1341,7 @@ namespace Windar.TrayApp
         {
             if (e.Button != MouseButtons.Left) return;
             if (libraryGrid.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.Cell) return;
-            foreach (var obj in libraryGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
+            foreach (object obj in libraryGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
             libraryGrid.CurrentCell = null;
         }
 
@@ -1347,17 +1361,17 @@ namespace Windar.TrayApp
         void libraryGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
-            var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
+            DataGridViewCell cell = libraryGrid[e.ColumnIndex, e.RowIndex];
             if (cell.GetContentBounds(e.RowIndex).Contains(e.Location)) cellEndEditTimer.Start();
         }
 
         void libraryGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.ColumnIndex < 0 || e.RowIndex < 0) return;
-            var cell = libraryGrid[e.ColumnIndex, e.RowIndex];
+            DataGridViewCell cell = libraryGrid[e.ColumnIndex, e.RowIndex];
             if (!cell.GetContentBounds(e.RowIndex).Contains(e.Location)) return;
-            var str = (string) cell.Value;
-            var path = string.IsNullOrEmpty(str) ? SelectScanPath() : SelectScanPath(str);
+            string str = (string) cell.Value;
+            string path = string.IsNullOrEmpty(str) ? SelectScanPath() : SelectScanPath(str);
             if (!string.IsNullOrEmpty(path)) cell.Value = path;
         }
 
@@ -1369,11 +1383,9 @@ namespace Windar.TrayApp
         string SelectScanPath(string initialFolder)
         {
             string result = null;
-            var dialog = new DirectoryDialog
-            {
-                BrowseFor = DirectoryDialog.BrowseForTypes.Directories,
-                Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library."
-            };
+            DirectoryDialog dialog = new DirectoryDialog();
+            dialog.BrowseFor = DirectoryDialog.BrowseForTypes.Directories;
+            dialog.Title = "Select a folder to be scanned. Successfully scanned files will be added to the Playdar content library.";
 
             if (!string.IsNullOrEmpty(initialFolder))
                 dialog.InitialPath = initialFolder;
@@ -1490,17 +1502,17 @@ namespace Windar.TrayApp
         {
             if (Log.IsDebugEnabled) Log.Debug("backgroundPoller_DoWork");
 
-            var playdarAvailable = false;
+            bool playdarAvailable = false;
 
             // Build the request URL.
-            var url = new StringBuilder();
+            StringBuilder url = new StringBuilder();
             url.Append(Program.Instance.Paths.LocalPlaydarUrl).Append("api/?method=stat");
 
             // Get and process result.
-            var response = Program.WGet(url.ToString(), 100); // 0.1 secs
+            string response = Program.WGet(url.ToString(), 100); // 0.1 secs
             if (response != null)
             {
-                var json = JObject.Parse(response);
+                JObject json = JObject.Parse(response);
                 playdarAvailable = DeQuotify(json["name"]).Equals("playdar");
             }
 
@@ -1509,8 +1521,8 @@ namespace Windar.TrayApp
             // Check if there's a change to Playdar running state.
             if (_playdarLastPolledRunning != playdarAvailable)
             {
-                var d = new PlaydarStateChangedCallback(PlaydarStateChanged);
-                var args = new object[] { playdarAvailable };
+                PlaydarStateChangedCallback d = new PlaydarStateChangedCallback(PlaydarStateChanged);
+                object[] args = new object[] { playdarAvailable };
                 Program.Instance.MainForm.Invoke(d, args);
             }
         }
@@ -1540,8 +1552,8 @@ namespace Windar.TrayApp
         static string DeQuotify(JToken token)
         {
             if (token == null) return null;
-            var str = token.ToString();
-            var result = str;
+            string str = token.ToString();
+            string result = str;
 
             if (str[0] == '"' && str[str.Length - 1] == '"')
                 result = str.Substring(1, str.Length - 2);

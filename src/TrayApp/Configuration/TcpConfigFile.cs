@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -44,7 +44,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = false;
+                bool result = false;
                 if (_listen == null) _listen = FindNamedBoolean("listen");
                 if (_listen != null) result = _listen.Value;
                 return result;
@@ -68,7 +68,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = -1;
+                int result = -1;
                 if (_port == null) _port = FindNamedInteger("port");
                 if (_port != null) result = _port.Value;
                 return result;
@@ -92,7 +92,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = false;
+                bool result = false;
                 if (_share == null) _share = FindNamedBoolean("share");
                 if (_share != null) result = _share.Value;
                 return result;
@@ -116,19 +116,19 @@ namespace Windar.TrayApp.Configuration
 
         public List<PeerInfo> GetPeers()
         {
-            var result = new List<PeerInfo>();
+            List<PeerInfo> result = new List<PeerInfo>();
             if (_peers == null) _peers = FindNamedList("peers");
             if (_peers != null)
             {
-                var list = (ListToken) _peers.GetValueTokens()[1];
-                foreach (var tuple in list.GetTupleTokens())
+                ListToken list = (ListToken)_peers.GetValueTokens()[1];
+                foreach (TupleToken tuple in list.GetTupleTokens())
                 {
-                    var values = tuple.GetValueTokens();
-                    var host = ((StringToken) values[0]).Text;
-                    var port = ((IntegerToken) values[1]).Value;
+                    List<IValueToken> values = tuple.GetValueTokens();
+                    string host = ((StringToken) values[0]).Text;
+                    int port = ((IntegerToken) values[1]).Value;
                     if (values.Count > 2 && values[2] != null && values[2] is AtomToken)
                     {
-                        var share = ((BooleanToken) values[2]).Value;
+                        bool share = ((BooleanToken) values[2]).Value;
                         result.Add(new PeerInfo(host, port, share));
                     }
                     else
@@ -147,11 +147,11 @@ namespace Windar.TrayApp.Configuration
             if (_peers != null)
             {
                 // Get the actual list from the peers tuple.
-                var list = (ListToken) _peers.GetValueTokens()[1];
-                foreach (var tuple in list.GetTupleTokens())
+                ListToken list = (ListToken) _peers.GetValueTokens()[1];
+                foreach (TupleToken tuple in list.GetTupleTokens())
                 {
                     // Try to match host and port.
-                    var values = tuple.GetValueTokens();
+                    List<IValueToken> values = tuple.GetValueTokens();
                     if (!(values[0] is StringToken) || ((StringToken) values[0]).Text != host ||
                         !(values[1] is IntegerToken) || ((IntegerToken) values[1]).Value != port) continue;
 
@@ -164,10 +164,10 @@ namespace Windar.TrayApp.Configuration
         public PeerInfo GetPeerInfo(string host, int port)
         {
             PeerInfo result = null;
-            var tuple = GetPeerInfoTuple(host, port);
+            TupleToken tuple = GetPeerInfoTuple(host, port);
             if (tuple != null)
             {
-                var values = tuple.GetValueTokens();
+                List<IValueToken> values = tuple.GetValueTokens();
                 if (values.Count > 2 && values[2] != null && values[2] is AtomToken)
                 {
                     result = new PeerInfo(host, port, Convert.ToBoolean(((AtomToken) values[2]).Text));
@@ -182,7 +182,7 @@ namespace Windar.TrayApp.Configuration
 
         public void SetPeerInfo(string host, int port, bool share)
         {
-            var tuple = GetPeerInfoTuple(host, port);
+            TupleToken tuple = GetPeerInfoTuple(host, port);
             if (_peers == null)
             {
                 _peers = new NamedList("peers", new ListToken());
@@ -193,12 +193,12 @@ namespace Windar.TrayApp.Configuration
             }
             if (tuple == null)
             {
-                var n = _peers.List.CountValues();
+                int n = _peers.List.CountValues();
                 if (n == 0)
                 {
                     // Check if there is already some leading newline or comment line.
-                    var c = 0;
-                    foreach (var token in _peers.List.Tokens)
+                    int c = 0;
+                    foreach (ParserToken token in _peers.List.Tokens)
                     {
                         if (!(token is WhitespaceToken)) break;
                         c++;
@@ -223,7 +223,7 @@ namespace Windar.TrayApp.Configuration
             }
             else
             {
-                var values = tuple.GetValueTokens();
+                List<IValueToken> values = tuple.GetValueTokens();
                 ((StringToken) values[0]).Text = host;
                 ((IntegerToken) values[1]).Value = port;
                 if (values.Count > 2) ((BooleanToken) values[2]).Value = share;
@@ -241,16 +241,16 @@ namespace Windar.TrayApp.Configuration
             //TODO: This is almost exactly the same code as in NamedList.RemoveStringsListItem() ... Try to use a common method.
             //TODO: When first item is removed, there are newlines being written. Fix.
 
-            var previousTokens = new Stack<ParserToken>();
-            foreach (var token in _peers.List.Tokens)
+            Stack<ParserToken> previousTokens = new Stack<ParserToken>();
+            foreach (ParserToken token in _peers.List.Tokens)
             {
                 if (Log.IsDebugEnabled) Log.Debug("Token = " + token);
                 if (token is TupleToken)
                 {
-                    var tuple = (TupleToken) token;
+                    TupleToken tuple = (TupleToken)token;
 
                     // Try to match host and port.
-                    var values = tuple.GetValueTokens();
+                    List<IValueToken> values = tuple.GetValueTokens();
                     if (!(values[0] is StringToken) || ((StringToken) values[0]).Text != host ||
                         !(values[1] is IntegerToken) || ((IntegerToken) values[1]).Value != port) continue;
 
@@ -300,8 +300,8 @@ namespace Windar.TrayApp.Configuration
                     }
 
                     // Find position of first non-whitespace token.
-                    var pos = -1;
-                    foreach (var tok in _peers.List.Tokens)
+                    int pos = -1;
+                    foreach (ParserToken tok in _peers.List.Tokens)
                     {
                         pos++;
                         if (!(tok is WhitespaceToken)) break;
@@ -332,7 +332,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = false;
+                bool result = false;
                 if (_fwd == null) _fwd = FindNamedBoolean("fwd");
                 if (_fwd != null) result = _fwd.Value;
                 return result;
@@ -356,7 +356,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = -1;
+                int result = -1;
                 if (_fwdDelay == null) _fwdDelay = FindNamedInteger("fwd_delay");
                 if (_fwdDelay != null) result = _fwdDelay.Value;
                 return result;
@@ -380,7 +380,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = false;
+                bool result = false;
                 if (_rewriteIdentity == null) _rewriteIdentity = FindNamedBoolean("rewrite_identity");
                 if (_rewriteIdentity != null) result = _rewriteIdentity.Value;
                 return result;

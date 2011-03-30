@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -26,7 +26,13 @@ namespace Playnode.ErlangTerms.Parser
 {
     public class WhitespaceToken : ParserToken
     {
-        public string Text { get; set; }
+        string _text;
+
+        public string Text
+        {
+            get { return _text; }
+            set { _text = value; }
+        }
 
         public WhitespaceToken()
         {
@@ -45,9 +51,9 @@ namespace Playnode.ErlangTerms.Parser
 
         public string ToEscapedString()
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append("\"");
-            foreach (var c in Text)
+            foreach (char c in Text)
             {
                 switch (c)
                 {

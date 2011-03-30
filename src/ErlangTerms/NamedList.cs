@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -36,7 +36,7 @@ namespace Playnode.ErlangTerms.Parser
             get
             {
                 string result = null;
-                foreach (var token in Tokens)
+                foreach (ParserToken token in Tokens)
                 {
                     if (!(token is AtomToken)) continue;
                     if (Log.IsDebugEnabled) Log.Debug("Found and returning atom name = " + ((AtomToken) token).Text);
@@ -47,7 +47,7 @@ namespace Playnode.ErlangTerms.Parser
             }
             set
             {
-                foreach (var token in Tokens)
+                foreach (ParserToken token in Tokens)
                 {
                     if (!(token is AtomToken)) continue;
                     if (Log.IsDebugEnabled) Log.Debug("Found and setting atom name = " + ((AtomToken) token).Text);
@@ -62,8 +62,8 @@ namespace Playnode.ErlangTerms.Parser
             get
             {
                 ListToken result = null;
-                var foundName = false;
-                foreach (var token in Tokens)
+                bool foundName = false;
+                foreach (ParserToken token in Tokens)
                 {
                     // Ignore white-space.
                     if (!(token is IValueToken)) continue;
@@ -126,8 +126,8 @@ namespace Playnode.ErlangTerms.Parser
 
             NamedList result = null;
             string name = null;
-            var foundName = false;
-            foreach (var tupleToken in tuple.Tokens)
+            bool foundName = false;
+            foreach (ParserToken tupleToken in tuple.Tokens)
             {
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
@@ -150,8 +150,9 @@ namespace Playnode.ErlangTerms.Parser
                 if (!(tupleToken is ListToken)) break;
 
                 // Create the NamedList instance and return.
-                var value = ((ListToken) tupleToken).Tokens;
-                result = new NamedList(name, value) { Tokens = tuple.Tokens };
+                List<ParserToken> value = ((ListToken) tupleToken).Tokens;
+                result = new NamedList(name, value);
+                result.Tokens = tuple.Tokens;
                 if (Log.IsDebugEnabled) Log.Debug("Result = " + result);
                 break;
             }
@@ -162,8 +163,8 @@ namespace Playnode.ErlangTerms.Parser
 
         public List<string> GetStringsList()
         {
-            var result = new List<string>();
-            foreach (var token in List.Tokens)
+            List<string> result = new List<string>();
+            foreach (ParserToken token in List.Tokens)
             {
                 if (!(token is StringToken)) continue;
                 result.Add(((StringToken) token).Text);
@@ -173,9 +174,9 @@ namespace Playnode.ErlangTerms.Parser
 
         public override string ToString()
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append('{');
-            foreach (var token in Tokens)
+            foreach (ParserToken token in Tokens)
                 result.Append(token.ToString());
             result.Append('}');
             return result.ToString();
@@ -186,18 +187,18 @@ namespace Playnode.ErlangTerms.Parser
         private TupleToken GetTupleNamed(string name)
         {
             TupleToken result = null;
-            foreach (var token in Tokens)
+            foreach (ParserToken token in Tokens)
             {
                 // Only interested in tuples in the list token.
                 if (!(token is ListToken)) continue;
-                foreach (var listToken in ((ListToken) token).Tokens)
+                foreach (ParserToken listToken in ((ListToken) token).Tokens)
                 {
                     // Only interested in tuple tokens here.
                     if (!(listToken is TupleToken)) continue;
 
                     // Find tuple with name.
-                    var foundName = false;
-                    foreach (var tupleToken in ((TupleToken) listToken).Tokens)
+                    bool foundName = false;
+                    foreach (ParserToken tupleToken in ((TupleToken) listToken).Tokens)
                     {
                         // Only interested in value tokens here.
                         if (!(tupleToken is IValueToken)) continue;
@@ -224,11 +225,11 @@ namespace Playnode.ErlangTerms.Parser
 
         public int GetNamedInteger(string name)
         {
-            var result = -1;
-            var tuple = GetTupleNamed(name);
+            int result = -1;
+            TupleToken tuple = GetTupleNamed(name);
             if (tuple != null)
             {
-                var named = NamedInteger.CreateFrom(tuple);
+                NamedInteger named = NamedInteger.CreateFrom(tuple);
                 if (named != null) result = named.Value;
             }
             return result;
@@ -237,10 +238,10 @@ namespace Playnode.ErlangTerms.Parser
         public string GetNamedString(string name)
         {
             string result = null;
-            var tuple = GetTupleNamed(name);
+            TupleToken tuple = GetTupleNamed(name);
             if (tuple != null)
             {
-                var named = NamedString.CreateFrom(tuple);
+                NamedString named = NamedString.CreateFrom(tuple);
                 if (named != null) result = named.Value;
             }
             return result;
@@ -249,7 +250,7 @@ namespace Playnode.ErlangTerms.Parser
         public void SetNamedValue(string name, int value)
         {
             NamedInteger named = null;
-            var tuple = GetTupleNamed(name);
+            TupleToken tuple = GetTupleNamed(name);
             if (tuple != null) named = NamedInteger.CreateFrom(tuple);
             if (named == null)
             {
@@ -266,7 +267,7 @@ namespace Playnode.ErlangTerms.Parser
         public void SetNamedValue(string name, string value)
         {
             NamedString named = null;
-            var tuple = GetTupleNamed(name);
+            TupleToken tuple = GetTupleNamed(name);
             if (tuple != null) named = NamedString.CreateFrom(tuple);
             if (named == null)
             {
@@ -294,12 +295,12 @@ namespace Playnode.ErlangTerms.Parser
                 }
                 return;
             }
-            var n = List.CountValues();
+            int n = List.CountValues();
             if (n == 0)
             {
                 // Check if there is already some leading newline or comment line.
-                var c = 0;
-                foreach (var token in List.Tokens)
+                int c = 0;
+                foreach (ParserToken token in List.Tokens)
                 {
                     if (!(token is WhitespaceToken)) break;
                     c++;
@@ -325,8 +326,8 @@ namespace Playnode.ErlangTerms.Parser
                 }
                 return;
             }
-            var previousTokens = new Stack<ParserToken>();
-            foreach (var token in List.Tokens)
+            Stack<ParserToken> previousTokens = new Stack<ParserToken>();
+            foreach (ParserToken token in List.Tokens)
             {
                 if (Log.IsDebugEnabled) Log.Debug("Token = " + token);
                 if (token is StringToken && ((StringToken) token).Text == item)
@@ -377,8 +378,8 @@ namespace Playnode.ErlangTerms.Parser
                     }
 
                     // Find position of first non-whitespace token.
-                    var pos = -1;
-                    foreach (var tok in List.Tokens)
+                    int pos = -1;
+                    foreach (ParserToken tok in List.Tokens)
                     {
                         pos++;
                         if (!(tok is WhitespaceToken)) break;

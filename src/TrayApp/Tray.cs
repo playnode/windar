@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -22,6 +22,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Net;
@@ -34,8 +35,14 @@ namespace Windar.TrayApp
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
+        NotifyIcon _notifyIcon;
+
         // Notification tray icon.
-        internal NotifyIcon NotifyIcon { get; set; }
+        internal NotifyIcon NotifyIcon
+        {
+            get { return _notifyIcon; }
+            set { _notifyIcon = value; }
+        }
 
         // Tray menu.
         readonly ContextMenu _trayMenu;
@@ -67,7 +74,8 @@ namespace Windar.TrayApp
             _playgrubMenuItem = new MenuItem("Playgrub", OpenPlaygrub);
             _openSpiffdarMenuItem = new MenuItem("Spiffdar", OpenSpiffdar);
             _moreDemosMenuItem = new MenuItem("More Demos", OpenMoreDemos);
-            _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons) { Checked = Properties.Settings.Default.ShowBalloons };
+            _balloonsMenuItem = new MenuItem("Show Messages", ToggleShowBalloons);
+            _balloonsMenuItem.Checked = Properties.Settings.Default.ShowBalloons;
             _scanfilesMenuItem = new MenuItem("Scan Files", ShowScanSelect);
             _numfilesMenuItem = new MenuItem("Number of Files", NumFiles);
             _pingMenuItem = new MenuItem("Ping", Ping);
@@ -75,7 +83,7 @@ namespace Windar.TrayApp
             _shutdownMenuItem = new MenuItem("Shutdown", Shutdown);
 
             // Demos menu.
-            var demos = new MenuItem("Playdar Demos");
+            MenuItem demos = new MenuItem("Playdar Demos");
             demos.MenuItems.Add(_playlickMenuItem);
             demos.MenuItems.Add(_playgrubMenuItem);
             demos.MenuItems.Add(_openSpiffdarMenuItem);
@@ -99,13 +107,11 @@ namespace Windar.TrayApp
             _trayMenu.MenuItems.Add(_shutdownMenuItem);
 
             // Tray icon.
-            NotifyIcon = new NotifyIcon
-                           {
-                               Text = "Playdar",
-                               Icon = Properties.Resources.trayIcon,
-                               ContextMenu = _trayMenu,
-                               Visible = true
-                           };
+            NotifyIcon = new NotifyIcon();
+            NotifyIcon.Text = "Playdar";
+            NotifyIcon.Icon = Properties.Resources.trayIcon;
+            NotifyIcon.ContextMenu = _trayMenu;
+            NotifyIcon.Visible = true;
 
             // Double-click handler for tray icon.
             NotifyIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
@@ -157,7 +163,7 @@ namespace Windar.TrayApp
             string result;
             try
             {
-                var n = Program.Instance.Daemon.NumFiles;
+                int n = Program.Instance.Daemon.NumFiles;
                 if (n == 1) result = "There is one file in your Playdar library.";
                 else result = "There are " + n + " files in your Playdar library.";
             }
@@ -194,27 +200,27 @@ namespace Windar.TrayApp
             try
             {
                 // Get the version file from the windar.org website.
-                var request = (HttpWebRequest)WebRequest.Create("http://windar.org/latest/version");
-                var response = (HttpWebResponse)request.GetResponse();
-                var stream = response.GetResponseStream();
-                var buf = new byte[8192];
-                var sb = new StringBuilder();
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create("http://windar.org/latest/version");
+                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                byte[] buf = new byte[8192];
+                StringBuilder sb = new StringBuilder();
                 int count;
                 do
                 {
                     count = stream.Read(buf, 0, buf.Length);
                     if (count == 0) continue;
-                    var str = Encoding.ASCII.GetString(buf, 0, count);
+                    string str = Encoding.ASCII.GetString(buf, 0, count);
                     sb.Append(str);
                 }
                 while (count > 0);
 
                 // Check if latest version is newer, older or same.
-                var latest = ConvertVersionString(sb.ToString().Split('.'));
-                var installed = ConvertVersionString(Program.AssemblyVersion.Split('.'));
+                int latest = ConvertVersionString(sb.ToString().Split('.'));
+                int installed = ConvertVersionString(Program.AssemblyVersion.Split('.'));
                 if (latest > installed)
                 {
-                    var msg = new StringBuilder();
+                    StringBuilder msg = new StringBuilder();
                     msg.Append("There is a new version available!\n");
                     msg.Append("Go to download website now?");
                     if (Program.ShowYesNoDialog(msg.ToString()))
@@ -294,7 +300,7 @@ namespace Windar.TrayApp
         /// <returns>Version as integer value.</returns>
         static int ConvertVersionString(string[] version)
         {
-            var strBuild = new StringBuilder();
+            StringBuilder strBuild = new StringBuilder();
             strBuild.Append(version[0].PadLeft(2, '0')); // Major
             strBuild.Append(version[1].PadLeft(2, '0')); // Minor
             strBuild.Append(version[2].PadLeft(2, '0')); // Build

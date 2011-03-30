@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -55,27 +55,32 @@ namespace Windar.Common
         Thread _stdErrThread;
 
         string _currCmdName;
+        Process _process;
+        bool _skipLogInfoOutput;
 
-        public Process Process { get; set; }
-        public bool SkipLogInfoOutput { get; set; }
+        public Process Process
+        {
+            get { return _process; }
+            set { _process = value; }
+        }
+
+        public bool SkipLogInfoOutput
+        {
+            get { return _skipLogInfoOutput; }
+            set { _skipLogInfoOutput = value; }
+        }
 
         public CmdRunner()
         {
-            Process = new Process
-                           {
-                               StartInfo =
-                                   {
-                                       WorkingDirectory = @"\",
-                                       FileName = "cmd.exe",
-                                       Arguments = "/K",
-                                       UseShellExecute = false,
-                                       CreateNoWindow = true,
-                                       RedirectStandardInput = true,
-                                       RedirectStandardOutput = true,
-                                       RedirectStandardError = true
-                                   }
-                           };
-
+            Process = new Process();
+            Process.StartInfo.WorkingDirectory = @"\";
+            Process.StartInfo.FileName = "cmd.exe";
+            Process.StartInfo.Arguments = "/K";
+            Process.StartInfo.UseShellExecute = false;
+            Process.StartInfo.CreateNoWindow = true;
+            Process.StartInfo.RedirectStandardInput = true;
+            Process.StartInfo.RedirectStandardOutput = true;
+            Process.StartInfo.RedirectStandardError = true;
             Process.Start();
             Process.StandardInput.AutoFlush = true;
         }
@@ -104,23 +109,25 @@ namespace Windar.Common
             // Start reading from standard output.
             if (Process.StartInfo.RedirectStandardOutput)
             {
-                _stdOutThread = new Thread(ReadStandardOutput) {IsBackground = true};
+                _stdOutThread = new Thread(ReadStandardOutput);
+                _stdOutThread.IsBackground = true;
                 _stdOutThread.Start();
             }
 
             // Start reading from standard error.
             // We only create the standard error thread once.
             if (!Process.StartInfo.RedirectStandardError || _stdErrThread != null) return;
-            _stdErrThread = new Thread(ReadStandardError) {IsBackground = true};
+            _stdErrThread = new Thread(ReadStandardError);
+            _stdErrThread.IsBackground = true;
             _stdErrThread.Start();
         }
 
         static string GetCommandName(string cmd)
         {
             if (cmd[0] != '"') return cmd;
-            var result = cmd.Substring(1, cmd.Length - 1);
+            string result = cmd.Substring(1, cmd.Length - 1);
             result = result.Substring(0, result.IndexOf('"'));
-            var pos = result.LastIndexOf('\\') + 1;
+            int pos = result.LastIndexOf('\\') + 1;
             return result.Substring(pos, result.Length - pos);
         }
 
@@ -135,7 +142,7 @@ namespace Windar.Common
             // Kill the CmdRunner process if not exiting.
             if (Process.HasExited) return;
             if (Log.IsWarnEnabled) Log.Warn("CmdRunner closing but process has not yet exited. Giving it a little more time.");
-            for (var i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 if (!Process.HasExited)
                 {
@@ -159,7 +166,7 @@ namespace Windar.Common
             try
             {
                 // Ignore line: "prompt IGNORE: "
-                var currentLine = Process.StandardOutput.ReadLine();
+                string currentLine = Process.StandardOutput.ReadLine();
                 if (Log.IsDebugEnabled) Log.Debug(string.Format("Ignoring line \"{0}\"", currentLine));
 
                 // Ignoring blank line.
@@ -206,10 +213,10 @@ namespace Windar.Common
         {
             try
             {
-                var line = new StringBuilder();
+                StringBuilder line = new StringBuilder();
                 do
                 {
-                    var c = Process.StandardError.Read();
+                    int c = Process.StandardError.Read();
                     if (c == 13) continue;
                     if (c != 10) line.Append((char) c);
                     else
@@ -230,7 +237,7 @@ namespace Windar.Common
         void StopStandardOutputThread()
         {
             // Try to abort the standard output reader.
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 if (_stdOutThread == null || !_stdOutThread.IsAlive) 
                     return;
@@ -255,7 +262,7 @@ namespace Windar.Common
         void StopStandardErrorThread()
         {
             // Try to abort the standard error reader.
-            for (var i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 if (_stdErrThread == null || !_stdErrThread.IsAlive) 
                     return;

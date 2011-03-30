@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -34,7 +34,7 @@ namespace Windar.PlaydarDaemon.Commands
             Runner.RunCommand("CD " + DaemonController.Instance.Paths.PlaydarProgramPath);
             Runner.RunCommand("SET PLAYDAR_ETC=" + DaemonController.Instance.Paths.WindarAppData + @"\etc");
 
-            var cmd = new StringBuilder();
+            StringBuilder cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname playdar-status@localhost");
             cmd.Append(" -noinput");

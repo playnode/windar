@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -59,8 +59,8 @@ namespace Playnode.ErlangTerms.Parser
 
             NamedString result = null;
             string name = null;
-            var foundName = false;
-            foreach (var tupleToken in tuple.Tokens)
+            bool foundName = false;
+            foreach (ParserToken tupleToken in tuple.Tokens)
             {
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
@@ -83,8 +83,9 @@ namespace Playnode.ErlangTerms.Parser
                 if (!(tupleToken is StringToken)) break;
 
                 // Create the NamedString instance and return.
-                var value = ((StringToken) tupleToken).Text;
-                result = new NamedString(name, value) { Tokens = tuple.Tokens };
+                string value = ((StringToken) tupleToken).Text;
+                result = new NamedString(name, value);
+                result.Tokens = tuple.Tokens;
                 break;
             }
             return result;

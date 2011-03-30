@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -48,17 +48,33 @@ namespace Windar.PlaydarDaemon
 
         #region Properties
 
-        internal static DaemonController Instance { get; set; }
+        static DaemonController _instance;
+        WindarPaths _paths;
+        bool _started;
 
-        internal WindarPaths Paths { get; set; }
+        internal static DaemonController Instance
+        {
+            get { return _instance; }
+            set { _instance = value; }
+        }
 
-        public bool Started { get; set; }
+        internal WindarPaths Paths
+        {
+            get { return _paths; }
+            set { _paths = value; }
+        }
+
+        public bool Started
+        {
+            get { return _started; }
+            set { _started = value; }
+        }
 
         public int NumFiles
         {
             get
             {
-                var result = Cmd<NumFiles>.Create().Run();
+                string result = Cmd<NumFiles>.Create().Run();
                 if (Log.IsDebugEnabled) Log.Debug("NumFiles result = " + result.Trim());
                 try
                 {
@@ -88,7 +104,7 @@ namespace Windar.PlaydarDaemon
 
         public void Start()
         {
-            var cmd = Cmd<Start>.Create();
+            Start cmd = Cmd<Start>.Create();
             cmd.PlaydarStarted += StartCmd_PlaydarStarted;
             cmd.PlaydarStartFailed += StartCmd_PlaydarStartFailed;
             cmd.RunAsync();
@@ -127,7 +143,7 @@ namespace Windar.PlaydarDaemon
 
         public void Scan(string path)
         {
-            var cmd = Cmd<Scan>.Create();
+            Scan cmd = Cmd<Scan>.Create();
             cmd.ScanCompleted += ScanCmd_ScanCompleted;
             cmd.ScanPath = path;
             cmd.RunAsync();

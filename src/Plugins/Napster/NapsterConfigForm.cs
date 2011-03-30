@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -30,7 +30,13 @@ namespace Windar.NapsterPlugin
 {
     public partial class NapsterConfigForm : UserControl, IConfigForm
     {
-        public IConfigFormContainer FormContainer { get; set; }
+        IConfigFormContainer _formContainer;
+
+        public IConfigFormContainer FormContainer
+        {
+            get { return _formContainer; }
+            set { _formContainer = value; }
+        }
 
         readonly NapsterPlugin _plugin;
         readonly SimplePropertiesFile _conf;
@@ -44,7 +50,7 @@ namespace Windar.NapsterPlugin
             _plugin = plugin;
 
             // Set the original values.
-            var filename = _plugin.Host.Paths.PlaydarEtcPath + @"\napster.conf";
+            string filename = _plugin.Host.Paths.PlaydarEtcPath + @"\napster.conf";
             _conf = new SimplePropertiesFile(filename);
             if (File.Exists(filename))
             {

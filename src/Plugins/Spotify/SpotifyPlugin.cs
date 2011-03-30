@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -26,7 +26,13 @@ namespace Windar.SpotifyPlugin
 {
     public class SpotifyPlugin : IPlugin
     {
-        public IPluginHost Host { get; set; }
+        IPluginHost _host;
+
+        public IPluginHost Host
+        {
+            get { return _host; }
+            set { _host = value; }
+        }
 
         public string Name
         {

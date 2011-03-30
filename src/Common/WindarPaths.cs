@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -27,7 +27,13 @@ namespace Windar.Common
 {
     public class WindarPaths
     {
-        public string WindarProgramFiles { get; set; }
+        string _windarProgramFiles;
+
+        public string WindarProgramFiles
+        {
+            get { return _windarProgramFiles; }
+            set { _windarProgramFiles = value; }
+        }
 
         public WindarPaths(string appPath)
         {
@@ -90,7 +96,7 @@ namespace Windar.Common
             {
                 if (_playdarDataPath == null)
                 {
-                    var str = new StringBuilder();
+                    StringBuilder str = new StringBuilder();
                     str.Append(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
                     str.Append(@"\Windar");
                     _playdarDataPath = str.ToString();

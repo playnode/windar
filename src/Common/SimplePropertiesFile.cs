@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -32,7 +32,13 @@ namespace Windar.Common
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
+        Dictionary<string, Dictionary<string, string>> _sections;
+
+        public Dictionary<string, Dictionary<string, string>> Sections
+        {
+            get { return _sections; }
+            set { _sections = value; }
+        }
 
         readonly Dictionary<string, string> _section;
         readonly string _filename;
@@ -45,14 +51,14 @@ namespace Windar.Common
 
             if (!File.Exists(_filename)) return;
 
-            foreach (var row in File.ReadAllLines(_filename))
+            foreach (string row in File.ReadAllLines(_filename))
             {
                 if (row.Length <= 0) continue;
-                var skip = false;
+                bool skip = false;
                 switch (row[0])
                 {
                     case '[':
-                        var section = row.Substring(1, row.IndexOf(']') - 1);
+                        string section = row.Substring(1, row.IndexOf(']') - 1);
                         if (Log.IsDebugEnabled) Log.Debug("Section name = " + section);
                         _section = new Dictionary<string, string>();
                         Sections.Add(section, _section);
@@ -70,9 +76,9 @@ namespace Windar.Common
                     _section = new Dictionary<string, string>();
                     Sections.Add("undefined", _section);
                 }
-                var spit = row.Split('=');
-                var name = spit[0].Trim();
-                var value = spit[1].Trim();
+                string[] spit = row.Split('=');
+                string name = spit[0].Trim();
+                string value = spit[1].Trim();
                 if (Log.IsDebugEnabled) Log.Debug(name + " = " + value);
                 _section.Add(name, value);
             }
@@ -80,18 +86,18 @@ namespace Windar.Common
 
         public void Save()
         {
-            var str = new StringBuilder();
-            foreach (var section in Sections)
+            StringBuilder str = new StringBuilder();
+            foreach (KeyValuePair<string, Dictionary<string, string>> section in Sections)
             {
                 str.Append('[').Append(section.Key).Append("]\n");
-                foreach (var p in section.Value)
+                foreach (KeyValuePair<string, string> p in section.Value)
                     str.Append(p.Key).Append(" = ").Append(p.Value).Append('\n');
             }
 
             // Write the configuration file.
             if (File.Exists(_filename)) File.Delete(_filename);
-            var file = new FileStream(_filename, FileMode.Create, FileAccess.Write);
-            var sw = new StreamWriter(file);
+            FileStream file = new FileStream(_filename, FileMode.Create, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(file);
             sw.Write(str.ToString());
             sw.Close();
             file.Close();

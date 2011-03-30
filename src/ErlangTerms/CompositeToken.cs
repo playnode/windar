@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -27,7 +27,13 @@ namespace Playnode.ErlangTerms.Parser
 {
     public class CompositeToken : ParserToken
     {
-        public List<ParserToken> Tokens { get; set; }
+        List<ParserToken> _tokens;
+
+        public List<ParserToken> Tokens
+        {
+            get { return _tokens; }
+            set { _tokens = value; }
+        }
 
         public CompositeToken()
         {
@@ -36,8 +42,8 @@ namespace Playnode.ErlangTerms.Parser
 
         public List<IValueToken> GetValueTokens()
         {
-            var result = new List<IValueToken>();
-            foreach (var token in Tokens)
+            List<IValueToken> result = new List<IValueToken>();
+            foreach (ParserToken token in Tokens)
             {
                 if (token is IValueToken)
                 {
@@ -49,8 +55,8 @@ namespace Playnode.ErlangTerms.Parser
 
         public List<StringToken> GetStringTokens()
         {
-            var result = new List<StringToken>();
-            foreach (var token in GetValueTokens())
+            List<StringToken> result = new List<StringToken>();
+            foreach (IValueToken token in GetValueTokens())
             {
                 if (token is StringToken)
                 {
@@ -62,8 +68,8 @@ namespace Playnode.ErlangTerms.Parser
 
         public List<TupleToken> GetTupleTokens()
         {
-            var result = new List<TupleToken>();
-            foreach (var token in GetValueTokens())
+            List<TupleToken> result = new List<TupleToken>();
+            foreach (IValueToken token in GetValueTokens())
             {
                 if (token is TupleToken)
                 {
@@ -75,8 +81,8 @@ namespace Playnode.ErlangTerms.Parser
 
         public override string ToString()
         {
-            var result = new StringBuilder();
-            foreach (var token in Tokens) result.Append(token);
+            StringBuilder result = new StringBuilder();
+            foreach (ParserToken token in Tokens) result.Append(token);
             return result.ToString();
         }
     }

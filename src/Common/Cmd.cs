@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -31,9 +31,20 @@ namespace Windar.Common
     {
         static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        protected CmdRunner Runner { get; set; }
+        CmdRunner _runner;
+        bool _done;
 
-        protected bool Done { get; set; }
+        protected CmdRunner Runner
+        {
+            get { return _runner; }
+            set { _runner = value; }
+        }
+
+        protected bool Done
+        {
+            get { return _done; }
+            set { _done = value; }
+        }
 
         protected Cmd()
         {

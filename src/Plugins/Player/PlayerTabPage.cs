@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -41,9 +41,20 @@ namespace Windar.PlayerPlugin
         delegate void StateChangedHandler(MPlayer.State to, string msg);
 
         Scrobbler _scrobber;
+        PlayerPlugin _plugin;
+        MPlayer _player;
 
-        internal PlayerPlugin Plugin { get; set; }
-        internal MPlayer Player { get; set; }
+        internal PlayerPlugin Plugin
+        {
+            get { return _plugin; }
+            set { _plugin = value; }
+        }
+
+        internal MPlayer Player
+        {
+            get { return _player; }
+            set { _player = value; }
+        }
 
         string _qid;
         int _pollCount;
@@ -126,16 +137,16 @@ namespace Windar.PlayerPlugin
             queryTimer.Stop();
 
             // Get the first results.
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append("Resolving (");
             str.Append(_pollCount).Append('/');
             str.Append(_maxPollCount).Append(')');
             SetStatus(str.ToString());
-            var results = GetResults(_qid);
-            foreach (var result in results.PlayItems)
+            PlaydarResults results = GetResults(_qid);
+            foreach (PlayItem result in results.PlayItems)
             {
                 // Don't add the new result if already listed.
-                var skip = false;
+                bool skip = false;
                 foreach (DataGridViewRow row in resultsGrid.Rows)
                 {
                     if (!((PlayItem) row.Tag).SId.Equals(result.SId)) continue;
@@ -176,7 +187,7 @@ namespace Windar.PlayerPlugin
         void resultsGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (Player != null && (Player.PlayerState == MPlayer.State.Playing || Player.PlayerState == MPlayer.State.Paused)) return;
-            var item = GetSelectedItem();
+            PlayItem item = GetSelectedItem();
             if (_scrobber != null)
                 _scrobber.Start(item.Artist, item.Album, item.Track, item.Source, item.Duration);
             PlayItem(item);
@@ -184,7 +195,7 @@ namespace Windar.PlayerPlugin
 
         void playButton_Click(object sender, EventArgs e)
         {
-            var item = GetSelectedItem();
+            PlayItem item = GetSelectedItem();
             
             if (Player == null)
             {
@@ -262,17 +273,17 @@ namespace Windar.PlayerPlugin
 
         bool CanScrobble()
         {
-            var result = false;
+            bool result = false;
 
             // Build the request URL.
-            var url = new StringBuilder();
+            StringBuilder url = new StringBuilder();
             url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("api/?method=stat");
 
             // Get and process result.
-            var response = PlayerPlugin.WGet(url.ToString());
+            string response = PlayerPlugin.WGet(url.ToString());
             if (response != null)
             {
-                var json = JObject.Parse(response);
+                JObject json = JObject.Parse(response);
                 result = json["capabilities"]["audioscrobbler"] != null;
             }
 
@@ -290,8 +301,8 @@ namespace Windar.PlayerPlugin
             else
             {
                 // Get the first results.
-                var results = GetResults(_qid);
-                foreach (var result in results.PlayItems)
+                PlaydarResults results = GetResults(_qid);
+                foreach (PlayItem result in results.PlayItems)
                     AddResult(result);
 
                 // Set a timer to get further results.
@@ -320,7 +331,7 @@ namespace Windar.PlayerPlugin
             string result = null;
 
             // Build the request URL.
-            var url = new StringBuilder();
+            StringBuilder url = new StringBuilder();
             url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("api/?method=resolve");
             url.Append("&artist=").Append(artistName);
             url.Append("&album=").Append(albumName);
@@ -328,10 +339,10 @@ namespace Windar.PlayerPlugin
             if (Log.IsDebugEnabled) Log.Debug("GetQId " + url);
 
             // Get and process result.
-            var response = PlayerPlugin.WGet(url.ToString());
+            string response = PlayerPlugin.WGet(url.ToString());
             if (response != null)
             {
-                var json = JObject.Parse(response);
+                JObject json = JObject.Parse(response);
                 result = DeQuotify(json["qid"]);
                 if (Log.IsDebugEnabled) Log.Debug("GetQId result: " + result);
             }
@@ -342,35 +353,33 @@ namespace Windar.PlayerPlugin
         PlaydarResults GetResults(string qid)
         {
             // Build the request URL.
-            var url = new StringBuilder();
+            StringBuilder url = new StringBuilder();
             url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("api/?method=get_results");
             url.Append("&qid=").Append(qid);
             if (Log.IsDebugEnabled) Log.Debug("GetResults " + url);
 
             // Get and process result.
-            var results = new PlaydarResults();
-            var response = PlayerPlugin.WGet(url.ToString());
+            PlaydarResults results = new PlaydarResults();
+            string response = PlayerPlugin.WGet(url.ToString());
             if (response != null)
             {
-                var json = JObject.Parse(response);
+                JObject json = JObject.Parse(response);
                 results.Solved = ToBool(json["solved"]);
                 results.PollInterval = ToInt(json["poll_interval"]);
                 results.PollLimit = ToInt(json["poll_limit"]);
-                foreach (var result in json["results"].Children())
+                foreach (JToken result in json["results"].Children())
                 {
-                    var item = new PlayItem
-                    {
-                        SId = DeQuotify(result["sid"]),
-                        Artist = DeQuotify(result["artist"]),
-                        Track = DeQuotify(result["track"]),
-                        Album = DeQuotify(result["album"]),
-                        MimeType = DeQuotify(result["mimetype"]),
-                        Score = ToFloat(result["score"]),
-                        Duration = ToInt(result["duration"]),
-                        Bitrate = ToInt(result["bitrate"]),
-                        Size = ToInt(result["size"]),
-                        Source = DeQuotify(result["source"])
-                    };
+                    PlayItem item = new PlayItem();
+                    item.SId = DeQuotify(result["sid"]);
+                    item.Artist = DeQuotify(result["artist"]);
+                    item.Track = DeQuotify(result["track"]);
+                    item.Album = DeQuotify(result["album"]);
+                    item.MimeType = DeQuotify(result["mimetype"]);
+                    item.Score = ToFloat(result["score"]);
+                    item.Duration = ToInt(result["duration"]);
+                    item.Bitrate = ToInt(result["bitrate"]);
+                    item.Size = ToInt(result["size"]);
+                    item.Source = DeQuotify(result["source"]);
                     if (Log.IsDebugEnabled) Log.Debug("SId: " + item.SId);
                     results.PlayItems.Add(item);
                 }
@@ -386,8 +395,8 @@ namespace Windar.PlayerPlugin
         static string DeQuotify(JToken token)
         {
             if (token == null) return null;
-            var str = token.ToString();
-            var result = str;
+            string str = token.ToString();
+            string result = str;
 
             if (str[0] == '"' && str[str.Length - 1] == '"')
                 result = str.Substring(1, str.Length - 2);
@@ -466,13 +475,14 @@ namespace Windar.PlayerPlugin
             resetButton.Enabled = false;
 
             // Build the request URL.
-            var url = new StringBuilder();
+            StringBuilder url = new StringBuilder();
             url.Append(Plugin.Host.Paths.LocalPlaydarUrl).Append("sid/").Append(item.SId);
             if (Log.IsDebugEnabled) Log.Debug("Stream filename " + url);
 
             // Play the music!
             SetStatus("Requesting audio stream.");
-            Player = new MPlayer(item, url.ToString(), this) { Volume = volumeTrackbar.Value };
+            Player = new MPlayer(item, url.ToString(), this);
+            Player.Volume = volumeTrackbar.Value;
             Player.RunAsync();
         }
 
@@ -486,18 +496,26 @@ namespace Windar.PlayerPlugin
 
         static DataGridViewRow GetResultsRow(PlayItem item)
         {
-            var row = new DataGridViewRow();
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Artist });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Track });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Album });
-            row.Cells.Add(new DataGridViewTextBoxCell { Value = item.Source });
+            DataGridViewRow row = new DataGridViewRow();
+            DataGridViewTextBoxCell cellArtist = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellTrack = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellAlbum = new DataGridViewTextBoxCell();
+            DataGridViewTextBoxCell cellSource = new DataGridViewTextBoxCell();
+            cellArtist.Value = item.Artist;
+            cellTrack.Value = item.Track;
+            cellTrack.Value = item.Album;
+            cellTrack.Value = item.Source;
+            row.Cells.Add(cellArtist);
+            row.Cells.Add(cellTrack);
+            row.Cells.Add(cellAlbum);
+            row.Cells.Add(cellSource);
             row.Tag = item;
             return row;
         }
 
         void DeselectRows()
         {
-            foreach (var obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
+            foreach (object obj in resultsGrid.SelectedRows) ((DataGridViewRow) obj).Selected = false;
             resultsGrid.CurrentCell = null;
         }
 

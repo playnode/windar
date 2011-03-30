@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -39,17 +39,17 @@ namespace Playnode.ErlangTerms.Parser
 
         public int CountValues()
         {
-            var result = 0;
-            foreach (var token in Tokens)
+            int result = 0;
+            foreach (ParserToken token in Tokens)
                 if (token is IValueToken) result++;
             return result;
         }
 
         public override string ToString()
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append('[');
-            foreach (var token in Tokens)
+            foreach (ParserToken token in Tokens)
                 result.Append(token.ToString());
             result.Append(']');
             return result.ToString();

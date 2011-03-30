@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -111,7 +111,7 @@ namespace Windar.TrayApp.Configuration
 
             Document.Tokens.Add(new WhitespaceToken("\n\n"));
             Document.Tokens.Add(new AddedComment());
-            var list = new ListToken();
+            ListToken list = new ListToken();
 
             // Port
             list.Tokens.Add(new WhitespaceToken("\n    "));
@@ -133,7 +133,7 @@ namespace Windar.TrayApp.Configuration
             list.Tokens.Add(new NamedString("docroot", "priv/www"));
             list.Tokens.Add(new WhitespaceToken("\n"));
 
-            var result = new NamedList("web", list);
+            NamedList result = new NamedList("web", list);
             Document.Tokens.Add(result);
             Document.Tokens.Add(new TermEndToken());
             return result;
@@ -143,7 +143,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = -1;
+                int result = -1;
                 if (_web == null) _web = FindNamedList("web");
                 if (_web != null) result = _web.GetNamedInteger("port");
                 return result;
@@ -160,7 +160,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = -1;
+                int result = -1;
                 if (_web == null) _web = FindNamedList("web");
                 if (_web != null) result = _web.GetNamedInteger("max");
                 return result;
@@ -213,7 +213,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = false;
+                bool result = false;
                 if (_crossdomain == null) _crossdomain = FindNamedBoolean("crossdomain");
                 if (_crossdomain != null) result = _crossdomain.Value;
                 return result;
@@ -269,7 +269,7 @@ namespace Windar.TrayApp.Configuration
         {
             get
             {
-                var result = false;
+                bool result = false;
                 if (_explain == null) _explain = FindNamedBoolean("explain");
                 if (_explain != null) result = _explain.Value;
                 return result;
@@ -297,7 +297,7 @@ namespace Windar.TrayApp.Configuration
                 if (_libdbdir == null) _libdbdir = FindLibraryDbDir();
                 if (_libdbdir != null)
                 {
-                    var valueTokens = _libdbdir.GetValueTokens();
+                    List<IValueToken> valueTokens = _libdbdir.GetValueTokens();
                     result = ((StringToken) valueTokens[1]).Text;
                 }
                 return result;
@@ -310,7 +310,7 @@ namespace Windar.TrayApp.Configuration
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
                     Document.Tokens.Add(new AddedComment());
                     _libdbdir = new TupleToken();
-                    var tuple = new TupleToken();
+                    TupleToken tuple = new TupleToken();
                     tuple.Tokens.Add(new AtomToken("library"));
                     tuple.Tokens.Add(new CommaToken());
                     tuple.Tokens.Add(new WhitespaceToken(" "));
@@ -322,7 +322,7 @@ namespace Windar.TrayApp.Configuration
                     Document.Tokens.Add(_libdbdir);
                     Document.Tokens.Add(new TermEndToken());
                 }
-                var valueTokens = _libdbdir.GetValueTokens();
+                List<IValueToken> valueTokens = _libdbdir.GetValueTokens();
                 ((StringToken) valueTokens[1]).Text = value;
             }
         }
@@ -332,15 +332,15 @@ namespace Windar.TrayApp.Configuration
             TupleToken result = null;
 
             // Search through all the tuples at the top-level of file.
-            foreach (var token in Document.GetTupleTokens())
+            foreach (TupleToken token in Document.GetTupleTokens())
             {
                 // Only interested in a tuple with a tuple as a first item.
-                var valueTokens = token.GetValueTokens();
+                List<IValueToken> valueTokens = token.GetValueTokens();
                 if (!(valueTokens[0] is TupleToken)) continue;
 
                 // Check the tuple names expected: {library, dbdir}
-                var tuple = (TupleToken) valueTokens[0];
-                var values = tuple.GetValueTokens();
+                TupleToken tuple = (TupleToken)valueTokens[0];
+                List<IValueToken> values = tuple.GetValueTokens();
                 if (!(values[0] is AtomToken) || ((AtomToken) values[0]).Text != "library" ||
                     !(values[1] is AtomToken) || ((AtomToken) values[1]).Text != "dbdir") continue;
 
@@ -434,7 +434,7 @@ namespace Windar.TrayApp.Configuration
                 if (_asUsername == null) _asUsername = FindAudioScrobblerUsername();
                 if (_asUsername != null)
                 {
-                    var valueTokens = _asUsername.GetValueTokens();
+                    List<IValueToken> valueTokens = _asUsername.GetValueTokens();
                     result = ((StringToken) valueTokens[1]).Text;
                 }
                 return result;
@@ -447,7 +447,7 @@ namespace Windar.TrayApp.Configuration
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
                     Document.Tokens.Add(new AddedComment());
                     _asUsername = new TupleToken();
-                    var tuple = new TupleToken();
+                    TupleToken tuple = new TupleToken();
                     tuple.Tokens.Add(new AtomToken("as"));
                     tuple.Tokens.Add(new CommaToken());
                     tuple.Tokens.Add(new WhitespaceToken(" "));
@@ -459,7 +459,7 @@ namespace Windar.TrayApp.Configuration
                     Document.Tokens.Add(_asUsername);
                     Document.Tokens.Add(new TermEndToken());
                 }
-                var valueTokens = _asUsername.GetValueTokens();
+                List<IValueToken> valueTokens = _asUsername.GetValueTokens();
                 ((StringToken) valueTokens[1]).Text = value;
             }
         }
@@ -469,15 +469,15 @@ namespace Windar.TrayApp.Configuration
             TupleToken result = null;
 
             // Search through all the tuples at the top-level of file.
-            foreach (var token in Document.GetTupleTokens())
+            foreach (TupleToken token in Document.GetTupleTokens())
             {
                 // Only interested in a tuple with a tuple as a first item.
-                var valueTokens = token.GetValueTokens();
+                List<IValueToken> valueTokens = token.GetValueTokens();
                 if (!(valueTokens[0] is TupleToken)) continue;
 
                 // Check the tuple names expected: {library, dbdir}
-                var tuple = (TupleToken) valueTokens[0];
-                var values = tuple.GetValueTokens();
+                TupleToken tuple = (TupleToken)valueTokens[0];
+                List<IValueToken> values = tuple.GetValueTokens();
                 if (!(values[0] is AtomToken) || ((AtomToken) values[0]).Text != "as" ||
                     !(values[1] is AtomToken) || ((AtomToken) values[1]).Text != "username") continue;
 
@@ -499,7 +499,7 @@ namespace Windar.TrayApp.Configuration
                 if (_asPassword == null) _asPassword = FindAudioScrobblerPassword();
                 if (_asPassword != null)
                 {
-                    var valueTokens = _asPassword.GetValueTokens();
+                    List<IValueToken> valueTokens = _asPassword.GetValueTokens();
                     result = ((StringToken) valueTokens[1]).Text;
                 }
                 return result;
@@ -512,7 +512,7 @@ namespace Windar.TrayApp.Configuration
                     Document.Tokens.Add(new WhitespaceToken("\n\n"));
                     Document.Tokens.Add(new AddedComment());
                     _asPassword = new TupleToken();
-                    var tuple = new TupleToken();
+                    TupleToken tuple = new TupleToken();
                     tuple.Tokens.Add(new AtomToken("as"));
                     tuple.Tokens.Add(new CommaToken());
                     tuple.Tokens.Add(new WhitespaceToken(" "));
@@ -524,7 +524,7 @@ namespace Windar.TrayApp.Configuration
                     Document.Tokens.Add(_asPassword);
                     Document.Tokens.Add(new TermEndToken());
                 }
-                var valueTokens = _asPassword.GetValueTokens();
+                List<IValueToken> valueTokens = _asPassword.GetValueTokens();
                 ((StringToken) valueTokens[1]).Text = value;
             }
         }
@@ -534,15 +534,15 @@ namespace Windar.TrayApp.Configuration
             TupleToken result = null;
 
             // Search through all the tuples at the top-level of file.
-            foreach (var token in Document.GetTupleTokens())
+            foreach (TupleToken token in Document.GetTupleTokens())
             {
                 // Only interested in a tuple with a tuple as a first item.
-                var valueTokens = token.GetValueTokens();
+                List<IValueToken> valueTokens = token.GetValueTokens();
                 if (!(valueTokens[0] is TupleToken)) continue;
 
                 // Check the tuple names expected: {library, dbdir}
-                var tuple = (TupleToken) valueTokens[0];
-                var values = tuple.GetValueTokens();
+                TupleToken tuple = (TupleToken) valueTokens[0];
+                List<IValueToken> values = tuple.GetValueTokens();
                 if (!(values[0] is AtomToken) || ((AtomToken) values[0]).Text != "as" ||
                     !(values[1] is AtomToken) || ((AtomToken) values[1]).Text != "password") continue;
 

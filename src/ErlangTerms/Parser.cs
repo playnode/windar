@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -28,10 +28,34 @@ namespace Playnode.ErlangTerms.Parser
     {
         #region Properties
 
-        protected ParserInputStream InputStream { get; private set; }
-        protected int NumErrors { get; set; }
-        protected int NumWarnings { get; set; }
-        protected int NumRecoveries { get; set; }
+        ParserInputStream _inputStream;
+        int _numErrors;
+        int _numWarnings;
+        int _numRecoveries;
+
+        protected ParserInputStream InputStream
+        {
+            get { return _inputStream; }
+            set { _inputStream = value; }
+        }
+
+        protected int NumErrors
+        {
+            get { return _numErrors; }
+            set { _numErrors = value; }
+        }
+
+        protected int NumWarnings
+        {
+            get { return _numWarnings; }
+            set { _numWarnings = value; }
+        }
+
+        protected int NumRecoveries
+        {
+            get { return _numRecoveries; }
+            set { _numRecoveries = value; }
+        }
 
         public int CharCount
         {
@@ -62,7 +86,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns></returns>
         protected static string GetStateChangeMessage(string fromState, string toState)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append("Changing state from ").Append(fromState);
             result.Append(" to ").Append(toState);
             result.Append('.');
@@ -76,7 +100,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns>Error message.</returns>
         protected static string GetUnexpectedStateErrorMessage(string state)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append("Unexpected state ").Append(state);
             result.Append('.');
             return result.ToString();
@@ -90,7 +114,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns>The warning message.</returns>
         protected string GetCharDefaultAcceptWarningMessage(char c, string stateName)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append(GetCharacterPositionMessagePrefix());
             result.Append("Character ");
             result.Append(ParserInputStream.ToNameString(c));
@@ -108,7 +132,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns>The error message.</returns>
         protected string GetInvalidCharErrorMessage(char c, string stateName)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append(GetCharacterPositionMessagePrefix());
             result.Append("Character ");
             result.Append(ParserInputStream.ToNameString(c));
@@ -127,7 +151,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns>Error message for when invalid character found.</returns>
         protected string GetEdgeUnknownErrorMessage(int edge, string stateName)
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append(GetCharacterPositionMessagePrefix());
             result.Append("No edge labelled ");
             result.Append(ParserInputStream.ToNameString(edge));
@@ -144,7 +168,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns>Character position prefix.</returns>
         protected string GetCharacterPositionMessagePrefix()
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append("Ln: ").Append(InputStream.LineNo.ToString().PadLeft(4)).Append("   ");
             result.Append("Col: ").Append(InputStream.ColNo.ToString().PadLeft(3)).Append("   ");
             return result.ToString();
@@ -156,7 +180,7 @@ namespace Playnode.ErlangTerms.Parser
         /// <returns>The completion report as a string.</returns>
         public string GetCompletionReport()
         {
-            var report = new StringBuilder();
+            StringBuilder report = new StringBuilder();
             report.Append("Parsed ");
             report.Append(InputStream.LineNo);
             report.Append(" line");

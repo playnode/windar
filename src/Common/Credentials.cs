@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -24,8 +24,20 @@ namespace Windar.Common
 {
     public class Credentials
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        string _username;
+        string _password;
+
+        public string Username
+        {
+            get { return _username; }
+            set { _username = value; }
+        }
+
+        public string Password
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
 
         public Credentials(string username, string password)
         {

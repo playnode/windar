@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -26,7 +26,13 @@ namespace Playnode.ErlangTerms.Parser
 {
     public class ParserException : Exception
     {
-        public ParserToken IncompleteToken { get; private set; }
+        ParserToken _incompleteToken;
+
+        public ParserToken IncompleteToken
+        {
+            get { return _incompleteToken; }
+            set { _incompleteToken = value; }
+        }
 
         public ParserException() { }
         public ParserException(string msg) : base(msg) { }

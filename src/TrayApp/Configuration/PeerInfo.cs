@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -30,9 +30,27 @@ namespace Windar.TrayApp.Configuration
         int _port;
         bool _share;
 
-        protected bool HostChanged { get; set; }
-        protected bool PortChanged { get; set; }
-        protected bool ShareChanged { get; set; }
+        bool _hostChanged;
+        bool _portChanged;
+        bool _shareChanged;
+
+        protected bool HostChanged
+        {
+            get { return _hostChanged; }
+            set { _hostChanged = value; }
+        }
+
+        protected bool PortChanged
+        {
+            get { return _portChanged; }
+            set { _portChanged = value; }
+        }
+
+        protected bool ShareChanged
+        {
+            get { return _shareChanged; }
+            set { _shareChanged = value; }
+        }
 
         public string Host
         {
@@ -95,7 +113,7 @@ namespace Windar.TrayApp.Configuration
 
         public override string ToString()
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             result.Append("{\"").Append(_host).Append("\", ").Append(_port).Append("}");
             return result.ToString();
         }

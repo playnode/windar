@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -36,10 +36,34 @@ namespace Playnode.ErlangTerms.Parser
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        public int ColNo { get; private set; }
-        public int LineNo { get; private set; }
-        public int CharCount { get; private set; }
-        public int Checksum { get; private set; }
+        int _colNo;
+        int _lineNo;
+        int _charCount;
+        int _checksum;
+
+        public int ColNo
+        {
+            get { return _colNo; }
+            set { _colNo = value; }
+        }
+
+        public int LineNo
+        {
+            get { return _lineNo; }
+            set { _lineNo = value; }
+        }
+
+        public int CharCount
+        {
+            get { return _charCount; }
+            set { _charCount = value; }
+        }
+
+        public int Checksum
+        {
+            get { return _checksum; }
+            set { _checksum = value; }
+        }
 
         private TextReader _stream;
         private readonly Stack<int> _pushbackQueue;
@@ -125,7 +149,7 @@ namespace Playnode.ErlangTerms.Parser
         public void PushBack(string str)
         {
             if (Log.IsDebugEnabled) Log.Debug("Pushback String:\n" + str);
-            for (var i = str.Length - 1; i > -1; i--)
+            for (int i = str.Length - 1; i > -1; i--)
             {
                 _pushbackQueue.Push(str[i]);
                 CharCount--;
@@ -269,7 +293,7 @@ namespace Playnode.ErlangTerms.Parser
                 case 0x7D:
                 case 0x7E:
                     {
-                        var result = new StringBuilder();
+                        StringBuilder result = new StringBuilder();
                         result.Append((char) c);
                         return result.ToString();
                     }
@@ -277,7 +301,7 @@ namespace Playnode.ErlangTerms.Parser
                 case -1: return "EOF";
                 default:
                     {
-                        var result = new StringBuilder();
+                        StringBuilder result = new StringBuilder();
                         result.Append("0x");
                         result.Append(c.ToString("X2").ToUpper());
                         return result.ToString();

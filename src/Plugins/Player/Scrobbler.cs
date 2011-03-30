@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -49,7 +49,7 @@ namespace Windar.PlayerPlugin
 
         string BaseUrl()
         {
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append(_page.Plugin.Host.Paths.LocalPlaydarUrl);
             str.Append("audioscrobbler/");
             return str.ToString();
@@ -57,7 +57,7 @@ namespace Windar.PlayerPlugin
 
         public void Start(string artist, string album, string track, string source, int length)
         {
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append(BaseUrl());
             str.Append("start");
             str.Append("?a=").Append(artist);
@@ -65,33 +65,33 @@ namespace Windar.PlayerPlugin
             str.Append("&t=").Append(track);
             str.Append("&o=").Append(source);
             str.Append("&l=").Append(length);
-            var url = str.ToString();
+            string url = str.ToString();
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble start: {0}", url));
-            var response = PlayerPlugin.WGet(url);
+            string response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
             _state = State.Initial;
         }
 
         public void Resume()
         {
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append(BaseUrl());
             str.Append("resume");
-            var url = str.ToString();
+            string url = str.ToString();
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble resume: {0}", url));
-            var response = PlayerPlugin.WGet(url);
+            string response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
             _state = State.Resumed;
         }
 
         public void Pause()
         {
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append(BaseUrl());
             str.Append("pause");
-            var url = str.ToString();
+            string url = str.ToString();
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble pause: {0}", url));
-            var response = PlayerPlugin.WGet(url);
+            string response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
             _state = State.Paused;
         }
@@ -99,12 +99,12 @@ namespace Windar.PlayerPlugin
         public void Stop()
         {
             if (_state == State.Stopped) return;
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append(BaseUrl());
             str.Append("stop");
-            var url = str.ToString();
+            string url = str.ToString();
             if (Log.IsDebugEnabled) Log.Debug(string.Format("Scrobble stop: {0}", url));
-            var response = PlayerPlugin.WGet(url);
+            string response = PlayerPlugin.WGet(url);
             if (!string.IsNullOrEmpty(response) && Log.IsDebugEnabled) Log.Debug("\n" + response);
             _state = State.Stopped;
         }

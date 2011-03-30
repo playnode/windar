@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -43,7 +43,13 @@ namespace Windar.PlayerPlugin
 
         #region IPlugin implementation
 
-        public IPluginHost Host { get; set; }
+        IPluginHost _host;
+
+        public IPluginHost Host
+        {
+            get { return _host; }
+            set { _host = value; }
+        }
 
         public string Name
         {
@@ -72,16 +78,16 @@ namespace Windar.PlayerPlugin
             string result = null;
 
             if (Log.IsDebugEnabled) Log.Debug("WGet " + url);
-            var request = (HttpWebRequest) WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Timeout = 10000; // 10 secs
             request.UserAgent = "Windar";
             try
             {
-                var response = (HttpWebResponse) request.GetResponse();
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    var enc = Encoding.GetEncoding(1252);
-                    var stream = new StreamReader(response.GetResponseStream(), enc);
+                    Encoding enc = Encoding.GetEncoding(1252);
+                    StreamReader stream = new StreamReader(response.GetResponseStream(), enc);
                     result = stream.ReadToEnd();
                     response.Close();
                     stream.Close();
@@ -116,7 +122,7 @@ namespace Windar.PlayerPlugin
 
         internal static string GetPlayingMessage(PlayItem item)
         {
-            var str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             str.Append("Playing: ");
             str.Append(item.Artist).Append(" - ");
             str.Append(item.Track);

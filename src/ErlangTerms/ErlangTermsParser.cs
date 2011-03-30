@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -63,7 +63,7 @@ namespace Playnode.ErlangTerms.Parser
                         }
                     default:
                         {
-                            var msg = GetEdgeUnknownErrorMessage(c, "DocumentRoot");
+                            string msg = GetEdgeUnknownErrorMessage(c, "DocumentRoot");
                             if (Log.IsErrorEnabled) Log.Error(msg);
                             throw new ParserException(msg);
                         }

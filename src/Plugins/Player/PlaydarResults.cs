@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -26,10 +26,34 @@ namespace Windar.PlayerPlugin
 {
     class PlaydarResults
     {
-        public int PollInterval { get; set; }
-        public int PollLimit { get; set; }
-        public bool Solved { get; set; }
-        public List<PlayItem> PlayItems { get; set; }
+        int _pollInterval;
+        int _pollLimit;
+        bool _solved;
+        List<PlayItem> _playItems;
+
+        public int PollInterval
+        {
+            get { return _pollInterval; }
+            set { _pollInterval = value; }
+        }
+
+        public int PollLimit
+        {
+            get { return _pollLimit; }
+            set { _pollLimit = value; }
+        }
+
+        public bool Solved
+        {
+            get { return _solved; }
+            set { _solved = value; }
+        }
+
+        public List<PlayItem> PlayItems
+        {
+            get { return _playItems; }
+            set { _playItems = value; }
+        }
 
         public PlaydarResults()
         {

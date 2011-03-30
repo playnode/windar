@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -28,6 +28,7 @@ using System.Text;
 using System.Windows.Forms;
 using log4net;
 using log4net.Appender;
+using log4net.Core;
 
 namespace Windar.TrayApp
 {
@@ -106,8 +107,20 @@ namespace Windar.TrayApp
 
         readonly MemoryAppender _memoryAppender;
 
-        public bool Updating { get; set; }
-        public bool FollowTail { get; set; }
+        bool _updating;
+        bool _followTail;
+
+        public bool Updating
+        {
+            get { return _updating; }
+            set { _updating = value; }
+        }
+
+        public bool FollowTail
+        {
+            get { return _followTail; }
+            set { _followTail = value; }
+        }
 
         Timer _timer;
         string _buffer;
@@ -122,8 +135,8 @@ namespace Windar.TrayApp
             FollowTail = true;
 
             // Set reference to memory appender.
-            var appenders = LogManager.GetRepository().GetAppenders();
-            foreach (var appender in appenders)
+            IAppender[] appenders = LogManager.GetRepository().GetAppenders();
+            foreach (IAppender appender in appenders)
             {
                 if (appender.Name != "MemoryAppender") continue;
                 _memoryAppender = (MemoryAppender) appender;
@@ -139,7 +152,7 @@ namespace Windar.TrayApp
         {
             get
             {
-                var si = new ScrollInfo();
+                ScrollInfo si = new ScrollInfo();
                 si.Size = (uint) Marshal.SizeOf(si);
                 si.Mask = (uint) ScrollInfoMask.All;
                 GetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si);
@@ -147,7 +160,7 @@ namespace Windar.TrayApp
             }
             set
             {
-                var si = new ScrollInfo();
+                ScrollInfo si = new ScrollInfo();
                 si.Size = (uint) Marshal.SizeOf(si);
                 si.Mask = (uint) ScrollInfoMask.All;
                 GetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si);
@@ -161,7 +174,7 @@ namespace Windar.TrayApp
         {
             // Set the log box font.
             const string preferredFontName = "ProFontWindows";
-            var testFont = new Font(preferredFontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            Font testFont = new Font(preferredFontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
             Font = testFont.Name == preferredFontName ? testFont :
                 new Font("Courier New", 13, FontStyle.Regular, GraphicsUnit.Pixel);
 
@@ -169,7 +182,8 @@ namespace Windar.TrayApp
             _lineHeight = testFont.Name == preferredFontName ? 12 : 13;
 
             // Create timer for updating.
-            _timer = new Timer { Interval = 250 };
+            _timer = new Timer();
+            _timer.Interval = 250;
             _timer.Tick += LogBoxTimer_Tick;
 
             // First update.
@@ -180,14 +194,14 @@ namespace Windar.TrayApp
 
         void UpdateOutputBuffer()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             try
             {
-                var events = _memoryAppender.GetEvents();
+                LoggingEvent[] events = _memoryAppender.GetEvents();
                 if (events.Length <= 0) return;
-                foreach (var logEvent in events)
+                foreach (LoggingEvent logEvent in events)
                 {
-                    var msg = logEvent.RenderedMessage;
+                    string msg = logEvent.RenderedMessage;
                     if (msg.StartsWith(CommandPrefix))
                     {
                         // Don't log the stat heart-beat check.
@@ -196,8 +210,8 @@ namespace Windar.TrayApp
                             continue;
                         }
 
-                        var len = CommandPrefix.Length;
-                        var str = msg.Substring(len, msg.Length - len).TrimEnd();
+                        int len = CommandPrefix.Length;
+                        string str = msg.Substring(len, msg.Length - len).TrimEnd();
                         if (str.Length > 0)
                         {
                             sb.Append(str);
@@ -206,8 +220,8 @@ namespace Windar.TrayApp
                     }
                     else if (msg.StartsWith(ErrorCommandPrefix))
                     {
-                        var len = ErrorCommandPrefix.Length;
-                        var str = msg.Substring(len, msg.Length - len).TrimEnd();
+                        int len = ErrorCommandPrefix.Length;
+                        string str = msg.Substring(len, msg.Length - len).TrimEnd();
                         if (str.Length > 0)
                         {
                             sb.Append("ERROR! ").Append(str);
@@ -228,11 +242,11 @@ namespace Windar.TrayApp
             // Update the log buffer.
             if (sb.Length > 0) sb.Remove(sb.Length - 1, 1); // Remove last newline.
             if (sb.Length > 0) _bufferChanged = true;
-            var s = sb.ToString();
+            string s = sb.ToString();
             sb = new StringBuilder();
             if (_buffer != null)
             {
-                var trimmed = _buffer.TrimEnd();
+                string trimmed = _buffer.TrimEnd();
                 if (trimmed.Length > 0) sb.Append(trimmed).Append('\n');
             }
             sb.Append(s);
@@ -247,13 +261,13 @@ namespace Windar.TrayApp
         static int TrimBuffer(StringBuilder sb, int size)
         {
             // Trim from the beginning of the buffer to match size.
-            var d1 = sb.ToString().Substring(0, sb.Length - size);
+            string d1 = sb.ToString().Substring(0, sb.Length - size);
             sb.Remove(0, sb.Length - size);
 
             // Remove likely partial first line.
-            var s = sb.ToString();
-            var i = s.IndexOf('\n');
-            var d2 = s.Substring(0, i); // Not including last newline.
+            string s = sb.ToString();
+            int i = s.IndexOf('\n');
+            string d2 = s.Substring(0, i); // Not including last newline.
             if (i > 0 && i < sb.Length) sb.Remove(0, i + 1);
 
             // How many lines removed?
@@ -261,7 +275,7 @@ namespace Windar.TrayApp
             sb.Append(d1);
             sb.Append(d2);
             s = sb.ToString();
-            var n = s.Split('\n').Length;
+            int n = s.Split('\n').Length;
             if (Log.IsDebugEnabled)
             {
                 Log.Debug("Deleted string is:\n" + s);
@@ -281,11 +295,11 @@ namespace Windar.TrayApp
             {
                 // Determine if scroll is at end position.
                 // If so, automatically follow log tail.
-                var si = new ScrollInfo();
+                ScrollInfo si = new ScrollInfo();
                 si.Size = (uint) Marshal.SizeOf(si);
                 si.Mask = (uint) ScrollInfoMask.All;
                 GetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si);
-                var allow = si.Page / 2; // Allowing half-page difference.
+                float allow = si.Page / 2; // Allowing half-page difference.
                 return si.Pos > si.Max - si.Page - allow;
             }
         }
@@ -299,7 +313,7 @@ namespace Windar.TrayApp
             //ScrollToCaret();
 
             // Get the current scroll info.
-            var si = new ScrollInfo();
+            ScrollInfo si = new ScrollInfo();
             si.Size = (uint) Marshal.SizeOf(si);
             si.Mask = (uint) ScrollInfoMask.All;
             GetScrollInfo(Handle, (int) ScrollBarDirection.Vertical, ref si);
@@ -323,10 +337,10 @@ namespace Windar.TrayApp
 
         void SetText(string text, int linesRemoved, int lineHeight)
         {
-            var followTail = FollowTail;
+            bool followTail = FollowTail;
             if (string.IsNullOrEmpty(text)) return;
-            var pos = HorizontalScrollPosition;
-            var eventMask = IntPtr.Zero;
+            int pos = HorizontalScrollPosition;
+            IntPtr eventMask = IntPtr.Zero;
             try
             {
                 // Stop redrawing:

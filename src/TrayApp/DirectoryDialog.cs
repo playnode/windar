@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -108,10 +108,34 @@ namespace Windar.TrayApp
 
         #region Properties
 
-        public BrowseForTypes BrowseFor { get; set; }
-        public string InitialPath { get; set; }
-        public string Title { get; set; }
-        public string Selected { get; set; }
+        BrowseForTypes _browseFor;
+        string _initialPath;
+        string _title;
+        string _selected;
+
+        public BrowseForTypes BrowseFor
+        {
+            get { return _browseFor; }
+            set { _browseFor = value; }
+        }
+
+        public string InitialPath
+        {
+            get { return _initialPath; }
+            set { _initialPath = value; }
+        }
+
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; }
+        }
+
+        public string Selected
+        {
+            get { return _selected; }
+            set { _selected = value; }
+        }
 
         #endregion
 
@@ -122,22 +146,23 @@ namespace Windar.TrayApp
 
         public DialogResult ShowDialog(IWin32Window owner)
         {
-            var handle = owner != null ? owner.Handle : IntPtr.Zero;
+            IntPtr handle = owner != null ? owner.Handle : IntPtr.Zero;
             return RunDialog(handle) ? DialogResult.OK : DialogResult.Cancel;
         }
 
         protected bool RunDialog(IntPtr hWndOwner)
         {
             if (BrowseFor == 0) BrowseFor = BrowseForTypes.FilesAndDirectories;
-            var bi = new BrowseInfo();
-            var hTitle = GCHandle.Alloc(Title, GCHandleType.Pinned);
+            BrowseInfo bi = new BrowseInfo();
+            GCHandle hTitle = GCHandle.Alloc(Title, GCHandleType.Pinned);
             bi.WndOwner = hWndOwner;
             bi.Title = Title;
             bi.Flags = (int) BrowseFor;
             bi.Callback = new BrowseCallBackProc(OnBrowseEvent);
-            var buffer = new StringBuilder(MaxPath) {Length = MaxPath};
+            StringBuilder buffer = new StringBuilder(MaxPath);
+            buffer.Length = MaxPath;
             bi.DisplayName = buffer.ToString();
-            var ptr = ShBrowseForFolder(ref bi);
+            IntPtr ptr = ShBrowseForFolder(ref bi);
             hTitle.Free();
             if (ptr.ToInt64() == 0) return false;
             if (BrowseFor == BrowseForTypes.Computers)
@@ -146,7 +171,7 @@ namespace Windar.TrayApp
             }
             else
             {
-                var path = new StringBuilder(MaxPath);
+                StringBuilder path = new StringBuilder(MaxPath);
                 ShGetPathFromIdList(ptr, path);
                 Selected = path.ToString();
             }

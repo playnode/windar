@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{0B8C83BD-0F58-4FD2-9E55-FB2309029C12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErlangTermsParser", "ErlangTerms\ErlangTermsParser.csproj", "{AB7B80E9-B922-4162-818F-748635B1B0A3}"

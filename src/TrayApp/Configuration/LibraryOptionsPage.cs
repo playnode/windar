@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -29,10 +29,34 @@ namespace Windar.TrayApp.Configuration
         List<string> _scanPaths;
         bool _scanPathsChanged;
 
-        public int SavedScanPathCount { get; set; }
-        public bool ScanPathValueChanged { get; set; }
-        public bool ScanPathsToAdd { get; set; }
-        public bool ScanPathsRemoved { get; set; }
+        int _savedScanPathCount;
+        bool _scanPathValueChanged;
+        bool _scanPathsToAdd;
+        bool _scanPathsRemoved;
+
+        public int SavedScanPathCount
+        {
+            get { return _savedScanPathCount; }
+            set { _savedScanPathCount = value; }
+        }
+
+        public bool ScanPathValueChanged
+        {
+            get { return _scanPathValueChanged; }
+            set { _scanPathValueChanged = value; }
+        }
+
+        public bool ScanPathsToAdd
+        {
+            get { return _scanPathsToAdd; }
+            set { _scanPathsToAdd = value; }
+        }
+
+        public bool ScanPathsRemoved
+        {
+            get { return _scanPathsRemoved; }
+            set { _scanPathsRemoved = value; }
+        }
 
         public void Load()
         {

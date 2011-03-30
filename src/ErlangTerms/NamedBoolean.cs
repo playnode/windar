@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -61,8 +61,8 @@ namespace Playnode.ErlangTerms.Parser
 
             NamedBoolean result = null;
             string name = null;
-            var foundName = false;
-            foreach (var tupleToken in tuple.Tokens)
+            bool foundName = false;
+            foreach (ParserToken tupleToken in tuple.Tokens)
             {
                 if (Log.IsDebugEnabled) Log.Debug("name = " + name);
 
@@ -87,8 +87,9 @@ namespace Playnode.ErlangTerms.Parser
                 if (!(tupleToken is AtomToken)) break;
 
                 // Create the NamedBoolean instance and return.
-                var value = Convert.ToBoolean(((AtomToken) tupleToken).Text);
-                result = new NamedBoolean(name, value) { Tokens = tuple.Tokens };
+                bool value = Convert.ToBoolean(((AtomToken) tupleToken).Text);
+                result = new NamedBoolean(name, value);
+                result.Tokens = tuple.Tokens;
                 if (Log.IsDebugEnabled) Log.Debug("Result = " + result);
                 break;
             }

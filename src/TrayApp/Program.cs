@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -44,39 +44,111 @@ namespace Windar.TrayApp
 
         internal delegate void ScanCompletedCallback();
 
-        internal static Program Instance { get; private set; }
+        static Program _instance;
+
+        internal static Program Instance
+        {
+            get { return _instance; }
+            set { _instance = value; }
+        }
 
         internal string PlaydarDaemon
         {
             get
             {
-                var result = new StringBuilder();
+                StringBuilder result = new StringBuilder();
                 //TODO: Get the configured URL from config.
                 result.Append("http://127.0.0.1:");
-                var port = 60211;
+                int port = 60211;
                 if (Config != null) port = Config.MainConfig.WebPort;
                 result.Append(port).Append('/');
                 return result.ToString();
             }
         }
 
-        internal WindarPaths Paths { get; set; }
-        internal MainForm MainForm { get; set; }
-        internal DaemonController Daemon { get; set; }
-        internal Tray Tray { get; set; }
-        internal PluginHost PluginHost { get; set; }
-        internal Queue<string> ScanQueue { get; set; }
-        internal bool Indexing { get; set; }
-        internal WaitingDialog WaitingDialog { get; set; }
+        WindarPaths _paths;
+        MainForm _mainForm;
+        DaemonController _daemon;
+        Tray _tray;
+        PluginHost _pluginHost;
+        Queue<string> _scanQueue;
+        bool _indexing;
+        WaitingDialog _waitingDialog;
+
+        internal WindarPaths Paths
+        {
+            get { return _paths; }
+            set { _paths = value; }
+        }
+
+        internal MainForm MainForm
+        {
+            get { return _mainForm; }
+            set { _mainForm = value; }
+        }
+
+        internal DaemonController Daemon
+        {
+            get { return _daemon; }
+            set { _daemon = value; }
+        }
+
+        internal Tray Tray
+        {
+            get { return _tray; }
+            set { _tray = value; }
+        }
+
+        internal PluginHost PluginHost
+        {
+            get { return _pluginHost; }
+            set { _pluginHost = value; }
+        }
+
+        internal Queue<string> ScanQueue
+        {
+            get { return _scanQueue; }
+            set { _scanQueue = value; }
+        }
+
+        internal bool Indexing
+        {
+            get { return _indexing; }
+            set { _indexing = value; }
+        }
+
+        internal WaitingDialog WaitingDialog
+        {
+            get { return _waitingDialog; }
+            set { _waitingDialog = value; }
+        }
 
         internal class ConfigGroup
         {
-            public MainConfigFile MainConfig { get; set; }
-            public TcpConfigFile PeersConfig { get; set; }
+            MainConfigFile _mainConfig;
+            TcpConfigFile _peersConfig;
+
+            public MainConfigFile MainConfig
+            {
+                get { return _mainConfig; }
+                set { _mainConfig = value; }
+            }
+
+            public TcpConfigFile PeersConfig
+            {
+                get { return _peersConfig; }
+                set { _peersConfig = value; }
+            }
         }
 
+        ConfigGroup _config;
+
         // NOTE: Config set to null on config load exception.
-        internal ConfigGroup Config { get; set; }
+        internal ConfigGroup Config
+        {
+            get { return _config; }
+            set { _config = value; }
+        }
 
         #region Win32 API
 
@@ -96,8 +168,8 @@ namespace Windar.TrayApp
                 if (!notRunning)
                 {
                     // If already running, bring it to the front.
-                    var current = Process.GetCurrentProcess();
-                    foreach (var process in Process.GetProcessesByName(current.ProcessName))
+                    Process current = Process.GetCurrentProcess();
+                    foreach (Process process in Process.GetProcessesByName(current.ProcessName))
                     {
                         if (process.Id == current.Id) continue;
                         SetForegroundWindow(process.MainWindowHandle);
@@ -246,13 +318,11 @@ namespace Windar.TrayApp
         static void SetupShutdownFileWatcher()
         {
             // Create a new FileSystemWatcher and set its properties.
-            var watcher = new FileSystemWatcher
-            {
-                Path = Application.StartupPath,
-                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-                               | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                Filter = "SHUTDOWN"
-            };
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = Application.StartupPath;
+            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+                                   | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            watcher.Filter = "SHUTDOWN";
 
             // Add event handlers.
             watcher.Changed += ShutdownFile_OnChanged;
@@ -306,7 +376,7 @@ namespace Windar.TrayApp
             if (Log.IsErrorEnabled) Log.Error(msg, ex);
 
             if (ex != null && ex.Message != null) errMsg = ex.Message;
-            var msgBuild = new StringBuilder();
+            StringBuilder msgBuild = new StringBuilder();
             if (errMsg != null)
             {
                 msgBuild.Append(errMsg);
@@ -317,7 +387,7 @@ namespace Windar.TrayApp
             
             msgBuild.Append("Quit program?");
             
-            var result = MessageBox.Show(msgBuild.ToString(),
+            DialogResult result = MessageBox.Show(msgBuild.ToString(),
                                          msg, 
                                          MessageBoxButtons.YesNo, 
                                          MessageBoxIcon.Exclamation,
@@ -342,7 +412,7 @@ namespace Windar.TrayApp
 
         internal static bool ShowYesNoDialog(string msg)
         {
-            var result = MessageBox.Show(msg, "Windar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(msg, "Windar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             return result == DialogResult.Yes;
         }
 
@@ -364,7 +434,7 @@ namespace Windar.TrayApp
 
         internal static void ShowApplyChangesDialog()
         {
-            var msg = new StringBuilder();
+            StringBuilder msg = new StringBuilder();
             msg.Append("To apply changes you will also need to restart Playdar.");
             msg.Append(Environment.NewLine).Append("Do you want to restart Playdar now?");
             if (ShowYesNoDialog(msg.ToString())) Instance.Daemon.Restart();
@@ -395,13 +465,13 @@ namespace Windar.TrayApp
             get
             {
                 // Get all Title attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
 
                 // If there is at least one Title attribute
                 if (attributes.Length > 0)
                 {
                     // Select the first one
-                    var titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
 
                     // If it is not an empty string, return it
                     if (titleAttribute.Title != "") return titleAttribute.Title;
@@ -422,7 +492,7 @@ namespace Windar.TrayApp
             get
             {
                 // Get all Description attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
 
                 // If there aren't any Description attributes, return an empty string
                 // If there is a Description attribute, return its value
@@ -435,7 +505,7 @@ namespace Windar.TrayApp
             get
             {
                 // Get all Product attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
 
                 // If there aren't any Product attributes, return an empty string
                 // If there is a Product attribute, return its value
@@ -448,7 +518,7 @@ namespace Windar.TrayApp
             get
             {
                 // Get all Copyright attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
 
                 // If there aren't any Copyright attributes, return an empty string
                 // If there is a Copyright attribute, return its value
@@ -461,7 +531,7 @@ namespace Windar.TrayApp
             get
             {
                 // Get all Company attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
 
                 // If there aren't any Company attributes, return an empty string
                 // If there is a Company attribute, return its value
@@ -474,7 +544,7 @@ namespace Windar.TrayApp
             get
             {
                 // Get all Trademark attributes on this assembly
-                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false);
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTrademarkAttribute), false);
 
                 // If there aren't any Trademark attributes, return an empty string
                 // If there is a Trademark attribute, return its value
@@ -556,7 +626,7 @@ namespace Windar.TrayApp
             {
                 Indexing = false;
                 ShowTrayInfo("Scan completed.");
-                var d = new ScanCompletedCallback(MainForm.ScanCompleted);
+                ScanCompletedCallback d = new ScanCompletedCallback(MainForm.ScanCompleted);
                 if (MainForm != null) MainForm.Invoke(d);
             }
         }
@@ -581,13 +651,13 @@ namespace Windar.TrayApp
         /// <returns>True if configuration loaded ok, false otherwise.</returns>
         internal bool LoadConfiguration()
         {
-            var result = false;
+            bool result = false;
             try
             {
                 // Determine file paths.
-                var path = Paths.WindarAppData;
-                var main = new FileInfo(path + @"\etc\playdar.conf");
-                var peer = new FileInfo(path + @"\etc\playdartcp.conf");
+                string path = Paths.WindarAppData;
+                FileInfo main = new FileInfo(path + @"\etc\playdar.conf");
+                FileInfo peer = new FileInfo(path + @"\etc\playdartcp.conf");
 
                 // Check the files exist.
                 if (!main.Exists) throw new WindarException("Main config file not found!");
@@ -613,7 +683,7 @@ namespace Windar.TrayApp
             catch (Exception ex)
             {
                 Config = null;
-                var msg = new StringBuilder();
+                StringBuilder msg = new StringBuilder();
                 msg.Append("Exception when reading configuration files.");
                 if (Log.IsErrorEnabled) Log.Error(msg, ex);
                 //msg.Append(Environment.NewLine).Append(ex.Message);
@@ -626,9 +696,9 @@ namespace Windar.TrayApp
 
         void CheckConfig()
         {
-            var path = Paths.WindarAppData;
+            string path = Paths.WindarAppData;
             path = path.Replace('\\', '/');
-            var update = (Config.MainConfig.LibraryDbDir != path)
+            bool update = (Config.MainConfig.LibraryDbDir != path)
                 || (Config.MainConfig.AuthDbDir != path);
 
             if (!update) return;
@@ -644,16 +714,16 @@ namespace Windar.TrayApp
             string result = null;
 
             if (Log.IsDebugEnabled) Log.Debug("WGet " + url);
-            var request = (HttpWebRequest) WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Timeout = timeout;
             request.UserAgent = "Windar";
             try
             {
-                var response = (HttpWebResponse) request.GetResponse();
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    var enc = Encoding.GetEncoding(1252);
-                    var stream = new StreamReader(response.GetResponseStream(), enc);
+                    Encoding enc = Encoding.GetEncoding(1252);
+                    StreamReader stream = new StreamReader(response.GetResponseStream(), enc);
                     result = stream.ReadToEnd();
                     response.Close();
                     stream.Close();
@@ -688,7 +758,7 @@ namespace Windar.TrayApp
 
         internal bool FindMPlayer()
         {
-            var path = new StringBuilder(Paths.WindarProgramFiles).Append(@"\mplayer\mplayer.exe").ToString();
+            string path = new StringBuilder(Paths.WindarProgramFiles).Append(@"\mplayer\mplayer.exe").ToString();
             if (Log.IsDebugEnabled) Log.Debug("Looking for MPlayer. Path = \"" + path + "\"");
             return File.Exists(path);
         }

@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -28,7 +28,13 @@ namespace Windar.ScrobblerPlugin
 {
     public partial class ScrobblerConfigForm : UserControl, IConfigForm
     {
-        public IConfigFormContainer FormContainer { get; set; }
+        IConfigFormContainer _formContainer;
+
+        public IConfigFormContainer FormContainer
+        {
+            get { return _formContainer; }
+            set { _formContainer = value; }
+        }
 
         readonly ScrobblerPlugin _plugin;
         

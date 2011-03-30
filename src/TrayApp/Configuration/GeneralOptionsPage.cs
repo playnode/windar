@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -45,13 +45,25 @@ namespace Windar.TrayApp.Configuration
         // Not checking each and every value here.
         bool _peersChanged;
 
-        public bool NewPeersToAdd { get; set; }
-        public bool PeerValueChanged { get; set; }
+        bool _newPeersToAdd;
+        bool _peerValueChanged;
+
+        public bool NewPeersToAdd
+        {
+            get { return _newPeersToAdd; }
+            set { _newPeersToAdd = value; }
+        }
+
+        public bool PeerValueChanged
+        {
+            get { return _peerValueChanged; }
+            set { _peerValueChanged = value; }
+        }
 
         public void Load()
         {
-            var mainConfig = Program.Instance.Config.MainConfig;
-            var peerConfig = Program.Instance.Config.PeersConfig;
+            MainConfigFile mainConfig = Program.Instance.Config.MainConfig;
+            TcpConfigFile peerConfig = Program.Instance.Config.PeersConfig;
             _origAutoStart = false; //TODO
             _origNodeName = mainConfig.Name;
             _origPort = peerConfig.Port;
@@ -95,7 +107,7 @@ namespace Windar.TrayApp.Configuration
             get
             {
                 string result;
-                var configName = Program.Instance.Config.MainConfig.Name;
+                string configName = Program.Instance.Config.MainConfig.Name;
                 if (!string.IsNullOrEmpty(configName)) result = configName;
                 else
                 {

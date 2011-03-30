@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -112,7 +112,7 @@ namespace Windar.PlayerPlugin.Commands
                 {
                     case State.Playing:
                     case State.Caching:
-                        var str = new StringBuilder();
+                        StringBuilder str = new StringBuilder();
                         str.Append("\nvolume ").Append(_volume).Append(" 1\n");
                         Runner.Process.StandardInput.WriteLine(str.ToString());
                         Runner.Process.StandardInput.Flush();
@@ -149,7 +149,7 @@ namespace Windar.PlayerPlugin.Commands
             Runner.CommandOutput += CommandOutput;
             Runner.CommandError += CommandError;
 
-            var cmd = new StringBuilder();
+            StringBuilder cmd = new StringBuilder();
             cmd.Append('"').Append(_page.Plugin.Host.Paths.WindarProgramFiles).Append('\\');
             cmd.Append(@"mplayer\").Append("mplayer.exe\"");
             cmd.Append(" -slave");
@@ -243,7 +243,7 @@ namespace Windar.PlayerPlugin.Commands
         protected void CommandError(object sender, CmdRunner.CommandEventArgs e)
         {
             // Ignore errors if player is stopped.
-            var ignore = false;
+            bool ignore = false;
             switch (PlayerState)
             {
                 case State.Ended:

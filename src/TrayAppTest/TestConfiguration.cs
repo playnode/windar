@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -41,10 +41,10 @@ namespace Windar.TrayApp
         {
             get
             {
-                var a = (new Uri(Assembly.GetExecutingAssembly().CodeBase)).AbsolutePath;
-                var b = a.Substring(0, a.LastIndexOf('/')); // Debug folder.
-                var c = b.Substring(0, b.LastIndexOf('/')); // bin folder.
-                var d = c.Substring(0, c.LastIndexOf('/')); // TrayAppTest folder.
+                string a = (new Uri(Assembly.GetExecutingAssembly().CodeBase)).AbsolutePath;
+                string b = a.Substring(0, a.LastIndexOf('/')); // Debug folder.
+                string c = b.Substring(0, b.LastIndexOf('/')); // bin folder.
+                string d = c.Substring(0, c.LastIndexOf('/')); // TrayAppTest folder.
                 return d + '/';
             }
         }
@@ -60,8 +60,8 @@ namespace Windar.TrayApp
         [SetUp]
         public void SetUp()
         {
-            var filename = ProjectRootPath + "Log4net.xml";
-            var configFile = new FileInfo(filename);
+            string filename = ProjectRootPath + "Log4net.xml";
+            FileInfo configFile = new FileInfo(filename);
             log4net.Config.XmlConfigurator.Configure(configFile);
         }
 
@@ -72,7 +72,7 @@ namespace Windar.TrayApp
         {
             try
             {
-                var doc = new ErlangTermsDocument();
+                ErlangTermsDocument doc = new ErlangTermsDocument();
                 doc.Load(new FileInfo(TestConfigurationPath + "playdar.conf.example"));
                 Log.Info("Erlang terms document loaded.");
             }
@@ -88,7 +88,7 @@ namespace Windar.TrayApp
         {
             try
             {
-                var config = new MainConfigFile();
+                MainConfigFile config = new MainConfigFile();
                 config.Load(new FileInfo(TestConfigurationPath + "playdar.conf.example"));
                 Log.Info("Configuration file loaded.");
 
@@ -157,11 +157,11 @@ namespace Windar.TrayApp
         {
             try
             {
-                var config = new TcpConfigFile();
+                TcpConfigFile config = new TcpConfigFile();
                 config.Load(new FileInfo(TestConfigurationPath + "playdartcp.conf.example"));
                 Log.Info("Configuration file loaded.");
 
-                var peer = config.GetPeerInfo("192.168.1.10", 60211);
+                PeerInfo peer = config.GetPeerInfo("192.168.1.10", 60211);
                 Log.Info("PeerInfo = " + peer);
 
                 //config.SetPeerInfo("192.168.1.10", 60211, true);

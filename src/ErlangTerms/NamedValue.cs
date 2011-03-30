@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -34,7 +34,7 @@ namespace Playnode.ErlangTerms.Parser
             get
             {
                 string result = null;
-                foreach (var token in Tokens)
+                foreach (ParserToken token in Tokens)
                 {
                     if (!(token is AtomToken)) continue;
                     if (Log.IsDebugEnabled) Log.Debug("Found and returning atom name = " + ((AtomToken) token).Text);
@@ -45,7 +45,7 @@ namespace Playnode.ErlangTerms.Parser
             }
             set
             {
-                foreach (var token in Tokens)
+                foreach (ParserToken token in Tokens)
                 {
                     if (!(token is AtomToken)) continue;
                     if (Log.IsDebugEnabled) Log.Debug("Found and setting atom name = " + ((AtomToken) token).Text);
@@ -60,8 +60,8 @@ namespace Playnode.ErlangTerms.Parser
             get
             {
                 IValueToken result = null;
-                var foundName = false;
-                foreach (var token in Tokens)
+                bool foundName = false;
+                foreach (ParserToken token in Tokens)
                 {
                     // Ignore white-space.
                     if (!(token is IValueToken)) continue;
@@ -82,8 +82,8 @@ namespace Playnode.ErlangTerms.Parser
             }
             set
             {
-                var foundName = false;
-                for (var i = 0; i < Tokens.Count; i++)
+                bool foundName = false;
+                for (int i = 0; i < Tokens.Count; i++)
                 {
                     // Ignore white-space.
                     if (!(Tokens[i] is IValueToken)) continue;
@@ -147,7 +147,7 @@ namespace Playnode.ErlangTerms.Parser
         public static NamedValue CreateFrom(TupleToken tuple)
         {
             NamedValue result = null;
-            foreach (var tupleToken in tuple.Tokens)
+            foreach (ParserToken tupleToken in tuple.Tokens)
             {
                 // Seek out the first value token, ignoring spaces.
                 if (!(tupleToken is IValueToken)) continue;
@@ -157,7 +157,8 @@ namespace Playnode.ErlangTerms.Parser
                 if (!(tupleToken is AtomToken)) break;
 
                 // Create the NamedValue instance and return.
-                result = new NamedValue { Tokens = tuple.Tokens };
+                result = new NamedValue();
+                result.Tokens = tuple.Tokens;
                 break;
             }
             return result;

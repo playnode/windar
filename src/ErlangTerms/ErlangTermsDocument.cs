@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -30,19 +30,25 @@ namespace Playnode.ErlangTerms.Parser
 {
     public class ErlangTermsDocument
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
+        static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().ReflectedType);
 
-        protected CompositeToken Document { get; private set; }
+        CompositeToken _document;
 
-        private FileInfo _file;
+        protected CompositeToken Document
+        {
+            get { return _document; }
+            set { _document = value; }
+        }
+
+        FileInfo _file;
 
         public void Load(FileInfo file)
         {
             _file = file;
             Document = new CompositeToken();
-            var reader = file.OpenText();
-            var stream = new ParserInputStream(reader);
-            var parser = new ErlangTermsParser(stream);
+            StreamReader reader = file.OpenText();
+            ParserInputStream stream = new ParserInputStream(reader);
+            ErlangTermsParser parser = new ErlangTermsParser(stream);
             ParserToken token;
             try
             {
@@ -52,7 +58,7 @@ namespace Playnode.ErlangTerms.Parser
                     if (!Log.IsInfoEnabled) continue;
                     if (token is CommentToken)
                     {
-                        var str = token.ToString();
+                        String str = token.ToString();
                         Log.Info("Token, Comment: " + str.Substring(0, str.Length - 1));
                     }
                     else if (token is TermEndToken)
@@ -61,25 +67,25 @@ namespace Playnode.ErlangTerms.Parser
                     }
                     else if (token is NumericExpression)
                     {
-                        var str = token.ToString();
+                        string str = token.ToString();
                         if (str.IndexOf('\n') > 0) Log.Info("Token, NumericExpression (multi-line)\n" + str);
                         else Log.Info("Token, NumericExpression: " + str);
                     }
                     else if (token is ListToken)
                     {
-                        var str = token.ToString();
+                        string str = token.ToString();
                         if (str.IndexOf('\n') > 0) Log.Info("Token, List (multi-line)\n" + str);
                         else Log.Info("Token, List: " + str);
                     }
                     else if (token is StringToken)
                     {
-                        var str = token.ToString();
+                        string str = token.ToString();
                         if (str.IndexOf('\n') > 0) Log.Info("Token, String (multi-line)\n" + str);
                         else Log.Info("Token, String: \"" + str + '"');
                     }
                     else if (token is TupleToken)
                     {
-                        var str = token.ToString();
+                        string str = token.ToString();
                         if (str.IndexOf('\n') > 0) Log.Info("Token, Tuple (multi-line)\n" + str);
                         else Log.Info("Token, Tuple: " + str);
                     }
@@ -106,8 +112,8 @@ namespace Playnode.ErlangTerms.Parser
 
         public override string ToString()
         {
-            var result = new StringBuilder();
-            foreach (var token in Document.Tokens) result.Append(token.ToString());
+            StringBuilder result = new StringBuilder();
+            foreach (ParserToken token in Document.Tokens) result.Append(token.ToString());
             return result.ToString();
         }
 
@@ -115,16 +121,16 @@ namespace Playnode.ErlangTerms.Parser
         {
             // Make a backup of configution files before saving.
             // These can be restored manually if necessary.
-            var filename = _file.FullName;
-            var bak = filename + ".bak";
-            var bakFile = new FileInfo(bak);
+            string filename = _file.FullName;
+            string bak = filename + ".bak";
+            FileInfo bakFile = new FileInfo(bak);
             if (bakFile.Exists) bakFile.Delete();
             _file.MoveTo(bak);
             _file = new FileInfo(filename);
 
             // Write the new updated file.
-            var fs = _file.OpenWrite();
-            var info = new UTF8Encoding(true).GetBytes(Document.ToString());
+            FileStream fs = _file.OpenWrite();
+            byte[] info = new UTF8Encoding(true).GetBytes(Document.ToString());
             fs.Write(info, 0, info.Length);
             fs.Close();
         }
@@ -136,14 +142,14 @@ namespace Playnode.ErlangTerms.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedValue result = null;
-            foreach (var token in Document.Tokens)
+            foreach (ParserToken token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
 
                 // Try to create a named value from tuple.
-                var tuple = (TupleToken) token;
-                var named = NamedValue.CreateFrom(tuple);
+                TupleToken tuple = (TupleToken)token;
+                NamedValue named = NamedValue.CreateFrom(tuple);
                 if (named == null) continue;
 
                 // Found named tuple?
@@ -171,14 +177,14 @@ namespace Playnode.ErlangTerms.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedString result = null;
-            foreach (var token in Document.Tokens)
+            foreach (ParserToken token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
 
                 // Try to create a named string from tuple.
-                var tuple = (TupleToken) token;
-                var named = NamedString.CreateFrom(tuple);
+                TupleToken tuple = (TupleToken)token;
+                NamedString named = NamedString.CreateFrom(tuple);
                 if (named == null) continue;
 
                 // Found named tuple?
@@ -206,14 +212,14 @@ namespace Playnode.ErlangTerms.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedBoolean result = null;
-            foreach (var token in Document.Tokens)
+            foreach (ParserToken token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
 
                 // Try to create a named boolean from tuple.
-                var tuple = (TupleToken) token;
-                var named = NamedBoolean.CreateFrom(tuple);
+                TupleToken tuple = (TupleToken)token;
+                NamedBoolean named = NamedBoolean.CreateFrom(tuple);
                 if (named == null) continue;
 
                 // Found named tuple?
@@ -241,14 +247,14 @@ namespace Playnode.ErlangTerms.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedInteger result = null;
-            foreach (var token in Document.Tokens)
+            foreach (ParserToken token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
 
                 // Try to create a named boolean from tuple.
-                var tuple = (TupleToken) token;
-                var named = NamedInteger.CreateFrom(tuple);
+                TupleToken tuple = (TupleToken)token;
+                NamedInteger named = NamedInteger.CreateFrom(tuple);
                 if (named == null) continue;
 
                 // Found named tuple?
@@ -276,7 +282,7 @@ namespace Playnode.ErlangTerms.Parser
             if (Log.IsDebugEnabled) Log.Debug("Looking for name = " + name);
 
             NamedList result = null;
-            foreach (var token in Document.Tokens)
+            foreach (ParserToken token in Document.Tokens)
             {
                 // Only interested in tuples.
                 if (!(token is TupleToken)) continue;
@@ -284,8 +290,8 @@ namespace Playnode.ErlangTerms.Parser
                 if (Log.IsDebugEnabled) Log.Debug("TupleToken = " + token);
 
                 // Try to create a named value from tuple.
-                var tuple = (TupleToken) token;
-                var named = NamedList.CreateFrom(tuple);
+                TupleToken tuple = (TupleToken)token;
+                NamedList named = NamedList.CreateFrom(tuple);
                 if (named == null)
                 {
                     if (Log.IsDebugEnabled) Log.Debug("NamedList Is Nothing");

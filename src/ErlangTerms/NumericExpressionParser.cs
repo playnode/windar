@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -66,7 +66,7 @@ namespace Playnode.ErlangTerms.Parser
 
         public override NumericExpression NextToken()
         {
-            var buffer = new StringBuilder();
+            StringBuilder buffer = new StringBuilder();
             int c;
             while ((c = InputStream.NextChar()) != -1)
             {
@@ -89,7 +89,7 @@ namespace Playnode.ErlangTerms.Parser
                                     }
                                 default:
                                     {
-                                        var msg = GetEdgeUnknownErrorMessage(c, _state.ToString());
+                                        string msg = GetEdgeUnknownErrorMessage(c, _state.ToString());
                                         if (Log.IsErrorEnabled) Log.Error(msg);
                                         throw new ParserException(msg);
                                     }
@@ -138,7 +138,7 @@ namespace Playnode.ErlangTerms.Parser
                         }
                     default:
                         {
-                            var msg = GetUnexpectedStateErrorMessage(_state.ToString());
+                            string msg = GetUnexpectedStateErrorMessage(_state.ToString());
                             throw new ParserException(msg);
                         }
                 }

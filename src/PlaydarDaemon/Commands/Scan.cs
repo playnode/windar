@@ -1,7 +1,7 @@
 ﻿/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- * Copyright (C) 2009, 2010 Steven Robertson <steve@playnode.org>
+ * Copyright (C) 2009, 2010, 2011 Steven Robertson <steve@playnode.com>
  *
  * Windar - Playdar for Windows
  *
@@ -33,8 +33,13 @@ namespace Windar.PlaydarDaemon.Commands
         public event ScanCompletedHandler ScanCompleted;
 
         bool _firstRun;
+        string _scanPath;
 
-        public string ScanPath { get; set; }
+        public string ScanPath
+        {
+            get { return _scanPath; }
+            set { _scanPath = value; }
+        }
 
         public override void RunAsync()
         {
@@ -44,7 +49,7 @@ namespace Windar.PlaydarDaemon.Commands
 
             Runner.RunCommand(@"CD " + DaemonController.Instance.Paths.WindarAppData);
 
-            var cmd = new StringBuilder();
+            StringBuilder cmd = new StringBuilder();
             cmd.Append('"').Append(DaemonController.Instance.Paths.ErlCmd).Append('"');
             cmd.Append(" -sname playdar-scan@localhost");
             cmd.Append(" -noinput");
