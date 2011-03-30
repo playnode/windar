@@ -1,5 +1,5 @@
 !define VER_MAJOR "0"
 !define VER_MINOR "2"
-!define VER_BUILD "5"
-!define VER_REVISION "96"
-!define VER_DLL "0.2.5.96"
+!define VER_BUILD "6"
+!define VER_REVISION "2"
+!define VER_DLL "0.2.6.2"
