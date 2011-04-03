@@ -33,16 +33,16 @@ rm -rf playdar_modules/jamendo
 rm -rf playdar_modules/magnatune
 
 # Refresh playdar contrib scripts in payload folder.
-rm -rf ../windar/nsis/payload/py2exe/build
-rm -rf ../windar/nsis/payload/py2exe/dist
-find ../windar/nsis/payload/py2exe -name *.pyc -exec rm {} \;
-cp contrib/audiofarm/audiofarm_resolver.py ../windar/nsis/payload/py2exe/
-cp contrib/echonest/echonest-resolver.py ../windar/nsis/payload/py2exe/
-cp -R contrib/echonest/pyechonest ../windar/nsis/payload/py2exe/
-cp contrib/mp3tunes/mp3tunes-resolver.py ../windar/nsis/payload/py2exe/
-cp contrib/napster/napster_resolver.py ../windar/nsis/payload/py2exe/
-cp contrib/napster/napster.py ../windar/nsis/payload/py2exe/
-cp -R contrib/resolver_libs/simplejson ../windar/nsis/payload/py2exe/
-cp contrib/resolver_libs/playdar_resolver.py ../windar/nsis/payload/py2exe/
+#rm -rf ../windar/nsis/payload/py2exe/build
+#rm -rf ../windar/nsis/payload/py2exe/dist
+#find ../windar/nsis/payload/py2exe -name *.pyc -exec rm {} \;
+#cp contrib/audiofarm/audiofarm_resolver.py ../windar/nsis/payload/py2exe/
+#cp contrib/echonest/echonest-resolver.py ../windar/nsis/payload/py2exe/
+#cp -R contrib/echonest/pyechonest ../windar/nsis/payload/py2exe/
+#cp contrib/mp3tunes/mp3tunes-resolver.py ../windar/nsis/payload/py2exe/
+#cp contrib/napster/napster_resolver.py ../windar/nsis/payload/py2exe/
+#cp contrib/napster/napster.py ../windar/nsis/payload/py2exe/
+#cp -R contrib/resolver_libs/simplejson ../windar/nsis/payload/py2exe/
+#cp contrib/resolver_libs/playdar_resolver.py ../windar/nsis/payload/py2exe/
 
 cd $BUILD_DIR

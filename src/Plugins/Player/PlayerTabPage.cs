@@ -503,8 +503,8 @@ namespace Windar.PlayerPlugin
             DataGridViewTextBoxCell cellSource = new DataGridViewTextBoxCell();
             cellArtist.Value = item.Artist;
             cellTrack.Value = item.Track;
-            cellTrack.Value = item.Album;
-            cellTrack.Value = item.Source;
+            cellAlbum.Value = item.Album;
+            cellSource.Value = item.Source;
             row.Cells.Add(cellArtist);
             row.Cells.Add(cellTrack);
             row.Cells.Add(cellAlbum);

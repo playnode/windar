@@ -1,3 +1,15 @@
+Windar 0.2.6
+============
+
+   Released: 2011-04-03
+
+   - Removed the expired demo resolver for Spotify.
+   - Fixed an issue with non-standard install paths for re-install.
+   - Using more approproiate weight and target time for resolver pipeline.
+   - Restored original time allowed for HTTP headers in playdar-core.
+   - Restored earlier versions of Erlang and Mochiweb in case they were better supported.
+   - Napster, MP3tunes, and Magnatune now installed in default options.
+
 Windar 0.2.5
 ============
 

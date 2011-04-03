@@ -40,7 +40,7 @@
 !define OPTION_BUNDLE_SCROBBLER
 !define OPTION_BUNDLE_RESOLVERS
 !define OPTION_BUNDLE_NAPSTER_RESOLVER
-!define OPTION_BUNDLE_SPOTIFY_RESOLVER
+;!define OPTION_BUNDLE_SPOTIFY_RESOLVER
 !define OPTION_DISABLE_WIN7_QUICK_LAUNCH_OPTION
 !define OPTION_SECTION_SC_START_MENU
 !define OPTION_SECTION_SC_START_MENU_STARTUP
@@ -292,7 +292,7 @@ FunctionEnd
 
    Function RequireCRedist
       SetDetailsPrint textonly
-      DetailPrint "Checking for the Microsoft C runtime version required. Please wait."
+      DetailPrint "Checking for the Microsoft C runtime. Please wait."
       SetDetailsPrint listonly
 
       IfFileExists $SYSDIR\msvcr80.dll MaybeFoundInSystem
@@ -668,7 +668,7 @@ SectionGroupEnd
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "Magnatune" SEC_MAGNATUNE_RESOLVER
-      SectionIn 2
+      SectionIn 1 2
       SetDetailsPrint textonly
       DetailPrint "Installing resolver for Magnatune."
       SetDetailsPrint listonly
@@ -677,7 +677,7 @@ SectionGroupEnd
    ${MementoSectionEnd}
 
    ${MementoUnselectedSection} "MP3tunes" SEC_MP3TUNES_RESOLVER
-      SectionIn 2
+      SectionIn 1 2
       SetDetailsPrint textonly
       DetailPrint "Installing resolver for MP3tunes."
       SetDetailsPrint listonly
@@ -692,7 +692,7 @@ SectionGroupEnd
 
    !ifdef OPTION_BUNDLE_NAPSTER_RESOLVER
       ${MementoUnselectedSection} "Napster" SEC_NAPSTER_RESOLVER
-         SectionIn 2
+         SectionIn 1 2
          SetDetailsPrint textonly
          DetailPrint "Installing resolver for Napster."
          SetDetailsPrint listonly
@@ -708,7 +708,7 @@ SectionGroupEnd
 
    !ifdef OPTION_BUNDLE_SPOTIFY_RESOLVER
       ${MementoUnselectedSection} "Spotify" SEC_SPOTIFY_RESOLVER
-         SectionIn 2
+         SectionIn 1 2
          SetDetailsPrint textonly
          DetailPrint "Installing resolver for Spotify."
          SetDetailsPrint listonly
@@ -726,7 +726,7 @@ SectionGroupEnd
 
 !ifdef OPTION_BUNDLE_SCROBBLER
    ${MementoUnselectedSection} "Audioscrobbler" SEC_SCROBBLER
-      SectionIn 2
+      SectionIn 1 2
       SetDetailsPrint textonly
       DetailPrint "Installing the scrobbler module and Windar plugin."
       SetDetailsPrint listonly
