@@ -7,6 +7,7 @@ _ReSharper.*
 *.suo
 *.sln.cache
 *.pyc
+.vs/
 /nsis/payload/minimerl
 /nsis/payload/mplayer
 /nsis/payload/playdar
