@@ -51,5 +51,5 @@ _ReSharper.*
 /src/Plugins/Spotify/obj
 /src/TrayApp/bin
 /src/TrayApp/obj
-/src/TrayAppTest/bin
-/src/TrayAppTest/obj
+/test/TrayAppTest/bin
+/test/TrayAppTest/obj
