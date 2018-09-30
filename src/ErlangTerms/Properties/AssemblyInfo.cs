@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ErlangTerms")]
 [assembly: AssemblyDescription("Tokeniser for some basic Erlang terms.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Playnode")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ErlangTerms")]
 [assembly: AssemblyCopyright("Copyright © 2009, 2010 Steven Robertson")]
 [assembly: AssemblyTrademark("")]
