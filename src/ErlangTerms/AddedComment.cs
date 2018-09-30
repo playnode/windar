@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     public class AddedComment : CommentToken
     {

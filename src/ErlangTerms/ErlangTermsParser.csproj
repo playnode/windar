@@ -8,7 +8,7 @@
     <ProjectGuid>{AB7B80E9-B922-4162-818F-748635B1B0A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Playnode.ErlangTerms.Parser</RootNamespace>
+    <RootNamespace>Windar.ErlangTermsParser</RootNamespace>
     <AssemblyName>ErlangTerms</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

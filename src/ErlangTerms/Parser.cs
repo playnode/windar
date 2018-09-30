@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     public abstract class Parser<T> where T : new()
     {

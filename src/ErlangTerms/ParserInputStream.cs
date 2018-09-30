@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using log4net;
 
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     /// <summary>
     /// This class provides the character input stream to the Parser class.

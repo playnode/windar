@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using log4net;
 
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     /// <summary>
     /// Simple number values are only supported at the moment. Potentially

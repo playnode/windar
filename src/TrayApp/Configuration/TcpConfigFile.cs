@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using log4net;
-using Playnode.ErlangTerms.Parser;
+using Windar.ErlangTermsParser;
 
 namespace Windar.TrayApp.Configuration
 {

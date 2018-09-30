@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using log4net;
 using NUnit.Framework;
-using Playnode.ErlangTerms.Parser;
+using Windar.ErlangTermsParser;
 using Windar.TrayApp.Configuration;
 
 namespace Windar.TrayApp

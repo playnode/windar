@@ -2,7 +2,7 @@
 using System.Reflection;
 using log4net;
 
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     public class NamedInteger : NamedValue
     {

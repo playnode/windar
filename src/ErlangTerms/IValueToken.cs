@@ -1,4 +1,4 @@
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     public interface IValueToken
     {

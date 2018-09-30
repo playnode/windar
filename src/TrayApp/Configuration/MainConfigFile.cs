@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Playnode.ErlangTerms.Parser;
+using Windar.ErlangTermsParser;
 using Windar.Common;
 
 namespace Windar.TrayApp.Configuration

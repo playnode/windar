@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Playnode.ErlangTerms.Parser
+namespace Windar.ErlangTermsParser
 {
     public class BooleanToken : AtomToken
     {
