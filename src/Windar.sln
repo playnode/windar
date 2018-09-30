@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrayAppTest", "TrayAppTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify", "Plugins\Spotify\Spotify.csproj", "{AE4A5D20-3B00-4AA5-ADD7-46A250A147CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{3FC8B7CE-98A2-478D-91ED-B20A320AE535}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +124,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D21C3808-464A-4A7C-AD9B-8AE07B78E40F} = {3FC8B7CE-98A2-478D-91ED-B20A320AE535}
+		{EF8CDC39-DA2B-41D9-86DD-CB8A24326F20} = {3FC8B7CE-98A2-478D-91ED-B20A320AE535}
+		{457CD1AE-EBBB-4095-8B0A-D31DD4F17ACA} = {3FC8B7CE-98A2-478D-91ED-B20A320AE535}
+		{AE4A5D20-3B00-4AA5-ADD7-46A250A147CA} = {3FC8B7CE-98A2-478D-91ED-B20A320AE535}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3A3EDF7E-AA78-4071-B595-2CBB4A8F1666}
