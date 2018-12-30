@@ -1,0 +1,1 @@
+Content of this folder includes open-source artwork from original Playdar logo designer.
