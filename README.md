@@ -7,4 +7,4 @@ Getting Started
 ---------------
 
 You can build from source following instructions
-[here](http://wiki.github.com/stever/windar/build-and-develop).
+[here](https://github.com/stever/Windar/wiki/Build-and-develop).
