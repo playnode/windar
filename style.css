@@ -1,0 +1,80 @@
+body {
+   font-family: verdana, tahoma, arial, sans-serif;
+   background-image: url(images/flag_pole.gif);
+   background-repeat: repeat-y;
+   background-color: #e8f9bb;
+   margin: 0;
+   padding: 0;
+}
+
+a img {
+   border: 0;
+}
+
+div#fancy_inner {
+   border-color:#BBBBBB;
+}
+
+div#fancy_close {
+   right:-15px;top:-12px;
+}
+
+div#fancy_bg {
+   background-color:#515151;
+}
+
+div#fancy_content {
+   background-color: #E8F9BB;
+}
+
+img.screenshot {
+   border: 1px solid #515151;
+   margin-bottom: 3px;
+}
+
+pre {
+   border: 1px solid grey;
+   background-color: #f0f0f0;
+   padding: 20px;
+   margin: 10px;
+}
+
+td  {
+   vertical-align: top;
+}
+
+li {
+   line-height: 1.5em;
+}
+
+div#flag {
+   float: left;
+}
+
+div#title {
+   position: absolute;
+   left: 230px;
+   top: 52px;
+}
+
+div#main {
+   margin-top: 6px;
+   margin-left: 34px;
+}
+
+div#screenshots {
+   padding-top: 12px;
+   padding-bottom: 20px;
+}
+
+div#flattr {
+   position: absolute;
+   right: 10px;
+   top: 10px;
+}
+
+div#playnode {
+   position: absolute;
+   bottom: 4px;
+   right: 6px;
+}
